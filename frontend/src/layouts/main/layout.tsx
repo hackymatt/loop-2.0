@@ -16,7 +16,7 @@ import { langs } from "../langs-config";
 import { NavMobile } from "./nav/mobile";
 import { NavDesktop } from "./nav/desktop";
 import { HomeFooter } from "./home-footer";
-import { navData } from "../nav-config-main";
+import { useNavData } from "../nav-config-main";
 import { MainSection } from "../core/main-section";
 import { Searchbar } from "../components/searchbar";
 import { MenuButton } from "../components/menu-button";
@@ -56,6 +56,7 @@ export function MainLayout({
   layoutQuery = "md",
 }: MainLayoutProps) {
   const pathname = usePathname();
+  const navData = useNavData();
 
   const { value: open, onFalse: onClose, onTrue: onOpen } = useBoolean();
 

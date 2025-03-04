@@ -12,4 +12,5 @@ export const defaultSettings: SettingsState = {
   primaryColor: "default",
   fontSize: 16,
   fontFamily: themeConfig.fontFamily.primary,
+  language: "pl",
 };

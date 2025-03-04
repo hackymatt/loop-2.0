@@ -2,6 +2,7 @@ import type { Variants } from "framer-motion";
 import type { BoxProps } from "@mui/material/Box";
 
 import { m } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import { varAlpha } from "minimal-shared/utils";
 
 import Box from "@mui/material/Box";
@@ -24,11 +25,12 @@ import { FormHead } from "../auth/components/form-head";
 const variants: Variants = varFade("inUp", { distance: 24 });
 
 export function HomeHero({ sx, ...other }: BoxProps) {
+  const { t } = useTranslation("home");
   const renderTexts = () => (
     <>
       <m.div variants={variants}>
         <Typography variant="h1">
-          Programowanie <br /> na wyciągnięcie ręki z
+          {t("title")}
           <Box
             component="span"
             sx={(theme) => ({
@@ -43,9 +45,7 @@ export function HomeHero({ sx, ...other }: BoxProps) {
       </m.div>
 
       <m.div variants={variants}>
-        <Typography sx={{ maxWidth: 480 }}>
-          Ucz się programowania szybciej z AI, interaktywnymi kursami i wsparciem mentorów.
-        </Typography>
+        <Typography sx={{ maxWidth: 480 }}>{t("subtitle")}</Typography>
       </m.div>
     </>
   );
@@ -80,7 +80,7 @@ export function HomeHero({ sx, ...other }: BoxProps) {
         endIcon={<Iconify icon="eva:arrow-ios-forward-fill" />}
         sx={{ px: 2, borderRadius: "inherit" }}
       >
-        Zacznij naukę za darmo
+        {t("button")}
       </Button>
     </AnimateBorder>
   );

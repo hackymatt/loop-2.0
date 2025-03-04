@@ -1,28 +1,28 @@
-/**
- * @type {import('next').NextConfig}
- */
+// next.config.mjs
 
-const nextConfig = {
+import pkg from "./next-i18next.config.mjs";
+const { i18n } = pkg;
+
+export default {
   trailingSlash: true,
   modularizeImports: {
-    '@mui/icons-material': {
-      transform: '@mui/icons-material/{{member}}',
+    "@mui/icons-material": {
+      transform: "@mui/icons-material/{{member}}",
     },
-    '@mui/material': {
-      transform: '@mui/material/{{member}}',
+    "@mui/material": {
+      transform: "@mui/material/{{member}}",
     },
-    '@mui/lab': {
-      transform: '@mui/lab/{{member}}',
+    "@mui/lab": {
+      transform: "@mui/lab/{{member}}",
     },
   },
   webpack(config) {
     config.module.rules.push({
       test: /\.svg$/,
-      use: ['@svgr/webpack'],
+      use: ["@svgr/webpack"],
     });
 
     return config;
   },
+  i18n,
 };
-
-export default nextConfig;

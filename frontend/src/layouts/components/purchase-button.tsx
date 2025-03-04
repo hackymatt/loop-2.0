@@ -1,6 +1,7 @@
 import type { ButtonProps } from "@mui/material/Button";
 import type { Theme, SxProps } from "@mui/material/styles";
 
+import { useTranslation } from "react-i18next";
 import { varAlpha } from "minimal-shared/utils";
 
 import Button from "@mui/material/Button";
@@ -19,6 +20,7 @@ export type PurchaseButtonProps = {
 };
 
 export function PurchaseButton({ slotProps, sx }: PurchaseButtonProps) {
+  const { t } = useTranslation("navigation");
   return (
     <AnimateBorder
       sx={[
@@ -61,7 +63,7 @@ export function PurchaseButton({ slotProps, sx }: PurchaseButtonProps) {
             : [slotProps?.button?.sx]),
         ]}
       >
-        Zacznij teraz
+        {t("start")}
       </Button>
     </AnimateBorder>
   );

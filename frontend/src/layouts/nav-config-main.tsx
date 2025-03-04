@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next";
+
 import { paths } from "src/routes/paths";
 
 import { _caseStudies } from "src/_mock";
@@ -120,10 +122,13 @@ export const pageLinks = [
   },
 ];
 
-export const navData = [
-  { title: "Kursy", path: paths.pages, children: pageLinks },
-  { title: "Plany cenowe", path: paths.marketing.services },
-  { title: "Blog", path: paths.eLearning.posts },
-  { title: "O nas", path: paths.eLearning.about },
-  { title: "Kontakt", path: paths.eLearning.contact },
-];
+export const useNavData = () => {
+  const { t } = useTranslation("navigation");
+  return [
+    { title: t("courses"), path: paths.pages, children: pageLinks },
+    { title: t("pricing"), path: paths.marketing.services },
+    { title: t("blog"), path: paths.eLearning.posts },
+    { title: t("about"), path: paths.eLearning.about },
+    { title: t("contact"), path: paths.eLearning.contact },
+  ];
+};
