@@ -5,13 +5,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import { Form } from "src/components/hook-form";
 
-import { SignUpSchema } from "./components/schema";
 import { SignUpForm } from "./components/sign-up-form";
 import { FormSocials } from "./components/form-socials";
 import { FormDivider } from "./components/form-divider";
 import { SignUpTerms } from "./components/sign-up-terms";
-
-import type { SignUpSchemaType } from "./components/schema";
+import { useSignUpSchema, type SignUpSchemaType } from "./components/schema";
 
 // ----------------------------------------------------------------------
 type Props = {
@@ -24,7 +22,11 @@ export function SignUpView({ header, buttonText = "Utwórz konto" }: Props) {
     email: "",
     password: "",
     confirmPassword: "",
+    termsAcceptance: false,
+    dataProcessingConsent: false,
   };
+
+  const SignUpSchema = useSignUpSchema();
 
   const methods = useForm<SignUpSchemaType>({ resolver: zodResolver(SignUpSchema), defaultValues });
 
@@ -46,9 +48,8 @@ export function SignUpView({ header, buttonText = "Utwórz konto" }: Props) {
 
       <Form methods={methods} onSubmit={onSubmit}>
         <SignUpForm buttonText={buttonText} />
+        <SignUpTerms />
       </Form>
-
-      <SignUpTerms />
 
       <FormDivider label="lub" />
 

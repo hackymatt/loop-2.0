@@ -1,0 +1,32 @@
+{
+  "email": {
+    "label": "Email",
+    "errors": { "required": "Email is required", "invalid": "Email is invalid" }
+  },
+  "password": {
+    "label": "Password",
+    "placeholder": "Enter password",
+    "errors": {
+      "required": "Password is required",
+      "minLength": "Password must be at least 6 characters",
+      "bigLetter": "Password must contain at least one uppercase letter",
+      "smallLetter": "Password must contain at least one lowercase letter",
+      "number": "Password must contain at least one number",
+      "specialCharacter": "Password must contain at least one special character"
+    }
+  },
+  "confirmPassword": {
+    "label": "Confirm Password",
+    "placeholder": "Reenter password",
+    "errors": {
+      "required": "Confirm Password is required",
+      "match": "Passwords must match"
+    }
+  },
+  "termsAcceptance": {
+    "errors": { "required": "This field is required" }
+  },
+  "dataProcessingConsent": {
+    "errors": { "required": "This field is required" }
+  }
+}

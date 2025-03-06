@@ -63,6 +63,7 @@ export function LanguagePopover({ data = [], sx, ...other }: LanguagePopoverProp
       onClose={onClose}
       anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
       transformOrigin={{ vertical: "top", horizontal: "center" }}
+      disableScrollLock
     >
       <MenuList sx={{ width: 160, minHeight: 72 }}>
         {data?.map((option) => (

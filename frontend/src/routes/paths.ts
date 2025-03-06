@@ -113,4 +113,6 @@ export const paths = {
   minimalStore: "https://material-ui.com/store/items/minimal-dashboard",
   zoneStore: "https://mui.com/store/items/zone-landing-page/",
   figmaUrl: "https://www.figma.com/design/NnFigTvU16Mk9lsLZR7bzR/%5BPreview%5D-Zone_Web.v3.0.0",
+  privacyPolicy: "/privacy-policy",
+  termsAndConditions: "/terms-and-conditions",
 };

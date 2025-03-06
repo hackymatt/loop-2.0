@@ -1,4 +1,5 @@
 import { z as zod } from "zod";
+import { useTranslation } from "react-i18next";
 
 // ----------------------------------------------------------------------
 
@@ -17,30 +18,39 @@ export const SignInSchema = zod.object({
 
 // ----------------------------------------------------------------------
 
-export type SignUpSchemaType = zod.infer<typeof SignUpSchema>;
+export type SignUpSchemaType = zod.infer<ReturnType<typeof useSignUpSchema>>;
 
-export const SignUpSchema = zod
-  .object({
-    email: zod
-      .string()
-      .min(1, { message: "Adres e-mail jest wymagany." })
-      .email({ message: "Adres e-mail jest niepoprawny." }),
-    password: zod
-      .string()
-      .min(1, { message: "Hasło jest wymagane." })
-      .min(6, { message: `Hasło musi mieć minimum ${6} znaków` })
-      .regex(/[A-Z]/, { message: "Hasło musi zawierać minimum jedną dużą literę." })
-      .regex(/[a-z]/, { message: "Hasło musi zawierać minimum jedną małą literę." })
-      .regex(/[0-9]/, { message: "Hasło musi zawierać minimum jedną cyfrę." })
-      .regex(/[!@#$%^&]/, {
-        message: "Hasło musi zawierać minimum jeden znak specjalny (!@#$%^&).",
+export const useSignUpSchema = () => {
+  const { t } = useTranslation("account");
+  return zod
+    .object({
+      email: zod
+        .string()
+        .min(1, { message: t("email.errors.required") })
+        .email({ message: t("email.errors.invalid") }),
+      password: zod
+        .string()
+        .min(1, { message: t("password.errors.required") })
+        .min(6, { message: t("password.errors.minLength") })
+        .regex(/[A-Z]/, { message: t("password.errors.bigLetter") })
+        .regex(/[a-z]/, { message: t("password.errors.smallLetter") })
+        .regex(/[0-9]/, { message: t("password.errors.number") })
+        .regex(/[!@#$%^&]/, {
+          message: t("password.errors.specialCharacter"),
+        }),
+      confirmPassword: zod.string().min(1, { message: t("confirmPassword.errors.required") }),
+      termsAcceptance: zod.boolean().refine((data) => data === true, {
+        message: t("termsAcceptance.errors.required"),
       }),
-    confirmPassword: zod.string().min(1, { message: "Hasło jest wymagane." }),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Hasła nie są takie same.",
-    path: ["confirmPassword"],
-  });
+      dataProcessingConsent: zod.boolean().refine((data) => data === true, {
+        message: t("dataProcessingConsent.errors.required"),
+      }),
+    })
+    .refine((data) => data.password === data.confirmPassword, {
+      message: t("confirmPassword.errors.match"),
+      path: ["confirmPassword"],
+    });
+};
 
 // ----------------------------------------------------------------------
 

@@ -120,10 +120,7 @@ export function HomeHero({ sx, ...other }: BoxProps) {
       })}
     >
       <m.div variants={variants}>
-        <SignUpView
-          header={<FormHead title="Utwórz darmowe konto" />}
-          buttonText="Zacznij naukę za darmo"
-        />
+        <SignUpView header={<FormHead title="Utwórz darmowe konto" />} buttonText="Zacznij teraz" />
       </m.div>
     </Box>
   );

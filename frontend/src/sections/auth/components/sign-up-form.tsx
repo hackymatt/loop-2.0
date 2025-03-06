@@ -1,5 +1,6 @@
 import type { BoxProps } from "@mui/material/Box";
 
+import { useTranslation } from "react-i18next";
 import { useFormContext } from "react-hook-form";
 import { useBoolean } from "minimal-shared/hooks";
 
@@ -18,6 +19,7 @@ type Props = BoxProps & {
 };
 
 export function SignUpForm({ buttonText = "Utwórz konto", sx, ...other }: Props) {
+  const { t } = useTranslation("account");
   const showPassword = useBoolean();
 
   const {
@@ -34,15 +36,15 @@ export function SignUpForm({ buttonText = "Utwórz konto", sx, ...other }: Props
     >
       <Field.Text
         name="email"
-        label="Adres e-mail"
+        label={t("email.label")}
         placeholder="email@address.com"
         slotProps={{ inputLabel: { shrink: true } }}
       />
 
       <Field.Text
         name="password"
-        label="Hasło"
-        placeholder="Wpisz hasło"
+        label={t("password.label")}
+        placeholder={t("password.placeholder")}
         type={showPassword.value ? "text" : "password"}
         slotProps={{
           inputLabel: { shrink: true },
@@ -62,8 +64,8 @@ export function SignUpForm({ buttonText = "Utwórz konto", sx, ...other }: Props
 
       <Field.Text
         name="confirmPassword"
-        label="Powtórz hasło"
-        placeholder="Wpisz hasło"
+        label={t("confirmPassword.label")}
+        placeholder={t("confirmPassword.placeholder")}
         type={showPassword.value ? "text" : "password"}
         slotProps={{
           inputLabel: { shrink: true },

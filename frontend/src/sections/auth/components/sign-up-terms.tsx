@@ -1,7 +1,10 @@
 import type { BoxProps } from "@mui/material/Box";
 
 import Box from "@mui/material/Box";
-import Link from "@mui/material/Link";
+
+import { termsAcceptance, dataProcessingConsent } from "src/consts/acceptances";
+
+import { Field } from "src/components/hook-form";
 
 // ----------------------------------------------------------------------
 
@@ -13,7 +16,7 @@ export function SignUpTerms({ sx, ...other }: BoxProps) {
         {
           mt: 3,
           display: "block",
-          textAlign: "center",
+          textAlign: "left",
           typography: "caption",
           color: "text.secondary",
         },
@@ -21,15 +24,8 @@ export function SignUpTerms({ sx, ...other }: BoxProps) {
       ]}
       {...other}
     >
-      {"I agree to "}
-      <Link underline="always" color="text.primary">
-        Terms of service
-      </Link>
-      {" and "}
-      <Link underline="always" color="text.primary">
-        Privacy policy
-      </Link>
-      .
+      <Field.Checkbox name="termsAcceptance" label={termsAcceptance} />
+      <Field.Checkbox name="dataProcessingConsent" label={dataProcessingConsent} />
     </Box>
   );
 }
