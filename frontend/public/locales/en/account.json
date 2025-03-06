@@ -24,9 +24,16 @@
     }
   },
   "termsAcceptance": {
+    "label": {
+      "accept": "I accept",
+      "terms": "the Terms and Conditions",
+      "and": "and",
+      "privacy": "the Privacy Policy."
+    },
     "errors": { "required": "This field is required" }
   },
   "dataProcessingConsent": {
+    "label": "I consent to the processing of my personal data provided in the form for the purpose and to the extent necessary to provide the service, and only for this purpose.",
     "errors": { "required": "This field is required" }
   }
 }

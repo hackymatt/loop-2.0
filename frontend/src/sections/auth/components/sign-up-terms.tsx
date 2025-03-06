@@ -2,13 +2,15 @@ import type { BoxProps } from "@mui/material/Box";
 
 import Box from "@mui/material/Box";
 
-import { termsAcceptance, dataProcessingConsent } from "src/consts/acceptances";
+import { useTermsAcceptance, useDataProcessingConsent } from "src/consts/acceptances";
 
 import { Field } from "src/components/hook-form";
 
 // ----------------------------------------------------------------------
 
 export function SignUpTerms({ sx, ...other }: BoxProps) {
+  const termsAcceptance = useTermsAcceptance();
+  const dataProcessingConsent = useDataProcessingConsent();
   return (
     <Box
       component="span"
@@ -25,7 +27,11 @@ export function SignUpTerms({ sx, ...other }: BoxProps) {
       {...other}
     >
       <Field.Checkbox name="termsAcceptance" label={termsAcceptance} />
-      <Field.Checkbox name="dataProcessingConsent" label={dataProcessingConsent} />
+      <Field.Checkbox
+        name="dataProcessingConsent"
+        label={dataProcessingConsent}
+        sx={{ alignItems: "flex-start" }}
+      />
     </Box>
   );
 }

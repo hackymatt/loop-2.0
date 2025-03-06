@@ -24,9 +24,16 @@
     }
   },
   "termsAcceptance": {
+    "label": {
+      "accept": "Akceptuję",
+      "terms": "regulamin",
+      "and": "oraz",
+      "privacy": "politykę prywatności."
+    },
     "errors": { "required": "To pole jest wymagane" }
   },
   "dataProcessingConsent": {
+    "label": "Wyrażam zgodę na przetwarzanie moich danych osobowych zawartych w formularzu w celu i zakresie niezbędnym do realizacji usługi i tylko w takim celu.",
     "errors": { "required": "To pole jest wymagane" }
   }
 }
