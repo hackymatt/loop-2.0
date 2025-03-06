@@ -1,5 +1,6 @@
 {
   "title": "Programowanie na wyciągniecie ręki z",
   "subtitle": "Ucz się programowania szybciej z AI, interaktywnymi kursami i wsparciem mentorów.",
-  "button": "Rozpocznij naukę za darmo"
+  "button": "Rozpocznij naukę za darmo",
+  "sign-up": { "header": "Utwórz darmowe konto", "button": "Zacznij teraz" }
 }
