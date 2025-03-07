@@ -129,6 +129,6 @@ export const useNavData = () => {
     { title: t("pricing"), path: paths.marketing.services },
     { title: t("blog"), path: paths.eLearning.posts },
     { title: t("about"), path: paths.eLearning.about },
-    { title: t("contact"), path: paths.eLearning.contact },
+    { title: t("contact"), path: paths.career.contact },
   ];
 };

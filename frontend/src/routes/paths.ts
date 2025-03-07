@@ -1,6 +1,7 @@
 export const paths = {
   login: "/login",
   register: "/register",
+  contact: "/contact",
   privacyPolicy: "/privacy-policy",
   termsAndConditions: "/terms-and-conditions",
   /**

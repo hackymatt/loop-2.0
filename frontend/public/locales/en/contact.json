@@ -1,0 +1,24 @@
+{
+  "phoneLabel": "Call us",
+  "emailLabel": "Talk to us",
+  "workingHours": { "label": "Working hours", "value": "Mon - Fri 9 am - 6 pm" },
+  "title": "Drop us a line",
+  "subtitle": "We normally respond within 24 hours.",
+  "button": "Send message",
+  "email": {
+    "label": "Email",
+    "errors": { "required": "Email is required", "invalid": "Email is invalid" }
+  },
+  "fullName": {
+    "label": "Full name",
+    "errors": { "required": "Full name is required" }
+  },
+  "subject": {
+    "label": "Subject",
+    "errors": { "required": "Subject is required" }
+  },
+  "message": {
+    "label": "Message",
+    "errors": { "required": "Message is required" }
+  }
+}

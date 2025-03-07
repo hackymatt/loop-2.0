@@ -1,0 +1,24 @@
+{
+  "phoneLabel": "Zadzwoń do nas",
+  "emailLabel": "Napisz do nas",
+  "workingHours": { "label": "Godziny pracy", "value": "Pon - Pt 9:00 - 17:00" },
+  "title": "Skontaktuj się z nami",
+  "subtitle": "Zazwyczaj odpowiadamy w ciągu 24 godzin.",
+  "button": "Wyślij wiadomość",
+  "email": {
+    "label": "E-mail",
+    "errors": { "required": "E-mail jest wymagany", "invalid": "Nieprawidłowy adres e-mail" }
+  },
+  "fullName": {
+    "label": "Imię i nazwisko",
+    "errors": { "required": "Imię i nazwisko jest wymagane" }
+  },
+  "subject": {
+    "label": "Temat",
+    "errors": { "required": "Temat jest wymagany" }
+  },
+  "message": {
+    "label": "Wiadomość",
+    "errors": { "required": "Wiadomość jest wymagana" }
+  }
+}
