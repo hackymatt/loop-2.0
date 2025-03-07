@@ -22,7 +22,8 @@ import { Searchbar } from "../components/searchbar";
 import { MenuButton } from "../components/menu-button";
 import { LayoutSection } from "../core/layout-section";
 import { HeaderSection } from "../core/header-section";
-import { PurchaseButton } from "../components/purchase-button";
+import { LoginButton } from "../components/login-button";
+import { RegisterButton } from "../components/register-button";
 import { SettingsButton } from "../components/settings-button";
 import { LanguagePopover } from "../components/language-popover";
 
@@ -106,8 +107,11 @@ export function MainLayout({
           {/** @slot Settings button */}
           <SettingsButton />
 
+          {/** @slot Login button */}
+          <LoginButton sx={{ display: { xs: "none", [layoutQuery]: "inline-flex" } }} />
+
           {/** @slot Purchase button */}
-          <PurchaseButton sx={{ display: { xs: "none", [layoutQuery]: "inline-flex" } }} />
+          <RegisterButton sx={{ display: { xs: "none", [layoutQuery]: "inline-flex" } }} />
         </Box>
       ),
     };

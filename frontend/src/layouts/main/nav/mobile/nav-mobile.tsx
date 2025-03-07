@@ -5,12 +5,14 @@ import Drawer from "@mui/material/Drawer";
 
 import { usePathname } from "src/routes/hooks";
 
+import { LoginButton } from "src/layouts/components/login-button";
+
 import { Logo } from "src/components/logo";
 import { Scrollbar } from "src/components/scrollbar";
 
 import { Nav, NavUl } from "../components";
 import { NavList } from "./nav-mobile-list";
-import { PurchaseButton } from "../../../components/purchase-button";
+import { RegisterButton } from "../../../components/register-button";
 
 import type { NavMainProps } from "../types";
 
@@ -81,8 +83,17 @@ export function NavMobile({ data, open, onClose, slots, sx }: NavMobileProps) {
       </Scrollbar>
 
       {slots?.bottomArea ?? (
-        <Box sx={{ py: 3, px: 2.5 }}>
-          <PurchaseButton
+        <Box sx={{ py: 3, px: 2.5, display: "flex", flexDirection: "column", gap: 2 }}>
+          <LoginButton
+            sx={{ width: 1 }}
+            slotProps={{
+              button: {
+                fullWidth: true,
+                size: "medium",
+              },
+            }}
+          />
+          <RegisterButton
             sx={{ width: 1 }}
             slotProps={{
               button: {

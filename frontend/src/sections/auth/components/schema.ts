@@ -3,18 +3,28 @@ import { useTranslation } from "react-i18next";
 
 // ----------------------------------------------------------------------
 
-export type SignInSchemaType = zod.infer<typeof SignInSchema>;
+export type SignInSchemaType = zod.infer<ReturnType<typeof useSignInSchema>>;
 
-export const SignInSchema = zod.object({
-  email: zod
-    .string()
-    .min(1, { message: "Email is required!" })
-    .email({ message: "Email must be a valid email address!" }),
-  password: zod
-    .string()
-    .min(1, { message: "Password is required!" })
-    .min(6, { message: "Password must be at least 6 characters!" }),
-});
+export const useSignInSchema = () => {
+  const { t } = useTranslation("account");
+
+  return zod.object({
+    email: zod
+      .string()
+      .min(1, { message: t("email.errors.required") })
+      .email({ message: t("email.errors.invalid") }),
+    password: zod
+      .string()
+      .min(1, { message: t("password.errors.required") })
+      .min(6, { message: t("password.errors.minLength") })
+      .regex(/[A-Z]/, { message: t("password.errors.bigLetter") })
+      .regex(/[a-z]/, { message: t("password.errors.smallLetter") })
+      .regex(/[0-9]/, { message: t("password.errors.number") })
+      .regex(/[!@#$%^&]/, {
+        message: t("password.errors.specialCharacter"),
+      }),
+  });
+};
 
 // ----------------------------------------------------------------------
 

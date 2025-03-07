@@ -74,9 +74,8 @@ export function HomeHero({ sx, ...other }: BoxProps) {
       <Button
         size="large"
         variant="text"
-        target="_blank"
         rel="noopener"
-        href={paths.figmaUrl}
+        href={paths.register}
         endIcon={<Iconify icon="eva:arrow-ios-forward-fill" />}
         sx={{ px: 2, borderRadius: "inherit" }}
       >

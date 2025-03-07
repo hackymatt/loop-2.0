@@ -1,5 +1,6 @@
 import type { BoxProps } from "@mui/material/Box";
 
+import { useTranslation } from "react-i18next";
 import { useFormContext } from "react-hook-form";
 import { useBoolean } from "minimal-shared/hooks";
 
@@ -17,7 +18,19 @@ import { Field } from "src/components/hook-form";
 
 // ----------------------------------------------------------------------
 
-export function SignInForm({ sx, ...other }: BoxProps) {
+type Props = BoxProps & {
+  buttonText?: string;
+  forgotPasswordText?: string;
+};
+
+export function SignInForm({
+  buttonText = "Zaloguj się",
+  forgotPasswordText = "Zapoomniałeś hasła?",
+  sx,
+  ...other
+}: Props) {
+  const { t } = useTranslation("account");
+
   const showPassword = useBoolean();
 
   const {
@@ -32,12 +45,17 @@ export function SignInForm({ sx, ...other }: BoxProps) {
       ]}
       {...other}
     >
-      <Field.Text name="email" label="Email address" slotProps={{ inputLabel: { shrink: true } }} />
+      <Field.Text
+        name="email"
+        label={t("email.label")}
+        placeholder="email@address.com"
+        slotProps={{ inputLabel: { shrink: true } }}
+      />
 
       <Field.Text
         name="password"
-        label="Password"
-        placeholder="6+ characters"
+        label={t("password.label")}
+        placeholder={t("password.placeholder")}
         type={showPassword.value ? "text" : "password"}
         slotProps={{
           inputLabel: { shrink: true },
@@ -54,6 +72,7 @@ export function SignInForm({ sx, ...other }: BoxProps) {
           },
         }}
       />
+
       <Link
         component={RouterLink}
         href={paths.resetPassword}
@@ -61,7 +80,7 @@ export function SignInForm({ sx, ...other }: BoxProps) {
         color="inherit"
         sx={{ alignSelf: "flex-end" }}
       >
-        Forgot password?
+        {forgotPasswordText}
       </Link>
       <LoadingButton
         fullWidth
@@ -71,7 +90,7 @@ export function SignInForm({ sx, ...other }: BoxProps) {
         variant="contained"
         loading={isSubmitting}
       >
-        Sign in
+        {buttonText}
       </LoadingButton>
     </Box>
   );

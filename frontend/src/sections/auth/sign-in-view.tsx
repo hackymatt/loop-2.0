@@ -1,6 +1,7 @@
 "use client";
 
 import { useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import Link from "@mui/material/Link";
@@ -11,7 +12,7 @@ import { RouterLink } from "src/routes/components";
 import { Form } from "src/components/hook-form";
 
 import { FormHead } from "./components/form-head";
-import { SignInSchema } from "./components/schema";
+import { useSignInSchema } from "./components/schema";
 import { SignInForm } from "./components/sign-in-form";
 import { FormSocials } from "./components/form-socials";
 import { FormDivider } from "./components/form-divider";
@@ -20,8 +21,12 @@ import type { SignInSchemaType } from "./components/schema";
 
 // ----------------------------------------------------------------------
 
-export function SignInCenteredView() {
+export function SignInView() {
+  const { t } = useTranslation("sign-in");
+
   const defaultValues: SignInSchemaType = { email: "", password: "" };
+
+  const SignInSchema = useSignInSchema();
 
   const methods = useForm<SignInSchemaType>({ resolver: zodResolver(SignInSchema), defaultValues });
 
@@ -40,22 +45,22 @@ export function SignInCenteredView() {
   return (
     <>
       <FormHead
-        title="Sign in"
+        title={t("title")}
         description={
           <>
-            {`Don’t have an account? `}
-            <Link component={RouterLink} href={paths.centered.signUp} variant="subtitle2">
-              Get started
+            {`${t("subtitle")} `}
+            <Link component={RouterLink} href={paths.register} variant="subtitle2">
+              {t("link")}
             </Link>
           </>
         }
       />
 
       <Form methods={methods} onSubmit={onSubmit}>
-        <SignInForm />
+        <SignInForm buttonText={t("button")} forgotPasswordText={t("forgotPassword")} />
       </Form>
 
-      <FormDivider label="or continue with" />
+      <FormDivider label={t("or")} />
 
       <FormSocials />
     </>

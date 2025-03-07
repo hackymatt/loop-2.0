@@ -30,7 +30,7 @@ export function SplashScreen({ portal = true, sx, ...other }: SplashScreenProps)
         ease: "easeInOut",
       }}
     >
-      <Logo disabled isSingle sx={{ width: 128, height: 128 }} />
+      <Logo disabled isSingle sx={{ width: 64, height: 64 }} />
     </m.div>
   );
 

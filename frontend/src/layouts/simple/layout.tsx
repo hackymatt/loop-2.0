@@ -3,6 +3,7 @@
 import type { Breakpoint } from "@mui/material/styles";
 
 import { merge } from "es-toolkit";
+import { useTranslation } from "react-i18next";
 
 import Box from "@mui/material/Box";
 import Link from "@mui/material/Link";
@@ -46,6 +47,7 @@ export function SimpleLayout({
   slotProps,
   layoutQuery = "md",
 }: SimpleLayoutProps) {
+  const { t } = useTranslation("navigation");
   const renderHeader = () => {
     const headerSlotProps: HeaderSectionProps["slotProps"] = { container: { maxWidth: false } };
 
@@ -70,7 +72,7 @@ export function SimpleLayout({
             color="inherit"
             sx={{ typography: "subtitle2" }}
           >
-            Need help?
+            {t("help")}
           </Link>
 
           {/** @slot Language popover */}

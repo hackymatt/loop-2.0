@@ -4,5 +4,7 @@
   "blog": "Blog",
   "about": "O nas",
   "contact": "Kontakt",
-  "start": "Wypróbuj za darmo"
+  "login": "Zaloguj się",
+  "register": "Wypróbuj za darmo",
+  "help": "Potrzebujesz pomocy?"
 }

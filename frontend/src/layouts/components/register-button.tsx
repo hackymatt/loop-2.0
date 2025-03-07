@@ -12,14 +12,14 @@ import { AnimateBorder } from "src/components/animate";
 
 // ----------------------------------------------------------------------
 
-export type PurchaseButtonProps = {
+export type RegisterButtonProps = {
   sx?: SxProps<Theme>;
   slotProps?: {
     button?: ButtonProps<"a">;
   };
 };
 
-export function PurchaseButton({ slotProps, sx }: PurchaseButtonProps) {
+export function RegisterButton({ slotProps, sx }: RegisterButtonProps) {
   const { t } = useTranslation("navigation");
   return (
     <AnimateBorder
@@ -52,9 +52,7 @@ export function PurchaseButton({ slotProps, sx }: PurchaseButtonProps) {
     >
       <Button
         variant="text"
-        target="_blank"
-        rel="noopener"
-        href={paths.zoneStore}
+        href={paths.register}
         {...slotProps?.button}
         sx={[
           { px: 2, borderRadius: "inherit" },
@@ -63,7 +61,7 @@ export function PurchaseButton({ slotProps, sx }: PurchaseButtonProps) {
             : [slotProps?.button?.sx]),
         ]}
       >
-        {t("start")}
+        {t("register")}
       </Button>
     </AnimateBorder>
   );

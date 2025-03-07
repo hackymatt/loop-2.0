@@ -38,11 +38,11 @@ export const primaryColorPresets: Record<string, PaletteColorNoChannels> = {
     contrastText: "#FFFFFF",
   },
   preset4: {
-    lighter: "#C8FAD6",
-    light: "#5BE49B",
-    main: "#00A76F",
-    dark: "#007867",
-    darker: "#004B50",
+    lighter: "#FEE9D1",
+    light: "#FDAB76",
+    main: "#FA541C",
+    dark: "#B3200E",
+    darker: "#770508",
     contrastText: "#FFFFFF",
   },
   preset5: {
@@ -89,11 +89,11 @@ export const secondaryColorPresets: Record<string, PaletteColorNoChannels> = {
     contrastText: "#1C252E",
   },
   preset4: {
-    lighter: "#FEEFD5",
-    light: "#FBC182",
-    main: "#F37F31",
-    dark: "#AE4318",
-    darker: "#741B09",
+    lighter: "#EFD6FF",
+    light: "#C684FF",
+    main: "#8E33FF",
+    dark: "#5119B7",
+    darker: "#27097A",
     contrastText: "#FFFFFF",
   },
   preset5: {

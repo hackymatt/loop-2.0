@@ -21,13 +21,12 @@ export function LocalizationProvider({ children }: Props) {
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
-    setIsClient(true); // Oznacza, że jesteśmy po stronie klienta
+    setIsClient(true);
     i18n.changeLanguage(settings.state.language);
   }, [settings.state.language]);
 
-  // Zapobiega problemom z hydratacją
   if (!isClient) {
-    return null; // Nie renderuj nic przed uruchomieniem na kliencie
+    return null;
   }
 
   return (
