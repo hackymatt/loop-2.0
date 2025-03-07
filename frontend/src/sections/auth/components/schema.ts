@@ -64,15 +64,17 @@ export const useSignUpSchema = () => {
 
 // ----------------------------------------------------------------------
 
-export type ResetPasswordSchemaType = zod.infer<typeof ResetPasswordSchema>;
+export type ResetPasswordSchemaType = zod.infer<ReturnType<typeof useResetPasswordSchema>>;
 
-export const ResetPasswordSchema = zod.object({
-  email: zod
-    .string()
-    .min(1, { message: "Email is required!" })
-    .email({ message: "Email must be a valid email address!" }),
-});
-
+export const useResetPasswordSchema = () => {
+  const { t } = useTranslation("account");
+  return zod.object({
+    email: zod
+      .string()
+      .min(1, { message: t("email.errors.required") })
+      .email({ message: t("email.errors.invalid") }),
+  });
+};
 // ----------------------------------------------------------------------
 
 export type UpdatePasswordSchemaType = zod.infer<typeof UpdatePasswordSchema>;

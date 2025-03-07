@@ -1,6 +1,7 @@
 "use client";
 
 import { useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import Box from "@mui/material/Box";
@@ -13,7 +14,7 @@ import { CONFIG } from "src/global-config";
 import { Form, Field } from "src/components/hook-form";
 
 import { FormHead } from "./components/form-head";
-import { ResetPasswordSchema } from "./components/schema";
+import { useResetPasswordSchema } from "./components/schema";
 import { FormReturnLink } from "./components/form-return-link";
 
 import type { ResetPasswordSchemaType } from "./components/schema";
@@ -21,7 +22,12 @@ import type { ResetPasswordSchemaType } from "./components/schema";
 // ----------------------------------------------------------------------
 
 export function ResetPasswordView() {
+  const { t } = useTranslation("reset-password");
+  const { t: account } = useTranslation("account");
+
   const defaultValues: ResetPasswordSchemaType = { email: "" };
+
+  const ResetPasswordSchema = useResetPasswordSchema();
 
   const methods = useForm<ResetPasswordSchemaType>({
     resolver: zodResolver(ResetPasswordSchema),
@@ -46,7 +52,12 @@ export function ResetPasswordView() {
 
   const renderForm = () => (
     <Box sx={{ gap: 3, display: "flex", flexDirection: "column" }}>
-      <Field.Text name="email" hiddenLabel placeholder="Email address" />
+      <Field.Text
+        name="email"
+        label={account("email.label")}
+        placeholder="email@address.com"
+        slotProps={{ inputLabel: { shrink: true } }}
+      />
 
       <LoadingButton
         fullWidth
@@ -56,7 +67,7 @@ export function ResetPasswordView() {
         variant="contained"
         loading={isSubmitting}
       >
-        Send request
+        {t("button")}
       </LoadingButton>
     </Box>
   );
@@ -72,15 +83,15 @@ export function ResetPasswordView() {
             sx={{ width: 96, height: 96 }}
           />
         }
-        title="Forgot your password?"
-        description={`Please enter the email address associated with your account and we'll email you a link to reset your password.`}
+        title={t("title")}
+        description={t("subtitle")}
       />
 
       <Form methods={methods} onSubmit={onSubmit}>
         {renderForm()}
       </Form>
 
-      <FormReturnLink href={paths.centered.signIn} />
+      <FormReturnLink href={paths.login} label={t("link")} />
     </>
   );
 }

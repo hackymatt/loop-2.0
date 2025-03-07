@@ -14,7 +14,13 @@ type FormReturnLinkProps = LinkProps & {
   label?: React.ReactNode;
 };
 
-export function FormReturnLink({ sx, href, label, icon, ...other }: FormReturnLinkProps) {
+export function FormReturnLink({
+  sx,
+  href,
+  label = "Wróć do logowania",
+  icon,
+  ...other
+}: FormReturnLinkProps) {
   return (
     <Link
       component={RouterLink}
@@ -28,7 +34,7 @@ export function FormReturnLink({ sx, href, label, icon, ...other }: FormReturnLi
       {...other}
     >
       {icon || <Iconify width={16} icon="eva:arrow-ios-back-fill" />}
-      {label || "Return to sign in"}
+      {label}
     </Link>
   );
 }
