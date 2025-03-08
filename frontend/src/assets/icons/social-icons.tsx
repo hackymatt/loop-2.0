@@ -219,3 +219,29 @@ export const InstagramIcon = forwardRef<SVGSVGElement, SvgIconProps>((props, ref
     </SvgIcon>
   );
 });
+
+// ----------------------------------------------------------------------
+
+export const YouTubeIcon = forwardRef<SVGSVGElement, SvgIconProps>((props, ref) => {
+  const { sx, ...other } = props;
+
+  return (
+    <SvgIcon
+      ref={ref}
+      sx={[
+        () => ({
+          width: "1em",
+          height: "1em",
+        }),
+        ...(Array.isArray(sx) ? sx : [sx]),
+      ]}
+      {...other}
+    >
+      <path
+        fill="red"
+        d="M23.498 6.186a2.887 2.887 0 00-2.032-2.04C19.157 3.5 12 3.5 12 3.5s-7.157 0-9.466.646A2.887 2.887 0 00.502 6.186 30.03 30.03 0 000 12a30.03 30.03 0 00.502 5.814 2.887 2.887 0 002.032 2.04C4.843 20.5 12 20.5 12 20.5s7.157 0 9.466-.646a2.887 2.887 0 002.032-2.04A30.03 30.03 0 0024 12a30.03 30.03 0 00-.502-5.814z"
+      />
+      <path fill="#fff" d="M10 15.5V8.5l6 3.5-6 3.5z" />
+    </SvgIcon>
+  );
+});

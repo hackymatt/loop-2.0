@@ -41,26 +41,21 @@ export const useDataProcessingConsent = () => {
   );
 };
 
-export const newsletterAcceptance = ({
-  color,
-  opacity = 1,
-}: {
-  color?: string;
-  opacity?: number;
-}) => (
-  <Typography variant="caption" align="left" sx={{ color: color ?? "text.secondary", opacity }}>
-    Wyrażam zgodę na otrzymywanie na podany adres poczty elektronicznej informacji handlowych
-    dotyczących usług oraz w celu otrzymywania newslettera — więcej informacji uzyskają Państwo{" "}
-    <Link
-      target="_blank"
-      rel="noopener"
-      href={paths.privacyPolicy}
-      color={color ?? "text.primary"}
-      underline="always"
-      sx={{ opacity }}
-    >
-      tutaj
-    </Link>
-    .
-  </Typography>
-);
+export const useMarketingConsent = () => {
+  const { t } = useTranslation("newsletter");
+  return (
+    <Typography variant="caption" align="left" sx={{ color: "text.secondary" }}>
+      {t("marketingConsent.label.accept")}
+      <Link
+        target="_blank"
+        rel="noopener"
+        href={paths.privacyPolicy}
+        color="text.secondary"
+        underline="always"
+      >
+        {t("marketingConsent.label.link")}
+      </Link>
+      .
+    </Typography>
+  );
+};

@@ -11,6 +11,8 @@ import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 import LoadingButton from "@mui/lab/LoadingButton";
 
+import { useTermsAcceptance } from "src/consts/acceptances";
+
 import { Form, Field } from "src/components/hook-form";
 
 // ----------------------------------------------------------------------
@@ -27,6 +29,9 @@ export const useCareerContactSchema = () => {
       .string()
       .min(1, { message: t("email.errors.required") })
       .email({ message: t("email.errors.invalid") }),
+    termsAcceptance: zod.boolean().refine((data) => data === true, {
+      message: t("termsAcceptance.errors.required"),
+    }),
   });
 };
 
@@ -35,11 +40,14 @@ export const useCareerContactSchema = () => {
 export function ContactForm({ sx, ...other }: BoxProps) {
   const { t } = useTranslation("contact");
 
+  const termsAcceptance = useTermsAcceptance();
+
   const defaultValues: CareerContactSchemaType = {
     fullName: "",
     subject: "",
     email: "",
     message: "",
+    termsAcceptance: false,
   };
 
   const CareerContactSchema = useCareerContactSchema();
@@ -67,17 +75,19 @@ export function ContactForm({ sx, ...other }: BoxProps) {
 
   const renderTexts = () => (
     <>
-      <Typography variant="h3">{t("title")}</Typography>
-      <Typography sx={{ mt: 2, mb: 5, color: "text.secondary" }}>{t("subtitle")}</Typography>
+      <Typography variant="h3">{t("title.form")}</Typography>
+      <Typography sx={{ mt: 2, mb: 5, color: "text.secondary" }}>{t("subtitle.form")}</Typography>
     </>
   );
 
   const renderForm = () => (
-    <Box sx={{ gap: 2.5, display: "flex", flexDirection: "column" }}>
+    <Box sx={{ gap: 2.5, display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
       <Field.Text name="fullName" label={t("fullName.label")} />
       <Field.Text name="email" label={t("email.label")} />
       <Field.Text name="subject" label={t("subject.label")} />
       <Field.Text name="message" multiline rows={4} label={t("message.label")} />
+
+      <Field.Checkbox name="termsAcceptance" label={termsAcceptance} />
 
       <LoadingButton
         size="large"
@@ -93,10 +103,17 @@ export function ContactForm({ sx, ...other }: BoxProps) {
   );
 
   return (
-    <Box component="section" sx={[{ py: 10 }, ...(Array.isArray(sx) ? sx : [sx])]} {...other}>
+    <Box
+      component="section"
+      sx={[
+        { py: { xs: 10, md: 15 }, bgcolor: "background.neutral" },
+        ...(Array.isArray(sx) ? sx : [sx]),
+      ]}
+      {...other}
+    >
       <Container>
         <Grid container spacing={3} sx={{ justifyContent: "center" }}>
-          <Grid size={{ xs: 12, md: 16 }} sx={{ textAlign: "center" }}>
+          <Grid size={{ xs: 12, md: 8 }} sx={{ textAlign: "center" }}>
             {renderTexts()}
 
             <Form methods={methods} onSubmit={onSubmit}>
