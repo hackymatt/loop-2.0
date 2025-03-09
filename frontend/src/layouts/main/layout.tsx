@@ -2,20 +2,14 @@
 
 import type { Breakpoint } from "@mui/material/styles";
 
-import { useBoolean } from "minimal-shared/hooks";
-
 import Box from "@mui/material/Box";
 import Alert from "@mui/material/Alert";
 
-import { usePathname } from "src/routes/hooks";
-
 import { Logo } from "src/components/logo";
+import { MegaMenuMobile, MegaMenuHorizontal } from "src/components/mega-menu";
 
 import { Footer } from "./footer";
 import { langs } from "../langs-config";
-import { NavMobile } from "./nav/mobile";
-import { NavDesktop } from "./nav/desktop";
-import { HomeFooter } from "./home-footer";
 import { useNavData } from "../nav-config-main";
 import { MainSection } from "../core/main-section";
 import { Searchbar } from "../components/searchbar";
@@ -56,12 +50,7 @@ export function MainLayout({
   slotProps,
   layoutQuery = "md",
 }: MainLayoutProps) {
-  const pathname = usePathname();
   const navData = useNavData();
-
-  const { value: open, onFalse: onClose, onTrue: onOpen } = useBoolean();
-
-  const homePage = pathname === "/";
 
   const renderHeader = () => {
     const headerSlots: HeaderSectionProps["slots"] = {
@@ -73,23 +62,32 @@ export function MainLayout({
       leftArea: (
         <>
           {/** @slot Nav mobile */}
-          <MenuButton
-            onClick={onOpen}
-            sx={(theme) => ({
-              mr: 1,
-              ml: -1,
-              [theme.breakpoints.up(layoutQuery)]: { display: "none" },
-            })}
+          <MegaMenuMobile
+            data={navData}
+            slots={{
+              button: (
+                <MenuButton
+                  sx={(theme) => ({
+                    mr: 1,
+                    ml: -1,
+                    [theme.breakpoints.up(layoutQuery)]: { display: "none" },
+                  })}
+                />
+              ),
+            }}
           />
-          <NavMobile data={navData} open={open} onClose={onClose} />
 
           {/** @slot Logo */}
           <Logo />
         </>
       ),
       centerArea: (
-        <NavDesktop
+        <MegaMenuHorizontal
           data={navData}
+          slotProps={{
+            dropdown: { display: "flex", justifyContent: "center" },
+            masonry: { columns: 4, defaultColumns: 4 },
+          }}
           sx={(theme) => ({
             display: "none",
             [theme.breakpoints.up(layoutQuery)]: { display: "flex" },
@@ -127,7 +125,7 @@ export function MainLayout({
     );
   };
 
-  const renderFooter = () => (homePage ? <HomeFooter /> : <Footer layoutQuery={layoutQuery} />);
+  const renderFooter = () => <Footer layoutQuery={layoutQuery} />;
 
   const renderMain = () => <MainSection {...slotProps?.main}>{children}</MainSection>;
 

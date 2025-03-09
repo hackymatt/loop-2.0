@@ -19,8 +19,8 @@ import Button, { buttonClasses } from "@mui/material/Button";
 import { usePathname } from "src/routes/hooks";
 import { RouterLink } from "src/routes/components";
 
-import { _socials } from "src/_mock";
-import { TwitterIcon, FacebookIcon, LinkedinIcon, InstagramIcon } from "src/assets/icons";
+import { socials } from "src/consts/socials";
+import { YouTubeIcon, FacebookIcon, LinkedinIcon, InstagramIcon } from "src/assets/icons";
 
 import { Logo } from "src/components/logo";
 import { Iconify } from "src/components/iconify";
@@ -99,13 +99,13 @@ export function Footer({ layoutQuery = "md", sx, ...other }: FooterProps) {
     <>
       <Typography variant="h6">Social</Typography>
 
-      <Box sx={{ display: "flex" }}>
-        {_socials.map((social) => (
+      <Box sx={{ display: "flex", justifyContent: "center" }}>
+        {socials.map((social) => (
           <IconButton key={social.label}>
-            {social.value === "twitter" && <TwitterIcon />}
             {social.value === "facebook" && <FacebookIcon />}
             {social.value === "instagram" && <InstagramIcon />}
             {social.value === "linkedin" && <LinkedinIcon />}
+            {social.value === "youtube" && <YouTubeIcon />}
           </IconButton>
         ))}
       </Box>
