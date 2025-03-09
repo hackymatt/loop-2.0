@@ -7,9 +7,9 @@ import InitColorSchemeScript from "@mui/material/InitColorSchemeScript";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v14-appRouter";
 
 import { CONFIG } from "src/global-config";
-import { LocalizationProvider } from "src/locales";
 import { themeConfig, ThemeProvider } from "src/theme";
 import { themeOverrides } from "src/theme/theme-overrides";
+import { TranslationProvider, LocalizationProvider } from "src/locales";
 
 import { ProgressBar } from "src/components/progress-bar";
 import { MotionLazy } from "src/components/animate/motion-lazy";
@@ -47,21 +47,23 @@ export default async function RootLayout({ children }: Props) {
         />
 
         <SettingsProvider defaultSettings={defaultSettings}>
-          <LocalizationProvider>
-            <AppRouterCacheProvider options={{ key: "css" }}>
-              <ThemeProvider
-                themeOverrides={themeOverrides}
-                defaultMode={themeConfig.defaultMode}
-                modeStorageKey={themeConfig.modeStorageKey}
-              >
-                <MotionLazy>
-                  <ProgressBar />
-                  <SettingsDrawer defaultSettings={defaultSettings} />
-                  {children}
-                </MotionLazy>
-              </ThemeProvider>
-            </AppRouterCacheProvider>
-          </LocalizationProvider>
+          <TranslationProvider>
+            <LocalizationProvider>
+              <AppRouterCacheProvider options={{ key: "css" }}>
+                <ThemeProvider
+                  themeOverrides={themeOverrides}
+                  defaultMode={themeConfig.defaultMode}
+                  modeStorageKey={themeConfig.modeStorageKey}
+                >
+                  <MotionLazy>
+                    <ProgressBar />
+                    <SettingsDrawer defaultSettings={defaultSettings} />
+                    {children}
+                  </MotionLazy>
+                </ThemeProvider>
+              </AppRouterCacheProvider>
+            </LocalizationProvider>
+          </TranslationProvider>
         </SettingsProvider>
       </body>
     </html>

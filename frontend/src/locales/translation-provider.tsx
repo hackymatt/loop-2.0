@@ -3,34 +3,30 @@
 import "dayjs/locale/pl";
 import "dayjs/locale/en";
 
-import dayjs from "dayjs";
 import { useState, useEffect } from "react";
-import localizedFormat from "dayjs/plugin/localizedFormat";
-
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { LocalizationProvider as MUIProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { I18nextProvider } from "react-i18next";
 
 import { useSettingsContext } from "src/components/settings";
 
-dayjs.extend(localizedFormat);
+import i18n from "./i18n";
 
 type Props = {
   children: React.ReactNode;
 };
 
-export function LocalizationProvider({ children }: Props) {
+export function TranslationProvider({ children }: Props) {
   const settings = useSettingsContext();
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
     setIsClient(true);
     const { language } = settings.state;
-    dayjs.locale(language);
+    i18n.changeLanguage(language);
   }, [settings.state]);
 
   if (!isClient) {
     return null;
   }
 
-  return <MUIProvider dateAdapter={AdapterDayjs}>{children}</MUIProvider>;
+  return <I18nextProvider i18n={i18n}>{children}</I18nextProvider>;
 }

@@ -20,7 +20,7 @@ import { Iconify } from "src/components/iconify";
 
 type IFaq = {
   question: string;
-  answer: string;
+  answer: string | React.ReactNode;
 };
 
 type Props = {
