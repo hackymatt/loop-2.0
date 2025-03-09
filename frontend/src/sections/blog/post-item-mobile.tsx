@@ -4,6 +4,8 @@ import type { BoxProps } from "@mui/material/Box";
 import Box from "@mui/material/Box";
 import Link from "@mui/material/Link";
 
+import { paths } from "src/routes/paths";
+
 import { fDate } from "src/utils/format-time";
 
 import { Image } from "src/components/image";
@@ -14,10 +16,10 @@ import { PostTime } from "./post-time";
 
 type Props = BoxProps & {
   post: IPostProps;
-  onSiderbar?: boolean;
+  onSidebar?: boolean;
 };
 
-export function PostItemMobile({ post, onSiderbar, sx, ...other }: Props) {
+export function PostItemMobile({ post, onSidebar, sx, ...other }: Props) {
   return (
     <Box
       sx={[
@@ -40,13 +42,14 @@ export function PostItemMobile({ post, onSiderbar, sx, ...other }: Props) {
       <Box sx={{ flexGrow: 1 }}>
         <Link
           color="inherit"
-          variant={onSiderbar ? "subtitle2" : "subtitle1"}
+          variant={onSidebar ? "subtitle2" : "subtitle1"}
+          href={`${paths.post}/${post.title}/`}
           sx={(theme) => ({
             ...theme.mixins.maxLine({
               line: 2,
-              persistent: onSiderbar ? theme.typography.subtitle2 : theme.typography.subtitle1,
+              persistent: onSidebar ? theme.typography.subtitle2 : theme.typography.subtitle1,
             }),
-            mb: onSiderbar ? 0.5 : 1,
+            mb: onSidebar ? 0.5 : 1,
           })}
         >
           {post.title}

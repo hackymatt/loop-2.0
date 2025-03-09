@@ -4,6 +4,7 @@ export const paths = {
   courses: "/courses",
   pricing: "/pricing",
   posts: "/posts",
+  post: "/post",
   about: "/about",
   contact: "/contact",
   privacyPolicy: "/privacy-policy",

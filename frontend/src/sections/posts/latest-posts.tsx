@@ -1,6 +1,8 @@
 import type { IPostProps } from "src/types/blog";
 import type { BoxProps } from "@mui/material/Box";
 
+import { useTranslation } from "react-i18next";
+
 import Box from "@mui/material/Box";
 import Link from "@mui/material/Link";
 import Button from "@mui/material/Button";
@@ -26,6 +28,7 @@ type Props = BoxProps & {
 };
 
 export function LatestPosts({ largePost, smallPosts, sx, ...other }: Props) {
+  const { t } = useTranslation("blog");
   const renderDesktopList = () => (
     <Box
       sx={{
@@ -66,11 +69,11 @@ export function LatestPosts({ largePost, smallPosts, sx, ...other }: Props) {
       <Box sx={{ mt: 5, textAlign: "center", display: { md: "none" } }}>
         <Button
           component={RouterLink}
-          href={paths.career.posts}
+          href={paths.posts}
           color="inherit"
           endIcon={<Iconify icon="solar:alt-arrow-right-outline" />}
         >
-          View all
+          {t("button")}
         </Button>
       </Box>
     </>
@@ -98,23 +101,20 @@ export function LatestPosts({ largePost, smallPosts, sx, ...other }: Props) {
             </Typography>
 
             <Typography variant="h2" sx={{ my: 3 }}>
-              Read our latest news
+              {t("title")}
             </Typography>
 
-            <Typography sx={{ color: "text.secondary" }}>
-              Aenean vulputate eleifend tellus. Mauris turpis nunc, blandit et, volutpat molestie,
-              porta ut, ligula.
-            </Typography>
+            <Typography sx={{ color: "text.secondary" }}>{t("subtitle")}</Typography>
           </Box>
 
           <Button
             component={RouterLink}
-            href={paths.career.posts}
+            href={paths.posts}
             color="inherit"
             endIcon={<Iconify icon="solar:alt-arrow-right-outline" />}
             sx={{ display: { xs: "none", md: "inline-flex" } }}
           >
-            View all
+            {t("button")}
           </Button>
         </Box>
 
@@ -190,7 +190,7 @@ export function PostItem({ sx, post, order, largePost, ...other }: PostItemProps
 
         <Link
           component={RouterLink}
-          href={paths.career.post}
+          href={`${paths.posts}/${post.title}/`}
           color="inherit"
           variant={largePost ? "h4" : "h6"}
           sx={(theme) => ({ ...theme.mixins.maxLine({ line: 2 }) })}

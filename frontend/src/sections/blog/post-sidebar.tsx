@@ -3,6 +3,8 @@ import type { IAuthorProps } from "src/types/author";
 import type { Theme, SxProps } from "@mui/material/styles";
 import type { IPostProps, IPostCategoryProps } from "src/types/blog";
 
+import { useTranslation } from "react-i18next";
+
 import Box from "@mui/material/Box";
 import Link from "@mui/material/Link";
 import Chip from "@mui/material/Chip";
@@ -11,6 +13,8 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 import InputAdornment from "@mui/material/InputAdornment";
+
+import { paths } from "src/routes/paths";
 
 import { _socials } from "src/_mock";
 import { TwitterIcon, FacebookIcon, LinkedinIcon, InstagramIcon } from "src/assets/icons";
@@ -48,11 +52,12 @@ export function PostSidebar({
   recentPosts,
   ...other
 }: PostSidebarProps) {
+  const { t } = useTranslation("blog");
   const renderSearch = () => (
     <TextField
       fullWidth
       hiddenLabel
-      placeholder="Search..."
+      placeholder={`${t("search")}...`}
       sx={{ display: { xs: "none", md: "inline-flex" } }}
       slotProps={{
         input: {
@@ -113,7 +118,7 @@ export function PostSidebar({
   const renderCategories = () =>
     !!categories?.length && (
       <Box sx={slotProps?.categories}>
-        <Typography variant="h5">Categories</Typography>
+        <Typography variant="h5">{t("categories")}</Typography>
 
         {categories.map((category) => (
           <Box key={category.label} sx={{ mt: 1, gap: 2, display: "flex", alignItems: "center" }}>
@@ -133,10 +138,10 @@ export function PostSidebar({
   const renderRecentPosts = () =>
     !!recentPosts?.length && (
       <Box sx={slotProps?.recentPosts}>
-        <Typography variant="h5">Recent posts</Typography>
+        <Typography variant="h5">{t("recentPosts")}</Typography>
 
         {recentPosts.map((post) => (
-          <PostItemMobile key={post.id} post={post} onSiderbar sx={{ mt: 2 }} />
+          <PostItemMobile key={post.id} post={post} onSidebar sx={{ mt: 2 }} />
         ))}
       </Box>
     );
@@ -144,11 +149,19 @@ export function PostSidebar({
   const renderPopularTags = () =>
     !!tags?.length && (
       <Box sx={slotProps?.tags}>
-        <Typography variant="h5">Popular tags</Typography>
+        <Typography variant="h5">{t("popularTags")}</Typography>
 
         <Box sx={{ mt: 2, gap: 1, display: "flex", flexWrap: "wrap" }}>
           {tags.map((tag) => (
-            <Chip key={tag} label={tag} variant="soft" size="small" onClick={() => {}} />
+            <Chip
+              key={tag}
+              label={tag}
+              variant="soft"
+              size="small"
+              component="a"
+              href={`${paths.posts}/?tag=${tag}`}
+              clickable
+            />
           ))}
         </Box>
       </Box>

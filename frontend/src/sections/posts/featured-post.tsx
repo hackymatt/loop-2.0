@@ -44,7 +44,12 @@ export function FeaturedPost({ post, sx, ...other }: Props) {
           >
             <PostTime createdAt={fDate(post.createdAt)} duration={post.duration} />
 
-            <Link component={RouterLink} href={paths.eLearning.post} color="inherit" variant="h3">
+            <Link
+              component={RouterLink}
+              href={`${paths.posts}/${post.title}/`}
+              color="inherit"
+              variant="h3"
+            >
               {post.title}
             </Link>
 
