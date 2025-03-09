@@ -9,7 +9,7 @@ import Typography from "@mui/material/Typography";
 
 import { _pricingCards } from "src/_mock";
 
-import { PricingCard } from "../pricing-card";
+import { PricingCard } from "./pricing-card";
 
 // ----------------------------------------------------------------------
 

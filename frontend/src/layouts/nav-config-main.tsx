@@ -11,20 +11,6 @@ const imagePath = (name: string) => `${CONFIG.assetsDir}/assets/images/menu/${na
 
 export const pageLinks = [
   {
-    subheader: "loop",
-    coverUrl: imagePath("marketing.webp"),
-    items: [
-      { title: "Landing", path: paths.marketing.root },
-      { title: "Services", path: paths.marketing.services },
-      { title: "Case studies", path: paths.marketing.caseStudies },
-      { title: "Case study", path: paths.marketing.caseStudy(_caseStudies[0].id) },
-      { title: "Posts", path: paths.marketing.posts },
-      { title: "Post", path: paths.marketing.post },
-      { title: "About", path: paths.marketing.about },
-      { title: "Contact", path: paths.marketing.contact },
-    ],
-  },
-  {
     subheader: "Marketing",
     coverUrl: imagePath("marketing.webp"),
     items: [
@@ -126,9 +112,9 @@ export const useNavData = () => {
   const { t } = useTranslation("navigation");
   return [
     { title: t("courses"), path: paths.pages, children: pageLinks },
-    { title: t("pricing"), path: paths.marketing.services },
+    { title: t("pricing"), path: paths.pricing },
     { title: t("blog"), path: paths.eLearning.posts },
-    { title: t("about"), path: paths.eLearning.about },
-    { title: t("contact"), path: paths.career.contact },
+    { title: t("about"), path: paths.about },
+    { title: t("contact"), path: paths.contact },
   ];
 };

@@ -13,8 +13,8 @@ import { _pricingColumns } from "src/_mock";
 
 import { Iconify } from "src/components/iconify";
 
-import { PricingColumnHeader } from "../pricing-column-header";
-import { PricingColumnContentMobile, PricingColumnContentDesktop } from "../pricing-column-content";
+import { PricingColumnHeader } from "./pricing-column-header";
+import { PricingColumnContentMobile, PricingColumnContentDesktop } from "./pricing-column-content";
 
 // ----------------------------------------------------------------------
 
