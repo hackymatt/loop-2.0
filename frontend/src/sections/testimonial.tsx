@@ -1,10 +1,14 @@
 import type { BoxProps } from "@mui/material/Box";
 import type { ITestimonialProps } from "src/types/testimonial";
 
+import { useTranslation } from "react-i18next";
+
 import Box from "@mui/material/Box";
 import Rating from "@mui/material/Rating";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
+
+import { fDate } from "src/utils/format-time";
 
 import {
   Carousel,
@@ -20,51 +24,50 @@ type Props = BoxProps & {
 };
 
 export function Testimonial({ testimonials, sx, ...other }: Props) {
-  const carousel = useCarousel();
+  const { t } = useTranslation("testimonial");
+
+  const carousel = useCarousel({
+    slidesToShow: { xs: 1, sm: 2, md: 3, lg: 4 },
+    slideSpacing: "24px",
+  });
 
   return (
     <Box
       component="section"
-      sx={[{ py: { xs: 10, md: 15 } }, ...(Array.isArray(sx) ? sx : [sx])]}
+      sx={[{ pt: 8, pb: 10 }, ...(Array.isArray(sx) ? sx : [sx])]}
       {...other}
     >
       <Container>
-        <Box sx={{ maxWidth: 560, mx: "auto" }}>
-          <Typography variant="h2" sx={{ mb: 5, textAlign: "center" }}>
-            What our customer say
+        <Box sx={{ display: "flex", alignItems: "center", mb: { xs: 5, md: 8 } }}>
+          <Typography variant="h2" sx={{ flexGrow: 1 }}>
+            {t("title")}
           </Typography>
-
-          <Carousel carousel={carousel}>
-            {testimonials.map((testimonial) => (
-              <TestimonialItem key={testimonial.id} testimonial={testimonial} />
-            ))}
-          </Carousel>
 
           <CarouselArrowBasicButtons
             {...carousel.arrows}
             options={carousel.options}
-            sx={{
-              mt: 10,
-              gap: 1,
-              width: 1,
-              justifyContent: "center",
-              display: { xs: "none", md: "flex" },
-            }}
-          />
-
-          <CarouselDotButtons
-            scrollSnaps={carousel.dots.scrollSnaps}
-            selectedIndex={carousel.dots.selectedIndex}
-            onClickDot={carousel.dots.onClickDot}
-            sx={{
-              mt: 5,
-              width: 1,
-              color: "primary.main",
-              justifyContent: "center",
-              display: { xs: "flex", md: "none" },
-            }}
+            sx={{ gap: 1 }}
           />
         </Box>
+
+        <Carousel carousel={carousel}>
+          {testimonials.map((testimonial) => (
+            <TestimonialItem key={testimonial.id} testimonial={testimonial} />
+          ))}
+        </Carousel>
+
+        <CarouselDotButtons
+          scrollSnaps={carousel.dots.scrollSnaps}
+          selectedIndex={carousel.dots.selectedIndex}
+          onClickDot={carousel.dots.onClickDot}
+          sx={{
+            mt: 5,
+            width: 1,
+            color: "primary.main",
+            justifyContent: "center",
+            display: { xs: "inline-flex", md: "none" },
+          }}
+        />
       </Container>
     </Box>
   );
@@ -80,20 +83,25 @@ function TestimonialItem({ testimonial, sx, ...other }: TestimonialItemProps) {
   return (
     <Box
       sx={[
-        { display: "flex", textAlign: "center", alignItems: "center", flexDirection: "column" },
+        {
+          p: 3,
+          gap: 1,
+          display: "flex",
+          borderRadius: 2,
+          flexDirection: "column",
+          bgcolor: "background.neutral",
+        },
         ...(Array.isArray(sx) ? sx : [sx]),
       ]}
       {...other}
     >
-      <Rating value={testimonial.ratingNumber} readOnly />
-      <Typography sx={{ my: 3, lineHeight: 1.75, fontSize: { md: 20 } }}>
-        {testimonial.content}
+      <Typography variant="caption" sx={{ color: "text.disabled" }}>
+        {fDate(testimonial.createdAt)}
       </Typography>
-      <Typography variant="h6" sx={{ mb: 1 }}>
-        {testimonial.name}
-      </Typography>
+      <Typography variant="subtitle2">{testimonial.name}</Typography>
+      <Rating size="small" value={testimonial.ratingNumber} readOnly />
       <Typography variant="body2" sx={{ color: "text.secondary" }}>
-        {testimonial.role}
+        {testimonial.content}
       </Typography>
     </Box>
   );

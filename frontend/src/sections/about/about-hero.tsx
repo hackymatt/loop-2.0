@@ -1,5 +1,6 @@
 import type { BoxProps } from "@mui/material/Box";
 
+import { useTranslation } from "react-i18next";
 import { varAlpha } from "minimal-shared/utils";
 
 import Box from "@mui/material/Box";
@@ -8,11 +9,14 @@ import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 
+import { paths } from "src/routes/paths";
+
 import { CONFIG } from "src/global-config";
 
 // ----------------------------------------------------------------------
 
 export function AboutHero({ sx, ...other }: BoxProps) {
+  const { t } = useTranslation("about");
   return (
     <Box
       component="section"
@@ -61,15 +65,24 @@ export function AboutHero({ sx, ...other }: BoxProps) {
             }}
             size={{ xs: 12, md: 6, lg: 5 }}
           >
-            <Typography variant="h1">Online courses</Typography>
+            <Typography variant="h1">{t("hero.title")}</Typography>
 
             <Typography sx={{ mt: 3, mb: 6, maxWidth: 480 }}>
-              Nunc nulla. Ut leo. Pellentesque commodo eros a enim. Nunc egestas, augue at
-              pellentesque laoreet, felis eros vehicula leo, at malesuada velit leo quis pede.
+              <Box
+                component="span"
+                sx={(theme) => ({
+                  ...theme.mixins.textGradient(
+                    `90deg, ${theme.vars.palette.primary.main} 20%, ${theme.vars.palette.secondary.main} 100%`
+                  ),
+                })}
+              >
+                {`loop `}
+              </Box>
+              {t("hero.subtitle")}
             </Typography>
 
-            <Button variant="contained" size="large" color="primary">
-              Browse courses
+            <Button variant="contained" size="large" color="primary" href={paths.courses}>
+              {t("hero.button")}
             </Button>
           </Grid>
 

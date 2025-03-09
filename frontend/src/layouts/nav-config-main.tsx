@@ -2,8 +2,8 @@ import { useTranslation } from "react-i18next";
 
 import { paths } from "src/routes/paths";
 
+import { _caseStudies } from "src/_mock";
 import { CONFIG } from "src/global-config";
-import { _mock, _caseStudies } from "src/_mock";
 
 // ----------------------------------------------------------------------
 

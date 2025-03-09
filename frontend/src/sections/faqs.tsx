@@ -1,6 +1,7 @@
 import type { BoxProps } from "@mui/material/Box";
 
 import { useState, useCallback } from "react";
+import { useTranslation } from "react-i18next";
 
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid2";
@@ -11,14 +12,24 @@ import Typography from "@mui/material/Typography";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import AccordionSummary from "@mui/material/AccordionSummary";
 
-import { _faqs } from "src/_mock";
+import { paths } from "src/routes/paths";
 
 import { Iconify } from "src/components/iconify";
-import { MotionViewport } from "src/components/animate";
 
 // ----------------------------------------------------------------------
 
-export function AboutFaqs({ sx, ...other }: BoxProps) {
+type IFaq = {
+  question: string;
+  answer: string;
+};
+
+type Props = {
+  data: IFaq[];
+} & BoxProps;
+
+export function Faqs({ data, sx, ...other }: Props) {
+  const { t } = useTranslation("faq");
+
   const [expanded, setExpanded] = useState<string | false>(false);
 
   const handleChangeExpanded = useCallback(
@@ -30,13 +41,13 @@ export function AboutFaqs({ sx, ...other }: BoxProps) {
 
   const renderTexts = () => (
     <Typography variant="h2" sx={{ textAlign: "center" }}>
-      Frequently asked questions
+      {t("title")}
     </Typography>
   );
 
   const renderList = () => (
     <Box sx={{ my: { xs: 5, md: 10 } }}>
-      {_faqs.map((faq) => (
+      {data.map((faq) => (
         <Accordion
           key={faq.question}
           expanded={expanded === faq.question}
@@ -65,7 +76,7 @@ export function AboutFaqs({ sx, ...other }: BoxProps) {
       sx={[{ position: "relative", py: { xs: 5, md: 10 } }, ...(Array.isArray(sx) ? sx : [sx])]}
       {...other}
     >
-      <Container component={MotionViewport}>
+      <Container>
         <Grid container spacing={{ md: 3 }} sx={{ justifyContent: "center" }}>
           <Grid size={{ xs: 12, md: 8 }}>
             {renderTexts()}
@@ -86,24 +97,19 @@ export function AboutFaqs({ sx, ...other }: BoxProps) {
             >
               <div>
                 <Typography component="h6" variant="h3">
-                  Still have questions?
+                  {t("moreQuestions.title")}
                 </Typography>
               </div>
 
               <div>
                 <Typography sx={{ color: "text.secondary" }}>
-                  Please describe your case to receive the most accurate advice.
+                  {t("moreQuestions.subtitle")}
                 </Typography>
               </div>
 
               <div>
-                <Button
-                  size="large"
-                  color="inherit"
-                  variant="contained"
-                  href="mailto:support@minimals.cc?subject=[Feedback] from Customer"
-                >
-                  Contact us
+                <Button size="large" color="inherit" variant="contained" href={paths.contact}>
+                  {t("moreQuestions.button")}
                 </Button>
               </div>
             </Box>

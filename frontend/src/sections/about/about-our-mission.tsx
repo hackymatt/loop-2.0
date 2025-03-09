@@ -1,5 +1,7 @@
 import type { BoxProps } from "@mui/material/Box";
 
+import { useTranslation } from "react-i18next";
+
 import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 import Grid from "@mui/material/Grid2";
@@ -12,24 +14,14 @@ import { Image } from "src/components/image";
 
 // ----------------------------------------------------------------------
 
-const VISIONS = [
-  {
-    name: "Vestibulum",
-    description: "In dui magna, posuere eget, vestibulum et, tempor auctor, justo.",
-  },
-  {
-    name: "Fusce",
-    description: "Donec elit libero, sodales nec, volutpat a, suscipit non, turpis.",
-  },
-  { name: "Praesent", description: "Suspendisse feugiat. Quisque id odio." },
-];
+type IMethod = { name: string; description: string };
 
-// ----------------------------------------------------------------------
-
-export function AboutOurVision({ sx, ...other }: BoxProps) {
+export function AboutOurMission({ sx, ...other }: BoxProps) {
+  const { t } = useTranslation("about");
+  const methods = t("mission.methods", { returnObjects: true }) as IMethod[];
   const renderTexts = () => (
     <Box sx={{ mb: 5, textAlign: { xs: "center", md: "left" } }}>
-      <Typography variant="h2">Our mission</Typography>
+      <Typography variant="h2">{t("mission.title")}</Typography>
       <Typography
         sx={{
           mt: 3,
@@ -38,7 +30,7 @@ export function AboutOurVision({ sx, ...other }: BoxProps) {
           mx: { xs: "auto", md: "unset" },
         }}
       >
-        Curabitur ullamcorper ultricies nisi. Aenean viverra rhoncus pede.
+        {t("mission.subtitle")}
       </Typography>
     </Box>
   );
@@ -55,7 +47,7 @@ export function AboutOurVision({ sx, ...other }: BoxProps) {
 
   const renderCards = () => (
     <>
-      {VISIONS.map((item, index) => (
+      {methods.map((item, index) => (
         <Card
           key={item.name}
           sx={(theme) => ({

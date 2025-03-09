@@ -1,13 +1,13 @@
 "use client";
 
-import { _coursePosts, _testimonials } from "src/_mock";
+import { _faqs, _coursePosts, _testimonials } from "src/_mock";
 
+import { Faqs } from "../faqs";
 import { Testimonial } from "../testimonial";
 import { AboutHero } from "../about/about-hero";
-import { AboutFaqs } from "../about/about-faqs";
 import { LatestPosts } from "../posts/latest-posts";
-import { AboutCoreValues } from "../about/core-values";
-import { AboutOurVision } from "../about/about-our-mission";
+import { AboutCoreValues } from "../about/about-core-values";
+import { AboutOurMission } from "../about/about-our-mission";
 
 // ----------------------------------------------------------------------
 
@@ -18,15 +18,19 @@ export function AboutView() {
     <>
       <AboutHero />
 
-      <AboutOurVision />
+      <AboutOurMission />
 
-      <AboutCoreValues />
+      <AboutCoreValues sx={{ bgcolor: "background.neutral" }} />
 
       <Testimonial testimonials={_testimonials} />
 
-      <AboutFaqs />
+      <Faqs data={_faqs} />
 
-      <LatestPosts largePost={latestPosts[0]} smallPosts={latestPosts.slice(1, 5)} />
+      <LatestPosts
+        largePost={latestPosts[0]}
+        smallPosts={latestPosts.slice(1, 5)}
+        sx={{ bgcolor: "background.neutral" }}
+      />
     </>
   );
 }

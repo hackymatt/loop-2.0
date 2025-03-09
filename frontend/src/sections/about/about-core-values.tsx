@@ -1,5 +1,7 @@
 import type { BoxProps } from "@mui/material/Box";
 
+import { useTranslation } from "react-i18next";
+
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
@@ -10,41 +12,23 @@ import { SvgColor } from "src/components/svg-color";
 
 // ----------------------------------------------------------------------
 
-const iconPath = (name: string) => `${CONFIG.assetsDir}/assets/icons/solid-64/${name}`;
+type ICoreValue = {
+  title: string;
+  description: string;
+  icon: string;
+};
 
-const CORE_VALUES = [
-  {
-    title: "Customer satisfaction",
-    description: "Aenean urna dictum adipiscing nec, cras quisque.",
-    icon: iconPath("ic-satisfaction.svg"),
-  },
-  {
-    title: "Transparency",
-    description: "Aenean urna dictum adipiscing nec, cras quisque.",
-    icon: iconPath("ic-transparency.svg"),
-  },
-  {
-    title: "Reputation",
-    description: "Aenean urna dictum adipiscing nec, cras quisque.",
-    icon: iconPath("ic-popularity.svg"),
-  },
-  {
-    title: "Cooperation",
-    description: "Aenean urna dictum adipiscing nec, cras quisque.",
-    icon: iconPath("ic-cooperate.svg"),
-  },
-];
+const iconPath = (name: string) => `${CONFIG.assetsDir}/assets/icons/solid-64/${name}`;
 
 // ----------------------------------------------------------------------
 
 export function AboutCoreValues({ sx, ...other }: BoxProps) {
+  const { t } = useTranslation("about");
+  const coreValues = t("coreValues.values", { returnObjects: true }) as ICoreValue[];
   return (
     <Box
       component="section"
-      sx={[
-        { overflow: "hidden", bgcolor: "background.neutral", py: { xs: 10, md: 15 } },
-        ...(Array.isArray(sx) ? sx : [sx]),
-      ]}
+      sx={[{ overflow: "hidden", py: { xs: 10, md: 15 } }, ...(Array.isArray(sx) ? sx : [sx])]}
       {...other}
     >
       <Container>
@@ -58,12 +42,10 @@ export function AboutCoreValues({ sx, ...other }: BoxProps) {
             flexDirection: { xs: "column", md: "row" },
           }}
         >
-          <Typography variant="h2">Core values</Typography>
+          <Typography variant="h2">{t("coreValues.title")}</Typography>
 
           <Typography sx={{ color: "text.secondary", maxWidth: { md: 540 } }}>
-            Etiam ultricies nisi vel augue. Suspendisse potenti. Sed mollis, eros et ultrices
-            tempus, mauris ipsum aliquam libero, non adipiscing dolor urna a orci. Phasellus viverra
-            nulla ut metus varius laoreet.
+            {t("coreValues.subtitle")}
           </Typography>
         </Box>
 
@@ -78,10 +60,10 @@ export function AboutCoreValues({ sx, ...other }: BoxProps) {
             },
           }}
         >
-          {CORE_VALUES.map((item) => (
+          {coreValues.map((item) => (
             <Box key={item.title} sx={{ textAlign: { xs: "center", md: "unset" } }}>
               <SvgColor
-                src={item.icon}
+                src={iconPath(item.icon)}
                 sx={(theme) => ({
                   background: `linear-gradient(to bottom, ${theme.vars.palette.primary.light}, ${theme.vars.palette.primary.main})`,
                   width: 64,
