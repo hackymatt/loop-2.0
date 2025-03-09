@@ -1,6 +1,6 @@
 export const socials = [
-  { value: "facebook", label: "Facebook" },
-  { value: "instagram", label: "Instagram" },
-  { value: "linkedin", label: "Linkedin" },
-  { value: "youtube", label: "YouTube" },
+  { value: "facebook", label: "Facebook", url: "https://www.facebook.com/loopedupl.official/" },
+  { value: "instagram", label: "Instagram", url: "https://www.instagram.com/loopedupl/" },
+  { value: "linkedin", label: "Linkedin", url: "https://www.linkedin.com/company/loopedupl" },
+  { value: "youtube", label: "YouTube", url: "https://www.youtube.com/@loopedupl" },
 ];

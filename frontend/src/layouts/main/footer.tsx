@@ -101,7 +101,12 @@ export function Footer({ layoutQuery = "md", sx, ...other }: FooterProps) {
 
       <Box sx={{ display: "flex", justifyContent: "center" }}>
         {socials.map((social) => (
-          <IconButton key={social.label}>
+          <IconButton
+            key={social.label}
+            href={social.url}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             {social.value === "facebook" && <FacebookIcon />}
             {social.value === "instagram" && <InstagramIcon />}
             {social.value === "linkedin" && <LinkedinIcon />}

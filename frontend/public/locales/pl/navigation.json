@@ -6,5 +6,10 @@
   "contact": "Kontakt",
   "login": "Zaloguj się",
   "register": "Wypróbuj za darmo",
-  "help": "Potrzebujesz pomocy?"
+  "help": "Potrzebujesz pomocy?",
+  "more": "Zobacz wszystkie kursy",
+  "tags": "Popularne kursy",
+  "levels": "Poziomy",
+  "technologies": "Technologie",
+  "categories": "Kategorie"
 }

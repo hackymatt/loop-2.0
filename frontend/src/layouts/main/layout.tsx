@@ -4,6 +4,7 @@ import type { Breakpoint } from "@mui/material/styles";
 
 import Box from "@mui/material/Box";
 import Alert from "@mui/material/Alert";
+import { Container } from "@mui/material";
 
 import { Logo } from "src/components/logo";
 import { MegaMenuMobile, MegaMenuHorizontal } from "src/components/mega-menu";
@@ -74,6 +75,40 @@ export function MainLayout({
                   })}
                 />
               ),
+              topArea: (
+                <Box
+                  sx={{
+                    pt: 3,
+                    pb: 2,
+                    pl: 2.5,
+                    display: "flex",
+                  }}
+                >
+                  <Logo />
+                </Box>
+              ),
+              bottomArea: (
+                <Box sx={{ py: 3, px: 2.5, display: "flex", flexDirection: "column", gap: 2 }}>
+                  <LoginButton
+                    sx={{ width: 1 }}
+                    slotProps={{
+                      button: {
+                        fullWidth: true,
+                        size: "medium",
+                      },
+                    }}
+                  />
+                  <RegisterButton
+                    sx={{ width: 1 }}
+                    slotProps={{
+                      button: {
+                        fullWidth: true,
+                        size: "large",
+                      },
+                    }}
+                  />
+                </Box>
+              ),
             }}
           />
 
@@ -82,17 +117,23 @@ export function MainLayout({
         </>
       ),
       centerArea: (
-        <MegaMenuHorizontal
-          data={navData}
-          slotProps={{
-            dropdown: { display: "flex", justifyContent: "center" },
-            masonry: { columns: 4, defaultColumns: 4 },
-          }}
-          sx={(theme) => ({
-            display: "none",
-            [theme.breakpoints.up(layoutQuery)]: { display: "flex" },
-          })}
-        />
+        <Box component="section">
+          <Container
+            sx={{ height: 64, display: "flex", alignItems: "center", position: "relative" }}
+          >
+            <MegaMenuHorizontal
+              data={navData}
+              slotProps={{
+                dropdown: { display: "flex", justifyContent: "center" },
+                masonry: { columns: 3, defaultColumns: 3 },
+              }}
+              sx={(theme) => ({
+                display: "none",
+                [theme.breakpoints.up(layoutQuery)]: { display: "flex" },
+              })}
+            />
+          </Container>
+        </Box>
       ),
       rightArea: (
         <Box sx={{ gap: 1, display: "flex", alignItems: "center" }}>

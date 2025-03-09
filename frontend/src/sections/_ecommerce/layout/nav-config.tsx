@@ -85,4 +85,44 @@ export const navData = [
       },
     ],
   },
+  {
+    path: "#",
+    title: "Categories",
+    icon: <Iconify icon="carbon:menu" sx={{ width: 1, height: 1 }} />,
+    products: Array.from({ length: 10 }, (_, index) => ({
+      name: _mock.productName(index),
+      coverUrl: _mock.image.product(index),
+      path: "#",
+    })),
+    moreLink: {
+      title: "More categories",
+      path: "#",
+    },
+    tags: [
+      { title: "Paper Cup", path: "#" },
+      { title: "Lotion Pump", path: "#" },
+      { title: "Brush Cutter", path: "#" },
+      { title: "Display Rack", path: "#" },
+      { title: "Glass Bottle", path: "#" },
+    ],
+    children: [
+      {
+        subheader: "Other Machinery & Parts",
+        items: [
+          { title: "Metallic Processing Machinery", path: "#" },
+          { title: "Machinery for Food, Beverage & Cereal", path: "#" },
+          { title: "Laser Equipment", path: "#" },
+          { title: "Mould", path: "#" },
+          { title: "Textile Machinery & Parts", path: "#" },
+          { title: "Cutting & Fold-bend Machine", path: "#" },
+          { title: "Paper Machinery", path: "#" },
+          { title: "Rubber Machinery", path: "#" },
+          { title: "Chemical Equipment & Machinery", path: "#" },
+          { title: "Mixing Equipment", path: "#" },
+          { title: "Machinery for Garment, Shoes & Accessories", path: "#" },
+          { title: "Crushing & Culling Machine", path: "#" },
+        ],
+      },
+    ],
+  },
 ];

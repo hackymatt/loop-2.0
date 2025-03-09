@@ -6,5 +6,10 @@
   "contact": "Contact",
   "login": "Login",
   "register": "Try it for free",
-  "help": "Need help?"
+  "help": "Need help?",
+  "more": "See all courses",
+  "tags": "Popular courses",
+  "levels": "Levels",
+  "technologies": "Technologies",
+  "categories": "Categories"
 }

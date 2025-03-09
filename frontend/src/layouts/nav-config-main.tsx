@@ -108,82 +108,61 @@ export const pageLinks = [
   },
 ];
 
-const coursesData = {
-  moreLink: {
-    title: "More categories",
-    path: "#",
-  },
-  tags: [
-    { title: "Paper Cup", path: "#" },
-    { title: "Lotion Pump", path: "#" },
-    { title: "Brush Cutter", path: "#" },
-    { title: "Display Rack", path: "#" },
-    { title: "Glass Bottle", path: "#" },
-  ],
-  children: [
-    {
-      subheader: "Other Machinery & Parts",
-      items: [
-        { title: "Metallic Processing Machinery", path: "#" },
-        { title: "Machinery for Food, Beverage & Cereal", path: "#" },
-        { title: "Laser Equipment", path: "#" },
-        { title: "Mould", path: "#" },
-        { title: "Textile Machinery & Parts", path: "#" },
-        { title: "Cutting & Fold-bend Machine", path: "#" },
-        { title: "Paper Machinery", path: "#" },
-        { title: "Rubber Machinery", path: "#" },
-        { title: "Chemical Equipment & Machinery", path: "#" },
-        { title: "Mixing Equipment", path: "#" },
-        { title: "Machinery for Garment, Shoes & Accessories", path: "#" },
-        { title: "Crushing & Culling Machine", path: "#" },
-      ],
+const useCourseNav = () => {
+  const { t } = useTranslation("navigation");
+
+  const popularCourses = ["Marketing", "E-commerce", "E-learning", "Career", "Travel"];
+  const levels = ["Beginner", "Intermediate", "Advanced"];
+  const technologies = [
+    "React",
+    "Angular",
+    "Vue",
+    "Bootstrap",
+    "Node.js",
+    "Laravel",
+    "Ruby on Rails",
+  ];
+  const categories = ["Frontend", "Backend", "Full Stack", "DevOps", "Mobile App", "Desktop App"];
+
+  return {
+    moreLink: {
+      title: t("more"),
+      path: paths.courses,
     },
-    {
-      subheader: "Plastic & Woodworking",
-      items: [
-        { title: "Plastic Machinery", path: "#" },
-        { title: "Woodworking Machinery", path: "#" },
-        { title: "Blow Molding Machine", path: "#" },
-        { title: "Plastic Recycling Machine", path: "#" },
-        { title: "Injection Molding Machine", path: "#" },
-      ],
-    },
-    {
-      subheader: "Construction Machinery",
-      items: [
-        { title: "Building Material Making Machinery", path: "#" },
-        { title: "Lifting Equipment", path: "#" },
-        { title: "Excavator", path: "#" },
-        { title: "Concrete Machinery", path: "#" },
-        { title: "Stone Processing Machinery", path: "#" },
-      ],
-    },
-    {
-      subheader: "Agriculture Machinery",
-      items: [
-        { title: "Agriculture Machinery", path: "#" },
-        { title: "Livestock MachineryFeed", path: "#" },
-        { title: "Feed Processing Machinery", path: "#" },
-        { title: "Tiller", path: "#" },
-        { title: "Harvesting Machine", path: "#" },
-      ],
-    },
-    {
-      subheader: "Machine Tools",
-      items: [
-        { title: "CNC Machine Tools", path: "#" },
-        { title: "Lathe", path: "#" },
-        { title: "Grinding Machine ", path: "#" },
-        { title: "Drilling Machine ", path: "#" },
-        { title: "Milling Machine ", path: "#" },
-      ],
-    },
-  ],
+    tags: popularCourses.map((course: string) => ({
+      title: course,
+      path: `${paths.course}/${course}/`,
+    })),
+    children: [
+      {
+        subheader: t("levels"),
+        items: levels.map((level: string) => ({
+          title: level,
+          path: `${paths.courses}/?level=${level}/`,
+        })),
+      },
+      {
+        subheader: t("technologies"),
+        items: technologies.map((technology: string) => ({
+          title: technology,
+          path: `${paths.courses}/?technology=${technology}/`,
+        })),
+      },
+      {
+        subheader: t("categories"),
+        items: categories.map((category: string) => ({
+          title: category,
+          path: `${paths.courses}/?category=${category}/`,
+        })),
+      },
+    ],
+  };
 };
 export const useNavData = () => {
   const { t } = useTranslation("navigation");
+  const coursesNav = useCourseNav();
   return [
-    { title: t("courses"), path: paths.pages, ...coursesData },
+    { title: t("courses"), path: paths.pages, ...coursesNav },
     { title: t("pricing"), path: paths.pricing },
     { title: t("blog"), path: paths.posts },
     { title: t("about"), path: paths.about },

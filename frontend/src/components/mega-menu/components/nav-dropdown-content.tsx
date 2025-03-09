@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next";
+
 import Box from "@mui/material/Box";
 import Link from "@mui/material/Link";
 import Masonry from "@mui/lab/Masonry";
@@ -21,6 +23,8 @@ export function NavDropdownContent({
   slotProps,
   isMultiList,
 }: NavListProps & { isMultiList: boolean }) {
+  const { t } = useTranslation("navigation");
+
   if (!data.children) {
     return null;
   }
@@ -80,7 +84,7 @@ export function NavDropdownContent({
           <Divider sx={{ borderStyle: "dashed", my: 3 }} />
           <Box sx={slotProps?.tags}>
             <Typography variant="caption" sx={{ mr: 0.5, fontWeight: "fontWeightBold" }}>
-              Hot products:
+              {t("tags")}:
             </Typography>
 
             {data.tags.map((tag, index) => (
