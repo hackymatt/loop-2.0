@@ -113,7 +113,7 @@ export const useNavData = () => {
   return [
     { title: t("courses"), path: paths.pages, children: pageLinks },
     { title: t("pricing"), path: paths.pricing },
-    { title: t("blog"), path: paths.eLearning.posts },
+    { title: t("blog"), path: paths.posts },
     { title: t("about"), path: paths.about },
     { title: t("contact"), path: paths.contact },
   ];
