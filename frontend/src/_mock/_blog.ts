@@ -38,7 +38,7 @@ const content = (name: string) => `
 const base = (index: number) => ({
   id: _mock.id(index),
   category: "Marketing",
-  duration: "8 min read",
+  duration: "8 min",
   title: _mock.postTitle(index),
   favorited: _mock.boolean(index),
   description: _mock.description(index),

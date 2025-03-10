@@ -32,10 +32,10 @@ export function PostTags({ tags, sx, ...other }: PostTagsProps) {
           <Chip
             key={tag}
             label={tag}
-            variant="soft"
+            variant="outlined"
             size="small"
             component="a"
-            href={`${paths.posts}/?tag=${tag}`}
+            href={`${paths.posts}/?tags=${tag}`}
             clickable
           />
         ))}
