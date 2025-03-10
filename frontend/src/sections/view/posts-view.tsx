@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 
 import Grid from "@mui/material/Grid2";
@@ -7,6 +8,8 @@ import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 
 import { paths } from "src/routes/paths";
+
+import { useQueryParams } from "src/hooks/use-query-params";
 
 import { _tags, _mock, _coursePosts } from "src/_mock";
 
@@ -28,6 +31,21 @@ const recentPosts = _coursePosts.slice(-4);
 
 export function PostsView() {
   const { t } = useTranslation("advertisement");
+
+  const { setQueryParam, removeQueryParam, getQueryParams } = useQueryParams();
+  const query = useMemo(() => getQueryParams(), [getQueryParams]);
+
+  const handleChange = useCallback(
+    (name: string, value: string) => {
+      if (value) {
+        setQueryParam(name, value);
+      } else {
+        removeQueryParam(name);
+      }
+    },
+    [removeQueryParam, setQueryParam]
+  );
+
   return (
     <>
       <PostSearchMobile />
@@ -40,6 +58,8 @@ export function PostsView() {
 
           <Grid size={{ xs: 12, md: 4 }}>
             <PostSidebar
+              searchValue={query?.search ?? ""}
+              onSearch={(newValue: string) => handleChange("search", newValue)}
               tags={_tags}
               categories={CATEGORIES.map((category: string) => ({
                 label: category,

@@ -1,6 +1,7 @@
 import type { ButtonBaseProps } from "@mui/material/ButtonBase";
 
 import React from "react";
+import { useTranslation } from "react-i18next";
 
 import Avatar from "@mui/material/Avatar";
 import Typography from "@mui/material/Typography";
@@ -20,6 +21,7 @@ type PostItemProps = ButtonBaseProps & {
 };
 
 export function PrevNextButton({ coverUrl, title, isNext, href, sx, ...other }: PostItemProps) {
+  const { t } = useTranslation("blog");
   return (
     <ButtonBase
       disableRipple
@@ -48,7 +50,7 @@ export function PrevNextButton({ coverUrl, title, isNext, href, sx, ...other }: 
 
       <div>
         <Typography variant="overline" sx={{ mb: 0.5, display: "block", color: "text.disabled" }}>
-          {isNext ? "Next" : "Prev"}
+          {isNext ? t("next") : t("prev")}
         </Typography>
 
         <Typography variant="subtitle1">{title}</Typography>

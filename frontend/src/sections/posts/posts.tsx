@@ -82,7 +82,7 @@ export function PostItem({ post, sx, ...other }: PostItemProps) {
         <Box sx={{ gap: 1, display: "flex", flexDirection: "column", flex: "1 1 auto" }}>
           <Link
             component={RouterLink}
-            href={`${paths.posts}/${post.title}/`}
+            href={`${paths.post}/${post.title}/`}
             color="inherit"
             variant="h6"
             sx={(theme) => ({

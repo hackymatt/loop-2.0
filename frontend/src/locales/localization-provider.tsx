@@ -4,7 +4,8 @@ import "dayjs/locale/pl";
 import "dayjs/locale/en";
 
 import dayjs from "dayjs";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
+import { useIsClient } from "minimal-shared/hooks";
 import localizedFormat from "dayjs/plugin/localizedFormat";
 
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -20,10 +21,9 @@ type Props = {
 
 export function LocalizationProvider({ children }: Props) {
   const settings = useSettingsContext();
-  const [isClient, setIsClient] = useState(false);
+  const isClient = useIsClient();
 
   useEffect(() => {
-    setIsClient(true);
     const { language } = settings.state;
     dayjs.locale(language);
   }, [settings.state]);

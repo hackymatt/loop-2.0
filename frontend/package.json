@@ -5,7 +5,7 @@
   "description": "Next & TypeScript",
   "private": true,
   "scripts": {
-    "dev": "next dev -p 8002",
+    "dev": "next dev -p 8002 --turbo",
     "start": "next start -p 8002",
     "build": "next build",
     "lint": "eslint \"src/**/*.{js,jsx,ts,tsx}\"",
@@ -37,6 +37,7 @@
     "@fontsource/barlow": "^5.1.0",
     "@hookform/resolvers": "^3.9.1",
     "@iconify/react": "^5.1.0",
+    "@mdxeditor/editor": "^3.26.0",
     "@mui/lab": "^6.0.0-beta.18",
     "@mui/material": "^6.1.10",
     "@mui/material-nextjs": "^6.1.9",

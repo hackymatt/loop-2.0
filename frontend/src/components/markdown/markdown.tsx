@@ -1,18 +1,17 @@
-import { MarkdownRoot } from "./styles";
+import "@mdxeditor/editor/style.css";
+import "./styles.css";
+
+import React from "react";
+import { MDXEditor } from "@mdxeditor/editor";
+
+import { plugins } from "../markdown-editor/pluggins";
 
 // ----------------------------------------------------------------------
 
-export type MarkdownProps = React.ComponentProps<typeof MarkdownRoot> & {
+type MarkdownProps = {
   content: string;
-  firstLetter?: boolean;
 };
 
-export function Markdown({ content, firstLetter = false, ...other }: MarkdownProps) {
-  return (
-    <MarkdownRoot
-      firstLetter={firstLetter}
-      dangerouslySetInnerHTML={{ __html: content }}
-      {...other}
-    />
-  );
+export function Markdown({ content, ...other }: MarkdownProps) {
+  return <MDXEditor markdown={content} plugins={plugins} readOnly {...other} />;
 }

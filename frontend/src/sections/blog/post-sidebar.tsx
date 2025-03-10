@@ -9,23 +9,23 @@ import Box from "@mui/material/Box";
 import Link from "@mui/material/Link";
 import Chip from "@mui/material/Chip";
 import Avatar from "@mui/material/Avatar";
-import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
-import InputAdornment from "@mui/material/InputAdornment";
 
 import { paths } from "src/routes/paths";
 
 import { _socials } from "src/_mock";
 import { TwitterIcon, FacebookIcon, LinkedinIcon, InstagramIcon } from "src/assets/icons";
 
-import { Iconify } from "src/components/iconify";
+import Search from "src/components/search/search";
 
 import { PostItemMobile } from "./post-item-mobile";
 
 // ----------------------------------------------------------------------
 
 type PostSidebarProps = BoxProps & {
+  searchValue: string;
+  onSearch: (newValue: string) => void;
   tags?: string[];
   author?: IAuthorProps;
   recentPosts?: IPostProps[];
@@ -44,6 +44,8 @@ type PostSidebarProps = BoxProps & {
 
 export function PostSidebar({
   sx,
+  searchValue,
+  onSearch,
   tags,
   slots,
   author,
@@ -54,20 +56,10 @@ export function PostSidebar({
 }: PostSidebarProps) {
   const { t } = useTranslation("blog");
   const renderSearch = () => (
-    <TextField
-      fullWidth
-      hiddenLabel
+    <Search
       placeholder={`${t("search")}...`}
-      sx={{ display: { xs: "none", md: "inline-flex" } }}
-      slotProps={{
-        input: {
-          startAdornment: (
-            <InputAdornment position="start">
-              <Iconify width={24} icon="carbon:search" sx={{ color: "text.disabled" }} />
-            </InputAdornment>
-          ),
-        },
-      }}
+      value={searchValue}
+      onChange={(newValue) => onSearch?.(newValue as string)}
     />
   );
 

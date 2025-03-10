@@ -3,10 +3,8 @@ import type { Theme, SxProps } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 
 import Box from "@mui/material/Box";
-import TextField from "@mui/material/TextField";
-import InputAdornment from "@mui/material/InputAdornment";
 
-import { Iconify } from "src/components/iconify";
+import Search from "src/components/search/search";
 
 // ----------------------------------------------------------------------
 
@@ -20,21 +18,10 @@ export function PostSearchMobile({ sx, value, onChange }: PostSearchMobileProps)
   const { t } = useTranslation("blog");
   return (
     <Box sx={[{ px: 2, pb: 3, display: { md: "none" } }, ...(Array.isArray(sx) ? sx : [sx])]}>
-      <TextField
-        fullWidth
-        hiddenLabel
+      <Search
         placeholder={`${t("search")}...`}
         value={value}
-        onChange={(event) => onChange?.(event.target.value)}
-        slotProps={{
-          input: {
-            startAdornment: (
-              <InputAdornment position="start">
-                <Iconify width={24} icon="carbon:search" sx={{ color: "text.disabled" }} />
-              </InputAdornment>
-            ),
-          },
-        }}
+        onChange={(newValue) => onChange?.(newValue as string)}
       />
     </Box>
   );

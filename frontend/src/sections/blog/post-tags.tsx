@@ -1,8 +1,12 @@
 import type { BoxProps } from "@mui/material/Box";
 
+import { useTranslation } from "react-i18next";
+
 import Box from "@mui/material/Box";
 import Chip from "@mui/material/Chip";
 import Typography from "@mui/material/Typography";
+
+import { paths } from "src/routes/paths";
 
 // ----------------------------------------------------------------------
 
@@ -11,6 +15,7 @@ type PostTagsProps = BoxProps & {
 };
 
 export function PostTags({ tags, sx, ...other }: PostTagsProps) {
+  const { t } = useTranslation("blog");
   return (
     <Box
       sx={[
@@ -20,11 +25,19 @@ export function PostTags({ tags, sx, ...other }: PostTagsProps) {
       {...other}
     >
       <Typography variant="subtitle2" sx={{ mr: 1 }}>
-        Tags:
+        {t("tags")}:
       </Typography>
       <Box sx={{ gap: 1, display: "flex", flexWrap: "wrap" }}>
         {tags.map((tag) => (
-          <Chip key={tag} size="small" variant="soft" label={tag} onClick={() => {}} />
+          <Chip
+            key={tag}
+            label={tag}
+            variant="soft"
+            size="small"
+            component="a"
+            href={`${paths.posts}/?tag=${tag}`}
+            clickable
+          />
         ))}
       </Box>
     </Box>

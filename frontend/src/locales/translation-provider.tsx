@@ -3,8 +3,9 @@
 import "dayjs/locale/pl";
 import "dayjs/locale/en";
 
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { I18nextProvider } from "react-i18next";
+import { useIsClient } from "minimal-shared/hooks";
 
 import { useSettingsContext } from "src/components/settings";
 
@@ -16,10 +17,9 @@ type Props = {
 
 export function TranslationProvider({ children }: Props) {
   const settings = useSettingsContext();
-  const [isClient, setIsClient] = useState(false);
+  const isClient = useIsClient();
 
   useEffect(() => {
-    setIsClient(true);
     const { language } = settings.state;
     i18n.changeLanguage(language);
   }, [settings.state]);

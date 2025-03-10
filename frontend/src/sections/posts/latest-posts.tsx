@@ -190,7 +190,7 @@ export function PostItem({ sx, post, order, largePost, ...other }: PostItemProps
 
         <Link
           component={RouterLink}
-          href={`${paths.posts}/${post.title}/`}
+          href={`${paths.post}/${post.title}/`}
           color="inherit"
           variant={largePost ? "h4" : "h6"}
           sx={(theme) => ({ ...theme.mixins.maxLine({ line: 2 }) })}

@@ -46,7 +46,7 @@ export function FeaturedPost({ post, sx, ...other }: Props) {
 
             <Link
               component={RouterLink}
-              href={`${paths.posts}/${post.title}/`}
+              href={`${paths.post}/${post.title}/`}
               color="inherit"
               variant="h3"
             >
