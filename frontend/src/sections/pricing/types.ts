@@ -3,11 +3,10 @@ export type PricingCardProps = {
   popular: boolean;
   premium: boolean;
   icon: string;
-  price: string;
-  caption?: string;
+  price: number;
   options: {
     title: string;
-    tootip?: string;
+    tooltip?: string;
     disabled: boolean;
   }[];
 };

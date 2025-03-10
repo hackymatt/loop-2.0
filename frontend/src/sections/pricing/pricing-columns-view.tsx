@@ -18,7 +18,7 @@ type IPackage = {
   license: string;
   popular: boolean;
   premium: boolean;
-  price: { monthly: string; yearly: string };
+  price: { monthly: number; yearly: number };
   icon: string;
   options: { title: string; disabled: boolean }[];
 };

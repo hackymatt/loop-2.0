@@ -88,12 +88,7 @@ export function PricingColumnHeader({ plan, sx, ...other }: PricingColumnHeaderP
       {renderIcons()}
 
       <Typography variant="body2" sx={{ color: "text.secondary" }}>
-        {plan.caption}{" "}
-        {fCurrency(
-          Number(plan.price) * 12,
-          {},
-          { code: locale("code"), currency: locale("currency") }
-        )}{" "}
+        {fCurrency(plan.price * 12, {}, { code: locale("code"), currency: locale("currency") })}{" "}
         {t("perYear")}
       </Typography>
     </Box>
