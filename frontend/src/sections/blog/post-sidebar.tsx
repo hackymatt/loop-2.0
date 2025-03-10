@@ -3,7 +3,6 @@ import type { BoxProps } from "@mui/material/Box";
 import type { IAuthorProps } from "src/types/author";
 import type { Theme, SxProps } from "@mui/material/styles";
 
-import { useMemo, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 
 import Box from "@mui/material/Box";
@@ -13,6 +12,7 @@ import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 import { Stack, Checkbox, FormControlLabel } from "@mui/material";
 
+import { useResponsive } from "src/hooks/use-responsive";
 import { useQueryParams } from "src/hooks/use-query-params";
 
 import { _socials } from "src/_mock";
@@ -53,19 +53,9 @@ export function PostSidebar({
 }: PostSidebarProps) {
   const { t } = useTranslation("blog");
 
-  const { setQueryParam, removeQueryParam, getQueryParams } = useQueryParams();
-  const query = useMemo(() => getQueryParams(), [getQueryParams]);
+  const { query, handleChange } = useQueryParams();
 
-  const handleChange = useCallback(
-    (name: string, value: string) => {
-      if (value) {
-        setQueryParam(name, value);
-      } else {
-        removeQueryParam(name);
-      }
-    },
-    [removeQueryParam, setQueryParam]
-  );
+  const mdUp = useResponsive("up", "md");
 
   const renderSearch = () => {
     const currentValue = query?.search ?? "";
@@ -74,6 +64,7 @@ export function PostSidebar({
         placeholder={`${t("search")}...`}
         value={currentValue}
         onChange={(newValue) => handleChange("search", newValue as string)}
+        sx={{ display: { xs: "none", md: "inline-flex" } }}
       />
     );
   };
@@ -230,7 +221,7 @@ export function PostSidebar({
       {slots?.topNode}
 
       {renderAuthor()}
-      {renderSearch()}
+      {mdUp && renderSearch()}
 
       <Box
         sx={[

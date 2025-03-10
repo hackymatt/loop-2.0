@@ -8,6 +8,9 @@ import Container from "@mui/material/Container";
 
 import { paths } from "src/routes/paths";
 
+import { useResponsive } from "src/hooks/use-responsive";
+import { useQueryParams } from "src/hooks/use-query-params";
+
 import { _tags, _mock, _coursePosts } from "src/_mock";
 
 import { Posts } from "../posts/posts";
@@ -29,9 +32,18 @@ const recentPosts = _coursePosts.slice(-4);
 export function PostsView() {
   const { t } = useTranslation("advertisement");
 
+  const { query, handleChange } = useQueryParams();
+
+  const mdUp = useResponsive("up", "md");
+
   return (
     <>
-      <PostSearchMobile />
+      {!mdUp && (
+        <PostSearchMobile
+          value={query?.search ?? ""}
+          onChange={(value) => handleChange("search", value)}
+        />
+      )}
       <FeaturedPost post={featuredPost} />
       <Container sx={{ pt: 10 }}>
         <Grid container spacing={{ md: 8 }}>

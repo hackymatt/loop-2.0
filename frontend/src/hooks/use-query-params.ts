@@ -32,5 +32,18 @@ export function useQueryParams() {
 
   const getQueryParams = useCallback(() => Object.fromEntries(params), [params]);
 
-  return { getQueryParam, setQueryParam, removeQueryParam, getQueryParams };
+  const handleChange = useCallback(
+    (name: string, value: string) => {
+      if (value) {
+        setQueryParam(name, value);
+      } else {
+        removeQueryParam(name);
+      }
+    },
+    [removeQueryParam, setQueryParam]
+  );
+
+  const query = useMemo(() => getQueryParams(), [getQueryParams]);
+
+  return { getQueryParam, setQueryParam, removeQueryParam, getQueryParams, handleChange, query };
 }

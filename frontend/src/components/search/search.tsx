@@ -13,7 +13,7 @@ type Props = TextFieldProps & {
   placeholder?: string;
 };
 
-export default function Search({ value, onChange, placeholder }: Props) {
+export default function Search({ value, onChange, placeholder, ...other }: Props) {
   const [internalValue, setInternalValue] = useState<string | undefined>(value);
   const debouncedValue = useDebounce(internalValue ?? "", 500);
 
@@ -34,13 +34,16 @@ export default function Search({ value, onChange, placeholder }: Props) {
       placeholder={placeholder ?? "Szukaj..."}
       value={internalValue}
       onChange={handleChange}
-      InputProps={{
-        startAdornment: (
-          <InputAdornment position="start">
-            <Iconify width={24} icon="carbon:search" sx={{ color: "text.disabled" }} />
-          </InputAdornment>
-        ),
+      slotProps={{
+        input: {
+          startAdornment: (
+            <InputAdornment position="start">
+              <Iconify width={24} icon="carbon:search" sx={{ color: "text.disabled" }} />
+            </InputAdornment>
+          ),
+        },
       }}
+      {...other}
     />
   );
 }
