@@ -5,6 +5,8 @@ import { useTranslation } from "react-i18next";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 
+import { fCurrency } from "src/utils/format-number";
+
 import { CONFIG } from "src/global-config";
 
 import { Label } from "src/components/label";
@@ -21,6 +23,7 @@ const iconPath = (name: string) => `${CONFIG.assetsDir}/assets/icons/plans/${nam
 
 export function PricingColumnHeader({ plan, sx, ...other }: PricingColumnHeaderProps) {
   const { t } = useTranslation("pricing");
+  const { t: locale } = useTranslation("locale");
 
   const renderIcons = () => (
     <Box
@@ -42,7 +45,7 @@ export function PricingColumnHeader({ plan, sx, ...other }: PricingColumnHeaderP
       }}
     >
       <Typography component="span" variant="h3">
-        {plan.price}
+        {fCurrency(plan.price, {}, { code: locale("code"), currency: locale("currency") })}
       </Typography>
 
       <Typography component="span" variant="subtitle2">
@@ -85,7 +88,13 @@ export function PricingColumnHeader({ plan, sx, ...other }: PricingColumnHeaderP
       {renderIcons()}
 
       <Typography variant="body2" sx={{ color: "text.secondary" }}>
-        {plan.caption} {plan.price} {t("perYear")}
+        {plan.caption}{" "}
+        {fCurrency(
+          Number(plan.price) * 12,
+          {},
+          { code: locale("code"), currency: locale("currency") }
+        )}{" "}
+        {t("perYear")}
       </Typography>
     </Box>
   );

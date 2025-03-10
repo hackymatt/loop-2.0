@@ -8,6 +8,8 @@ import { Button } from "@mui/material";
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
 
+import { fCurrency } from "src/utils/format-number";
+
 import { CONFIG } from "src/global-config";
 
 import { Label } from "src/components/label";
@@ -24,6 +26,7 @@ const iconPath = (name: string) => `${CONFIG.assetsDir}/assets/icons/plans/${nam
 
 export function PricingCard({ plan, sx, ...other }: Props) {
   const { t } = useTranslation("pricing");
+  const { t: locale } = useTranslation("locale");
 
   const currentPlan = ["Darmowy", "Free"];
 
@@ -46,7 +49,7 @@ export function PricingCard({ plan, sx, ...other }: Props) {
       }}
     >
       <Typography component="span" variant="h3">
-        {plan.price}
+        {fCurrency(plan.price, {}, { code: locale("code"), currency: locale("currency") })}
       </Typography>
 
       <Typography component="span" variant="subtitle2">

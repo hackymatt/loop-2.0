@@ -21,7 +21,7 @@
       "caption": "",
       "popular": false,
       "premium": false,
-      "price": { "monthly": "0.00 PLN", "yearly": "0.00 PLN" },
+      "price": { "monthly": 0.0, "yearly": 0.0 },
       "icon": "ic-plan-box-basic.svg",
       "options": [
         { "title": "3 prototypes", "disabled": false },
@@ -36,7 +36,7 @@
       "caption": "Charging",
       "popular": true,
       "premium": false,
-      "price": { "monthly": "5.99 PLN", "yearly": "4.99 PLN" },
+      "price": { "monthly": 5.99, "yearly": 4.99 },
       "icon": "ic-plan-box-starter.svg",
       "options": [
         { "title": "3 prototypes", "disabled": false },
@@ -51,7 +51,7 @@
       "caption": "Charging",
       "popular": false,
       "premium": true,
-      "price": { "monthly": "12.99 PLN", "yearly": "9.99 PLN" },
+      "price": { "monthly": 12.99, "yearly": 9.99 },
       "icon": "ic-plan-box-premium.svg",
       "options": [
         { "title": "3 prototypes", "disabled": false },
