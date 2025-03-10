@@ -1,5 +1,6 @@
 import type { BoxProps } from "@mui/material/Box";
 
+import { useTranslation } from "react-i18next";
 import { useBoolean } from "minimal-shared/hooks";
 
 import Box from "@mui/material/Box";
@@ -18,11 +19,11 @@ type PricingColumnContentProps = BoxProps & {
 };
 
 export function PricingColumnContentMobile({ plan, sx, ...other }: PricingColumnContentProps) {
+  const { t } = useTranslation("pricing");
+
   const openContent = useBoolean();
 
-  const isStartLicense = plan.license === "Start";
-  const isProLicense = plan.license === "Pro";
-  const isBusinessLicense = plan.license === "Business";
+  const currentPlan = ["Darmowy", "Free"];
 
   const renderButton = () => (
     <Link
@@ -31,7 +32,7 @@ export function PricingColumnContentMobile({ plan, sx, ...other }: PricingColumn
       onClick={openContent.onToggle}
       sx={{ gap: 1, display: "flex", cursor: "pointer", alignItems: "center" }}
     >
-      {openContent.value ? "Hide" : "Show"} all feature
+      {openContent.value ? t("hide") : t("show")} {t("allFeatures")}
       <Iconify
         icon={openContent.value ? "solar:alt-arrow-up-outline" : "solar:alt-arrow-down-outline"}
       />
@@ -90,13 +91,12 @@ export function PricingColumnContentMobile({ plan, sx, ...other }: PricingColumn
       <Button
         fullWidth
         size="large"
-        color="inherit"
-        variant={isProLicense ? "contained" : "outlined"}
+        disabled={currentPlan.includes(plan.license)}
+        variant={currentPlan.includes(plan.license) ? "outlined" : "contained"}
+        color={plan.popular ? "primary" : "inherit"}
         sx={{ mt: 5 }}
       >
-        {isStartLicense && "Start free trial"}
-        {isProLicense && "Choose pro"}
-        {isBusinessLicense && "Contact sale"}
+        {currentPlan.includes(plan.license) ? t("current") : `${t("choose")} ${plan.license}`}
       </Button>
     </Box>
   );
@@ -105,9 +105,9 @@ export function PricingColumnContentMobile({ plan, sx, ...other }: PricingColumn
 // ----------------------------------------------------------------------
 
 export function PricingColumnContentDesktop({ plan, sx, ...other }: PricingColumnContentProps) {
-  const isStartLicense = plan.license === "Start";
-  const isProLicense = plan.license === "Pro";
-  const isBusinessLicense = plan.license === "Business";
+  const { t } = useTranslation("pricing");
+
+  const currentPlan = ["Darmowy", "Free"];
 
   return (
     <Box sx={sx} {...other}>
@@ -121,7 +121,7 @@ export function PricingColumnContentDesktop({ plan, sx, ...other }: PricingColum
             color: "text.secondary",
             height: "var(--row-height)",
             borderBottom: `solid 1px ${theme.vars.palette.divider}`,
-            ...(isProLicense && { bgcolor: "background.neutral" }),
+            ...(plan.popular && { bgcolor: "background.neutral" }),
           })}
         >
           {item.disabled ? (
@@ -136,16 +136,19 @@ export function PricingColumnContentDesktop({ plan, sx, ...other }: PricingColum
         sx={{
           py: 5,
           textAlign: "center",
-          ...(isProLicense && {
+          ...(plan.popular && {
             bgcolor: "background.neutral",
             borderRadius: "0 0 16px 16px",
           }),
         }}
       >
-        <Button size="large" variant={isProLicense ? "contained" : "outlined"} color="inherit">
-          {isStartLicense && "Start free trial"}
-          {isProLicense && "Choose pro"}
-          {isBusinessLicense && "Contact sale"}
+        <Button
+          size="large"
+          disabled={currentPlan.includes(plan.license)}
+          variant={currentPlan.includes(plan.license) ? "outlined" : "contained"}
+          color={plan.popular ? "primary" : "inherit"}
+        >
+          {currentPlan.includes(plan.license) ? t("current") : `${t("choose")} ${plan.license}`}
         </Button>
       </Box>
     </Box>

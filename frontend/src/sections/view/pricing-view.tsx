@@ -1,6 +1,8 @@
 "use client";
 
-import { PricingFaqs } from "../pricing/pricing-faqs";
+import { _faqs } from "src/_mock";
+
+import { Faqs } from "../faqs";
 import { PricingCardsView } from "../pricing/pricing-cards-view";
 import { PricingColumnsView } from "../pricing/pricing-columns-view";
 
@@ -13,7 +15,7 @@ export function PricingView() {
 
       <PricingColumnsView />
 
-      <PricingFaqs />
+      <Faqs data={_faqs} />
     </>
   );
 }

@@ -1,5 +1,7 @@
 import type { BoxProps } from "@mui/material/Box";
 
+import { useTranslation } from "react-i18next";
+
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 
@@ -18,18 +20,13 @@ type PricingColumnHeaderProps = BoxProps & {
 const iconPath = (name: string) => `${CONFIG.assetsDir}/assets/icons/plans/${name}`;
 
 export function PricingColumnHeader({ plan, sx, ...other }: PricingColumnHeaderProps) {
-  const isStartLicense = plan.license === "Start";
-  const isProLicense = plan.license === "Pro";
+  const { t } = useTranslation("pricing");
 
   const renderIcons = () => (
     <Box
       component="img"
       alt={plan.license}
-      src={
-        (isStartLicense && iconPath("ic-plan-box-basic.svg")) ||
-        (isProLicense && iconPath("ic-plan-box-starter.svg")) ||
-        iconPath("ic-plan-box-premium.svg")
-      }
+      src={iconPath(plan.icon)}
       sx={{ width: 80, height: 80 }}
     />
   );
@@ -41,24 +38,16 @@ export function PricingColumnHeader({ plan, sx, ...other }: PricingColumnHeaderP
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        ...(isProLicense && { color: { md: "primary.main" } }),
+        ...(plan.popular && { color: "primary.main" }),
       }}
     >
-      {!isStartLicense && (
-        <Typography component="span" variant="h4">
-          $
-        </Typography>
-      )}
-
       <Typography component="span" variant="h3">
         {plan.price}
       </Typography>
 
-      {!isStartLicense && (
-        <Typography component="span" variant="subtitle2">
-          /mo
-        </Typography>
-      )}
+      <Typography component="span" variant="subtitle2">
+        /{t("monthlyShort")}
+      </Typography>
     </Box>
   );
 
@@ -74,7 +63,7 @@ export function PricingColumnHeader({ plan, sx, ...other }: PricingColumnHeaderP
           flexDirection: "column",
           alignItems: { xs: "flex-start", md: "center" },
         },
-        isProLicense && {
+        plan.popular && {
           borderRadius: "16px 16px 0 0",
           bgcolor: { md: "background.neutral" },
         },
@@ -82,9 +71,9 @@ export function PricingColumnHeader({ plan, sx, ...other }: PricingColumnHeaderP
       ]}
       {...other}
     >
-      {isProLicense && (
+      {plan.popular && (
         <Label color="info" sx={{ position: "absolute", top: 16, right: 16 }}>
-          POPULAR
+          {t("popular")}
         </Label>
       )}
 
@@ -96,7 +85,7 @@ export function PricingColumnHeader({ plan, sx, ...other }: PricingColumnHeaderP
       {renderIcons()}
 
       <Typography variant="body2" sx={{ color: "text.secondary" }}>
-        {plan.caption}
+        {plan.caption} {plan.price} {t("perYear")}
       </Typography>
     </Box>
   );

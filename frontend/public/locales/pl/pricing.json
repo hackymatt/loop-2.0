@@ -1,0 +1,68 @@
+{
+  "title": {
+    "cards": "Elastyczne plany dopasowane do Twoich potrzeb",
+    "columns": "Porównaj plany"
+  },
+  "subtitle": {
+    "cards": "Zacznij uczyć się programowania już teraz i rozwijaj swoje umiejętności zgodnie z własnymi potrzebami.",
+    "columns": "Wybierz najlepszy plan dla siebie i zacznij uczyć się programować w swoim własnym tempie."
+  },
+  "monthly": "Miesięcznie",
+  "yearly": "Rocznie",
+  "monthlyShort": "mc",
+  "save": "Zaoszczędź",
+  "popular": "POPULARNY",
+  "current": "Obecny plan",
+  "choose": "Wybierz",
+  "perYear": "na rok",
+  "hide": "Ukryj",
+  "show": "Pokaż",
+  "allFeatures": "wszystkie funkcje",
+  "packages": [
+    {
+      "license": "Darmowy",
+      "caption": "",
+      "popular": false,
+      "premium": false,
+      "price": { "monthly": "0.00 PLN", "yearly": "0.00 PLN" },
+      "icon": "ic-plan-box-basic.svg",
+      "options": [
+        { "title": "3 prototypes", "disabled": false },
+        { "title": "3 boards", "disabled": false },
+        { "title": "Up to 5 team members", "disabled": true },
+        { "title": "Advanced security", "disabled": true },
+        { "title": "Permissions & workflows", "disabled": true }
+      ]
+    },
+    {
+      "license": "Podstawowy",
+      "caption": "Opłata",
+      "popular": true,
+      "premium": false,
+      "price": { "monthly": "5.99 PLN", "yearly": "4.99 PLN" },
+      "icon": "ic-plan-box-starter.svg",
+      "options": [
+        { "title": "3 prototypes", "disabled": false },
+        { "title": "3 boards", "disabled": false },
+        { "title": "Up to 5 team members", "disabled": true },
+        { "title": "Advanced security", "disabled": true },
+        { "title": "Permissions & workflows", "disabled": true }
+      ]
+    },
+    {
+      "license": "Premium",
+      "caption": "Opłata",
+      "popular": false,
+      "premium": true,
+      "price": { "monthly": "12.99 PLN", "yearly": "9.99 PLN" },
+      "icon": "ic-plan-box-premium.svg",
+      "options": [
+        { "title": "3 prototypes", "disabled": false },
+        { "title": "3 boards", "disabled": false },
+        { "title": "Up to 5 team members", "disabled": true },
+        { "title": "Advanced security", "disabled": true },
+        { "title": "Permissions & workflows", "disabled": true }
+      ]
+    }
+  ]
+}

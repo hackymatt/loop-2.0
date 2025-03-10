@@ -1,37 +1,53 @@
 "use client";
 
 import { useState, useCallback } from "react";
+import { useTranslation } from "react-i18next";
 
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid2";
 import Switch from "@mui/material/Switch";
-import Tooltip from "@mui/material/Tooltip";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
-
-import { _pricingColumns } from "src/_mock";
-
-import { Iconify } from "src/components/iconify";
 
 import { PricingColumnHeader } from "./pricing-column-header";
 import { PricingColumnContentMobile, PricingColumnContentDesktop } from "./pricing-column-content";
 
 // ----------------------------------------------------------------------
 
+type IPackage = {
+  license: string;
+  popular: boolean;
+  premium: boolean;
+  price: { monthly: string; yearly: string };
+  icon: string;
+  options: { title: string; disabled: boolean }[];
+};
+
+// ----------------------------------------------------------------------
+
 export function PricingColumnsView() {
-  const [checked, setChecked] = useState(true);
+  const { t } = useTranslation("pricing");
+
+  const packages = t("packages", { returnObjects: true }) as IPackage[];
+
+  const [isYearly, setIsYearly] = useState(true);
+
+  const pricingColumns = packages.map(({ price, ...rest }: IPackage) => {
+    const { monthly, yearly } = price;
+    return { ...rest, price: isYearly ? yearly : monthly };
+  });
 
   const handleChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-    setChecked(event.target.checked);
+    setIsYearly(event.target.checked);
   }, []);
 
   const renderSwitch = () => (
     <Box sx={{ mt: 9, mb: 5, position: "relative" }}>
       <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
-        <Typography variant="overline">MONTHLY</Typography>
+        <Typography variant="overline">{t("monthly")}</Typography>
 
         <Switch
-          checked={checked}
+          checked={isYearly}
           onChange={handleChange}
           inputProps={{ id: "plan-switch" }}
           sx={{ mx: 1 }}
@@ -44,11 +60,11 @@ export function PricingColumnsView() {
               component="span"
               sx={{ whiteSpace: "nowrap", color: "success.main", typography: "overline" }}
             >
-              save 10%
+              {t("save")} 10%
             </Box>
           </Box>
 
-          <Typography variant="overline">YEARLY</Typography>
+          <Typography variant="overline">{t("yearly")}</Typography>
         </Box>
       </Box>
     </Box>
@@ -60,7 +76,7 @@ export function PricingColumnsView() {
         size={{ xs: 12, md: 3 }}
         sx={(theme) => ({ borderTop: `solid 1px ${theme.vars.palette.divider}` })}
       >
-        {_pricingColumns[0].options.map((option) => (
+        {pricingColumns[0].options.map((option) => (
           <Box
             key={option.title}
             sx={(theme) => ({
@@ -73,19 +89,11 @@ export function PricingColumnsView() {
             <Typography variant="subtitle2" sx={{ flexGrow: 1 }}>
               {option.title}
             </Typography>
-
-            <Tooltip title={option.tootip} placement="right" arrow>
-              <Iconify
-                width={16}
-                icon="solar:info-circle-outline"
-                sx={{ color: "text.secondary" }}
-              />
-            </Tooltip>
           </Box>
         ))}
       </Grid>
 
-      {_pricingColumns.map((plan) => (
+      {pricingColumns.map((plan) => (
         <Grid
           key={plan.license}
           size={{ xs: 12, md: 3 }}
@@ -100,12 +108,11 @@ export function PricingColumnsView() {
   return (
     <Container sx={{ pb: 10, pt: { xs: 3, md: 5 } }}>
       <Typography variant="h3" sx={{ mb: 2, textAlign: "center" }}>
-        Flexible plans for your
-        <br /> {`community's size and needs`}
+        {t("title.columns")}
       </Typography>
 
       <Typography sx={{ textAlign: "center", color: "text.secondary" }}>
-        Choose your plan and make modern online conversation magic
+        {t("subtitle.columns")}
       </Typography>
 
       {renderSwitch()}
@@ -117,7 +124,7 @@ export function PricingColumnsView() {
           </Typography>
         </Grid>
 
-        {_pricingColumns.map((plan) => (
+        {pricingColumns.map((plan) => (
           <Grid
             key={plan.license}
             sx={(theme) => ({

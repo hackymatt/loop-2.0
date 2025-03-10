@@ -1,10 +1,11 @@
 import type { PaperProps } from "@mui/material/Paper";
 
+import { useTranslation } from "react-i18next";
 import { varAlpha } from "minimal-shared/utils";
 
 import Box from "@mui/material/Box";
+import { Button } from "@mui/material";
 import Paper from "@mui/material/Paper";
-import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 
 import { CONFIG } from "src/global-config";
@@ -22,40 +23,35 @@ type Props = PaperProps & {
 const iconPath = (name: string) => `${CONFIG.assetsDir}/assets/icons/plans/${name}`;
 
 export function PricingCard({ plan, sx, ...other }: Props) {
-  const isBasicLicense = plan.license === "Basic";
-  const isStarterLicense = plan.license === "Starter";
-  const isPremiumLicense = plan.license === "Premium";
+  const { t } = useTranslation("pricing");
+
+  const currentPlan = ["Darmowy", "Free"];
 
   const renderIcons = () => (
     <Box
       component="img"
       alt={plan.license}
-      src={
-        (isBasicLicense && iconPath("ic-plan-points-basic.svg")) ||
-        (isStarterLicense && iconPath("ic-plan-points-starter.svg")) ||
-        iconPath("ic-plan-points-premium.svg")
-      }
+      src={iconPath(plan.icon)}
       sx={{ width: 80, height: 80 }}
     />
   );
 
   const renderPrices = () => (
-    <Box sx={{ gap: 0.5, display: "flex", alignItems: "center" }}>
-      {!isBasicLicense && (
-        <Typography component="span" variant="h5">
-          $
-        </Typography>
-      )}
-
+    <Box
+      sx={{
+        gap: 0.5,
+        display: "flex",
+        alignItems: "center",
+        ...(plan.popular && { color: "primary.main" }),
+      }}
+    >
       <Typography component="span" variant="h3">
         {plan.price}
       </Typography>
 
-      {!isBasicLicense && (
-        <Typography component="span" variant="subtitle2">
-          /mo
-        </Typography>
-      )}
+      <Typography component="span" variant="subtitle2">
+        /{t("monthlyShort")}
+      </Typography>
     </Box>
   );
 
@@ -93,7 +89,7 @@ export function PricingCard({ plan, sx, ...other }: Props) {
           [theme.breakpoints.up("md")]: { boxShadow: "none" },
         }),
         (theme) =>
-          isStarterLicense && {
+          plan.popular && {
             py: 8,
             [theme.breakpoints.up("md")]: {
               boxShadow: `-24px 24px 72px -8px ${varAlpha(theme.vars.palette.grey["500Channel"], 0.24)}`,
@@ -106,9 +102,9 @@ export function PricingCard({ plan, sx, ...other }: Props) {
       ]}
       {...other}
     >
-      {isStarterLicense && (
+      {plan.popular && (
         <Label color="info" sx={{ position: "absolute", top: 16, right: 16 }}>
-          POPULAR
+          {t("popular")}
         </Label>
       )}
 
@@ -123,13 +119,11 @@ export function PricingCard({ plan, sx, ...other }: Props) {
       <Button
         fullWidth
         size="large"
-        disabled={isBasicLicense}
-        variant={isBasicLicense ? "outlined" : "contained"}
-        color={isPremiumLicense ? "primary" : "inherit"}
+        disabled={currentPlan.includes(plan.license)}
+        variant={currentPlan.includes(plan.license) ? "outlined" : "contained"}
+        color={plan.popular ? "primary" : "inherit"}
       >
-        {isBasicLicense && "Current plan"}
-        {isStarterLicense && "Choose starter"}
-        {isPremiumLicense && "Choose premium"}
+        {currentPlan.includes(plan.license) ? t("current") : `${t("choose")} ${plan.license}`}
       </Button>
     </Paper>
   );

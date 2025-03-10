@@ -1,32 +1,51 @@
 "use client";
 
 import { useState, useCallback } from "react";
+import { useTranslation } from "react-i18next";
 
 import Box from "@mui/material/Box";
 import Switch from "@mui/material/Switch";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 
-import { _pricingCards } from "src/_mock";
-
 import { PricingCard } from "./pricing-card";
 
 // ----------------------------------------------------------------------
 
+type IPackage = {
+  license: string;
+  popular: boolean;
+  premium: boolean;
+  price: { monthly: string; yearly: string };
+  icon: string;
+  options: { title: string; disabled: boolean }[];
+};
+
+// ----------------------------------------------------------------------
+
 export function PricingCardsView() {
-  const [checked, setChecked] = useState(true);
+  const { t } = useTranslation("pricing");
+
+  const packages = t("packages", { returnObjects: true }) as IPackage[];
+
+  const [isYearly, setIsYearly] = useState(true);
+
+  const pricingCards = packages.map(({ price, ...rest }: IPackage) => {
+    const { monthly, yearly } = price;
+    return { ...rest, price: isYearly ? yearly : monthly };
+  });
 
   const handleChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-    setChecked(event.target.checked);
+    setIsYearly(event.target.checked);
   }, []);
 
   const renderSwitch = () => (
     <Box sx={{ mt: 9, mb: 5, position: "relative" }}>
       <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
-        <Typography variant="overline">MONTHLY</Typography>
+        <Typography variant="overline">{t("monthly")}</Typography>
 
         <Switch
-          checked={checked}
+          checked={isYearly}
           onChange={handleChange}
           inputProps={{ id: "plan-switch" }}
           sx={{ mx: 1 }}
@@ -39,11 +58,11 @@ export function PricingCardsView() {
               component="span"
               sx={{ whiteSpace: "nowrap", color: "success.main", typography: "overline" }}
             >
-              save 10%
+              {t("save")} 10%
             </Box>
           </Box>
 
-          <Typography variant="overline">YEARLY</Typography>
+          <Typography variant="overline">{t("yearly")}</Typography>
         </Box>
       </Box>
     </Box>
@@ -52,11 +71,10 @@ export function PricingCardsView() {
   return (
     <Container sx={{ pb: 10, pt: { xs: 3, md: 5 } }}>
       <Typography variant="h3" sx={{ mb: 2, textAlign: "center" }}>
-        Flexible plans for your
-        <br /> {`community's size and needs`}
+        {t("title.cards")}
       </Typography>
       <Typography sx={{ color: "text.secondary", textAlign: "center" }}>
-        Choose your plan and make modern online conversation magic
+        {t("subtitle.cards")}
       </Typography>
       {renderSwitch()}
       <Box
@@ -67,7 +85,7 @@ export function PricingCardsView() {
           gridTemplateColumns: { xs: "repeat(1, 1fr)", md: "repeat(3, 1fr)" },
         }}
       >
-        {_pricingCards.map((plan) => (
+        {pricingCards.map((plan) => (
           <PricingCard key={plan.license} plan={plan} />
         ))}
       </Box>
