@@ -9,5 +9,11 @@
   "teacher": ["nauczyciel", "nauczycieli", "nauczycieli"],
   "student": ["uczeń", "uczniów", "uczniów"],
   "review": ["recenzja", "recenzje", "recenzji"],
-  "hour": ["godzina", "godziny", "godzin"]
+  "hour": ["godzina", "godziny", "godzin"],
+  "lesson": ["lekcja", "lekcje", "lekcji"],
+  "video": ["nagranie", "nagrania", "nagrań"],
+  "article": ["artykuł", "artykuły", "artykułów"],
+  "exercise": ["ćwiczenie", "ćwiczenia", "ćwiczeń"],
+  "quiz": ["test", "testy", "testów"],
+  "sign-up": { "header": "Utwórz darmowe konto", "button": "Zacznij teraz" }
 }

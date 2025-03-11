@@ -36,8 +36,8 @@ export type ICourseProps = {
   price: number;
   level: string;
   coverUrl: string;
-  technology: string;
   category: string;
+  technology: string;
   skills: string[];
   priceSale: number;
   resources: number;
@@ -47,6 +47,9 @@ export type ICourseProps = {
   learnList: string[];
   ratingNumber: number;
   totalQuizzes: number;
+  totalExercises: number;
+  totalVideos: number;
+  totalArticles: number;
   totalReviews: number;
   isBestSeller: boolean;
   createdAt: DatePickerFormat;

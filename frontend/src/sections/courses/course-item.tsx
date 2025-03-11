@@ -1,7 +1,5 @@
 import type { ICourseProps } from "src/types/course";
 
-import pluralize from "pluralize";
-import { polishPlurals } from "polish-plurals";
 import { useTranslation } from "react-i18next";
 
 import Box from "@mui/material/Box";
@@ -14,6 +12,8 @@ import Typography from "@mui/material/Typography";
 
 import { paths } from "src/routes/paths";
 import { RouterLink } from "src/routes/components";
+
+import { usePluralize } from "src/hooks/use-pluralize";
 
 import { fShortenNumber } from "src/utils/format-number";
 
@@ -28,18 +28,13 @@ type Props = {
 
 export function CourseItem({ course, isVertical }: Props) {
   const { t } = useTranslation("course");
-  const { t: locale } = useTranslation("locale");
-  const language = locale("language");
 
   const teacher = t("teacher", { returnObjects: true }) as string[];
   const student = t("student", { returnObjects: true }) as string[];
   const review = t("review", { returnObjects: true }) as string[];
   const hour = t("hour", { returnObjects: true }) as string[];
 
-  const languagePluralize = (wordVariants: string[], number: number) =>
-    language === "pl"
-      ? polishPlurals(wordVariants[0], wordVariants[1], wordVariants[2], number)
-      : pluralize(wordVariants[0], number);
+  const languagePluralize = usePluralize();
 
   const renderTop = () => (
     <Box sx={{ gap: 1, display: "flex", alignItems: "center", flexWrap: "wrap" }}>
@@ -51,11 +46,6 @@ export function CourseItem({ course, isVertical }: Props) {
 
   const renderBottom = () => (
     <Box sx={{ gap: 2.5, display: "flex", typography: "body2", color: "text.disabled" }}>
-      <Box sx={{ gap: 1, display: "flex", alignItems: "center" }}>
-        <Iconify icon="solar:clock-circle-outline" />{" "}
-        {`${course.totalHours} ${languagePluralize(hour, course.totalHours)}`}
-      </Box>
-
       <Box sx={{ gap: 1, display: "flex", alignItems: "center" }}>
         <Iconify
           icon={
@@ -70,6 +60,11 @@ export function CourseItem({ course, isVertical }: Props) {
       <Box sx={{ gap: 1, display: "flex", alignItems: "center" }}>
         <Iconify icon="carbon:code" />
         {course.technology}
+      </Box>
+
+      <Box sx={{ gap: 1, display: "flex", alignItems: "center" }}>
+        <Iconify icon="solar:clock-circle-outline" />{" "}
+        {`${course.totalHours} ${languagePluralize(hour, course.totalHours)}`}
       </Box>
     </Box>
   );

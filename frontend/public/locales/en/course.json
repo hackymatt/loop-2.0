@@ -9,5 +9,11 @@
   "teacher": ["teacher"],
   "student": ["student"],
   "review": ["review"],
-  "hour": ["hour"]
+  "hour": ["hour"],
+  "lesson": ["lesson"],
+  "video": ["video"],
+  "article": ["article"],
+  "exercise": ["exercise"],
+  "quiz": ["quiz"],
+  "sign-up": { "header": "Create your free account", "button": "Get started" }
 }

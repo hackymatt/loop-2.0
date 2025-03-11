@@ -11,7 +11,7 @@ import { RouterLink } from "src/routes/components";
 
 import { Iconify } from "src/components/iconify";
 
-import { ElearningCourseItem } from "./course-item";
+import { CourseItem } from "./course-item";
 
 // ----------------------------------------------------------------------
 
@@ -19,7 +19,7 @@ type Props = BoxProps & {
   courses: ICourseProps[];
 };
 
-export function ElearningCourseListSimilar({ courses, sx, ...other }: Props) {
+export function CourseListSimilar({ courses, sx, ...other }: Props) {
   return (
     <Box
       component="section"
@@ -57,7 +57,7 @@ export function ElearningCourseListSimilar({ courses, sx, ...other }: Props) {
           }}
         >
           {courses.map((course) => (
-            <ElearningCourseItem key={course.id} course={course} isVertical />
+            <CourseItem key={course.id} course={course} isVertical />
           ))}
         </Box>
       </Container>
