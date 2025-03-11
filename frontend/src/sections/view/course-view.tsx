@@ -6,16 +6,14 @@ import Button from "@mui/material/Button";
 import Divider from "@mui/material/Divider";
 import Container from "@mui/material/Container";
 
-import { _mock, _courses, _socials } from "src/_mock";
+import { _mock, _courses, _socials, _reviews } from "src/_mock";
 import { TwitterIcon, FacebookIcon, LinkedinIcon, InstagramIcon } from "src/assets/icons";
 
 import { Advertisement } from "../advertisement";
-// import { ReviewSummary } from "../../review/review-summary";
-// import { ReviewNewForm } from "../../review/review-new-form";
-// import { ReviewList } from "../review/elearning-review-list";
+import { ReviewList } from "../review/review-list";
+import { ReviewSummary } from "../review/review-summary";
 import { CourseDetailsHero } from "../courses/course-details-hero";
 import { CourseDetailsInfo } from "../courses/course-details-info";
-// import { ReviewToolbar } from "../review/elearning-review-toolbar";
 import { CourseListSimilar } from "../courses/course-list-similar";
 import { CourseDetailsSummary } from "../courses/course-details-summary";
 import { CourseDetailsTeachers } from "../courses/course-details-teachers-info";
@@ -53,27 +51,13 @@ export function CourseView() {
     </Box>
   );
 
-  const renderReviews = () => (
+  const renderReview = () => (
     <>
-      <Container sx={{ overflow: "hidden", pt: 10 }}>
-        <Grid size={{ xs: 12, md: 7, lg: 8 }}>
-          {/* <ReviewToolbar sort={sort} onChangeSort={handleChangeSort} /> */}
-        </Grid>
+      <ReviewSummary ratingNumber={4.1} reviewNumber={123456} />
 
-        <Grid container spacing={8} direction="row-reverse">
-          <Grid size={{ xs: 12, md: 5, lg: 4 }}>
-            {/* <ReviewSummary
-              ratingNumber={4.1}
-              reviewNumber={123456}
-              onOpenForm={openReviewForm.onTrue}
-            /> */}
-          </Grid>
-
-          <Grid size={{ xs: 12, md: 7, lg: 8 }}>{/* <ReviewList reviews={_reviews} /> */}</Grid>
-        </Grid>
+      <Container>
+        <ReviewList reviews={_reviews} />
       </Container>
-
-      {/* <ReviewNewForm open={openReviewForm.value} onClose={openReviewForm.onFalse} /> */}
     </>
   );
 
@@ -140,7 +124,7 @@ export function CourseView() {
       </Container>
       <Divider />
 
-      {renderReviews()}
+      {renderReview()}
 
       {!!relatedCourses?.length && <CourseListSimilar courses={relatedCourses} />}
     </>

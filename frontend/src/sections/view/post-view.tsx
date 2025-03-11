@@ -143,7 +143,7 @@ export function PostView() {
         <CustomBreadcrumbs
           links={[
             { name: t("home"), href: "/" },
-            { name: t("blog"), href: paths.eLearning.posts },
+            { name: t("blog"), href: paths.posts },
             { name: post.title },
           ]}
           sx={{ my: { xs: 3, md: 5 } }}

@@ -1,69 +1,65 @@
-import type { Theme, SxProps } from "@mui/material/styles";
+import type { BoxProps } from "@mui/material/Box";
 
 import Box from "@mui/material/Box";
-import Paper from "@mui/material/Paper";
+import Grid from "@mui/material/Grid2";
 import Rating from "@mui/material/Rating";
-import Button from "@mui/material/Button";
+import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
+import { svgIconClasses } from "@mui/material/SvgIcon";
 
 import { fShortenNumber } from "src/utils/format-number";
-
-import { Iconify } from "src/components/iconify";
 
 import { ReviewProgress } from "./review-progress";
 
 // ----------------------------------------------------------------------
 
-type ReviewSummaryProps = {
+type Props = BoxProps & {
   reviewNumber: number;
   ratingNumber: number;
-  onOpenForm: () => void;
-  sx?: SxProps<Theme>;
 };
 
-export function ReviewSummary({ reviewNumber, ratingNumber, onOpenForm, sx }: ReviewSummaryProps) {
+export function ReviewSummary({ sx, reviewNumber, ratingNumber, ...other }: Props) {
   return (
-    <Paper
-      variant="outlined"
-      sx={[
-        {
-          p: 4,
-          pr: 3,
-          gap: 3,
-          borderRadius: 2,
-          display: "flex",
-          bgcolor: "transparent",
-          flexDirection: "column",
-        },
-        ...(Array.isArray(sx) ? sx : [sx]),
-      ]}
+    <Box
+      component="section"
+      sx={[{ py: 10, bgcolor: "background.neutral" }, ...(Array.isArray(sx) ? sx : [sx])]}
+      {...other}
     >
-      <Box sx={{ gap: 2, display: "flex", alignItems: "center" }}>
-        <Typography component="span" variant="h2">
-          {ratingNumber}
-        </Typography>
+      <Container>
+        <Grid container spacing={{ xs: 5, md: 8 }}>
+          <Grid size={{ xs: 12, md: 4 }}>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: { xs: "center", md: "flex-start" },
+              }}
+            >
+              <Typography variant="h3">Reviews</Typography>
 
-        <div>
-          <Rating value={ratingNumber} readOnly precision={0.1} sx={{ mb: 0.5 }} />
-          <Typography
-            component="span"
-            variant="body2"
-            sx={{ display: "block", color: "text.secondary" }}
-          >
-            {fShortenNumber(reviewNumber)} reviews
-          </Typography>
-        </div>
-      </Box>
+              <Box sx={{ gap: 2, display: "flex", alignItems: "center", my: 3 }}>
+                <Typography component="span" variant="h2">
+                  {ratingNumber}
+                </Typography>
 
-      <ReviewProgress />
-      <Button
-        size="large"
-        fullWidth
-        startIcon={<Iconify width={24} icon="solar:pen-2-outline" />}
-        onClick={onOpenForm}
-      >
-        Write a review
-      </Button>
-    </Paper>
+                <div>
+                  <Rating
+                    value={ratingNumber}
+                    readOnly
+                    precision={0.1}
+                    sx={{ mb: 0.5, [`& .${svgIconClasses.root}`]: { color: "text.primary" } }}
+                  />
+                  <Typography variant="body2">{fShortenNumber(reviewNumber)} reviews</Typography>
+                </div>
+              </Box>
+            </Box>
+          </Grid>
+
+          <Grid size={{ xs: 12, md: 4 }}>
+            <ReviewProgress />
+          </Grid>
+        </Grid>
+      </Container>
+    </Box>
   );
 }

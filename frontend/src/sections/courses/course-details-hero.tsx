@@ -49,6 +49,7 @@ export function CourseDetailsHero({
   totalStudents,
   ...other
 }: Props) {
+  const { t: navigation } = useTranslation("navigation");
   const { t } = useTranslation("course");
 
   const teacher = t("teacher", { returnObjects: true }) as string[];
@@ -230,8 +231,8 @@ export function CourseDetailsHero({
       <Container sx={{ overflow: "hidden" }}>
         <CustomBreadcrumbs
           links={[
-            { name: "Home", href: "/" },
-            { name: "Courses", href: paths.eLearning.courses },
+            { name: navigation("home"), href: "/" },
+            { name: navigation("courses"), href: paths.courses },
             { name: slug },
           ]}
           sx={{ mb: { xs: 5, md: 10 } }}
