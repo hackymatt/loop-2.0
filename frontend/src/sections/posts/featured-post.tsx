@@ -25,47 +25,55 @@ type Props = BoxProps & {
 
 export function FeaturedPost({ post, sx, ...other }: Props) {
   return (
-    <Box
-      component="section"
-      sx={[{ py: 10, bgcolor: "background.neutral" }, ...(Array.isArray(sx) ? sx : [sx])]}
-      {...other}
+    <Link
+      component={RouterLink}
+      href={`${paths.post}/${post.title}/`}
+      color="inherit"
+      underline="none"
     >
-      <Container>
-        <Box sx={{ display: "flex", flexDirection: { xs: "column", md: "row" } }}>
-          <Image
-            src={post.coverUrl}
-            alt={post.title}
-            sx={{ flexGrow: 1, height: 560, borderRadius: 2 }}
-          />
+      <Box
+        component="section"
+        sx={[{ py: 10, bgcolor: "background.neutral" }, ...(Array.isArray(sx) ? sx : [sx])]}
+        {...other}
+      >
+        <Container>
+          <Box sx={{ display: "flex", flexDirection: { xs: "column", md: "row" } }}>
+            <Image
+              src={post.coverUrl}
+              alt={post.title}
+              sx={{ flexGrow: 1, height: 560, borderRadius: 2 }}
+            />
 
-          <Stack
-            spacing={1}
-            sx={{ mx: "auto", pl: { md: 8 }, py: { xs: 3, md: 5 }, maxWidth: { md: 408 } }}
-          >
-            <PostTime createdAt={fDate(post.createdAt)} duration={post.duration} />
-
-            <Link
-              component={RouterLink}
-              href={`${paths.post}/${post.title}/`}
-              color="inherit"
-              variant="h3"
+            <Stack
+              spacing={1}
+              sx={{ mx: "auto", pl: { md: 8 }, py: { xs: 3, md: 5 }, maxWidth: { md: 408 } }}
             >
-              {post.title}
-            </Link>
+              <PostTime createdAt={fDate(post.createdAt)} duration={post.duration} />
 
-            <Typography sx={{ color: "text.secondary", flexGrow: 1 }}>
-              {post.description}
-            </Typography>
+              <Typography color="inherit" variant="h3">
+                {post.title}
+              </Typography>
 
-            <Box
-              sx={{ gap: 1.5, display: "flex", alignItems: "center", pt: 1.5, typography: "body2" }}
-            >
-              <Avatar src={post.author.avatarUrl} />
-              {post.author.name}
-            </Box>
-          </Stack>
-        </Box>
-      </Container>
-    </Box>
+              <Typography sx={{ color: "text.secondary", flexGrow: 1 }}>
+                {post.description}
+              </Typography>
+
+              <Box
+                sx={{
+                  gap: 1.5,
+                  display: "flex",
+                  alignItems: "center",
+                  pt: 1.5,
+                  typography: "body2",
+                }}
+              >
+                <Avatar src={post.author.avatarUrl} />
+                {post.author.name}
+              </Box>
+            </Stack>
+          </Box>
+        </Container>
+      </Box>
+    </Link>
   );
 }

@@ -59,63 +59,68 @@ type PostItemProps = PaperProps & {
 
 export function PostItem({ post, sx, ...other }: PostItemProps) {
   return (
-    <Paper
-      variant="outlined"
-      sx={[
-        { borderRadius: 2, overflow: "hidden", bgcolor: "transparent" },
-        ...(Array.isArray(sx) ? sx : [sx]),
-      ]}
-      {...other}
+    <Link
+      component={RouterLink}
+      href={`${paths.post}/${post.title}/`}
+      color="inherit"
+      underline="none"
     >
-      <Image src={post.coverUrl} alt={post.title} ratio="1/1" />
-      <Box sx={{ display: "flex", gap: 3, p: 3 }}>
-        <Box sx={{ textAlign: "center" }}>
-          <Typography variant="subtitle2" component="span">
-            {fDate(post.createdAt, "MMM")}
-          </Typography>
-          <Divider sx={{ mt: 1, mb: 0.5 }} />
-          <Typography variant="h3" component="span">
-            {fDate(post.createdAt, "DD")}
-          </Typography>
-        </Box>
+      <Paper
+        variant="outlined"
+        sx={[
+          { borderRadius: 2, overflow: "hidden", bgcolor: "transparent" },
+          ...(Array.isArray(sx) ? sx : [sx]),
+        ]}
+        {...other}
+      >
+        <Image src={post.coverUrl} alt={post.title} ratio="1/1" />
+        <Box sx={{ display: "flex", gap: 3, p: 3 }}>
+          <Box sx={{ textAlign: "center" }}>
+            <Typography variant="subtitle2" component="span">
+              {fDate(post.createdAt, "MMM")}
+            </Typography>
+            <Divider sx={{ mt: 1, mb: 0.5 }} />
+            <Typography variant="h3" component="span">
+              {fDate(post.createdAt, "DD")}
+            </Typography>
+          </Box>
 
-        <Box sx={{ gap: 1, display: "flex", flexDirection: "column", flex: "1 1 auto" }}>
-          <Link
-            component={RouterLink}
-            href={`${paths.post}/${post.title}/`}
-            color="inherit"
-            variant="h6"
-            sx={(theme) => ({
-              ...theme.mixins.maxLine({ line: 2, persistent: theme.typography.h6 }),
-            })}
-          >
-            {post.title}
-          </Link>
+          <Box sx={{ gap: 1, display: "flex", flexDirection: "column", flex: "1 1 auto" }}>
+            <Typography
+              color="inherit"
+              variant="h6"
+              sx={(theme) => ({
+                ...theme.mixins.maxLine({ line: 2, persistent: theme.typography.h6 }),
+              })}
+            >
+              {post.title}
+            </Typography>
 
-          <Typography
-            variant="body2"
-            sx={(theme) => ({
-              ...theme.mixins.maxLine({ line: 2, persistent: theme.typography.body2 }),
-              color: "text.secondary",
-            })}
-          >
-            {post.description}
-          </Typography>
+            <Typography
+              variant="body2"
+              sx={(theme) => ({
+                ...theme.mixins.maxLine({ line: 2, persistent: theme.typography.body2 }),
+                color: "text.secondary",
+              })}
+            >
+              {post.description}
+            </Typography>
 
-          <Box sx={{ gap: 1.5, display: "flex", alignItems: "center", pt: 1.5 }}>
-            <Avatar src={post.author.avatarUrl} />
-            <Box sx={{ gap: 0.5, display: "flex", flexDirection: "column" }}>
-              <Box component="span" sx={{ typography: "body2" }}>
-                {post.author.name}
+            <Box sx={{ gap: 1.5, display: "flex", alignItems: "center", pt: 1.5 }}>
+              <Avatar src={post.author.avatarUrl} />
+              <Box sx={{ gap: 0.5, display: "flex", flexDirection: "column" }}>
+                <Box component="span" sx={{ typography: "body2" }}>
+                  {post.author.name}
+                </Box>
+
+                <Typography variant="caption" sx={{ color: "text.disabled" }}>
+                  {post.duration}
+                </Typography>
               </Box>
-
-              <Typography variant="caption" sx={{ color: "text.disabled" }}>
-                {post.duration}
-              </Typography>
             </Box>
           </Box>
         </Box>
-      </Box>
-    </Paper>
+      </Paper>
+    </Link>
   );
 }

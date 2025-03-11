@@ -135,80 +135,85 @@ type PostItemProps = BoxProps & {
 
 export function PostItem({ sx, post, order, largePost, ...other }: PostItemProps) {
   return (
-    <Box
-      sx={[
-        {
-          gap: 2,
-          display: "flex",
-          flexDirection: "column",
-        },
-        largePost && {
-          borderRadius: 2,
-          overflow: "hidden",
-          position: "relative",
-        },
-        ...(Array.isArray(sx) ? sx : [sx]),
-      ]}
-      {...other}
+    <Link
+      component={RouterLink}
+      href={`${paths.post}/${post.title}/`}
+      color="inherit"
+      underline="none"
     >
-      <Image
-        alt={post.title}
-        src={post.coverUrl}
-        ratio={(largePost && "3/4") || (order && "4/3") || "1/1"}
-        slotProps={{
-          overlay: {
-            sx: (theme) => ({
-              ...(largePost && {
-                backgroundImage: `linear-gradient(to bottom, transparent, ${theme.vars.palette.common.black})`,
-              }),
-            }),
-          },
-        }}
-        sx={{ borderRadius: 2 }}
-      />
-
       <Box
-        sx={{
-          gap: 1,
-          display: "flex",
-          flexDirection: "column",
-          ...(largePost && {
-            p: 5,
+        sx={[
+          {
             gap: 2,
-            bottom: 0,
-            zIndex: 9,
-            position: "absolute",
-            color: "common.white",
-          }),
-        }}
+            display: "flex",
+            flexDirection: "column",
+          },
+          largePost && {
+            borderRadius: 2,
+            overflow: "hidden",
+            position: "relative",
+          },
+          ...(Array.isArray(sx) ? sx : [sx]),
+        ]}
+        {...other}
       >
-        <PostTime
-          createdAt={fDate(post.createdAt)}
-          duration={post.duration}
-          sx={{ ...(largePost && { opacity: 0.72, color: "inherit" }) }}
+        <Image
+          alt={post.title}
+          src={post.coverUrl}
+          ratio={(largePost && "3/4") || (order && "4/3") || "1/1"}
+          slotProps={{
+            overlay: {
+              sx: (theme) => ({
+                ...(largePost && {
+                  backgroundImage: `linear-gradient(to bottom, transparent, ${theme.vars.palette.common.black})`,
+                }),
+              }),
+            },
+          }}
+          sx={{ borderRadius: 2 }}
         />
 
-        <Link
-          component={RouterLink}
-          href={`${paths.post}/${post.title}/`}
-          color="inherit"
-          variant={largePost ? "h4" : "h6"}
-          sx={(theme) => ({ ...theme.mixins.maxLine({ line: 2 }) })}
+        <Box
+          sx={{
+            gap: 1,
+            display: "flex",
+            flexDirection: "column",
+            ...(largePost && {
+              p: 5,
+              gap: 2,
+              bottom: 0,
+              zIndex: 9,
+              position: "absolute",
+              color: "common.white",
+            }),
+          }}
         >
-          {post.title}
-        </Link>
+          <PostTime
+            createdAt={fDate(post.createdAt)}
+            duration={post.duration}
+            sx={{ ...(largePost && { opacity: 0.72, color: "inherit" }) }}
+          />
 
-        {largePost && (
           <Typography
-            sx={(theme) => ({
-              ...theme.mixins.maxLine({ line: 2 }),
-              opacity: 0.48,
-            })}
+            color="inherit"
+            variant={largePost ? "h4" : "h6"}
+            sx={(theme) => ({ ...theme.mixins.maxLine({ line: 2 }) })}
           >
-            {post.description}
+            {post.title}
           </Typography>
-        )}
+
+          {largePost && (
+            <Typography
+              sx={(theme) => ({
+                ...theme.mixins.maxLine({ line: 2 }),
+                opacity: 0.48,
+              })}
+            >
+              {post.description}
+            </Typography>
+          )}
+        </Box>
       </Box>
-    </Box>
+    </Link>
   );
 }

@@ -138,21 +138,21 @@ const useCourseNav = () => {
         subheader: t("levels"),
         items: levels.map((level: string) => ({
           title: level,
-          path: `${paths.courses}/?level=${level}/`,
+          path: `${paths.courses}/?levels=${level}`,
         })),
       },
       {
         subheader: t("technologies"),
         items: technologies.map((technology: string) => ({
           title: technology,
-          path: `${paths.courses}/?technology=${technology}/`,
+          path: `${paths.courses}/?technologies=${technology}`,
         })),
       },
       {
         subheader: t("categories"),
         items: categories.map((category: string) => ({
           title: category,
-          path: `${paths.courses}/?category=${category}/`,
+          path: `${paths.courses}/?categories=${category}`,
         })),
       },
     ],

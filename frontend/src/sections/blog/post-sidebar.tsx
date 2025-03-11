@@ -181,6 +181,12 @@ export function PostSidebar({
   const renderPopularTags = () => {
     const currentValue = query?.tags;
     const currentTags = currentValue ? currentValue.split(",") : [];
+
+    const getSelected = (selectedItems: string[], item: string) =>
+      selectedItems.includes(item)
+        ? selectedItems.filter((value) => value !== item)
+        : [...selectedItems, item];
+
     return (
       !!tags?.length && (
         <Box sx={slotProps?.tags}>
@@ -198,14 +204,7 @@ export function PostSidebar({
                   component="a"
                   clickable
                   onClick={() => {
-                    if (isSelected) {
-                      handleChange(
-                        "tags",
-                        currentTags.filter((currentTag: string) => currentTag !== tag).join(",")
-                      );
-                    } else {
-                      handleChange("tags", [...currentTags, tag].join(","));
-                    }
+                    handleChange("tags", getSelected(currentTags, tag).join(","));
                   }}
                 />
               );

@@ -1,0 +1,13 @@
+{
+  "title": "Courses",
+  "filter": {
+    "level": "Skill levels",
+    "technology": "Technology",
+    "category": "Category",
+    "rating": { "title": "Rating", "more": "& Up" }
+  },
+  "teacher": ["teacher"],
+  "student": ["student"],
+  "review": ["review"],
+  "hour": ["hour"]
+}

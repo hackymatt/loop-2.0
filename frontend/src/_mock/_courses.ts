@@ -67,6 +67,7 @@ export const _courses = Array.from({ length: 12 }, (_, index) => ({
   totalReviews: 3458,
   totalStudents: 180000,
   level: getLevel(index),
+  technology: "React",
   category: _tags[index],
   price: getPrice(index),
   skills: _tags.slice(0, 5),

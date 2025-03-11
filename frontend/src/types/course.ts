@@ -36,6 +36,7 @@ export type ICourseProps = {
   price: number;
   level: string;
   coverUrl: string;
+  technology: string;
   category: string;
   skills: string[];
   priceSale: number;
@@ -56,11 +57,8 @@ export type ICourseProps = {
 };
 
 export type ICourseFiltersProps = {
-  keyword: string;
-  fee: string[];
-  level: string[];
-  duration: string[];
+  levels: string[];
+  technologies: string[];
   categories: string[];
   rating: string | null;
-  language: string[];
 };
