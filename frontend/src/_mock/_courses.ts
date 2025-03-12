@@ -65,7 +65,6 @@ export const _courses = Array.from({ length: 12 }, (_, index) => ({
   lessons: LESSONS,
   totalQuizzes: 4,
   totalExercises: 10,
-  totalArticles: 15,
   totalVideos: 6,
   totalReviews: 3458,
   totalStudents: 180000,

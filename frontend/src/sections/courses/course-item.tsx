@@ -5,7 +5,6 @@ import { useTranslation } from "react-i18next";
 import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 import Link from "@mui/material/Link";
-import Stack from "@mui/material/Stack";
 import Avatar from "@mui/material/Avatar";
 import Divider from "@mui/material/Divider";
 import Typography from "@mui/material/Typography";
@@ -29,10 +28,11 @@ type Props = {
 export function CourseItem({ course, isVertical }: Props) {
   const { t } = useTranslation("course");
 
-  const teacher = t("teacher", { returnObjects: true }) as string[];
+  const instructor = t("instructor", { returnObjects: true }) as string[];
   const student = t("student", { returnObjects: true }) as string[];
   const review = t("review", { returnObjects: true }) as string[];
   const hour = t("hour", { returnObjects: true }) as string[];
+  const lesson = t("lesson", { returnObjects: true }) as string[];
 
   const languagePluralize = usePluralize();
 
@@ -45,26 +45,24 @@ export function CourseItem({ course, isVertical }: Props) {
   );
 
   const renderBottom = () => (
-    <Box sx={{ gap: 2.5, display: "flex", typography: "body2", color: "text.disabled" }}>
-      <Box sx={{ gap: 1, display: "flex", alignItems: "center" }}>
-        <Iconify
-          icon={
-            (course.level === "Beginner" && "carbon:skill-level-basic") ||
-            (course.level === "Intermediate" && "carbon:skill-level-intermediate") ||
-            "carbon:skill-level-advanced"
-          }
-        />
-        {course.level}
-      </Box>
-
-      <Box sx={{ gap: 1, display: "flex", alignItems: "center" }}>
-        <Iconify icon="carbon:code" />
-        {course.technology}
-      </Box>
-
+    <Box
+      sx={{
+        gap: 1.5,
+        display: "flex",
+        flexWrap: "wrap",
+        alignItems: "center",
+        typography: "body2",
+        color: "text.disabled",
+      }}
+    >
       <Box sx={{ gap: 1, display: "flex", alignItems: "center" }}>
         <Iconify icon="solar:clock-circle-outline" />{" "}
         {`${course.totalHours} ${languagePluralize(hour, course.totalHours)}`}
+      </Box>
+
+      <Box sx={{ gap: 1, display: "flex", alignItems: "center" }}>
+        <Iconify icon="solar:documents-minimalistic-outline" />
+        {course.lessons.length} {languagePluralize(lesson, course.lessons.length)}
       </Box>
     </Box>
   );
@@ -99,7 +97,7 @@ export function CourseItem({ course, isVertical }: Props) {
         {Number(course.teachers?.length) - 1 > 0 && (
           <Box component="span" sx={{ typography: "body2", color: "text.secondary" }}>
             + {Number(course.teachers?.length) - 1}{" "}
-            {languagePluralize(teacher, Number(course.teachers?.length) - 1)}
+            {languagePluralize(instructor, Number(course.teachers?.length) - 1)}
           </Box>
         )}
       </Box>
@@ -107,30 +105,59 @@ export function CourseItem({ course, isVertical }: Props) {
   );
 
   const renderInfo = () => (
-    <Stack
-      divider={<Divider orientation="vertical" sx={{ height: 20, my: "auto" }} />}
-      sx={{ gap: 1.5, flexWrap: "wrap", alignItems: "center", flexDirection: "row" }}
+    <Box
+      sx={{
+        gap: 1.5,
+        display: "flex",
+        flexWrap: "wrap",
+        alignItems: "center",
+        typography: "body2",
+      }}
     >
       <Box sx={{ gap: 0.5, display: "flex", alignItems: "center" }}>
+        <Iconify
+          icon={
+            (course.level === "Beginner" && "carbon:skill-level-basic") ||
+            (course.level === "Intermediate" && "carbon:skill-level-intermediate") ||
+            "carbon:skill-level-advanced"
+          }
+        />
+        {course.level}
+      </Box>
+
+      <Divider orientation="vertical" sx={{ height: 20, my: "auto" }} />
+
+      <Box sx={{ gap: 0.5, display: "flex", alignItems: "center" }}>
+        <Iconify icon="carbon:code" />
+        {course.technology}
+      </Box>
+
+      <Divider orientation="vertical" sx={{ height: 20, my: "auto" }} />
+
+      <Box sx={{ gap: 0.5, display: "flex", alignItems: "center" }}>
         <Iconify icon="eva:star-fill" sx={{ color: "warning.main" }} />
-        <Box sx={{ typography: "h6" }}>
-          {Number.isInteger(course.ratingNumber) ? `${course.ratingNumber}.0` : course.ratingNumber}
-        </Box>
-
-        {course.totalReviews && (
-          <Typography variant="body2" sx={{ color: "text.secondary" }}>
-            ({fShortenNumber(course.totalReviews)} {languagePluralize(review, course.totalReviews)})
-          </Typography>
-        )}
+        {Number.isInteger(course.ratingNumber) ? `${course.ratingNumber}.0` : course.ratingNumber}
       </Box>
 
-      <Box sx={{ display: "flex", typography: "subtitle2" }}>
-        {fShortenNumber(course.totalStudents)}
-        <Box component="span" sx={{ typography: "body2", ml: 0.5 }}>
-          {languagePluralize(student, course.totalStudents)}
+      <Divider orientation="vertical" sx={{ height: 20, my: "auto" }} />
+
+      {course.totalReviews && (
+        <Box>
+          {fShortenNumber(course.totalReviews)} {languagePluralize(review, course.totalReviews)}
         </Box>
-      </Box>
-    </Stack>
+      )}
+
+      <Divider orientation="vertical" sx={{ height: 20, my: "auto" }} />
+
+      {course.totalStudents ? (
+        <Box sx={{ display: "flex", alignItems: "center" }}>
+          {fShortenNumber(course.totalStudents)}
+          <Box component="span" sx={{ ml: 0.5 }}>
+            {languagePluralize(student, course.totalStudents)}
+          </Box>
+        </Box>
+      ) : null}
+    </Box>
   );
 
   const renderContent = () => (

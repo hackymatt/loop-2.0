@@ -77,7 +77,6 @@ export function CourseView() {
         ratingNumber={course?.ratingNumber || 0}
         totalReviews={course?.totalReviews || 0}
         totalExercises={course?.totalExercises || 0}
-        totalArticles={course?.totalArticles || 0}
         totalVideos={course?.totalVideos || 0}
         totalQuizzes={course?.totalQuizzes || 0}
         totalLessons={course?.lessons.length || 0}

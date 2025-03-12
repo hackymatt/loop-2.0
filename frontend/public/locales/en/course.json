@@ -6,7 +6,7 @@
     "category": "Category",
     "rating": { "title": "Rating", "more": "& Up" }
   },
-  "teacher": ["teacher"],
+  "instructor": ["instructor"],
   "student": ["student"],
   "review": ["review"],
   "hour": ["hour"],
@@ -15,5 +15,6 @@
   "article": ["article"],
   "exercise": ["exercise"],
   "quiz": ["quiz"],
-  "sign-up": { "header": "Create your free account", "button": "Get started" }
+  "sign-up": { "header": "Create your free account", "button": "Start learning for free" },
+  "start": "Start course for free"
 }

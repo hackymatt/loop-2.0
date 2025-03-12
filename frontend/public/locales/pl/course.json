@@ -6,7 +6,7 @@
     "category": "Kategoria",
     "rating": { "title": "Ocena", "more": "i wyżej" }
   },
-  "teacher": ["nauczyciel", "nauczycieli", "nauczycieli"],
+  "instructor": ["instruktor", "instruktorów", "instruktorów"],
   "student": ["uczeń", "uczniów", "uczniów"],
   "review": ["recenzja", "recenzje", "recenzji"],
   "hour": ["godzina", "godziny", "godzin"],
@@ -15,5 +15,6 @@
   "article": ["artykuł", "artykuły", "artykułów"],
   "exercise": ["ćwiczenie", "ćwiczenia", "ćwiczeń"],
   "quiz": ["test", "testy", "testów"],
-  "sign-up": { "header": "Utwórz darmowe konto", "button": "Zacznij teraz" }
+  "sign-up": { "header": "Utwórz darmowe konto", "button": "Zacznij naukę za darmo" },
+  "start": "Rozpocznij kurs za darmo"
 }

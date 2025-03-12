@@ -49,7 +49,6 @@ export type ICourseProps = {
   totalQuizzes: number;
   totalExercises: number;
   totalVideos: number;
-  totalArticles: number;
   totalReviews: number;
   isBestSeller: boolean;
   createdAt: DatePickerFormat;

@@ -26,6 +26,7 @@ const variants: Variants = varFade("inUp", { distance: 24 });
 
 export function HomeHero({ sx, ...other }: BoxProps) {
   const { t } = useTranslation("home");
+
   const renderTexts = () => (
     <>
       <m.div variants={variants}>

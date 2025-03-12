@@ -2,11 +2,11 @@ import type { BoxProps } from "@mui/material/Box";
 import type { ICourseProps } from "src/types/course";
 
 import { useTranslation } from "react-i18next";
+import { varAlpha } from "minimal-shared/utils";
 
 import Box from "@mui/material/Box";
-import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid2";
-import Avatar from "@mui/material/Avatar";
+import { Button } from "@mui/material";
 import Divider from "@mui/material/Divider";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
@@ -18,6 +18,7 @@ import { usePluralize } from "src/hooks/use-pluralize";
 import { fShortenNumber } from "src/utils/format-number";
 
 import { Iconify } from "src/components/iconify";
+import { AnimateBorder } from "src/components/animate";
 import { CustomBreadcrumbs } from "src/components/custom-breadcrumbs";
 
 import { SignUpView } from "../auth/sign-up-view";
@@ -43,7 +44,6 @@ export function CourseDetailsHero({
   totalReviews,
   totalQuizzes,
   totalExercises,
-  totalArticles,
   totalVideos,
   totalLessons,
   totalStudents,
@@ -52,62 +52,69 @@ export function CourseDetailsHero({
   const { t: navigation } = useTranslation("navigation");
   const { t } = useTranslation("course");
 
-  const teacher = t("teacher", { returnObjects: true }) as string[];
   const student = t("student", { returnObjects: true }) as string[];
   const review = t("review", { returnObjects: true }) as string[];
   const hour = t("hour", { returnObjects: true }) as string[];
   const lesson = t("lesson", { returnObjects: true }) as string[];
   const video = t("video", { returnObjects: true }) as string[];
-  const article = t("article", { returnObjects: true }) as string[];
   const exercise = t("exercise", { returnObjects: true }) as string[];
   const quiz = t("quiz", { returnObjects: true }) as string[];
 
   const languagePluralize = usePluralize();
 
   const renderInfo = () => (
-    <Box sx={{ gap: 1.5, display: "flex", flexWrap: "wrap", alignItems: "center" }}>
+    <Box
+      sx={{
+        gap: 1.5,
+        display: "flex",
+        flexWrap: "wrap",
+        alignItems: "center",
+        typography: "body2",
+      }}
+    >
       <Box sx={{ gap: 0.5, display: "flex", alignItems: "center" }}>
-        <Iconify icon="eva:star-fill" sx={{ color: "warning.main" }} />
-        <Box sx={{ typography: "h6" }}>
-          {Number.isInteger(ratingNumber) ? `${ratingNumber}.0` : ratingNumber}
-        </Box>
-
-        {totalReviews && (
-          <Link variant="body2" sx={{ color: "text.secondary" }}>
-            ({fShortenNumber(totalReviews)} {languagePluralize(review, totalReviews)})
-          </Link>
-        )}
+        <Iconify
+          icon={
+            (level === "Beginner" && "carbon:skill-level-basic") ||
+            (level === "Intermediate" && "carbon:skill-level-intermediate") ||
+            "carbon:skill-level-advanced"
+          }
+        />
+        {level}
       </Box>
 
       <Divider orientation="vertical" sx={{ height: 20, my: "auto" }} />
 
+      <Box sx={{ gap: 0.5, display: "flex", alignItems: "center" }}>
+        <Iconify icon="carbon:code" />
+        {technology}
+      </Box>
+
+      <Divider orientation="vertical" sx={{ height: 20, my: "auto" }} />
+
+      <Box sx={{ gap: 0.5, display: "flex", alignItems: "center" }}>
+        <Iconify icon="eva:star-fill" sx={{ color: "warning.main" }} />
+        {Number.isInteger(ratingNumber) ? `${ratingNumber}.0` : ratingNumber}
+      </Box>
+
+      <Divider orientation="vertical" sx={{ height: 20, my: "auto" }} />
+
+      {totalReviews && (
+        <Box>
+          {fShortenNumber(totalReviews)} {languagePluralize(review, totalReviews)}
+        </Box>
+      )}
+
+      <Divider orientation="vertical" sx={{ height: 20, my: "auto" }} />
+
       {totalStudents ? (
-        <Box sx={{ display: "flex", typography: "subtitle2" }}>
+        <Box sx={{ display: "flex", alignItems: "center" }}>
           {fShortenNumber(totalStudents)}
-          <Box component="span" sx={{ typography: "body2", ml: 0.5 }}>
+          <Box component="span" sx={{ ml: 0.5 }}>
             {languagePluralize(student, totalStudents)}
           </Box>
         </Box>
       ) : null}
-    </Box>
-  );
-
-  const renderTeacher = () => (
-    <Box sx={{ gap: 1.5, display: "flex", alignItems: "center" }}>
-      <Avatar src={teachers?.[0]?.avatarUrl} />
-
-      <Box sx={{ gap: 0.75, display: "flex", alignItems: "center", flexWrap: "wrap" }}>
-        <Typography variant="body2">{teachers?.[0]?.name}</Typography>
-
-        {Number(teachers?.length) - 1 > 0 && (
-          <Box component="span" sx={{ typography: "body2", color: "text.secondary" }}>
-            + {Number(teachers?.length) - 1}
-            <Link underline="always" color="inherit" sx={{ ml: 0.25 }}>
-              {languagePluralize(teacher, Number(teachers?.length) - 1)}
-            </Link>
-          </Box>
-        )}
-      </Box>
     </Box>
   );
 
@@ -121,38 +128,24 @@ export function CourseDetailsHero({
         {slug}
       </Typography>
 
+      {renderInfo()}
+
       <Typography sx={{ color: "text.secondary" }}>{description}</Typography>
     </Box>
   );
 
-  const renderSummary = () => (
+  const renderContent = () => (
     <Box
       sx={{
-        rowGap: 3,
-        columnGap: 5,
+        rowGap: 2,
+        columnGap: 3,
         display: "flex",
         flexWrap: "wrap",
-        maxWidth: 480,
+        maxWidth: 560,
         typography: "body2",
         "& > div": { gap: 1, display: "flex", alignItems: "center" },
       }}
     >
-      <div>
-        <Iconify
-          icon={
-            (level === "Beginner" && "carbon:skill-level-basic") ||
-            (level === "Intermediate" && "carbon:skill-level-intermediate") ||
-            "carbon:skill-level-advanced"
-          }
-        />
-        {level}
-      </div>
-
-      <div>
-        <Iconify icon="carbon:code" />
-        {technology}
-      </div>
-
       {totalHours ? (
         <div>
           <Iconify icon="solar:clock-circle-outline" />{" "}
@@ -174,16 +167,9 @@ export function CourseDetailsHero({
         </div>
       ) : null}
 
-      {totalArticles ? (
-        <div>
-          <Iconify icon="solar:book-outline" />
-          {`${totalArticles} ${languagePluralize(article, totalArticles)}`}
-        </div>
-      ) : null}
-
       {totalExercises ? (
         <div>
-          <Iconify icon="solar:code-circle-outline" />
+          <Iconify icon="solar:code-outline" />
           {`${totalExercises} ${languagePluralize(exercise, totalExercises)}`}
         </div>
       ) : null}
@@ -195,6 +181,73 @@ export function CourseDetailsHero({
         </div>
       ) : null}
     </Box>
+  );
+
+  const renderSummary = () => (
+    <Box
+      sx={{
+        rowGap: 2,
+        columnGap: 3,
+        display: "flex",
+        flexWrap: "wrap",
+        maxWidth: 560,
+        typography: "body2",
+        "& > div": { gap: 1, display: "flex", alignItems: "center" },
+      }}
+    >
+      {totalHours ? (
+        <div>
+          <Iconify icon="solar:medal-ribbon-star-outline" />{" "}
+          {`${totalHours} ${languagePluralize(hour, totalHours)}`}
+        </div>
+      ) : null}
+
+      <Box sx={{ gap: 1, display: "flex", alignItems: "center", typography: "body2" }}>
+        <Iconify icon="carbon:data-accessor" />
+        Dożywotni dostęp
+      </Box>
+
+      <Box sx={{ gap: 1, display: "flex", alignItems: "center", typography: "body2" }}>
+        <Iconify icon="carbon:certificate" />
+        Certyfikat ukończenia
+      </Box>
+    </Box>
+  );
+
+  const renderButton = () => (
+    <AnimateBorder
+      sx={(theme) => ({
+        borderRadius: 1,
+        position: "relative",
+        bgcolor: theme.vars.palette.primary.main,
+        color: "common.white",
+      })}
+      duration={6}
+      slotProps={{
+        outlineColor: (theme) =>
+          `linear-gradient(135deg, ${varAlpha(theme.vars.palette.secondary.lightChannel, 0.08)} 50%, ${varAlpha(theme.vars.palette.secondary.mainChannel, 0.24)})`,
+        primaryBorder: {
+          size: 60,
+          sx: (theme) => ({
+            color: theme.vars.palette.secondary.main,
+          }),
+        },
+        secondaryBorder: {
+          sx: (theme) => ({
+            color: theme.vars.palette.error.main,
+          }),
+        },
+      }}
+    >
+      <Button
+        variant="text"
+        size="large"
+        href={paths.register}
+        sx={{ px: 2, borderRadius: "inherit", textAlign: "center" }}
+      >
+        {t("start")}
+      </Button>
+    </AnimateBorder>
   );
 
   const renderForm = () => (
@@ -242,14 +295,19 @@ export function CourseDetailsHero({
           container
           spacing={{ xs: 5, md: 10 }}
           direction={{ xs: "column-reverse", md: "row-reverse" }}
+          alignItems="center"
         >
-          <Grid size={{ xs: 12, md: 5 }}>{renderForm()}</Grid>
+          <Grid
+            size={{ xs: 12, md: 5 }}
+            sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}
+          >
+            {renderForm()}
+          </Grid>
 
           <Grid size={{ xs: 12, md: 7 }} sx={{ gap: 3, display: "flex", flexDirection: "column" }}>
             {renderTexts()}
-            {renderInfo()}
-            {renderTeacher()}
-            <Divider sx={{ borderStyle: "dashed" }} />
+            {renderButton()}
+            {renderContent()}
             {renderSummary()}
           </Grid>
         </Grid>
