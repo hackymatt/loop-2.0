@@ -28,8 +28,6 @@ export function PricingCard({ plan, sx, ...other }: Props) {
   const { t } = useTranslation("pricing");
   const { t: locale } = useTranslation("locale");
 
-  const currentPlan = ["Darmowy", "Free"];
-
   const renderIcons = () => (
     <Box
       component="img"
@@ -122,11 +120,10 @@ export function PricingCard({ plan, sx, ...other }: Props) {
       <Button
         fullWidth
         size="large"
-        disabled={currentPlan.includes(plan.license)}
-        variant={currentPlan.includes(plan.license) ? "outlined" : "contained"}
+        variant="contained"
         color={plan.popular ? "primary" : "inherit"}
       >
-        {currentPlan.includes(plan.license) ? t("current") : `${t("choose")} ${plan.license}`}
+        {`${t("choose")} ${plan.license}`}
       </Button>
     </Paper>
   );

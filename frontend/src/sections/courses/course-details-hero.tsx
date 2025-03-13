@@ -205,7 +205,7 @@ export function CourseDetailsHero({
 
       <Box sx={{ gap: 1, display: "flex", alignItems: "center", typography: "body2" }}>
         <Iconify icon="carbon:certificate" />
-        {t("certificate")}
+        {t("certificate.title")}
       </Box>
     </Box>
   );

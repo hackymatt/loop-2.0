@@ -2,8 +2,8 @@ import { useTranslation } from "react-i18next";
 
 import { paths } from "src/routes/paths";
 
-import { _caseStudies } from "src/_mock";
 import { CONFIG } from "src/global-config";
+import { _courses, _caseStudies } from "src/_mock";
 
 // ----------------------------------------------------------------------
 
@@ -111,7 +111,7 @@ export const pageLinks = [
 const useCourseNav = () => {
   const { t } = useTranslation("navigation");
 
-  const popularCourses = ["Marketing", "E-commerce", "E-learning", "Career", "Travel"];
+  const popularCourses = _courses.map((c) => c.slug).slice(0, 4);
   const levels = ["Beginner", "Intermediate", "Advanced"];
   const technologies = [
     "React",

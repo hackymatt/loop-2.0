@@ -36,6 +36,7 @@ export type ICourseProps = {
   price: number;
   level: string;
   coverUrl: string;
+  chatUrl: string;
   category: string;
   technology: string;
   skills: string[];

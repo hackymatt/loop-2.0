@@ -9,10 +9,11 @@ import { _courses, _reviews } from "src/_mock";
 import { ReviewList } from "../review/review-list";
 import { ReviewSummary } from "../review/review-summary";
 import { CourseDetailsHero } from "../courses/course-details-hero";
-import { CourseDetailsInfo } from "../courses/course-details-info";
 import { CourseListSimilar } from "../courses/course-list-similar";
 import { CourseDetailsSummary } from "../courses/course-details-summary";
+import { CourseChatDetailsInfo } from "../courses/course-chat-details-info";
 import { CourseDetailsTeachers } from "../courses/course-details-teachers-info";
+import { CourseCertificateDetailsInfo } from "../courses/course-certificate-details-info";
 
 // ----------------------------------------------------------------------
 
@@ -61,12 +62,9 @@ export function CourseView() {
           <Grid size={{ xs: 12, md: 5, lg: 4 }}>
             <CourseDetailsTeachers teachers={course?.teachers || []} sx={{ mb: 3 }} />
 
-            <CourseDetailsInfo
-              price={course?.price || 0}
-              priceSale={course?.priceSale || 0}
-              resources={course?.resources || 0}
-              totalLessons={course?.lessons.length || 0}
-            />
+            <CourseCertificateDetailsInfo slug={course?.slug || ""} sx={{ mb: 3 }} />
+
+            <CourseChatDetailsInfo slug={course?.slug || ""} />
           </Grid>
         </Grid>
       </Container>

@@ -60,6 +60,7 @@ const getLearnList = () => [
 
 export const _courses = Array.from({ length: 12 }, (_, index) => ({
   id: _mock.id(index),
+  chatUrl: "https://loop.edu.pl",
   resources: 12,
   totalHours: 100,
   totalPoints: 3459,

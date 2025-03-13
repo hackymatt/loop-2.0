@@ -23,8 +23,6 @@ export function PricingColumnContentMobile({ plan, sx, ...other }: PricingColumn
 
   const openContent = useBoolean();
 
-  const currentPlan = ["Darmowy", "Free"];
-
   const renderButton = () => (
     <Link
       variant="subtitle2"
@@ -91,12 +89,11 @@ export function PricingColumnContentMobile({ plan, sx, ...other }: PricingColumn
       <Button
         fullWidth
         size="large"
-        disabled={currentPlan.includes(plan.license)}
-        variant={currentPlan.includes(plan.license) ? "outlined" : "contained"}
+        variant="contained"
         color={plan.popular ? "primary" : "inherit"}
         sx={{ mt: 5 }}
       >
-        {currentPlan.includes(plan.license) ? t("current") : `${t("choose")} ${plan.license}`}
+        {`${t("choose")} ${plan.license}`}
       </Button>
     </Box>
   );
@@ -106,8 +103,6 @@ export function PricingColumnContentMobile({ plan, sx, ...other }: PricingColumn
 
 export function PricingColumnContentDesktop({ plan, sx, ...other }: PricingColumnContentProps) {
   const { t } = useTranslation("pricing");
-
-  const currentPlan = ["Darmowy", "Free"];
 
   return (
     <Box sx={sx} {...other}>
@@ -142,13 +137,8 @@ export function PricingColumnContentDesktop({ plan, sx, ...other }: PricingColum
           }),
         }}
       >
-        <Button
-          size="large"
-          disabled={currentPlan.includes(plan.license)}
-          variant={currentPlan.includes(plan.license) ? "outlined" : "contained"}
-          color={plan.popular ? "primary" : "inherit"}
-        >
-          {currentPlan.includes(plan.license) ? t("current") : `${t("choose")} ${plan.license}`}
+        <Button size="large" variant="contained" color={plan.popular ? "primary" : "inherit"}>
+          {`${t("choose")} ${plan.license}`}
         </Button>
       </Box>
     </Box>
