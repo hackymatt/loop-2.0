@@ -22,7 +22,7 @@ export function Certificate({ title }: { title: string }) {
         width: 1,
         borderRadius: 1.5,
         bgcolor: "background.neutral",
-        py: 3,
+        py: 2,
       })}
     >
       <Container

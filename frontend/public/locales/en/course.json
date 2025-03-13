@@ -28,5 +28,6 @@
     "button": "Join the chat"
   },
   "instructors": "Instructors",
+  "reviews": "Reviews",
   "included": { "start": "Included with", "plans": "Basic and Premium" }
 }

@@ -23,7 +23,7 @@ export function ReviewItem({ name, rating, message, createdAt, avatarUrl, sx }: 
         value={rating}
         precision={0.5}
         readOnly
-        sx={{ [`& .${svgIconClasses.root}`]: { color: "text.primary" } }}
+        sx={{ [`& .${svgIconClasses.root}`]: { color: "warning.main" } }}
       />
 
       <Typography variant="subtitle1">{name}</Typography>
@@ -34,7 +34,7 @@ export function ReviewItem({ name, rating, message, createdAt, avatarUrl, sx }: 
         </Typography>
       )}
 
-      <Typography variant="body2">{message}</Typography>
+      {message && <Typography variant="body2">{message}</Typography>}
     </Box>
   );
 

@@ -28,6 +28,7 @@ type Props = {
 };
 
 export function CourseItem({ course, isVertical }: Props) {
+  const { t: locale } = useTranslation("locale");
   const { t } = useTranslation("course");
 
   const instructor = t("instructor", { returnObjects: true }) as string[];
@@ -139,7 +140,12 @@ export function CourseItem({ course, isVertical }: Props) {
 
       {course.totalReviews && (
         <Box>
-          {fShortenNumber(course.totalReviews)} {languagePluralize(review, course.totalReviews)}
+          {fShortenNumber(
+            course.totalReviews,
+            {},
+            { code: locale("code"), currency: locale("currency") }
+          )}{" "}
+          {languagePluralize(review, course.totalReviews)}
         </Box>
       )}
 
@@ -147,7 +153,11 @@ export function CourseItem({ course, isVertical }: Props) {
 
       {course.totalStudents ? (
         <Box sx={{ display: "flex", alignItems: "center" }}>
-          {fShortenNumber(course.totalStudents)}
+          {fShortenNumber(
+            course.totalStudents,
+            {},
+            { code: locale("code"), currency: locale("currency") }
+          )}
           <Box component="span" sx={{ ml: 0.5 }}>
             {languagePluralize(student, course.totalStudents)}
           </Box>

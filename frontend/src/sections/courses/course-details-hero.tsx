@@ -53,6 +53,7 @@ export function CourseDetailsHero({
   ...other
 }: Props) {
   const { t: navigation } = useTranslation("navigation");
+  const { t: locale } = useTranslation("locale");
   const { t } = useTranslation("course");
 
   const student = t("student", { returnObjects: true }) as string[];
@@ -98,7 +99,8 @@ export function CourseDetailsHero({
 
       {totalReviews && (
         <Box>
-          {fShortenNumber(totalReviews)} {languagePluralize(review, totalReviews)}
+          {fShortenNumber(totalReviews, {}, { code: locale("code"), currency: locale("currency") })}{" "}
+          {languagePluralize(review, totalReviews)}
         </Box>
       )}
 
@@ -106,7 +108,11 @@ export function CourseDetailsHero({
 
       {totalStudents ? (
         <Box sx={{ display: "flex", alignItems: "center" }}>
-          {fShortenNumber(totalStudents)}
+          {fShortenNumber(
+            totalStudents,
+            {},
+            { code: locale("code"), currency: locale("currency") }
+          )}
           <Box component="span" sx={{ ml: 0.5 }}>
             {languagePluralize(student, totalStudents)}
           </Box>

@@ -20,7 +20,7 @@ export type IReviewItemProp = {
   id: string;
   name: string;
   rating: number;
-  message: string;
+  message?: string;
   helpful: number;
   avatarUrl: string;
   createdAt: DatePickerFormat;

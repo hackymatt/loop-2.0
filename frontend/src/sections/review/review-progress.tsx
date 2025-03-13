@@ -1,5 +1,7 @@
 import type { BoxProps } from "@mui/material/Box";
 
+import { useTranslation } from "react-i18next";
+
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import LinearProgress from "@mui/material/LinearProgress";
@@ -21,6 +23,8 @@ const RATINGS = [
 // ----------------------------------------------------------------------
 
 export function ReviewProgress({ sx, ...other }: BoxProps) {
+  const { t: locale } = useTranslation("locale");
+
   const totals = RATINGS.map((rating) => rating.number).reduce(
     (accumulator: number, curr: number) => accumulator + curr
   );
@@ -39,7 +43,7 @@ export function ReviewProgress({ sx, ...other }: BoxProps) {
             {5 - index}
           </Box>
 
-          <Iconify width={16} icon="eva:star-fill" />
+          <Iconify width={16} icon="eva:star-fill" sx={{ color: "warning.main" }} />
 
           <LinearProgress
             color="inherit"
@@ -49,7 +53,11 @@ export function ReviewProgress({ sx, ...other }: BoxProps) {
           />
 
           <Typography variant="body2" sx={{ minWidth: 40, color: "text.disabled" }}>
-            {fShortenNumber(rating.number)}
+            {fShortenNumber(
+              rating.number,
+              {},
+              { code: locale("code"), currency: locale("currency") }
+            )}
           </Typography>
         </Box>
       ))}
