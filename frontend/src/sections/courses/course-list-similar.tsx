@@ -1,6 +1,8 @@
 import type { BoxProps } from "@mui/material/Box";
 import type { ICourseProps } from "src/types/course";
 
+import { useTranslation } from "react-i18next";
+
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
@@ -20,6 +22,7 @@ type Props = BoxProps & {
 };
 
 export function CourseListSimilar({ courses, sx, ...other }: Props) {
+  const { t } = useTranslation("course");
   return (
     <Box
       component="section"
@@ -32,16 +35,16 @@ export function CourseListSimilar({ courses, sx, ...other }: Props) {
       <Container>
         <Box sx={{ display: "flex", alignItems: "center", mb: { xs: 5, md: 10 } }}>
           <Typography component="h6" variant="h3" sx={{ flexGrow: 1 }}>
-            Similar courses
+            {t("similar")}
           </Typography>
 
           <Button
             component={RouterLink}
-            href={paths.eLearning.courses}
+            href={paths.courses}
             color="inherit"
             endIcon={<Iconify icon="solar:alt-arrow-right-outline" />}
           >
-            View all
+            {t("viewAll")}
           </Button>
         </Box>
 

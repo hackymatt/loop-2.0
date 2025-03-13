@@ -29,5 +29,7 @@
   },
   "instructors": "Instructors",
   "reviews": "Reviews",
-  "included": { "start": "Included with", "plans": "Basic and Premium" }
+  "included": { "start": "Included with", "plans": "Basic and Premium" },
+  "similar": "Similar courses",
+  "viewAll": "View all"
 }

@@ -29,5 +29,7 @@
   },
   "instructors": "Instruktorzy",
   "reviews": "Recenzje",
-  "included": { "start": "Dostępne w planie", "plans": "Podstawowym oraz Premium" }
+  "included": { "start": "Dostępne w planie", "plans": "Podstawowym oraz Premium" },
+  "similar": "Podobne kursy",
+  "viewAll": "Zobacz wszystkie"
 }
