@@ -1,15 +1,11 @@
 "use client";
 
-import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid2";
-import Button from "@mui/material/Button";
 import Divider from "@mui/material/Divider";
 import Container from "@mui/material/Container";
 
-import { _mock, _courses, _socials, _reviews } from "src/_mock";
-import { TwitterIcon, FacebookIcon, LinkedinIcon, InstagramIcon } from "src/assets/icons";
+import { _courses, _reviews } from "src/_mock";
 
-import { Advertisement } from "../advertisement";
 import { ReviewList } from "../review/review-list";
 import { ReviewSummary } from "../review/review-summary";
 import { CourseDetailsHero } from "../courses/course-details-hero";
@@ -23,34 +19,6 @@ import { CourseDetailsTeachers } from "../courses/course-details-teachers-info";
 const course = _courses[0];
 const relatedCourses = _courses.slice(0, 3);
 export function CourseView() {
-  const renderSocials = () => (
-    <Box sx={{ gap: 1.5, display: "flex", mt: 5 }}>
-      <Box component="span" sx={{ lineHeight: "30px", typography: "subtitle2" }}>
-        Share:
-      </Box>
-
-      <Box sx={{ gap: 1, display: "flex", alignItems: "center", flexWrap: "wrap" }}>
-        {_socials.map((social) => (
-          <Button
-            key={social.value}
-            size="small"
-            variant="outlined"
-            startIcon={
-              <>
-                {social.value === "twitter" && <TwitterIcon />}
-                {social.value === "facebook" && <FacebookIcon />}
-                {social.value === "instagram" && <InstagramIcon />}
-                {social.value === "linkedin" && <LinkedinIcon />}
-              </>
-            }
-          >
-            {social.label}
-          </Button>
-        ))}
-      </Box>
-    </Box>
-  );
-
   const renderReview = () => (
     <>
       <ReviewSummary ratingNumber={4.1} reviewNumber={123456} />
@@ -72,6 +40,7 @@ export function CourseView() {
         coverUrl={course?.coverUrl || ""}
         languages={course?.languages || []}
         isBestSeller={course?.isBestSeller || false}
+        totalPoints={course?.totalPoints || 0}
         totalHours={course?.totalHours || 0}
         description={course?.description || ""}
         ratingNumber={course?.ratingNumber || 0}
@@ -86,37 +55,17 @@ export function CourseView() {
       <Container sx={{ py: { xs: 5, md: 10 } }}>
         <Grid container spacing={{ xs: 5, md: 8 }}>
           <Grid size={{ xs: 12, md: 7, lg: 8 }}>
-            <CourseDetailsSummary
-              lessons={course?.lessons || []}
-              learnList={course?.learnList || []}
-              skills={course?.skills || []}
-            />
-
-            {renderSocials()}
-
-            <Divider sx={{ my: 5 }} />
-
-            <CourseDetailsTeachers teachers={course?.teachers || []} />
+            <CourseDetailsSummary lessons={course?.lessons || []} />
           </Grid>
 
           <Grid size={{ xs: 12, md: 5, lg: 4 }}>
+            <CourseDetailsTeachers teachers={course?.teachers || []} sx={{ mb: 3 }} />
+
             <CourseDetailsInfo
               price={course?.price || 0}
               priceSale={course?.priceSale || 0}
               resources={course?.resources || 0}
               totalLessons={course?.lessons.length || 0}
-              sx={{ mb: 5 }}
-            />
-
-            <Advertisement
-              title="Advertisement"
-              description="Duis leo. Donec orci lectus, aliquam ut, faucibus non"
-              imageUrl={_mock.image.course(9)}
-              action={
-                <Button variant="contained" color="primary">
-                  Go now
-                </Button>
-              }
             />
           </Grid>
         </Grid>

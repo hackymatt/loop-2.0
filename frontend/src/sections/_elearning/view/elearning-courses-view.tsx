@@ -70,7 +70,7 @@ export function ElearningCoursesView({ courses }: ViewProps) {
               ratings: ["Up 4 stars", "Up 3 stars", "Up 2 stars"],
               durations: ["0 - 1 Hour", "1 - 3 Hours", "3 - 6 Hours", "6 - 18 Hours", "18+ Hours"],
               categories: _tags,
-              levels: ["Beginner", "Intermediate", "Expert"],
+              levels: ["Beginner", "Intermediate", "Advanced"],
               fees: ["Free", "Paid"],
               languages: ["English", "Spanish", "Chinese", "French", "Russian"],
             }}

@@ -16,5 +16,8 @@
   "exercise": ["exercise"],
   "quiz": ["quiz"],
   "sign-up": { "header": "Create your free account", "button": "Start learning for free" },
-  "start": "Start course for free"
+  "start": "Start course for free",
+  "access": "Lifetime access",
+  "certificate": "Certificate of completion",
+  "instructors": "Instructors"
 }

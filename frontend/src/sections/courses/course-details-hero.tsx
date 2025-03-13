@@ -15,7 +15,9 @@ import { paths } from "src/routes/paths";
 
 import { usePluralize } from "src/hooks/use-pluralize";
 
+import { getLevelIcon } from "src/utils/level-icon";
 import { fShortenNumber } from "src/utils/format-number";
+import { getTechnologyIcon } from "src/utils/technology-icon";
 
 import { Iconify } from "src/components/iconify";
 import { AnimateBorder } from "src/components/animate";
@@ -37,6 +39,7 @@ export function CourseDetailsHero({
   technology,
   coverUrl,
   languages,
+  totalPoints,
   totalHours,
   description,
   isBestSeller,
@@ -73,20 +76,14 @@ export function CourseDetailsHero({
       }}
     >
       <Box sx={{ gap: 0.5, display: "flex", alignItems: "center" }}>
-        <Iconify
-          icon={
-            (level === "Beginner" && "carbon:skill-level-basic") ||
-            (level === "Intermediate" && "carbon:skill-level-intermediate") ||
-            "carbon:skill-level-advanced"
-          }
-        />
+        <Iconify icon={getLevelIcon(level ?? "")} />
         {level}
       </Box>
 
       <Divider orientation="vertical" sx={{ height: 20, my: "auto" }} />
 
       <Box sx={{ gap: 0.5, display: "flex", alignItems: "center" }}>
-        <Iconify icon="carbon:code" />
+        <Iconify icon={getTechnologyIcon(technology ?? "")} />
         {technology}
       </Box>
 
@@ -195,21 +192,20 @@ export function CourseDetailsHero({
         "& > div": { gap: 1, display: "flex", alignItems: "center" },
       }}
     >
-      {totalHours ? (
+      {totalPoints ? (
         <div>
-          <Iconify icon="solar:medal-ribbon-star-outline" />{" "}
-          {`${totalHours} ${languagePluralize(hour, totalHours)}`}
+          <Iconify icon="solar:medal-ribbon-star-outline" /> {`${totalPoints} XP`}
         </div>
       ) : null}
 
       <Box sx={{ gap: 1, display: "flex", alignItems: "center", typography: "body2" }}>
         <Iconify icon="carbon:data-accessor" />
-        Dożywotni dostęp
+        {t("access")}
       </Box>
 
       <Box sx={{ gap: 1, display: "flex", alignItems: "center", typography: "body2" }}>
         <Iconify icon="carbon:certificate" />
-        Certyfikat ukończenia
+        {t("certificate")}
       </Box>
     </Box>
   );
@@ -242,7 +238,7 @@ export function CourseDetailsHero({
       <Button
         variant="text"
         size="large"
-        href={paths.register}
+        href={`${paths.register}?redirect=${paths.course}/${slug}`}
         sx={{ px: 2, borderRadius: "inherit", textAlign: "center" }}
       >
         {t("start")}

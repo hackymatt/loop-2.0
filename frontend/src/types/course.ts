@@ -41,6 +41,7 @@ export type ICourseProps = {
   skills: string[];
   priceSale: number;
   resources: number;
+  totalPoints: number;
   totalHours: number;
   description: string;
   languages: string[];

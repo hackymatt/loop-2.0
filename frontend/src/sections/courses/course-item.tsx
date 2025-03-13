@@ -14,7 +14,9 @@ import { RouterLink } from "src/routes/components";
 
 import { usePluralize } from "src/hooks/use-pluralize";
 
+import { getLevelIcon } from "src/utils/level-icon";
 import { fShortenNumber } from "src/utils/format-number";
+import { getTechnologyIcon } from "src/utils/technology-icon";
 
 import { Iconify } from "src/components/iconify";
 
@@ -115,20 +117,14 @@ export function CourseItem({ course, isVertical }: Props) {
       }}
     >
       <Box sx={{ gap: 0.5, display: "flex", alignItems: "center" }}>
-        <Iconify
-          icon={
-            (course.level === "Beginner" && "carbon:skill-level-basic") ||
-            (course.level === "Intermediate" && "carbon:skill-level-intermediate") ||
-            "carbon:skill-level-advanced"
-          }
-        />
+        <Iconify icon={getLevelIcon(course.level)} />
         {course.level}
       </Box>
 
       <Divider orientation="vertical" sx={{ height: 20, my: "auto" }} />
 
       <Box sx={{ gap: 0.5, display: "flex", alignItems: "center" }}>
-        <Iconify icon="carbon:code" />
+        <Iconify icon={getTechnologyIcon(course.technology)} />
         {course.technology}
       </Box>
 

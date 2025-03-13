@@ -1,47 +1,37 @@
-import type { BoxProps } from "@mui/material/Box";
+import type { CardProps } from "@mui/material";
 import type { ICourseTeacherProp } from "src/types/course";
 
+import { useTranslation } from "react-i18next";
+
 import Box from "@mui/material/Box";
-import Link from "@mui/material/Link";
-import Paper from "@mui/material/Paper";
+import { Card } from "@mui/material";
 import Avatar from "@mui/material/Avatar";
 import Typography from "@mui/material/Typography";
 
-import { fShortenNumber } from "src/utils/format-number";
-
-import { Iconify } from "src/components/iconify";
-
 // ----------------------------------------------------------------------
 
-type Props = BoxProps & {
+type Props = CardProps & {
   teachers: ICourseTeacherProp[];
 };
 
 export function CourseDetailsTeachers({ teachers, sx, ...other }: Props) {
+  const { t } = useTranslation("course");
+
   return (
-    <>
-      <Typography component="h6" variant="h4" sx={{ mb: 5 }}>
-        Instructors ({teachers.length})
+    <Card
+      sx={[
+        { p: 3, gap: 2, borderRadius: 2, display: "flex", flexDirection: "column" },
+        ...(Array.isArray(sx) ? sx : [sx]),
+      ]}
+      {...other}
+    >
+      <Typography component="h6" variant="h6">
+        {t("instructors")} ({teachers.length})
       </Typography>
-      <Box
-        sx={[
-          {
-            display: "grid",
-            gap: { xs: 3, md: 4 },
-            gridTemplateColumns: {
-              xs: "repeat(1, 1fr)",
-              sm: "repeat(2, 1fr)",
-            },
-          },
-          ...(Array.isArray(sx) ? sx : [sx]),
-        ]}
-        {...other}
-      >
-        {teachers.map((teacher) => (
-          <TeacherItem key={teacher.id} teacher={teacher} />
-        ))}
-      </Box>
-    </>
+      {teachers.map((teacher) => (
+        <TeacherItem key={teacher.id} teacher={teacher} />
+      ))}
+    </Card>
   );
 }
 
@@ -52,68 +42,21 @@ type TeacherItemProps = {
 };
 
 function TeacherItem({ teacher }: TeacherItemProps) {
-  const renderRating = () => (
-    <Box sx={{ gap: 0.5, display: "flex", alignItems: "center", typography: "h6" }}>
-      <Iconify icon="eva:star-fill" sx={{ color: "warning.main" }} />
-
-      {Number.isInteger(teacher.ratingNumber) ? `${teacher.ratingNumber}.0` : teacher.ratingNumber}
-
-      {teacher.totalReviews && (
-        <Link variant="body2" sx={{ color: "text.secondary" }}>
-          ({fShortenNumber(teacher.totalReviews)} reviews)
-        </Link>
-      )}
-    </Box>
-  );
-
-  const renderItem = (icon: React.ReactNode, value: string | number, label: string) => (
+  return (
     <Box
       sx={{
         gap: 1,
         display: "flex",
-        alignItems: "center",
-        typography: "body2",
-        color: "text.disabled",
       }}
     >
-      {icon}
-      <span>
-        <strong>{value}</strong>
-        {` ${label}`}
-      </span>
-    </Box>
-  );
+      <Avatar src={teacher.avatarUrl} sx={{ width: 48, height: 48 }} />
 
-  return (
-    <Paper
-      variant="outlined"
-      sx={{
-        p: 3,
-        gap: 3,
-        borderRadius: 2,
-        display: "flex",
-        bgcolor: "transparent",
-      }}
-    >
-      <Avatar src={teacher.avatarUrl} sx={{ width: 72, height: 72 }} />
-
-      <Box sx={{ gap: 1, flexGrow: 1, display: "flex", flexDirection: "column" }}>
-        <Typography variant="h6">{teacher.name}</Typography>
-
-        {renderRating()}
-
-        {renderItem(
-          <Iconify icon="solar:users-group-rounded-outline" />,
-          fShortenNumber(teacher.totalStudents),
-          "students"
-        )}
-
-        {renderItem(
-          <Iconify icon="solar:documents-minimalistic-outline" />,
-          teacher.totalCourses,
-          "lessons"
-        )}
+      <Box sx={{ flexGrow: 1, display: "flex", flexDirection: "column" }}>
+        <Typography variant="subtitle1">{teacher.name}</Typography>
+        <Typography variant="caption" color="textDisabled">
+          {teacher.role}
+        </Typography>
       </Box>
-    </Paper>
+    </Box>
   );
 }

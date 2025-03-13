@@ -42,7 +42,7 @@ const getTeachers = (index: number) => {
 
 const getLevel = (index: number) => {
   if (index % 2) return "Intermediate";
-  if (index % 4) return "Expert";
+  if (index % 4) return "Advanced";
   if (index % 5) return "All levels";
   return "Beginner";
 };
@@ -62,6 +62,7 @@ export const _courses = Array.from({ length: 12 }, (_, index) => ({
   id: _mock.id(index),
   resources: 12,
   totalHours: 100,
+  totalPoints: 3459,
   lessons: LESSONS,
   totalQuizzes: 4,
   totalExercises: 10,
@@ -69,7 +70,7 @@ export const _courses = Array.from({ length: 12 }, (_, index) => ({
   totalReviews: 3458,
   totalStudents: 180000,
   level: getLevel(index),
-  technology: "React",
+  technology: "Python",
   category: _tags[index],
   price: getPrice(index),
   skills: _tags.slice(0, 5),
