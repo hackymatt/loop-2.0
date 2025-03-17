@@ -1,5 +1,7 @@
 "use client";
 
+import { useMemo } from "react";
+
 import Grid from "@mui/material/Grid2";
 import Divider from "@mui/material/Divider";
 import Container from "@mui/material/Container";
@@ -20,6 +22,11 @@ import { CourseCertificateDetailsInfo } from "../courses/course-certificate-deta
 const course = _courses[0];
 const relatedCourses = _courses.slice(0, 3);
 export function CourseView() {
+  const totalLessons = useMemo(
+    () => course.chapters.reduce((total, chapter) => total + chapter.lessons.length, 0),
+    []
+  );
+
   const renderReview = () => (
     <>
       <ReviewSummary ratingNumber={4.1} reviewNumber={123456} />
@@ -34,13 +41,11 @@ export function CourseView() {
     <>
       <CourseDetailsHero
         slug={course?.slug || ""}
+        title={course?.title || ""}
         level={course?.level || ""}
         teachers={course?.teachers || []}
         category={course?.category || ""}
         technology={course?.technology || ""}
-        coverUrl={course?.coverUrl || ""}
-        languages={course?.languages || []}
-        isBestSeller={course?.isBestSeller || false}
         totalPoints={course?.totalPoints || 0}
         totalHours={course?.totalHours || 0}
         description={course?.description || ""}
@@ -49,20 +54,24 @@ export function CourseView() {
         totalExercises={course?.totalExercises || 0}
         totalVideos={course?.totalVideos || 0}
         totalQuizzes={course?.totalQuizzes || 0}
-        totalLessons={course?.lessons.length || 0}
+        totalLessons={totalLessons}
         totalStudents={course?.totalStudents || 0}
       />
 
       <Container sx={{ py: { xs: 5, md: 10 } }}>
         <Grid container spacing={{ xs: 5, md: 8 }}>
           <Grid size={{ xs: 12, md: 7, lg: 8 }}>
-            <CourseDetailsSummary lessons={course?.lessons || []} />
+            <CourseDetailsSummary course={course} />
           </Grid>
 
           <Grid size={{ xs: 12, md: 5, lg: 4 }}>
             <CourseDetailsTeachers teachers={course?.teachers || []} sx={{ mb: 3 }} />
 
-            <CourseCertificateDetailsInfo slug={course?.slug || ""} sx={{ mb: 3 }} />
+            <CourseCertificateDetailsInfo
+              slug={course?.slug || ""}
+              title={course?.title || ""}
+              sx={{ mb: 3 }}
+            />
 
             <CourseChatDetailsInfo slug={course?.slug || ""} />
           </Grid>

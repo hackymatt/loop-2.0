@@ -1,3 +1,5 @@
+import type { ICourseLessonType } from "src/types/course";
+
 import dayjs from "dayjs";
 
 import { _mock } from "./_mock";
@@ -16,13 +18,37 @@ const TEACHERS = Array.from({ length: 8 }, (_, index) => ({
   ratingNumber: _mock.number.rating(index),
 }));
 
+function slugify(text: string): string {
+  return text
+    .toLowerCase() // Zamiana na małe litery
+    .normalize("NFD") // Normalizacja znaków diakrytycznych
+    .replace(/[\u0300-\u036f]/g, "") // Usunięcie akcentów
+    .replace(/[^a-z0-9\s-]/g, "") // Usunięcie znaków specjalnych
+    .replace(/\s+/g, "-") // Zamiana spacji na myślniki
+    .replace(/-+/g, "-") // Usunięcie wielokrotnych myślników
+    .trim(); // Usunięcie zbędnych spacji na początku i końcu
+}
+
+const getType = (index: number): ICourseLessonType => {
+  const types = ["article", "video", "exercise", "test"];
+  return types[index % types.length] as ICourseLessonType;
+};
+
 const LESSONS = Array.from({ length: 9 }, (_, index) => ({
   id: _mock.id(index),
-  duration: 60 - index,
+  totalPoints: 60 - index,
+  slug: slugify(`Lesson ${index + 1}`),
   title: `Lesson ${index + 1}`,
-  videoPath: _mock.video(index),
   description: _mock.sentence(index),
-  unLocked: [0, 1, 2].includes(index),
+  type: getType(index),
+}));
+
+const CHAPTERS = Array.from({ length: 9 }, (_, index) => ({
+  id: _mock.id(index),
+  title: `Chapter ${index + 1}`,
+  slug: slugify(`Chapter ${index + 1}`),
+  description: _mock.sentence(index),
+  lessons: LESSONS,
 }));
 
 const getPrice = (index: number) => (index % 2 ? 159.99 : 269.99);
@@ -61,10 +87,9 @@ const getLearnList = () => [
 export const _courses = Array.from({ length: 12 }, (_, index) => ({
   id: _mock.id(index),
   chatUrl: "https://loop.edu.pl",
-  resources: 12,
   totalHours: 100,
   totalPoints: 3459,
-  lessons: LESSONS,
+  chapters: CHAPTERS,
   totalQuizzes: 4,
   totalExercises: 10,
   totalVideos: 6,
@@ -73,24 +98,14 @@ export const _courses = Array.from({ length: 12 }, (_, index) => ({
   level: getLevel(index),
   technology: "Python",
   category: _tags[index],
-  price: getPrice(index),
-  skills: _tags.slice(0, 5),
-  learnList: getLearnList(),
   teachers: getTeachers(index),
-  slug: _mock.courseNames(index),
-  priceSale: getPriceSale(index),
-  isBestSeller: index === 2 || false,
+  title: _mock.courseNames(index),
+  slug: slugify(_mock.courseNames(index)),
   coverUrl: _mock.image.course(index),
   createdAt: dayjs(new Date()).format(),
   description: _mock.description(index),
+  overview: _mock.description(index),
   ratingNumber: _mock.number.rating(index),
-  languages: ["English", "Spanish", "Chinese"],
-  shareLinks: {
-    facebook: "https://facebook.example.com",
-    instagram: "https://instagram.example.com",
-    linkedin: "https://linkedin.example.com",
-    twitter: "https://twitter.example.com",
-  },
 }));
 
 export const _coursesByCategories = Array.from({ length: 9 }, (_, index) => ({

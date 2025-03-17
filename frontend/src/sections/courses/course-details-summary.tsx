@@ -1,27 +1,27 @@
 import type { BoxProps } from "@mui/material/Box";
 import type { ICourseProps } from "src/types/course";
 
+import { useTranslation } from "react-i18next";
+
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 
-import { CourseDetailsLessonList } from "./course-details-lesson-list";
+import { CourseDetailsChapterList } from "./course-details-chapter-list";
 
 // ----------------------------------------------------------------------
 
-type Props = BoxProps & Partial<ICourseProps>;
+type Props = BoxProps & { course: ICourseProps };
 
-export function CourseDetailsSummary({ lessons, sx, ...other }: Props) {
+export function CourseDetailsSummary({ course, sx, ...other }: Props) {
+  const { t } = useTranslation("course");
+
   const renderOverview = () => (
     <div>
       <Typography component="h6" variant="h4" sx={{ mb: 2 }}>
-        Overview
+        {t("overview")}
       </Typography>
 
-      <Typography>
-        Consentaneum aeternitate dignitati commoventur primisque cupit mea officia peccata parens
-        egone dolorem minuis. Secundae neglegi sextilius conantur commodaita siti philosophi ioca
-        tenere lorem apparet assentior pudoris sint leves neglegebat unde reliquisti simile.
-      </Typography>
+      <Typography>{course.overview}</Typography>
     </div>
   );
 
@@ -35,7 +35,7 @@ export function CourseDetailsSummary({ lessons, sx, ...other }: Props) {
     >
       {renderOverview()}
 
-      <CourseDetailsLessonList lessons={lessons || []} />
+      <CourseDetailsChapterList course={course} />
     </Box>
   );
 }

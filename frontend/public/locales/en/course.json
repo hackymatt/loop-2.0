@@ -30,6 +30,14 @@
   "instructors": "Instructors",
   "reviews": "Reviews",
   "included": { "start": "Included with", "plans": "Basic and Premium" },
+  "overview": "Overview",
   "similar": "Similar courses",
-  "viewAll": "View all"
+  "viewAll": "View all",
+  "chapters": {
+    "title": "Chapters",
+    "button": "Start",
+    "show": "Show",
+    "hide": "Hide",
+    "lesson": "lessons"
+  }
 }

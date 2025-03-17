@@ -33,16 +33,14 @@ type Props = BoxProps & Partial<ICourseProps> & { totalLessons: number };
 export function CourseDetailsHero({
   sx,
   slug,
+  title,
   level,
   teachers,
   category,
   technology,
-  coverUrl,
-  languages,
   totalPoints,
   totalHours,
   description,
-  isBestSeller,
   ratingNumber,
   totalReviews,
   totalQuizzes,
@@ -128,7 +126,7 @@ export function CourseDetailsHero({
       </Typography>
 
       <Typography variant="h3" component="h1">
-        {slug}
+        {title}
       </Typography>
 
       {renderInfo()}
@@ -288,7 +286,7 @@ export function CourseDetailsHero({
           links={[
             { name: navigation("home"), href: "/" },
             { name: navigation("courses"), href: paths.courses },
-            { name: slug },
+            { name: title },
           ]}
           sx={{ mb: { xs: 5, md: 10 } }}
         />

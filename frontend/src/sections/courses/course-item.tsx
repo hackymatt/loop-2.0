@@ -1,5 +1,6 @@
 import type { ICourseProps } from "src/types/course";
 
+import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
 import Box from "@mui/material/Box";
@@ -39,6 +40,11 @@ export function CourseItem({ course, isVertical }: Props) {
 
   const languagePluralize = usePluralize();
 
+  const totalLessons = useMemo(
+    () => course.chapters.reduce((total, chapter) => total + chapter.lessons.length, 0),
+    [course.chapters]
+  );
+
   const renderTop = () => (
     <Box sx={{ gap: 1, display: "flex", alignItems: "center", flexWrap: "wrap" }}>
       <Typography variant="overline" sx={{ color: "primary.main", flexGrow: 1 }}>
@@ -65,7 +71,7 @@ export function CourseItem({ course, isVertical }: Props) {
 
       <Box sx={{ gap: 1, display: "flex", alignItems: "center" }}>
         <Iconify icon="solar:documents-minimalistic-outline" />
-        {course.lessons.length} {languagePluralize(lesson, course.lessons.length)}
+        {totalLessons} {languagePluralize(lesson, totalLessons)}
       </Box>
     </Box>
   );
@@ -73,7 +79,7 @@ export function CourseItem({ course, isVertical }: Props) {
   const renderTexts = () => (
     <Box sx={{ minWidth: 0 }}>
       <Typography color="inherit" variant="h6" noWrap>
-        {course.slug}
+        {course.title}
       </Typography>
 
       <Typography

@@ -16,8 +16,8 @@ import { Certificate } from "../certificate";
 
 // ----------------------------------------------------------------------
 
-type Props = CardProps & Pick<ICourseProps, "slug">;
-export function CourseCertificateDetailsInfo({ sx, slug, ...other }: Props) {
+type Props = CardProps & Pick<ICourseProps, "slug" | "title">;
+export function CourseCertificateDetailsInfo({ sx, slug, title, ...other }: Props) {
   const { t } = useTranslation("course");
   return (
     <Card
@@ -31,7 +31,7 @@ export function CourseCertificateDetailsInfo({ sx, slug, ...other }: Props) {
         {t("certificate.title")}
       </Typography>
 
-      <Certificate title={slug} />
+      <Certificate title={title} />
 
       <Typography variant="body2">{t("certificate.subtitle")}</Typography>
 

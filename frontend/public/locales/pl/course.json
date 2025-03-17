@@ -30,6 +30,14 @@
   "instructors": "Instruktorzy",
   "reviews": "Recenzje",
   "included": { "start": "Dostępne w planie", "plans": "Podstawowym oraz Premium" },
+  "overview": "Opis",
   "similar": "Podobne kursy",
-  "viewAll": "Zobacz wszystkie"
+  "viewAll": "Zobacz wszystkie",
+  "chapters": {
+    "title": "Rozdziały",
+    "button": "Rozpocznij",
+    "show": "Pokaż",
+    "hide": "Ukryj",
+    "lesson": "lekcje"
+  }
 }

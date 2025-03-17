@@ -1,7 +1,5 @@
 import type { DatePickerFormat } from "src/utils/format-time";
 
-import type { ISocialLinks } from "./socials";
-
 // ----------------------------------------------------------------------
 
 export type ICourseTeacherProp = {
@@ -9,19 +7,24 @@ export type ICourseTeacherProp = {
   name: string;
   role: string;
   avatarUrl: string;
-  ratingNumber: number;
-  totalCourses: number;
-  totalReviews: number;
-  totalStudents: number;
 };
+
+export type ICourseLessonType = "video" | "article" | "exercise" | "quiz";
 
 export type ICourseLessonProp = {
   id: string;
   title: string;
-  duration: number;
-  videoPath: string;
-  unLocked: boolean;
+  slug: string;
+  type: ICourseLessonType;
+  totalPoints: number;
+};
+
+export type ICourseChapterProp = {
+  id: string;
+  title: string;
+  slug: string;
   description: string;
+  lessons: ICourseLessonProp[];
 };
 
 export type ICourseByCategoryProps = {
@@ -33,30 +36,23 @@ export type ICourseByCategoryProps = {
 export type ICourseProps = {
   id: string;
   slug: string;
-  price: number;
+  title: string;
   level: string;
-  coverUrl: string;
   chatUrl: string;
   category: string;
   technology: string;
-  skills: string[];
-  priceSale: number;
-  resources: number;
   totalPoints: number;
   totalHours: number;
   description: string;
-  languages: string[];
-  learnList: string[];
+  overview: string;
   ratingNumber: number;
   totalQuizzes: number;
   totalExercises: number;
   totalVideos: number;
   totalReviews: number;
-  isBestSeller: boolean;
   createdAt: DatePickerFormat;
   totalStudents: number;
-  shareLinks: ISocialLinks;
-  lessons: ICourseLessonProp[];
+  chapters: ICourseChapterProp[];
   teachers: ICourseTeacherProp[];
 };
 
