@@ -1,6 +1,7 @@
 "use client";
 
 import { m } from "framer-motion";
+import { useTranslation } from "react-i18next";
 
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -16,20 +17,18 @@ import { varBounce, MotionContainer } from "src/components/animate";
 // ----------------------------------------------------------------------
 
 export function NotFoundView() {
+  const { t } = useTranslation("404");
   return (
     <SimpleLayout slotProps={{ content: { compact: true } }}>
       <MotionContainer>
         <m.div variants={varBounce("in")}>
           <Typography variant="h3" sx={{ mb: 2 }}>
-            Page not found!
+            {t("title")}
           </Typography>
         </m.div>
 
         <m.div variants={varBounce("in")}>
-          <Typography sx={{ color: "text.secondary" }}>
-            Sorry, we couldn’t find the page you’re looking for. Perhaps you’ve mistyped the URL? Be
-            sure to check your spelling.
-          </Typography>
+          <Typography sx={{ color: "text.secondary" }}>{t("subtitle")}</Typography>
         </m.div>
 
         <m.div variants={varBounce("in")}>
@@ -42,7 +41,7 @@ export function NotFoundView() {
         </m.div>
 
         <Button component={RouterLink} href="/" size="large" color="inherit" variant="contained">
-          Go to home
+          {t("button")}
         </Button>
       </MotionContainer>
     </SimpleLayout>

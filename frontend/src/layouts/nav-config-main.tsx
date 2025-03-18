@@ -111,7 +111,7 @@ export const pageLinks = [
 const useCourseNav = () => {
   const { t } = useTranslation("navigation");
 
-  const popularCourses = _courses.map((c) => c.slug).slice(0, 4);
+  const popularCourses = _courses.map((c) => c.title).slice(0, 4);
   const levels = ["Beginner", "Intermediate", "Advanced"];
   const technologies = [
     "React",

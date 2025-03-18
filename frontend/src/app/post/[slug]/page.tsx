@@ -1,11 +1,23 @@
-import { CONFIG } from "src/global-config";
+import type { Metadata } from "next";
+
+import { createMetadata } from "src/utils/create-metadata";
 
 import { PostView } from "src/sections/view/post-view";
 
 // ----------------------------------------------------------------------
 
-export const metadata = { title: `Post details | E-learning - ${CONFIG.appName}` };
-
 export default function Page() {
   return <PostView />;
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: { slug: string };
+}): Promise<Metadata> {
+  const title = `${params.slug} - przeczytaj artykuł już teraz`;
+  const description = `Przeczytaj nasz artykuł pod tytułem ${params.slug}. Odkryj praktyczne porady i najlepsze praktyki, które pomogą Ci w rozwoju umiejętności programistycznych.`;
+  const coverUrl = "";
+
+  return createMetadata(title, description, undefined, params.slug, coverUrl);
 }

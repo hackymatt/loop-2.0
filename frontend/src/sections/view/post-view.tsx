@@ -85,7 +85,7 @@ export function PostView() {
       <IconButton
         onClick={() =>
           navigator.share({
-            url: `${paths.post}/${post.title}/`,
+            url: `${paths.post}/${post.slug}/`,
             title: post?.title,
             text: post?.description,
           })

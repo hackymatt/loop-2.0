@@ -1,6 +1,7 @@
 "use client";
 
 import { m } from "framer-motion";
+import { useTranslation } from "react-i18next";
 
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -16,19 +17,18 @@ import { varBounce, MotionContainer } from "src/components/animate";
 // ----------------------------------------------------------------------
 
 export function Error500View() {
+  const { t } = useTranslation("500");
   return (
     <SimpleLayout slotProps={{ content: { compact: true } }}>
       <MotionContainer>
         <m.div variants={varBounce("in")}>
           <Typography variant="h3" sx={{ mb: 2 }}>
-            500 internal server error
+            {t("title")}
           </Typography>
         </m.div>
 
         <m.div variants={varBounce("in")}>
-          <Typography sx={{ color: "text.secondary" }}>
-            There was an error, please try again later.
-          </Typography>
+          <Typography sx={{ color: "text.secondary" }}>{t("subtitle")}</Typography>
         </m.div>
 
         <m.div variants={varBounce("in")}>
@@ -41,7 +41,7 @@ export function Error500View() {
         </m.div>
 
         <Button component={RouterLink} href="/" size="large" color="inherit" variant="contained">
-          Go to home
+          {t("button")}
         </Button>
       </MotionContainer>
     </SimpleLayout>

@@ -13,6 +13,7 @@ export type IPostCategoryProps = {
 export type IPostProps = {
   id: string;
   title: string;
+  slug: string;
   heroUrl: string;
   tags?: string[];
   content: string;

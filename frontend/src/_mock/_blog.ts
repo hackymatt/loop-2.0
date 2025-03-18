@@ -35,11 +35,23 @@ const content = (name: string) => `
 <p>Donec posuere vulputate arcu. Quisque rutrum. Curabitur vestibulum aliquam leo. Nam commodo suscipit quam. Vestibulum ullamcorper mauris at ligula.</p>
 `;
 
+function slugify(text: string): string {
+  return text
+    .toLowerCase() // Zamiana na małe litery
+    .normalize("NFD") // Normalizacja znaków diakrytycznych
+    .replace(/[\u0300-\u036f]/g, "") // Usunięcie akcentów
+    .replace(/[^a-z0-9\s-]/g, "") // Usunięcie znaków specjalnych
+    .replace(/\s+/g, "-") // Zamiana spacji na myślniki
+    .replace(/-+/g, "-") // Usunięcie wielokrotnych myślników
+    .trim(); // Usunięcie zbędnych spacji na początku i końcu
+}
+
 const base = (index: number) => ({
   id: _mock.id(index),
   category: "Marketing",
   duration: "8 min",
   title: _mock.postTitle(index),
+  slug: slugify(_mock.postTitle(index)),
   favorited: _mock.boolean(index),
   description: _mock.description(index),
   tags: _tags.slice(index + 1, index + 2),
