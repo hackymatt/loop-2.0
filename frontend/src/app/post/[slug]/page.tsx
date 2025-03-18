@@ -19,5 +19,5 @@ export async function generateMetadata({
   const description = `Przeczytaj nasz artykuł pod tytułem ${params.slug}. Odkryj praktyczne porady i najlepsze praktyki, które pomogą Ci w rozwoju umiejętności programistycznych.`;
   const coverUrl = "";
 
-  return createMetadata(title, description, undefined, params.slug, coverUrl);
+  return createMetadata({ title, description, path: params.slug, image: coverUrl });
 }

@@ -2,93 +2,94 @@ import { CONFIG } from "src/global-config";
 
 // ----------------------------------------------------------------------
 
-export const createMetadata = (
-  title?: string,
-  description?: string,
-  keywords?: string[],
-  path?: string,
-  image?: string
-) => {
-  const defaultMetadata = {
-    title: "Programowanie na wyciągniecie ręki z loop",
-    description:
-      "Ucz się programowania szybciej z AI, interaktywnymi kursami i wsparciem mentorów.",
-    keywords: [
-      // Ogólne
-      "kursy programowania",
-      "nauka programowania",
-      "szkoła programowania",
-      "platforma edukacyjna",
-      "certyfikaty programistyczne",
+type Props = {
+  title?: string;
+  description?: string;
+  keywords?: string[];
+  path?: string;
+  image?: string;
+};
 
-      // Technologie
-      "JavaScript",
-      "Python",
-      "SQL",
-      "VBA",
-      "R",
-      "React",
-      "Next.js",
-      "Node.js",
-      "Docker",
-      "Kubernetes",
-      "Google Cloud",
-      "AWS",
-      "Git",
-      "Selenium",
-      "Nginx",
+export const createMetadata = ({
+  title = "Programowanie na wyciągniecie ręki z loop",
+  description = "Ucz się programowania szybciej z AI, interaktywnymi kursami i wsparciem mentorów.",
+  keywords = [
+    // Ogólne
+    "kursy programowania",
+    "nauka programowania",
+    "szkoła programowania",
+    "platforma edukacyjna",
+    "certyfikaty programistyczne",
 
-      // Kursy i szkolenia
-      "kurs JavaScript",
-      "kurs Python",
-      "kurs SQL",
-      "kurs React",
-      "kurs Next.js",
-      "kurs Node.js",
-      "kurs Docker",
-      "kurs Kubernetes",
-      "kurs VBA",
-      "kurs R",
-      "kurs Git",
-      "kurs Selenium",
-      "kurs Nginx",
-      "szkolenie IT",
-      "bootcamp programistyczny",
+    // Technologie
+    "JavaScript",
+    "Python",
+    "SQL",
+    "VBA",
+    "R",
+    "React",
+    "Next.js",
+    "Node.js",
+    "Docker",
+    "Kubernetes",
+    "Google Cloud",
+    "AWS",
+    "Git",
+    "Selenium",
+    "Nginx",
 
-      // Web development
-      "frontend",
-      "backend",
-      "full-stack",
-      "Tworzenie aplikacji webowych",
-      "REST API",
-      "GraphQL",
+    // Kursy i szkolenia
+    "kurs JavaScript",
+    "kurs Python",
+    "kurs SQL",
+    "kurs React",
+    "kurs Next.js",
+    "kurs Node.js",
+    "kurs Docker",
+    "kurs Kubernetes",
+    "kurs VBA",
+    "kurs R",
+    "kurs Git",
+    "kurs Selenium",
+    "kurs Nginx",
+    "szkolenie IT",
+    "bootcamp programistyczny",
 
-      // Automatyzacja i testowanie
-      "testowanie automatyczne",
-      "automatyzacja procesów",
-      "web scraping",
-      "testy Selenium",
-      "testowanie aplikacji",
+    // Web development
+    "frontend",
+    "backend",
+    "full-stack",
+    "Tworzenie aplikacji webowych",
+    "REST API",
+    "GraphQL",
 
-      // Dodatkowe
-      "praca w IT",
-      "zdalna praca programisty",
-      "freelancing IT",
-      "programowanie od podstaw",
-      "kariera w IT",
-      "kursy online",
-      "nauka kodowania",
-    ],
-  };
+    // Automatyzacja i testowanie
+    "testowanie automatyczne",
+    "automatyzacja procesów",
+    "web scraping",
+    "testy Selenium",
+    "testowanie aplikacji",
 
+    // Dodatkowe
+    "praca w IT",
+    "zdalna praca programisty",
+    "freelancing IT",
+    "programowanie od podstaw",
+    "kariera w IT",
+    "kursy online",
+    "nauka kodowania",
+  ],
+  path,
+  image,
+}: Props) => {
   const location = path ? `${path}/` : "/";
 
   const { appName: name } = CONFIG;
 
   return {
-    title: `${title ?? defaultMetadata.title} • ${name}`,
-    description: description ?? defaultMetadata.description,
-    keywords: (keywords ?? defaultMetadata.keywords).join(","),
+    title: `${title} • ${name}`,
+    description,
+    keywords: keywords.join(","),
     alternates: {
       canonical: `https://loop.edu.pl${location}`,
     },
@@ -96,8 +97,8 @@ export const createMetadata = (
       type: "website",
       url: `https://loop.edu.pl${location}`,
       images: image ?? "https://loop.edu.pl/logo/logo.svg",
-      title: `${title ?? defaultMetadata.title} • ${name}`,
-      description: description ?? defaultMetadata.description,
+      title: `${title} • ${name}`,
+      description,
     },
   };
 };

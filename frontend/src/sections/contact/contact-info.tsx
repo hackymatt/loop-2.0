@@ -10,7 +10,7 @@ import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 
 import { socials } from "src/consts/socials";
-import { YouTubeIcon, FacebookIcon, LinkedinIcon, InstagramIcon } from "src/assets/icons";
+import { FacebookIcon, LinkedinIcon, InstagramIcon } from "src/assets/icons";
 
 // ----------------------------------------------------------------------
 
@@ -23,7 +23,6 @@ export function ContactInfo({ sx, ...other }: BoxProps) {
           {social.value === "facebook" && <FacebookIcon />}
           {social.value === "instagram" && <InstagramIcon />}
           {social.value === "linkedin" && <LinkedinIcon />}
-          {social.value === "youtube" && <YouTubeIcon />}
         </IconButton>
       ))}
     </Box>

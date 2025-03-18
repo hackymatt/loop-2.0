@@ -13,7 +13,7 @@ import { SvgColor } from "src/components/svg-color";
 // ----------------------------------------------------------------------
 
 type ICoreValue = {
-  title: string;
+  name: string;
   description: string;
   icon: string;
 };
@@ -61,7 +61,7 @@ export function AboutCoreValues({ sx, ...other }: BoxProps) {
           }}
         >
           {coreValues.map((item) => (
-            <Box key={item.title} sx={{ textAlign: { xs: "center", md: "unset" } }}>
+            <Box key={item.name} sx={{ textAlign: { xs: "center", md: "unset" } }}>
               <SvgColor
                 src={iconPath(item.icon)}
                 sx={(theme) => ({
@@ -72,7 +72,7 @@ export function AboutCoreValues({ sx, ...other }: BoxProps) {
               />
 
               <Typography component="h6" variant="h5" sx={{ mt: 3, mb: 1 }}>
-                {item.title}
+                {item.name}
               </Typography>
 
               <Typography sx={{ color: "text.secondary" }}> {item.description} </Typography>

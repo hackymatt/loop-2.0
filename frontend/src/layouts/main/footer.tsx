@@ -1,31 +1,28 @@
 import type { BoxProps } from "@mui/material/Box";
-import type { ButtonProps } from "@mui/material/Button";
 import type { Theme, SxProps, Breakpoint } from "@mui/material/styles";
 
-import { varAlpha, isEqualPath } from "minimal-shared/utils";
+import { useTranslation } from "react-i18next";
+import { isEqualPath } from "minimal-shared/utils";
 
 import Box from "@mui/material/Box";
 import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid2";
 import Divider from "@mui/material/Divider";
-import { styled } from "@mui/material/styles";
-import TextField from "@mui/material/TextField";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
-import InputAdornment from "@mui/material/InputAdornment";
-import Button, { buttonClasses } from "@mui/material/Button";
 
+import { paths } from "src/routes/paths";
 import { usePathname } from "src/routes/hooks";
 import { RouterLink } from "src/routes/components";
 
 import { socials } from "src/consts/socials";
-import { YouTubeIcon, FacebookIcon, LinkedinIcon, InstagramIcon } from "src/assets/icons";
+import { FacebookIcon, LinkedinIcon, InstagramIcon } from "src/assets/icons";
 
 import { Logo } from "src/components/logo";
-import { Iconify } from "src/components/iconify";
+import { AppStoreButton } from "src/components/app-store";
 
-import { pageLinks as listItems } from "../nav-config-main";
+import { usePageLinks } from "../nav-config-main";
 
 // ----------------------------------------------------------------------
 
@@ -34,70 +31,77 @@ export type FooterProps = BoxProps & {
 };
 
 export function Footer({ layoutQuery = "md", sx, ...other }: FooterProps) {
+  const { t } = useTranslation("navigation");
+
+  const currentYear = new Date().getFullYear();
+
+  const listItems = usePageLinks();
+
   const pathname = usePathname();
 
-  const renderInfo = () => (
-    <>
-      <Logo />
-      <Typography variant="body2" sx={{ maxWidth: 360, color: "text.secondary" }}>
-        The starting point for your next project based on easy-to-customize Material-UI © helps you
-        build apps faster and better.
-      </Typography>
-    </>
-  );
+  const renderInfo = () => <Logo />;
 
   const renderCommunity = () => (
     <>
-      <Typography variant="h6">Community</Typography>
-      <Link variant="body2" color="inherit">
-        Documentation
+      <Link
+        component={RouterLink}
+        href={paths.courses}
+        variant="body2"
+        sx={{ color: "text.primary" }}
+      >
+        {t("courses")}
       </Link>
-      <Link variant="body2" color="inherit">
-        Changelog
-      </Link>
-      <Link variant="body2" color="inherit">
-        Contributing
-      </Link>
-    </>
-  );
 
-  const renderSubscribe = () => (
-    <>
-      <div>
-        <Typography variant="h6" sx={{ mb: 1 }}>
-          Let’s stay in touch
-        </Typography>
-        <Typography
-          variant="caption"
-          sx={{ maxWidth: 360, display: "block", color: "text.secondary" }}
-        >
-          Ubscribe to our newsletter to receive latest articles to your inbox weekly.
-        </Typography>
-      </div>
+      <Link
+        component={RouterLink}
+        href={paths.pricing}
+        variant="body2"
+        sx={{ color: "text.primary" }}
+      >
+        {t("pricing")}
+      </Link>
 
-      <TextField
-        fullWidth
-        hiddenLabel
-        placeholder="Email address"
-        sx={{ maxWidth: 420 }}
-        slotProps={{
-          input: {
-            endAdornment: (
-              <InputAdornment position="end">
-                <Button variant="contained" color="inherit" size="large" sx={{ mr: -1.25 }}>
-                  Subscribe
-                </Button>
-              </InputAdornment>
-            ),
-          },
-        }}
-      />
+      <Link
+        component={RouterLink}
+        href={paths.posts}
+        variant="body2"
+        sx={{ color: "text.primary" }}
+      >
+        {t("blog")}
+      </Link>
+
+      <Link
+        component={RouterLink}
+        href={paths.about}
+        variant="body2"
+        sx={{ color: "text.primary" }}
+      >
+        {t("about")}
+      </Link>
+
+      <Link
+        component={RouterLink}
+        href={paths.contact}
+        variant="body2"
+        sx={{ color: "text.primary" }}
+      >
+        {t("contact")}
+      </Link>
+
+      <Link
+        component={RouterLink}
+        href={paths.support}
+        variant="body2"
+        sx={{ color: "text.primary" }}
+      >
+        {t("support")}
+      </Link>
     </>
   );
 
   const renderSocials = () => (
     <>
-      <Typography variant="h6">Social</Typography>
+      <Typography variant="h6">{t("socialMedia")}</Typography>
 
       <Box sx={{ display: "flex", justifyContent: "center" }}>
         {socials.map((social) => (
@@ -110,7 +114,6 @@ export function Footer({ layoutQuery = "md", sx, ...other }: FooterProps) {
             {social.value === "facebook" && <FacebookIcon />}
             {social.value === "instagram" && <InstagramIcon />}
             {social.value === "linkedin" && <LinkedinIcon />}
-            {social.value === "youtube" && <YouTubeIcon />}
           </IconButton>
         ))}
       </Box>
@@ -119,7 +122,7 @@ export function Footer({ layoutQuery = "md", sx, ...other }: FooterProps) {
 
   const renderApps = () => (
     <>
-      <Typography variant="h6">Apps</Typography>
+      <Typography variant="h6">{t("apps")}</Typography>
 
       <Box
         sx={{
@@ -129,16 +132,7 @@ export function Footer({ layoutQuery = "md", sx, ...other }: FooterProps) {
           justifyContent: "center",
         }}
       >
-        <AppStoreButton
-          startIcon={<Iconify width={28} icon="ri:apple-fill" />}
-          caption="Download on the"
-          title="Apple Store"
-        />
-        <AppStoreButton
-          startIcon={<Iconify width={28} icon="logos:google-play-icon" />}
-          caption="Download from"
-          title="Google Play"
-        />
+        <AppStoreButton />
       </Box>
     </>
   );
@@ -216,8 +210,6 @@ export function Footer({ layoutQuery = "md", sx, ...other }: FooterProps) {
             {renderCommunity()}
           </Box>
 
-          <Box sx={[(theme) => ({ ...blockStyles(theme, layoutQuery) })]}>{renderSubscribe()}</Box>
-
           <Box sx={[(theme) => ({ ...blockStyles(theme, layoutQuery) })]}>{renderSocials()}</Box>
 
           <Box sx={[(theme) => ({ ...blockStyles(theme, layoutQuery) })]}>{renderApps()}</Box>
@@ -242,7 +234,9 @@ export function Footer({ layoutQuery = "md", sx, ...other }: FooterProps) {
         flexDirection: { xs: "column", md: "row" },
       }}
     >
-      <Typography variant="caption"> © All rights reserved.</Typography>
+      <Typography variant="caption">
+        © {currentYear} {t("allRightsReserved")}
+      </Typography>
 
       <Box
         component="span"
@@ -253,8 +247,8 @@ export function Footer({ layoutQuery = "md", sx, ...other }: FooterProps) {
           justifyContent: "center",
         }}
       >
-        <Link variant="caption" color="inherit">
-          Help center
+        <Link variant="caption" color="inherit" component={RouterLink} href={paths.privacyPolicy}>
+          {t("privacyPolicy")}
         </Link>
         <Box
           sx={{
@@ -265,8 +259,13 @@ export function Footer({ layoutQuery = "md", sx, ...other }: FooterProps) {
             bgcolor: "currentColor",
           }}
         />
-        <Link variant="caption" color="inherit">
-          Terms of service
+        <Link
+          variant="caption"
+          color="inherit"
+          component={RouterLink}
+          href={paths.termsAndConditions}
+        >
+          {t("termsAndConditions")}
         </Link>
       </Box>
     </Container>
@@ -303,41 +302,3 @@ const blockStyles = (theme: Theme, layoutQuery: Breakpoint): SxProps<Theme> => (
     alignItems: "flex-start",
   },
 });
-
-// ----------------------------------------------------------------------
-
-type AppStoreButtonProps = ButtonProps & {
-  title: string;
-  caption: string;
-};
-
-const AppStoreButton = styled(({ title, caption, ...other }: AppStoreButtonProps) => (
-  <Button {...other}>
-    <div>
-      <Box
-        component="span"
-        sx={{
-          opacity: 0.72,
-          display: "block",
-          textAlign: "left",
-          typography: "caption",
-        }}
-      >
-        {caption}
-      </Box>
-
-      <Box component="span" sx={{ mt: -0.5, typography: "h6" }}>
-        {title}
-      </Box>
-    </div>
-  </Button>
-))(({ theme }) => ({
-  flexShrink: 0,
-  padding: "5px 12px",
-  color: theme.vars.palette.common.white,
-  border: `solid 1px ${varAlpha(theme.vars.palette.common.blackChannel, 0.24)}`,
-  background: `linear-gradient(180deg, ${theme.vars.palette.grey[900]}, ${theme.vars.palette.common.black})`,
-  [`& .${buttonClasses.startIcon}`]: {
-    marginLeft: 0,
-  },
-}));

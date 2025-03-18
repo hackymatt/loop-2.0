@@ -17,5 +17,5 @@ export async function generateMetadata({
   const title = `Kurs ${params.slug} - zacznij naukę już teraz`;
   const description = `Zdobądź praktyczne umiejętności programowania w ${params.slug} dzięki naszemu kursowi ${params.slug}. Zarejestruj się i rozwijaj swoją karierę w IT!`;
 
-  return createMetadata(title, description, undefined, params.slug);
+  return createMetadata({ title, description, path: params.slug });
 }
