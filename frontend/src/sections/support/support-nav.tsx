@@ -1,8 +1,10 @@
+import { useTranslation } from "react-i18next";
+
 import Box from "@mui/material/Box";
+import { Button } from "@mui/material";
 import Drawer from "@mui/material/Drawer";
 import { styled } from "@mui/material/styles";
 import Typography from "@mui/material/Typography";
-import ButtonBase from "@mui/material/ButtonBase";
 import Tab, { tabClasses } from "@mui/material/Tab";
 import Tabs, { tabsClasses } from "@mui/material/Tabs";
 
@@ -23,6 +25,9 @@ type Props = {
 };
 
 export function SupportNav({ topic, data, onChangeTopic, open, onClose }: Props) {
+  const { t } = useTranslation("faq");
+  const { t: contact } = useTranslation("contact");
+
   const renderItems = () => (
     <Tabs
       value={topic}
@@ -55,28 +60,23 @@ export function SupportNav({ topic, data, onChangeTopic, open, onClose }: Props)
   const renderInfo = () => (
     <>
       <Typography component="h6" variant="h6" sx={{ mb: 1 }}>
-        Do you still need help?
+        {t("moreQuestions.title")}
       </Typography>
 
       <Typography variant="body2" sx={{ color: "text.secondary", mb: 3 }}>
-        Always support whenever you need (24/7).
+        {t("moreQuestions.subtitle")}
       </Typography>
 
-      <SupportButton>
+      <SupportButton href="mailto:info@loop.edu.pl">
         <Iconify width={24} icon="carbon:email" />
-        Email
+        {contact("emailLabel")}
       </SupportButton>
 
-      <SupportButton>
-        <Iconify width={24} icon="solar:chat-line-outline" />
-        Chat now
-      </SupportButton>
-
-      <SupportButton>
+      <SupportButton href="tel:+48881455596">
         <Iconify width={24} icon="solar:smartphone-outline" />
-        Call
+        {contact("phoneLabel")}
         <Box component="span" sx={{ ml: -1, color: "primary.main" }}>
-          552-917-1454
+          881-455-596
         </Box>
       </SupportButton>
     </>
@@ -110,7 +110,7 @@ export function SupportNav({ topic, data, onChangeTopic, open, onClose }: Props)
 
 // ----------------------------------------------------------------------
 
-const SupportButton = styled(ButtonBase)(({ theme }) => ({
+const SupportButton = styled(Button)(({ theme }) => ({
   ...theme.typography.subtitle2,
   width: "100%",
   alignItems: "center",

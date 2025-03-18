@@ -4,5 +4,32 @@
     "title": "Still have questions?",
     "subtitle": "Please describe your case to receive the most accurate advice.",
     "button": "Contact us"
-  }
+  },
+  "header": "Welcome to support",
+  "pricing": [
+    {
+      "question": "What pricing plans are available?",
+      "answer": "We offer three plans: Free, Basic, and Premium. Each plan varies in the range of features available."
+    },
+    {
+      "question": "What does the Free plan include?",
+      "answer": "The Free plan gives access to the first chapter of each course, allowing you to test the material before purchasing."
+    },
+    {
+      "question": "What does the Basic plan offer?",
+      "answer": "The Basic plan provides full access to the course and a certificate of completion. However, it does not include individual consultations with the instructor."
+    },
+    {
+      "question": "What does the Premium plan include?",
+      "answer": "The Premium plan offers full access to the course and additional features, such as:\n- Certificate of completion\n- Access to the group chat\n- Access to individual chat with the instructor\n- Live consultations with the instructor"
+    },
+    {
+      "question": "Can I change my plan during the course?",
+      "answer": "Yes, you can upgrade to a higher plan at any time by paying the price difference."
+    },
+    {
+      "question": "Can I cancel my Premium subscription?",
+      "answer": "Yes, you can cancel your subscription at any time. Course access will remain active until the end of the paid period."
+    }
+  ]
 }

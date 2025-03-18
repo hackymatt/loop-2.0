@@ -4,5 +4,32 @@
     "title": "Masz dodatkowe pytania?",
     "subtitle": "Opisz swój przypadek, aby otrzymać jak najbardziej precyzyjną pomoc.",
     "button": "Skontaktuj się z nami"
-  }
+  },
+  "header": "Witaj w pomocy",
+  "pricing": [
+    {
+      "question": "Jakie są dostępne plany cenowe?",
+      "answer": "Oferujemy trzy plany: Darmowy, Podstawowy i Premium. Każdy z nich różni się zakresem dostępnych funkcji."
+    },
+    {
+      "question": "Co obejmuje plan Darmowy?",
+      "answer": "Plan Darmowy daje dostęp do pierwszego rozdziału każdego kursu, pozwalając na przetestowanie materiału przed zakupem."
+    },
+    {
+      "question": "Co oferuje plan Podstawowy?",
+      "answer": "Plan Podstawowy zawiera pełny dostęp do kursu oraz certyfikat ukończenia. Nie obejmuje jednak indywidualnych konsultacji z instruktorem."
+    },
+    {
+      "question": "Co zawiera plan Premium?",
+      "answer": "Plan Premium oferuje pełny dostęp do kursu oraz dodatkowe funkcje, takie jak:\n- Certyfikat ukończenia\n- Dostęp do grupowego czatu\n- Dostęp do indywidualnego czatu z instruktorem\n- Konsultacje z instruktorem na żywo"
+    },
+    {
+      "question": "Czy mogę zmienić plan w trakcie nauki?",
+      "answer": "Tak, w każdej chwili możesz przejść na wyższy plan, dopłacając różnicę w cenie."
+    },
+    {
+      "question": "Czy mogę anulować subskrypcję Premium?",
+      "answer": "Tak, możesz anulować subskrypcję w dowolnym momencie. Dostęp do kursów pozostanie aktywny do końca opłaconego okresu."
+    }
+  ]
 }

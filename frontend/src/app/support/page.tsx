@@ -1,10 +1,17 @@
-import { CONFIG } from "src/global-config";
+import { paths } from "src/routes/paths";
 
-import { SupportView } from "src/sections/support/view/support-view";
+import { createMetadata } from "src/utils/create-metadata";
+
+import { SupportView } from "src/sections/view/support-view";
 
 // ----------------------------------------------------------------------
 
-export const metadata = { title: `Support - ${CONFIG.appName}` };
+export const metadata = createMetadata({
+  title: "Pomoc",
+  description:
+    "Potrzebujesz wsparcia? Skontaktuj się z działem pomocy loop. Znajdź odpowiedzi na najczęściej zadawane pytania dotyczące kursów programowania, logowania i rejestracji.",
+  path: paths.support,
+});
 
 export default function Page() {
   return <SupportView />;

@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslation } from "react-i18next";
 import { useBoolean } from "minimal-shared/hooks";
 import { useState, useEffect, useCallback } from "react";
 
@@ -13,9 +14,8 @@ import { CONFIG } from "src/global-config";
 
 import { Iconify } from "src/components/iconify";
 
-import { SupportNav } from "../support-nav";
-import { SupportHero } from "../support-hero";
-import { SupportContent } from "../support-content";
+import { SupportNav } from "../support/support-nav";
+import { SupportContent } from "../support/support-content";
 
 // ----------------------------------------------------------------------
 
@@ -57,6 +57,8 @@ const TOPICS = [
 // ----------------------------------------------------------------------
 
 export function SupportView() {
+  const { t } = useTranslation("faq");
+
   const [topic, setTopic] = useState("Payment");
 
   const openNavMobile = useBoolean();
@@ -74,7 +76,6 @@ export function SupportView() {
 
   return (
     <>
-      <SupportHero />
       <Box
         sx={(theme) => ({
           px: 2,
@@ -90,7 +91,7 @@ export function SupportView() {
 
       <Container component="section" sx={{ pb: { xs: 10, md: 15 } }}>
         <Typography variant="h3" sx={{ my: { xs: 3, md: 10 } }}>
-          Frequently asked questions
+          {t("title")}
         </Typography>
 
         <Box sx={{ gap: 10, display: "flex" }}>
