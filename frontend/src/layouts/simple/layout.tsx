@@ -12,6 +12,8 @@ import Alert from "@mui/material/Alert";
 import { paths } from "src/routes/paths";
 import { RouterLink } from "src/routes/components";
 
+import { CONFIG } from "src/global-config";
+
 import { Logo } from "src/components/logo";
 
 import { langs } from "../langs-config";
@@ -76,10 +78,10 @@ export function SimpleLayout({
           </Link>
 
           {/** @slot Language popover */}
-          <LanguagePopover data={langs} />
+          {CONFIG.isLocal && <LanguagePopover data={langs} />}
 
           {/** @slot Settings button */}
-          <SettingsButton />
+          {CONFIG.isLocal && <SettingsButton />}
         </Box>
       ),
     };

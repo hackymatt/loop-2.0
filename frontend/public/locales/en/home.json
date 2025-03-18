@@ -3,5 +3,11 @@
   "subtitle": "Learn programming faster with AI, interactive courses, and mentor support.",
   "button": "Start learning for free",
   "sign-up": { "header": "Create your free account", "button": "Get started" },
-  "certificate": { "student": "John Doe", "course": "Introduction to Python Programming" }
+  "certificate": {
+    "student": "John Doe",
+    "course": "Introduction to Python Programming",
+    "header": "Certification",
+    "title": "Looking for a certificate?",
+    "subtitle": "Get your official certificate and showcase your skills!"
+  }
 }

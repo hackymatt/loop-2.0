@@ -6,6 +6,8 @@ import Box from "@mui/material/Box";
 import Alert from "@mui/material/Alert";
 import { Container } from "@mui/material";
 
+import { CONFIG } from "src/global-config";
+
 import { Logo } from "src/components/logo";
 import { MegaMenuMobile, MegaMenuHorizontal } from "src/components/mega-menu";
 
@@ -138,13 +140,13 @@ export function MainLayout({
       rightArea: (
         <Box sx={{ gap: 1, display: "flex", alignItems: "center" }}>
           {/** @slot Searchbar */}
-          <Searchbar />
+          {CONFIG.isLocal && <Searchbar />}
 
           {/** @slot Language popover */}
-          <LanguagePopover data={langs} />
+          {CONFIG.isLocal && <LanguagePopover data={langs} />}
 
           {/** @slot Settings button */}
-          <SettingsButton />
+          {CONFIG.isLocal && <SettingsButton />}
 
           {/** @slot Login button */}
           <LoginButton sx={{ display: { xs: "none", [layoutQuery]: "inline-flex" } }} />

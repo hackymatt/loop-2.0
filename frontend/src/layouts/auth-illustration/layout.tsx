@@ -12,6 +12,8 @@ import Container from "@mui/material/Container";
 import { paths } from "src/routes/paths";
 import { RouterLink } from "src/routes/components";
 
+import { CONFIG } from "src/global-config";
+
 import { Logo } from "src/components/logo";
 
 import { langs } from "../langs-config";
@@ -78,10 +80,10 @@ export function AuthIllustrationLayout({
           </Link>
 
           {/** @slot Language popover */}
-          <LanguagePopover data={langs} />
+          {CONFIG.isLocal && <LanguagePopover data={langs} />}
 
           {/** @slot Settings button */}
-          <SettingsButton />
+          {CONFIG.isLocal && <SettingsButton />}
         </Box>
       ),
     };

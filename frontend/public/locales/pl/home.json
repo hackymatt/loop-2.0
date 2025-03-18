@@ -5,6 +5,9 @@
   "sign-up": { "header": "Utwórz darmowe konto", "button": "Zacznij teraz" },
   "certificate": {
     "student": "Jan Kowalski",
-    "course": "Wprowadzenie do programowania w Pythonie"
+    "course": "Wprowadzenie do programowania w Pythonie",
+    "header": "Certyfikat",
+    "title": "Chcesz zdobyć wiedzę i otrzymać certyfikat?",
+    "subtitle": "Zdobądź oficjalny certyfikat i pokaż swoje umiejętności!"
   }
 }

@@ -28,13 +28,13 @@ export function HomeCertificate({ sx, ...other }: BoxProps) {
     <Box sx={{ p: { md: 10 }, textAlign: { xs: "center", md: "left" } }}>
       <m.div variants={variants}>
         <Typography variant="overline" sx={{ color: "text.disabled" }}>
-          Looking For a
+          {t("certificate.header")}
         </Typography>
       </m.div>
 
       <m.div variants={variants}>
         <Typography variant="h3" sx={{ my: 3 }}>
-          Dashboard template?
+          {t("certificate.title")}
         </Typography>
       </m.div>
 
@@ -42,7 +42,7 @@ export function HomeCertificate({ sx, ...other }: BoxProps) {
         <Typography
           sx={{ maxWidth: 360, color: "text.secondary", mx: { xs: "auto", md: "unset" } }}
         >
-          Minimal UI Kit is a professional dashboard used by many of our clients.
+          {t("certificate.subtitle")}
         </Typography>
       </m.div>
 
@@ -51,13 +51,11 @@ export function HomeCertificate({ sx, ...other }: BoxProps) {
           size="large"
           color="inherit"
           variant="outlined"
-          target="_blank"
-          rel="noopener"
-          href={paths.minimalStore}
+          href={paths.courses}
           endIcon={<Iconify width={16} icon="solar:alt-arrow-right-outline" />}
           sx={{ mt: 5, mb: { xs: 5, md: 0 } }}
         >
-          Visit Minimal UI
+          {t("button")}
         </Button>
       </m.div>
     </Box>
