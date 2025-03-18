@@ -41,7 +41,7 @@ export function SupportNav({ topic, data, onChangeTopic, open, onClose }: Props)
           value={item.title}
           label={item.title}
           icon={
-            <Box component="img" alt={item.title} src={item.icon} sx={{ width: 28, height: 28 }} />
+            <Iconify icon={item.icon} sx={{ width: 28, height: 28, color: "secondary.main" }} />
           }
           sx={{
             gap: 1,

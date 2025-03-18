@@ -9,9 +9,6 @@ import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 
-import { _faqsSupport } from "src/_mock";
-import { CONFIG } from "src/global-config";
-
 import { Iconify } from "src/components/iconify";
 
 import { SupportNav } from "../support/support-nav";
@@ -19,47 +16,22 @@ import { SupportContent } from "../support/support-content";
 
 // ----------------------------------------------------------------------
 
-const iconPath = (name: string) => `${CONFIG.assetsDir}/assets/icons/support/${name}`;
-
-const TOPICS = [
-  {
-    title: "Account",
-    icon: iconPath("ic-account.svg"),
-    content: <SupportContent contents={_faqsSupport.slice(0, 6)} />,
-  },
-  {
-    title: "Payment",
-    icon: iconPath("ic-payment.svg"),
-    content: <SupportContent contents={_faqsSupport.slice(0, 5)} />,
-  },
-  {
-    title: "Delivery",
-    icon: iconPath("ic-delivery.svg"),
-    content: <SupportContent contents={_faqsSupport.slice(0, 4)} />,
-  },
-  {
-    title: "Product",
-    icon: iconPath("ic-package.svg"),
-    content: <SupportContent contents={_faqsSupport} />,
-  },
-  {
-    title: "Return & refund",
-    icon: iconPath("ic-refund.svg"),
-    content: <SupportContent contents={_faqsSupport.slice(0, 6)} />,
-  },
-  {
-    title: "Assurances",
-    icon: iconPath("ic-assurances.svg"),
-    content: <SupportContent contents={_faqsSupport.slice(0, 7)} />,
-  },
-];
-
-// ----------------------------------------------------------------------
+type IFaqProps = { question: string; answer: string };
 
 export function SupportView() {
   const { t } = useTranslation("faq");
 
-  const [topic, setTopic] = useState("Payment");
+  const pricing = t("pricing", { returnObjects: true }) as IFaqProps[];
+
+  const TOPICS = [
+    {
+      title: "Pricing",
+      icon: "solar:tag-price-bold",
+      content: <SupportContent contents={pricing} />,
+    },
+  ];
+
+  const [topic, setTopic] = useState("Pricing");
 
   const openNavMobile = useBoolean();
 
