@@ -34,7 +34,10 @@ export function CourseDetailsChapterList({ course }: Props) {
 
       <Box sx={{ gap: 1, display: "flex", flexDirection: "column" }}>
         {course.chapters.map((chapter, index) => (
-          <Card sx={{ p: 3, gap: 2, borderRadius: 2, display: "flex", flexDirection: "column" }}>
+          <Card
+            key={chapter.id}
+            sx={{ p: 3, gap: 2, borderRadius: 2, display: "flex", flexDirection: "column" }}
+          >
             <CourseDetailsChapterItem
               key={chapter.id}
               course={course}

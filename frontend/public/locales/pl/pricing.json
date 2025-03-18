@@ -10,7 +10,7 @@
   "monthly": "Miesięcznie",
   "yearly": "Rocznie",
   "monthlyShort": "mc",
-  "save": "Zaoszczędź",
+  "save": "-",
   "popular": "POPULARNY",
   "current": "Obecny plan",
   "choose": "Wybierz",
@@ -26,11 +26,11 @@
       "price": { "monthly": 0.0, "yearly": 0.0 },
       "icon": "ic-plan-box-basic.svg",
       "options": [
-        { "title": "3 prototypes", "disabled": false },
-        { "title": "3 boards", "disabled": false },
-        { "title": "Up to 5 team members", "disabled": true },
-        { "title": "Advanced security", "disabled": true },
-        { "title": "Permissions & workflows", "disabled": true }
+        { "title": "Dostęp do pierwszego rozdziału kursu", "disabled": false },
+        { "title": "Certyfikat ukończenia", "disabled": true },
+        { "title": "Dostęp do grupowego czatu", "disabled": true },
+        { "title": "Dostęp do indywidualnego czatu z instruktorem", "disabled": true },
+        { "title": "Konsultacje z instruktorem na żywo", "disabled": true }
       ]
     },
     {
@@ -40,11 +40,11 @@
       "price": { "monthly": 5.99, "yearly": 4.99 },
       "icon": "ic-plan-box-starter.svg",
       "options": [
-        { "title": "3 prototypes", "disabled": false },
-        { "title": "3 boards", "disabled": false },
-        { "title": "Up to 5 team members", "disabled": true },
-        { "title": "Advanced security", "disabled": true },
-        { "title": "Permissions & workflows", "disabled": true }
+        { "title": "Dostęp do pierwszego rozdziału kursu", "disabled": false },
+        { "title": "Certyfikat ukończenia", "disabled": false },
+        { "title": "Dostęp do grupowego czatu", "disabled": false },
+        { "title": "Dostęp do indywidualnego czatu z instruktorem", "disabled": true },
+        { "title": "Konsultacje z instruktorem na żywo", "disabled": true }
       ]
     },
     {
@@ -54,11 +54,11 @@
       "price": { "monthly": 12.99, "yearly": 9.99 },
       "icon": "ic-plan-box-premium.svg",
       "options": [
-        { "title": "3 prototypes", "disabled": false },
-        { "title": "3 boards", "disabled": false },
-        { "title": "Up to 5 team members", "disabled": true },
-        { "title": "Advanced security", "disabled": true },
-        { "title": "Permissions & workflows", "disabled": true }
+        { "title": "Dostęp do pierwszego rozdziału kursu", "disabled": false },
+        { "title": "Certyfikat ukończenia", "disabled": false },
+        { "title": "Dostęp do grupowego czatu", "disabled": false },
+        { "title": "Dostęp do indywidualnego czatu z instruktorem", "disabled": false },
+        { "title": "Konsultacje z instruktorem na żywo", "disabled": false }
       ]
     }
   ]

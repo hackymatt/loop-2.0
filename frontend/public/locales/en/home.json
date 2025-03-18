@@ -2,5 +2,6 @@
   "title": "Programming at your fingertips with",
   "subtitle": "Learn programming faster with AI, interactive courses, and mentor support.",
   "button": "Start learning for free",
-  "sign-up": { "header": "Create your free account", "button": "Get started" }
+  "sign-up": { "header": "Create your free account", "button": "Get started" },
+  "certificate": { "student": "John Doe", "course": "Introduction to Python Programming" }
 }

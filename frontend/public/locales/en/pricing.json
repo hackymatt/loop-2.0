@@ -7,7 +7,7 @@
   "monthly": "Monthly",
   "yearly": "Yearly",
   "monthlyShort": "mo",
-  "save": "Save",
+  "save": "-",
   "popular": "POPULAR",
   "current": "Current plan",
   "choose": "Choose",
@@ -23,11 +23,11 @@
       "price": { "monthly": 0.0, "yearly": 0.0 },
       "icon": "ic-plan-box-basic.svg",
       "options": [
-        { "title": "3 prototypes", "disabled": false },
-        { "title": "3 boards", "disabled": false },
-        { "title": "Up to 5 team members", "disabled": true },
-        { "title": "Advanced security", "disabled": true },
-        { "title": "Permissions & workflows", "disabled": true }
+        { "title": "Access to the first chapter of course", "disabled": false },
+        { "title": "Completion certificate", "disabled": true },
+        { "title": "Access to group chat", "disabled": true },
+        { "title": "Access to individual chat with the instructor", "disabled": true },
+        { "title": "Live consultations with the instructor", "disabled": true }
       ]
     },
     {
@@ -37,11 +37,11 @@
       "price": { "monthly": 5.99, "yearly": 4.99 },
       "icon": "ic-plan-box-starter.svg",
       "options": [
-        { "title": "3 prototypes", "disabled": false },
-        { "title": "3 boards", "disabled": false },
-        { "title": "Up to 5 team members", "disabled": true },
-        { "title": "Advanced security", "disabled": true },
-        { "title": "Permissions & workflows", "disabled": true }
+        { "title": "Access to the first chapter of course", "disabled": false },
+        { "title": "Completion certificate", "disabled": false },
+        { "title": "Access to group chat", "disabled": false },
+        { "title": "Access to individual chat with the instructor", "disabled": true },
+        { "title": "Live consultations with the instructor", "disabled": true }
       ]
     },
     {
@@ -51,11 +51,11 @@
       "price": { "monthly": 12.99, "yearly": 9.99 },
       "icon": "ic-plan-box-premium.svg",
       "options": [
-        { "title": "3 prototypes", "disabled": false },
-        { "title": "3 boards", "disabled": false },
-        { "title": "Up to 5 team members", "disabled": true },
-        { "title": "Advanced security", "disabled": true },
-        { "title": "Permissions & workflows", "disabled": true }
+        { "title": "Access to the first chapter of course", "disabled": false },
+        { "title": "Completion certificate", "disabled": false },
+        { "title": "Access to group chat", "disabled": false },
+        { "title": "Access to individual chat with the instructor", "disabled": false },
+        { "title": "Live consultations with the instructor", "disabled": false }
       ]
     }
   ]

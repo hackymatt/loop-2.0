@@ -16,7 +16,7 @@ import { HomeHero } from "../home-hero";
 import { HomeFAQs } from "../home-faqs";
 import { HomePricing } from "../home-pricing";
 import { HomeNewStart } from "../home-new-start";
-import { HomeMinimalUI } from "../home-combination";
+import { HomeCertificate } from "../home-certificate";
 import { HomeForDesigner } from "../home-for-designer";
 import { HomeAdvertisement } from "../home-advertisement";
 import { HomeFeatureHighlights } from "../home-feature-highlights";
@@ -43,6 +43,8 @@ export function HomeView() {
 
       <HomeNewStart />
 
+      <HomeCertificate />
+
       <HomeFlexibleComponents />
 
       <HomeFeatureHighlights />
@@ -52,8 +54,6 @@ export function HomeView() {
       <HomePricing plans={_pricingHome} />
 
       <HomeFAQs />
-
-      <HomeMinimalUI />
 
       <HomeAdvertisement />
     </>

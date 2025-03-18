@@ -2,6 +2,7 @@ import type { Variants } from "framer-motion";
 import type { BoxProps } from "@mui/material/Box";
 
 import { m } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import { varAlpha } from "minimal-shared/utils";
 
 import Box from "@mui/material/Box";
@@ -12,16 +13,17 @@ import Typography from "@mui/material/Typography";
 
 import { paths } from "src/routes/paths";
 
-import { CONFIG } from "src/global-config";
-
 import { Iconify } from "src/components/iconify";
 import { varFade, MotionViewport } from "src/components/animate";
+
+import { Certificate } from "../certificate";
 
 // ----------------------------------------------------------------------
 
 const variants: Variants = varFade("inDown", { distance: 24 });
 
-export function HomeMinimalUI({ sx, ...other }: BoxProps) {
+export function HomeCertificate({ sx, ...other }: BoxProps) {
+  const { t } = useTranslation("home");
   const renderContent = () => (
     <Box sx={{ p: { md: 10 }, textAlign: { xs: "center", md: "left" } }}>
       <m.div variants={variants}>
@@ -61,28 +63,20 @@ export function HomeMinimalUI({ sx, ...other }: BoxProps) {
     </Box>
   );
 
-  const renderImage = () => (
+  const renderCertificate = () => (
     <m.div variants={varFade("in")}>
-      <Box
-        component="img"
-        loading="lazy"
-        alt="Minimal dashboard"
-        src={`${CONFIG.assetsDir}/assets/images/home/minimal-dashboard.webp`}
+      <Certificate
+        course={t("certificate.course")}
+        student={t("certificate.student")}
         sx={(theme) => ({
-          width: 480,
+          height: 260,
           borderRadius: 2,
-          filter: `drop-shadow(0px 48px 80px ${varAlpha(theme.vars.palette.grey["500Channel"], 0.24)})`,
+          filter: `drop-shadow(0px 48px 80px ${varAlpha(theme.vars.palette.grey["500Channel"], 0.5)})`,
           ...theme.applyStyles("dark", {
-            filter: `drop-shadow(0px 48px 80px ${varAlpha(theme.vars.palette.common.blackChannel, 0.48)})`,
+            filter: `drop-shadow(0px 48px 80px ${varAlpha(theme.vars.palette.common.blackChannel, 0.6)})`,
           }),
           [theme.breakpoints.up("md")]: {
-            top: 0,
-            left: 0,
-            bottom: 0,
-            my: "auto",
-            width: "108%",
-            maxWidth: "unset",
-            position: "absolute",
+            width: 420,
           },
         })}
       />
@@ -106,7 +100,7 @@ export function HomeMinimalUI({ sx, ...other }: BoxProps) {
             (theme) => ({
               borderRadius: 3,
               backgroundImage: {
-                md: `linear-gradient(to right, transparent 25%, ${varAlpha(theme.vars.palette.grey["500Channel"], 0.16)} 100%)`,
+                md: `linear-gradient(to right, transparent 5%, ${varAlpha(theme.vars.palette.grey["500Channel"], 0.16)} 100%)`,
               },
             }),
           ]}
@@ -117,7 +111,7 @@ export function HomeMinimalUI({ sx, ...other }: BoxProps) {
             sx={{ position: "relative", textAlign: { xs: "center", md: "unset" } }}
             size={{ xs: 12, md: 6, lg: 6 }}
           >
-            {renderImage()}
+            {renderCertificate()}
           </Grid>
         </Grid>
       </Container>

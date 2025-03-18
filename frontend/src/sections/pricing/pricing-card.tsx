@@ -13,6 +13,7 @@ import { fCurrency } from "src/utils/format-number";
 import { CONFIG } from "src/global-config";
 
 import { Label } from "src/components/label";
+import { Iconify } from "src/components/iconify";
 
 import type { PricingCardProps } from "./types";
 
@@ -57,18 +58,32 @@ export function PricingCard({ plan, sx, ...other }: Props) {
   );
 
   const renderList = () => (
-    <Box sx={{ gap: 1, display: "flex", textAlign: "center", flexDirection: "column" }}>
+    <Box
+      sx={{
+        gap: 1,
+        display: "flex",
+        typography: "body2",
+        textAlign: "left",
+        flexDirection: "column",
+      }}
+    >
       {plan.options.map((option) => (
-        <Typography
+        <Box
           key={option.title}
-          variant="body2"
           sx={{
-            fontWeight: "fontWeightMedium",
-            ...(option.disabled && { color: "text.disabled", textDecoration: "line-through" }),
+            gap: 1.5,
+            display: "flex",
+            alignItems: "center",
+            ...(option.disabled && { color: "text.disabled" }),
           }}
         >
+          <Iconify
+            width={20}
+            icon={option.disabled ? "eva:close-outline" : "eva:checkmark-fill"}
+            sx={{ color: "primary.main", ...(option.disabled && { color: "text.disabled" }) }}
+          />
           {option.title}
-        </Typography>
+        </Box>
       ))}
     </Box>
   );

@@ -49,7 +49,7 @@ export const usePageLinks = () => {
 const useCourseNav = () => {
   const { t } = useTranslation("navigation");
 
-  const popularCourses = _courses.map((c) => c.title).slice(0, 4);
+  const popularCourses = _courses.slice(0, 4);
 
   const children = usePageLinks();
 
@@ -58,9 +58,9 @@ const useCourseNav = () => {
       title: t("more"),
       path: paths.courses,
     },
-    tags: popularCourses.map((course: string) => ({
-      title: course,
-      path: `${paths.course}/${course}/`,
+    tags: popularCourses.map((course) => ({
+      title: course.title,
+      path: `${paths.course}/${course.slug}/`,
     })),
     children,
   };

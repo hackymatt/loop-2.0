@@ -2,5 +2,9 @@
   "title": "Programowanie na wyciągniecie ręki z",
   "subtitle": "Ucz się programowania szybciej z AI, interaktywnymi kursami i wsparciem mentorów.",
   "button": "Rozpocznij naukę za darmo",
-  "sign-up": { "header": "Utwórz darmowe konto", "button": "Zacznij teraz" }
+  "sign-up": { "header": "Utwórz darmowe konto", "button": "Zacznij teraz" },
+  "certificate": {
+    "student": "Jan Kowalski",
+    "course": "Wprowadzenie do programowania w Pythonie"
+  }
 }

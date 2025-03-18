@@ -1,7 +1,8 @@
+import type { BoxProps } from "@mui/material";
+
 import { useTranslation } from "react-i18next";
 
-import Grid from "@mui/material/Grid2";
-import { Box, Container } from "@mui/material";
+import { Box } from "@mui/material";
 import Typography from "@mui/material/Typography";
 
 import { fDate } from "src/utils/format-time";
@@ -10,70 +11,71 @@ import { CONFIG } from "src/global-config";
 
 import { Logo } from "src/components/logo";
 
-export function Certificate({ title }: { title: string }) {
+type Props = BoxProps & { course: string; student: string };
+
+export function Certificate({ course, student, sx, ...other }: Props) {
   const { t } = useTranslation("certificate");
   return (
     <Box
       component="section"
-      sx={(theme) => ({
-        ...theme.mixins.bgGradient({
-          images: [`url(${CONFIG.assetsDir}/assets/background/texture-2.webp)`],
-        }),
-        width: 1,
-        borderRadius: 1.5,
-        bgcolor: "background.neutral",
-        py: 2,
-      })}
-    >
-      <Container
-        sx={{
+      sx={[
+        (theme) => ({
+          ...theme.mixins.bgGradient({
+            images: [`url(${CONFIG.assetsDir}/assets/background/texture-2.webp)`],
+          }),
+          width: 1,
+          height: "100%",
+          borderRadius: 1.5,
+          bgcolor: "background.neutral",
+          p: 2,
           display: "flex",
           flexDirection: "column",
-          alignItems: "center",
           justifyContent: "center",
-          position: "relative",
-          textAlign: "center",
-        }}
-      >
-        {/* Grid Layout: 1/5 ratio */}
-        <Grid container spacing={2} width={1}>
-          {/* First 1/5 for Logo */}
-          <Grid size={12} sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
-            <Logo isSingle sx={{ width: 24, height: 24 }} />
-          </Grid>
+          alignItems: "center",
+          overflow: "hidden",
+          gap: 1,
+        }),
+        ...(Array.isArray(sx) ? sx : [sx]),
+      ]}
+      {...other}
+    >
+      <Logo isSingle sx={{ width: "7%", height: "auto", mb: 2 }} />
 
-          {/* The rest of the content in 4/5 */}
-          <Grid size={{ xs: 12, md: 10 }}>
-            <Box sx={{ display: "flex", alignItems: "center", justifyContent: "flex-start" }}>
-              <Typography sx={{ fontSize: 8, fontWeight: "bold" }}>{t("title")}</Typography>
-            </Box>
+      <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <Typography sx={{ fontSize: "0.7em", fontWeight: "bold", wordBreak: "break-word" }}>
+          {t("title")}
+        </Typography>
+      </Box>
 
-            {/* Participant info */}
-            <Box sx={{ display: "flex", flexDirection: "column", alignItems: "flex-start", mt: 2 }}>
-              <Typography color="primary" sx={{ fontSize: 8 }}>
-                {t("award")}
-              </Typography>
-              <Typography sx={{ fontSize: 10, fontWeight: "bold" }}>{t("name")}</Typography>
-            </Box>
+      {/* Participant info */}
+      <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+        <Typography color="primary" sx={{ fontSize: "0.7em", wordBreak: "break-word" }}>
+          {t("award")}
+        </Typography>
+        <Typography sx={{ fontSize: "0.8em", fontWeight: "bold", wordBreak: "break-word" }}>
+          {student}
+        </Typography>
+      </Box>
 
-            {/* Course name */}
-            <Box sx={{ display: "flex", flexDirection: "column", alignItems: "flex-start", mt: 2 }}>
-              <Typography color="primary" sx={{ fontSize: 8 }}>
-                {t("completion")}
-              </Typography>
-              <Typography sx={{ fontSize: 10, fontWeight: "bold" }}>{title}</Typography>
-            </Box>
+      {/* Course name */}
+      <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+        <Typography color="primary" sx={{ fontSize: "0.7em", wordBreak: "break-word" }}>
+          {t("completion")}
+        </Typography>
+        <Typography sx={{ fontSize: "0.8em", fontWeight: "bold", wordBreak: "break-word" }}>
+          {course}
+        </Typography>
+      </Box>
 
-            {/* Completion date */}
-            <Box sx={{ display: "flex", flexDirection: "column", alignItems: "flex-start", mt: 2 }}>
-              <Typography color="primary" sx={{ fontSize: 6 }}>
-                {t("date")}
-              </Typography>
-              <Typography sx={{ fontSize: 8, fontWeight: "bold" }}>{fDate(new Date())}</Typography>
-            </Box>
-          </Grid>
-        </Grid>
-      </Container>
+      {/* Completion date */}
+      <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+        <Typography color="primary" sx={{ fontSize: "0.6em", wordBreak: "break-word" }}>
+          {t("date")}
+        </Typography>
+        <Typography sx={{ fontSize: "0.7em", fontWeight: "bold", wordBreak: "break-word" }}>
+          {fDate(new Date())}
+        </Typography>
+      </Box>
     </Box>
   );
 }
