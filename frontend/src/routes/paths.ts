@@ -1,6 +1,7 @@
 export const paths = {
   login: "/login",
   register: "/register",
+  resetPassword: "/reset-password",
   courses: "/courses",
   course: "/course",
   pricing: "/pricing",
@@ -101,7 +102,6 @@ export const paths = {
     signUp: "/illustration/sign-up",
   },
   verify: "/verify",
-  resetPassword: "/reset-password",
   updatePassword: "/update-password",
   /**
    * Common

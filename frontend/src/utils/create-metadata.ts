@@ -1,4 +1,4 @@
-import packageInfo from "package.json";
+import { CONFIG } from "src/global-config";
 
 // ----------------------------------------------------------------------
 
@@ -83,8 +83,10 @@ export const createMetadata = (
 
   const location = path ? `${path}/` : "/";
 
+  const { appName: name } = CONFIG;
+
   return {
-    title: `${title ?? defaultMetadata.title} • ${packageInfo.name}`,
+    title: `${title ?? defaultMetadata.title} • ${name}`,
     description: description ?? defaultMetadata.description,
     keywords: (keywords ?? defaultMetadata.keywords).join(","),
     alternates: {
@@ -94,7 +96,7 @@ export const createMetadata = (
       type: "website",
       url: `https://loop.edu.pl${location}`,
       images: image ?? "https://loop.edu.pl/logo/logo.svg",
-      title: `${title ?? defaultMetadata.title} • ${packageInfo.name}`,
+      title: `${title ?? defaultMetadata.title} • ${name}`,
       description: description ?? defaultMetadata.description,
     },
   };
