@@ -1,0 +1,43 @@
+{
+  "title": "Kursy",
+  "filter": {
+    "level": "Poziom umiejętności",
+    "technology": "Technologia",
+    "category": "Kategoria",
+    "rating": { "title": "Ocena", "more": "i wyżej" }
+  },
+  "instructor": ["instruktor", "instruktorów", "instruktorów"],
+  "student": ["uczeń", "uczniów", "uczniów"],
+  "review": ["recenzja", "recenzje", "recenzji"],
+  "hour": ["godzina", "godziny", "godzin"],
+  "lesson": ["lekcja", "lekcje", "lekcji"],
+  "video": ["nagranie", "nagrania", "nagrań"],
+  "article": ["artykuł", "artykuły", "artykułów"],
+  "exercise": ["ćwiczenie", "ćwiczenia", "ćwiczeń"],
+  "quiz": ["test", "testy", "testów"],
+  "sign-up": { "header": "Utwórz darmowe konto", "button": "Zacznij naukę za darmo" },
+  "start": "Rozpocznij kurs za darmo",
+  "access": "Dożywotni dostęp",
+  "certificate": {
+    "title": "Certyfikat ukończenia",
+    "subtitle": "Dodaj to poświadczenie do swojego profilu LinkedIn, CV lub życiorysu. Podziel się nim w mediach społecznościowych oraz podczas oceny wyników pracy."
+  },
+  "chat": {
+    "title": "Chat",
+    "subtitle": "Dołącz do naszego czatu kursowego, aby uzyskać wsparcie i wymieniać się doświadczeniami z innymi uczestnikami.",
+    "button": "Dołącz do czatu"
+  },
+  "instructors": "Instruktorzy",
+  "reviews": "Recenzje",
+  "included": { "start": "Dostępne w planie", "plans": "Podstawowym oraz Premium" },
+  "overview": "Opis",
+  "similar": "Podobne kursy",
+  "viewAll": "Zobacz wszystkie",
+  "chapters": {
+    "title": "Rozdziały",
+    "button": "Rozpocznij",
+    "show": "Pokaż",
+    "hide": "Ukryj",
+    "lesson": "lekcje"
+  }
+}

@@ -1,0 +1,62 @@
+{
+  "title": { "cards": "Flexible plans tailored to your needs", "columns": "Compare Plans" },
+  "subtitle": {
+    "cards": "Start learning programming now and develop your skills according to your own needs.",
+    "columns": "Choose the best plan for you and start learning programming at your own pace."
+  },
+  "monthly": "Monthly",
+  "yearly": "Yearly",
+  "monthlyShort": "mo",
+  "save": "-",
+  "popular": "POPULAR",
+  "current": "Current plan",
+  "choose": "Choose",
+  "perYear": "per year",
+  "hide": "Hide",
+  "show": "Show",
+  "allFeatures": "all features",
+  "packages": [
+    {
+      "license": "Free",
+      "popular": false,
+      "premium": false,
+      "price": { "monthly": 0.0, "yearly": 0.0 },
+      "icon": "ic-plan-box-basic.svg",
+      "options": [
+        { "title": "Access to the first chapter of course", "disabled": false },
+        { "title": "Completion certificate", "disabled": true },
+        { "title": "Access to group chat", "disabled": true },
+        { "title": "Access to individual chat with the instructor", "disabled": true },
+        { "title": "Live consultations with the instructor", "disabled": true }
+      ]
+    },
+    {
+      "license": "Basic",
+      "popular": true,
+      "premium": false,
+      "price": { "monthly": 5.99, "yearly": 4.99 },
+      "icon": "ic-plan-box-starter.svg",
+      "options": [
+        { "title": "Access to the first chapter of course", "disabled": false },
+        { "title": "Completion certificate", "disabled": false },
+        { "title": "Access to group chat", "disabled": false },
+        { "title": "Access to individual chat with the instructor", "disabled": true },
+        { "title": "Live consultations with the instructor", "disabled": true }
+      ]
+    },
+    {
+      "license": "Premium",
+      "popular": false,
+      "premium": true,
+      "price": { "monthly": 12.99, "yearly": 9.99 },
+      "icon": "ic-plan-box-premium.svg",
+      "options": [
+        { "title": "Access to the first chapter of course", "disabled": false },
+        { "title": "Completion certificate", "disabled": false },
+        { "title": "Access to group chat", "disabled": false },
+        { "title": "Access to individual chat with the instructor", "disabled": false },
+        { "title": "Live consultations with the instructor", "disabled": false }
+      ]
+    }
+  ]
+}

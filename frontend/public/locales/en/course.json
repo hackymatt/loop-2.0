@@ -1,0 +1,43 @@
+{
+  "title": "Courses",
+  "filter": {
+    "level": "Skill levels",
+    "technology": "Technology",
+    "category": "Category",
+    "rating": { "title": "Rating", "more": "& Up" }
+  },
+  "instructor": ["instructor"],
+  "student": ["student"],
+  "review": ["review"],
+  "hour": ["hour"],
+  "lesson": ["lesson"],
+  "video": ["video"],
+  "article": ["article"],
+  "exercise": ["exercise"],
+  "quiz": ["quiz"],
+  "sign-up": { "header": "Create your free account", "button": "Start learning for free" },
+  "start": "Start course for free",
+  "access": "Lifetime access",
+  "certificate": {
+    "title": "Certificate of accomplishment",
+    "subtitle": "Include this credential on your LinkedIn profile, resume, or CV. Share it on social media and during your performance evaluation."
+  },
+  "chat": {
+    "title": "Chat",
+    "subtitle": "Join our course chat to get support and exchange experiences with other participants.",
+    "button": "Join the chat"
+  },
+  "instructors": "Instructors",
+  "reviews": "Reviews",
+  "included": { "start": "Included with", "plans": "Basic and Premium" },
+  "overview": "Overview",
+  "similar": "Similar courses",
+  "viewAll": "View all",
+  "chapters": {
+    "title": "Chapters",
+    "button": "Start",
+    "show": "Show",
+    "hide": "Hide",
+    "lesson": "lessons"
+  }
+}

@@ -1,0 +1,317 @@
+import type { BoxProps } from "@mui/material/Box";
+import type { ICourseProps } from "src/types/course";
+
+import { useTranslation } from "react-i18next";
+import { varAlpha } from "minimal-shared/utils";
+
+import Box from "@mui/material/Box";
+import Grid from "@mui/material/Grid2";
+import { Button } from "@mui/material";
+import Divider from "@mui/material/Divider";
+import Container from "@mui/material/Container";
+import Typography from "@mui/material/Typography";
+
+import { paths } from "src/routes/paths";
+
+import { usePluralize } from "src/hooks/use-pluralize";
+
+import { getLevelIcon } from "src/utils/level-icon";
+import { fShortenNumber } from "src/utils/format-number";
+import { getTechnologyIcon } from "src/utils/technology-icon";
+
+import { Iconify } from "src/components/iconify";
+import { AnimateBorder } from "src/components/animate";
+import { CustomBreadcrumbs } from "src/components/custom-breadcrumbs";
+
+import { SignUpView } from "../auth/sign-up-view";
+import { FormHead } from "../auth/components/form-head";
+
+// ----------------------------------------------------------------------
+
+type Props = BoxProps & Partial<ICourseProps> & { totalLessons: number };
+
+export function CourseDetailsHero({
+  sx,
+  slug,
+  title,
+  level,
+  teachers,
+  category,
+  technology,
+  totalPoints,
+  totalHours,
+  description,
+  ratingNumber,
+  totalReviews,
+  totalQuizzes,
+  totalExercises,
+  totalVideos,
+  totalLessons,
+  totalStudents,
+  ...other
+}: Props) {
+  const { t: navigation } = useTranslation("navigation");
+  const { t: locale } = useTranslation("locale");
+  const { t } = useTranslation("course");
+
+  const student = t("student", { returnObjects: true }) as string[];
+  const review = t("review", { returnObjects: true }) as string[];
+  const hour = t("hour", { returnObjects: true }) as string[];
+  const lesson = t("lesson", { returnObjects: true }) as string[];
+  const video = t("video", { returnObjects: true }) as string[];
+  const exercise = t("exercise", { returnObjects: true }) as string[];
+  const quiz = t("quiz", { returnObjects: true }) as string[];
+
+  const languagePluralize = usePluralize();
+
+  const renderInfo = () => (
+    <Box
+      sx={{
+        gap: 1.5,
+        display: "flex",
+        flexWrap: "wrap",
+        alignItems: "center",
+        typography: "body2",
+      }}
+    >
+      <Box sx={{ gap: 0.5, display: "flex", alignItems: "center" }}>
+        <Iconify icon={getLevelIcon(level ?? "")} />
+        {level}
+      </Box>
+
+      <Divider orientation="vertical" sx={{ height: 20, my: "auto" }} />
+
+      <Box sx={{ gap: 0.5, display: "flex", alignItems: "center" }}>
+        <Iconify icon={getTechnologyIcon(technology ?? "")} />
+        {technology}
+      </Box>
+
+      <Divider orientation="vertical" sx={{ height: 20, my: "auto" }} />
+
+      <Box sx={{ gap: 0.5, display: "flex", alignItems: "center" }}>
+        <Iconify icon="eva:star-fill" sx={{ color: "warning.main" }} />
+        {Number.isInteger(ratingNumber) ? `${ratingNumber}.0` : ratingNumber}
+      </Box>
+
+      <Divider orientation="vertical" sx={{ height: 20, my: "auto" }} />
+
+      {totalReviews && (
+        <Box>
+          {fShortenNumber(totalReviews, {}, { code: locale("code"), currency: locale("currency") })}{" "}
+          {languagePluralize(review, totalReviews)}
+        </Box>
+      )}
+
+      <Divider orientation="vertical" sx={{ height: 20, my: "auto" }} />
+
+      {totalStudents ? (
+        <Box sx={{ display: "flex", alignItems: "center" }}>
+          {fShortenNumber(
+            totalStudents,
+            {},
+            { code: locale("code"), currency: locale("currency") }
+          )}
+          <Box component="span" sx={{ ml: 0.5 }}>
+            {languagePluralize(student, totalStudents)}
+          </Box>
+        </Box>
+      ) : null}
+    </Box>
+  );
+
+  const renderTexts = () => (
+    <Box sx={{ gap: 2, display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
+      <Typography variant="overline" sx={{ color: "secondary.main" }}>
+        {category}
+      </Typography>
+
+      <Typography variant="h3" component="h1">
+        {title}
+      </Typography>
+
+      {renderInfo()}
+
+      <Typography sx={{ color: "text.secondary" }}>{description}</Typography>
+    </Box>
+  );
+
+  const renderContent = () => (
+    <Box
+      sx={{
+        rowGap: 2,
+        columnGap: 3,
+        display: "flex",
+        flexWrap: "wrap",
+        maxWidth: 560,
+        typography: "body2",
+        "& > div": { gap: 1, display: "flex", alignItems: "center" },
+      }}
+    >
+      {totalHours ? (
+        <div>
+          <Iconify icon="solar:clock-circle-outline" />{" "}
+          {`${totalHours} ${languagePluralize(hour, totalHours)}`}
+        </div>
+      ) : null}
+
+      {totalLessons ? (
+        <div>
+          <Iconify icon="solar:documents-minimalistic-outline" />
+          {totalLessons} {languagePluralize(lesson, totalLessons)}
+        </div>
+      ) : null}
+
+      {totalVideos ? (
+        <div>
+          <Iconify icon="solar:video-frame-outline" />
+          {`${totalVideos} ${languagePluralize(video, totalVideos)}`}
+        </div>
+      ) : null}
+
+      {totalExercises ? (
+        <div>
+          <Iconify icon="solar:code-outline" />
+          {`${totalExercises} ${languagePluralize(exercise, totalExercises)}`}
+        </div>
+      ) : null}
+
+      {totalQuizzes ? (
+        <div>
+          <Iconify icon="solar:question-circle-outline" />
+          {`${totalQuizzes} ${languagePluralize(quiz, totalQuizzes)}`}
+        </div>
+      ) : null}
+    </Box>
+  );
+
+  const renderSummary = () => (
+    <Box
+      sx={{
+        rowGap: 2,
+        columnGap: 3,
+        display: "flex",
+        flexWrap: "wrap",
+        maxWidth: 560,
+        typography: "body2",
+        "& > div": { gap: 1, display: "flex", alignItems: "center" },
+      }}
+    >
+      {totalPoints ? (
+        <div>
+          <Iconify icon="solar:medal-ribbon-star-outline" /> {`${totalPoints} XP`}
+        </div>
+      ) : null}
+
+      <Box sx={{ gap: 1, display: "flex", alignItems: "center", typography: "body2" }}>
+        <Iconify icon="carbon:data-accessor" />
+        {t("access")}
+      </Box>
+
+      <Box sx={{ gap: 1, display: "flex", alignItems: "center", typography: "body2" }}>
+        <Iconify icon="carbon:certificate" />
+        {t("certificate.title")}
+      </Box>
+    </Box>
+  );
+
+  const renderButton = () => (
+    <AnimateBorder
+      sx={(theme) => ({
+        borderRadius: 1,
+        position: "relative",
+        bgcolor: theme.vars.palette.primary.main,
+        color: "common.white",
+      })}
+      duration={6}
+      slotProps={{
+        outlineColor: (theme) =>
+          `linear-gradient(135deg, ${varAlpha(theme.vars.palette.secondary.lightChannel, 0.08)} 50%, ${varAlpha(theme.vars.palette.secondary.mainChannel, 0.24)})`,
+        primaryBorder: {
+          size: 60,
+          sx: (theme) => ({
+            color: theme.vars.palette.secondary.main,
+          }),
+        },
+        secondaryBorder: {
+          sx: (theme) => ({
+            color: theme.vars.palette.error.main,
+          }),
+        },
+      }}
+    >
+      <Button
+        variant="text"
+        size="large"
+        href={`${paths.register}?redirect=${paths.course}/${slug}`}
+        sx={{ px: 2, borderRadius: "inherit", textAlign: "center" }}
+      >
+        {t("start")}
+      </Button>
+    </AnimateBorder>
+  );
+
+  const renderForm = () => (
+    <Box
+      sx={(theme) => ({
+        py: 5,
+        width: 1,
+        zIndex: 2,
+        borderRadius: 2,
+        flexDirection: "column",
+        px: { xs: 3, md: 5 },
+        boxShadow: theme.vars.customShadows.z24,
+        maxWidth: "var(--layout-auth-content-width)",
+        bgcolor: theme.vars.palette.background.default,
+        flex: "1 1 auto",
+        display: "block",
+      })}
+    >
+      <div>
+        <SignUpView
+          header={<FormHead title={t("sign-up.header")} />}
+          buttonText={t("sign-up.button")}
+        />
+      </div>
+    </Box>
+  );
+
+  return (
+    <Box
+      component="section"
+      sx={[{ pt: 5, pb: 10, bgcolor: "background.neutral" }, ...(Array.isArray(sx) ? sx : [sx])]}
+      {...other}
+    >
+      <Container sx={{ overflow: "hidden" }}>
+        <CustomBreadcrumbs
+          links={[
+            { name: navigation("home"), href: "/" },
+            { name: navigation("courses"), href: paths.courses },
+            { name: title },
+          ]}
+          sx={{ mb: { xs: 5, md: 10 } }}
+        />
+
+        <Grid
+          container
+          spacing={{ xs: 5, md: 10 }}
+          direction={{ xs: "column-reverse", md: "row-reverse" }}
+          alignItems="center"
+        >
+          <Grid
+            size={{ xs: 12, md: 5 }}
+            sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}
+          >
+            {renderForm()}
+          </Grid>
+
+          <Grid size={{ xs: 12, md: 7 }} sx={{ gap: 3, display: "flex", flexDirection: "column" }}>
+            {renderTexts()}
+            {renderButton()}
+            {renderContent()}
+            {renderSummary()}
+          </Grid>
+        </Grid>
+      </Container>
+    </Box>
+  );
+}

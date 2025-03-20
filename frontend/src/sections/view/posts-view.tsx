@@ -1,0 +1,79 @@
+"use client";
+
+import { useTranslation } from "react-i18next";
+
+import Grid from "@mui/material/Grid2";
+import Button from "@mui/material/Button";
+import Container from "@mui/material/Container";
+
+import { paths } from "src/routes/paths";
+
+import { useResponsive } from "src/hooks/use-responsive";
+import { useQueryParams } from "src/hooks/use-query-params";
+
+import { _tags, _mock, _coursePosts } from "src/_mock";
+
+import { Posts } from "../posts/posts";
+import { Advertisement } from "../advertisement";
+import { PostSidebar } from "../blog/post-sidebar";
+import { FeaturedPost } from "../posts/featured-post";
+import { PostSearchMobile } from "../blog/post-search-mobile";
+
+// ----------------------------------------------------------------------
+
+const CATEGORIES = ["Marketing", "Community", "Tutorials", "Business", "Management"];
+
+// ----------------------------------------------------------------------
+
+const posts = _coursePosts.slice(0, 8);
+const featuredPost = _coursePosts[3];
+const recentPosts = _coursePosts.slice(-4);
+
+export function PostsView() {
+  const { t } = useTranslation("advertisement");
+
+  const { query, handleChange } = useQueryParams();
+
+  const mdUp = useResponsive("up", "md");
+
+  return (
+    <>
+      {!mdUp && (
+        <PostSearchMobile
+          value={query?.search ?? ""}
+          onChange={(value) => handleChange("search", value)}
+        />
+      )}
+      <FeaturedPost post={featuredPost} />
+      <Container sx={{ pt: 10 }}>
+        <Grid container spacing={{ md: 8 }}>
+          <Grid size={{ xs: 12, md: 8 }}>
+            <Posts posts={posts} />
+          </Grid>
+
+          <Grid size={{ xs: 12, md: 4 }}>
+            <PostSidebar
+              tags={_tags}
+              categories={CATEGORIES}
+              recentPosts={recentPosts}
+              slots={{
+                bottomNode: (
+                  <Advertisement
+                    title={t("title")}
+                    description={t("subtitle")}
+                    imageUrl={_mock.image.course(6)}
+                    action={
+                      <Button variant="contained" color="primary" href={paths.courses}>
+                        {t("button")}
+                      </Button>
+                    }
+                  />
+                ),
+              }}
+            />
+          </Grid>
+        </Grid>
+      </Container>
+    </>
+  );
+}

@@ -1,0 +1,39 @@
+{
+  "email": {
+    "label": "Email",
+    "errors": { "required": "Email jest wymagany", "invalid": "Email jest nieprawidłowy" }
+  },
+  "password": {
+    "label": "Hasło",
+    "placeholder": "Wpisz hasło",
+    "errors": {
+      "required": "Hasło jest wymagane",
+      "minLength": "Hasło musi mieć co najmniej 8 znaków",
+      "bigLetter": "Hasło musi zawierać co najmniej jedną wielką literę",
+      "smallLetter": "Hasło musi zawierać co najmniej jedną małą literę",
+      "number": "Hasło musi zawierać co najmniej jedną cyfrę",
+      "specialCharacter": "Hasło musi zawierać co najmniej jeden znak specjalny"
+    }
+  },
+  "confirmPassword": {
+    "label": "Potwierdź hasło",
+    "placeholder": "Powtórz hasło",
+    "errors": {
+      "required": "Potwierdzenie hasła jest wymagane",
+      "match": "Hasła muszą być identyczne"
+    }
+  },
+  "termsAcceptance": {
+    "label": {
+      "accept": "Akceptuję",
+      "terms": "regulamin",
+      "and": "oraz",
+      "privacy": "politykę prywatności."
+    },
+    "errors": { "required": "To pole jest wymagane" }
+  },
+  "dataProcessingConsent": {
+    "label": "Wyrażam zgodę na przetwarzanie moich danych osobowych zawartych w formularzu w celu i zakresie niezbędnym do realizacji usługi i tylko w takim celu.",
+    "errors": { "required": "To pole jest wymagane" }
+  }
+}

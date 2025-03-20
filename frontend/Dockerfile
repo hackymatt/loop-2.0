@@ -1,0 +1,54 @@
+FROM node:20-alpine as BUILD_IMAGE
+
+WORKDIR /usr/src/app/frontend
+
+COPY package.json package-lock.json ./
+
+# install dependencies
+RUN npm install
+
+COPY . .
+
+ARG ENV=PROD
+ENV NEXT_PUBLIC_ENV=$ENV
+
+ARG API_URL=https://loop.edu.pl/api
+ENV NEXT_PUBLIC_API_URL=$API_URL
+
+ARG BASE_URL=https://loop.edu.pl
+ENV NEXT_PUBLIC_BASE_URL=$BASE_URL
+
+ARG GOOGLE_CLIENT_ID=570842553290-me2nmn43nr89bgglao8o3iak7i0k0reb.apps.googleusercontent.com
+ENV NEXT_PUBLIC_GOOGLE_CLIENT_ID=$GOOGLE_CLIENT_ID
+
+ARG FACEBOOK_CLIENT_ID=1576703186506729
+ENV NEXT_PUBLIC_FACEBOOK_CLIENT_ID=$FACEBOOK_CLIENT_ID
+
+ARG GOOGLE_ANALYTICS_ID=G-EF333JHK4W
+ENV NEXT_PUBLIC_GOOGLE_ANALYTICS_ID=$GOOGLE_ANALYTICS_ID
+
+ARG FACEBOOK_PIXEL_ID=1569372313729791
+ENV NEXT_PUBLIC_FACEBOOK_PIXEL_ID=$FACEBOOK_PIXEL_ID
+
+ARG MIN_PASSWORD_LENGTH=8
+ENV NEXT_PUBLIC_MIN_PASSWORD_LENGTH=$MIN_PASSWORD_LENGTH
+
+# build
+RUN npm run build
+
+# remove dev dependencies
+RUN npm prune --omit=dev
+
+FROM node:18-alpine
+
+WORKDIR /usr/src/app/frontend
+
+# copy from build image
+COPY --from=BUILD_IMAGE /usr/src/app/frontend/package.json ./package.json
+COPY --from=BUILD_IMAGE /usr/src/app/frontend/node_modules ./node_modules
+COPY --from=BUILD_IMAGE /usr/src/app/frontend/next.config.js next.config.js
+COPY --from=BUILD_IMAGE /usr/src/app/frontend/.next ./.next
+COPY --from=BUILD_IMAGE /usr/src/app/frontend/public ./public
+
+EXPOSE 3000
+CMD ["npm", "start"]
