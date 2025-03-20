@@ -18,6 +18,7 @@ import { HomePricing } from "../_home/home-pricing";
 import { HomeNewStart } from "../_home/home-new-start";
 import { HomeCertificate } from "../_home/home-certificate";
 import { HomeLatestPosts } from "../_home/home-latest-posts";
+import { HomeDownloadApp } from "../_home/home-download-app";
 import { HomeTestimonials } from "../_home/home-testimonials";
 import { HomeAdvertisement } from "../_home/home-advertisement";
 import { HomeFeaturedCourses } from "../_home/home-featured-courses";
@@ -59,6 +60,8 @@ export function HomeView() {
       <HomeLatestPosts posts={_coursePosts} />
 
       <HomeAdvertisement />
+
+      <HomeDownloadApp />
     </>
   );
 }

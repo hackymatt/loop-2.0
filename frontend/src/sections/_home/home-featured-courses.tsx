@@ -69,7 +69,7 @@ export function HomeFeaturedCourses({ courses, sx, ...other }: Props) {
           }}
         >
           {courses.map((course) => (
-            <m.div variants={variants}>
+            <m.div key={course.id} variants={variants}>
               <CourseItem key={course.id} course={course} />
             </m.div>
           ))}

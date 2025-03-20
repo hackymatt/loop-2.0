@@ -40,7 +40,7 @@ export function HomeHero({ sx, ...other }: BoxProps) {
               ),
             })}
           >
-            {` loop`}
+            {` ${CONFIG.appName}`}
           </Box>
         </Typography>
       </m.div>

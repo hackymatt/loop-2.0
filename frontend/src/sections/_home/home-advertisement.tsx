@@ -2,6 +2,7 @@ import type { Variants } from "framer-motion";
 import type { BoxProps } from "@mui/material/Box";
 
 import { m } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import { varAlpha } from "minimal-shared/utils";
 
 import Box from "@mui/material/Box";
@@ -12,6 +13,7 @@ import { paths } from "src/routes/paths";
 
 import { CONFIG } from "src/global-config";
 
+import { Iconify } from "src/components/iconify";
 import { varFade, AnimateBorder, MotionViewport } from "src/components/animate";
 
 // ----------------------------------------------------------------------
@@ -19,6 +21,41 @@ import { varFade, AnimateBorder, MotionViewport } from "src/components/animate";
 const variants: Variants = varFade("inUp", { distance: 24 });
 
 export function HomeAdvertisement({ sx, ...other }: BoxProps) {
+  const { t } = useTranslation("home");
+
+  const renderActionButton = () => (
+    <AnimateBorder
+      sx={(theme) => ({
+        borderRadius: 1.25,
+        position: "relative",
+        display: "inline-flex",
+        bgcolor: "text.primary",
+        color: "background.paper",
+      })}
+      duration={12}
+      slotProps={{
+        outlineColor: (theme) =>
+          `linear-gradient(135deg, ${varAlpha(theme.vars.palette.primary.mainChannel, 0.04)}, ${varAlpha(theme.vars.palette.warning.mainChannel, 0.04)})`,
+        primaryBorder: {
+          size: 50,
+          width: "1.5px",
+          sx: (theme) => ({ color: theme.vars.palette.primary.main }),
+        },
+        secondaryBorder: { sx: (theme) => ({ color: theme.vars.palette.warning.main }) },
+      }}
+    >
+      <Button
+        size="large"
+        variant="text"
+        href={paths.register}
+        endIcon={<Iconify icon="eva:arrow-ios-forward-fill" />}
+        sx={{ px: 2, borderRadius: "inherit" }}
+      >
+        {t("advertisement.button")}
+      </Button>
+    </AnimateBorder>
+  );
+
   return (
     <Box
       component="section"
@@ -27,7 +64,7 @@ export function HomeAdvertisement({ sx, ...other }: BoxProps) {
           ...theme.mixins.bgGradient({
             images: [
               `linear-gradient(to bottom, ${varAlpha(theme.vars.palette.common.blackChannel, 0.72)}, ${varAlpha(theme.vars.palette.common.blackChannel, 0.72)})`,
-              `url(${CONFIG.assetsDir}/assets/images/home/multiple-screens.webp)`,
+              `url(${CONFIG.assetsDir}/assets/images/course/course-large-2.webp)`,
             ],
           }),
           display: "flex",
@@ -53,12 +90,12 @@ export function HomeAdvertisement({ sx, ...other }: BoxProps) {
                 ),
               })}
             >
-              Start now
+              {t("advertisement.part1")}
             </Box>
             <br />
-            create your
+            {t("advertisement.part2")}
             <br />
-            website today
+            {t("advertisement.part3")}
           </Typography>
         </m.div>
 
@@ -67,38 +104,3 @@ export function HomeAdvertisement({ sx, ...other }: BoxProps) {
     </Box>
   );
 }
-
-// ----------------------------------------------------------------------
-
-const renderActionButton = () => (
-  <AnimateBorder
-    sx={(theme) => ({
-      borderRadius: 1.25,
-      position: "relative",
-      display: "inline-flex",
-      bgcolor: varAlpha(theme.vars.palette.common.blackChannel, 0.4),
-    })}
-    duration={12}
-    slotProps={{
-      outlineColor: (theme) =>
-        `linear-gradient(135deg, ${varAlpha(theme.vars.palette.primary.mainChannel, 0.04)}, ${varAlpha(theme.vars.palette.warning.mainChannel, 0.04)})`,
-      primaryBorder: {
-        size: 50,
-        width: "1.5px",
-        sx: (theme) => ({ color: theme.vars.palette.primary.main }),
-      },
-      secondaryBorder: { sx: (theme) => ({ color: theme.vars.palette.warning.main }) },
-    }}
-  >
-    <Button
-      size="large"
-      variant="text"
-      target="_blank"
-      rel="noopener"
-      href={paths.zoneStore}
-      sx={{ px: 2, borderRadius: "inherit" }}
-    >
-      Purchase now
-    </Button>
-  </AnimateBorder>
-);

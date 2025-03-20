@@ -2,6 +2,7 @@ import type { Variants } from "framer-motion";
 import type { BoxProps } from "@mui/material/Box";
 
 import { m } from "framer-motion";
+import { useTranslation } from "react-i18next";
 
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
@@ -16,6 +17,7 @@ import { varFade, MotionViewport } from "src/components/animate";
 const variants: Variants = varFade("inUp", { distance: 24 });
 
 export function HomeNewStart({ sx, ...other }: BoxProps) {
+  const { t } = useTranslation("home");
   return (
     <Box
       component="section"
@@ -50,13 +52,13 @@ export function HomeNewStart({ sx, ...other }: BoxProps) {
 
           <m.div variants={variants}>
             <Typography variant="overline" sx={{ color: "text.disabled" }}>
-              new start
+              {t("platform.header")}
             </Typography>
           </m.div>
 
           <m.div variants={variants}>
             <Typography variant="h2">
-              The
+              {t("platform.title")}
               <Box
                 component="span"
                 sx={(theme) => ({
@@ -65,16 +67,14 @@ export function HomeNewStart({ sx, ...other }: BoxProps) {
                   ),
                 })}
               >
-                {` ZONE `}
+                {` ${CONFIG.appName}`}
               </Box>
-              UI Kit
             </Typography>
           </m.div>
 
           <m.div variants={variants}>
             <Typography sx={{ color: "text.secondary", maxWidth: 480 }}>
-              Modern ui kit to save your time, boost your creativity. Neat and super stylish layout
-              ready to help with your projects
+              {t("platform.subtitle")}
             </Typography>
           </m.div>
         </Box>

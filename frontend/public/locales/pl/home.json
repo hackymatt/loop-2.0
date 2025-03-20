@@ -27,5 +27,20 @@
     "title": "Najlepsze kursy dla Ciebie",
     "subtitle": "Odkryj starannie opracowane kursy, które pomogą Ci opanować nowe umiejętności i rozwijać karierę w branży technologicznej.",
     "button": "Zobacz wszystkie"
+  },
+  "advertisement": {
+    "part1": "Zacznij teraz",
+    "part2": "twórz swoją przyszłość",
+    "part3": "w IT!",
+    "button": "Wypróbuj za darmo"
+  },
+  "platform": {
+    "header": "Nauka z AI",
+    "title": "Inteligentna nauka z",
+    "subtitle": "Nowoczesne środowisko nauki wspierane przez AI. Oszczędzaj czas, ucz się efektywnie i rozwijaj swoje umiejętności w przejrzystym, intuicyjnym edytorze kodu."
+  },
+  "app": {
+    "title": "Pobierz aplikację",
+    "subtitle": "Nauka programowania jeszcze łatwiejsza dzięki naszej aplikacji!"
   }
 }
