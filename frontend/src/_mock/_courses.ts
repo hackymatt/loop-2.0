@@ -51,14 +51,6 @@ const CHAPTERS = Array.from({ length: 9 }, (_, index) => ({
   lessons: LESSONS,
 }));
 
-const getPrice = (index: number) => (index % 2 ? 159.99 : 269.99);
-
-const getPriceSale = (index: number) => {
-  if (index === 2) return 89.99;
-  if (index === 5) return 69.99;
-  return 0;
-};
-
 const getTeachers = (index: number) => {
   if (index === 0) return TEACHERS.slice(0, 5);
   if (index === 1) return TEACHERS.slice(3, 7);
@@ -72,15 +64,6 @@ const getLevel = (index: number) => {
   if (index % 5) return "All levels";
   return "Beginner";
 };
-
-const getLearnList = () => [
-  "A fermentum in morbi pretium aliquam adipiscing donec tempus.",
-  "Vulputate placerat amet pulvinar lorem nisl.",
-  "Consequat feugiat habitant gravida quisque elit bibendum id adipiscing sed.",
-  "Etiam duis lobortis in fames ultrices commodo nibh.",
-  "Fusce neque. Nulla neque dolor, sagittis eget, iaculis quis, molestie non, velit.",
-  "Curabitur a felis in nunc fringilla tristique. Praesent congue erat at massa.",
-];
 
 // ----------------------------------------------------------------------
 

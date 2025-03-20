@@ -9,10 +9,8 @@ import Container from "@mui/material/Container";
 
 import { _reviews } from "src/_mock";
 
-import { Markdown } from "src/components/markdown";
 import { CustomBreadcrumbs } from "src/components/custom-breadcrumbs";
 
-import { ReviewNewForm } from "../../review/review-new-form";
 import { EcommerceReviewList } from "../review/ecommerce-review-list";
 import { EcommerceReviewSummary } from "../review/ecommerce-review-summary";
 import { EcommerceProductDetailsInfo } from "../product/details/ecommerce-product-details-info";
@@ -38,8 +36,6 @@ export function EcommerceProductView({ product }: ViewProps) {
       <Container>
         <EcommerceReviewList reviews={_reviews} />
       </Container>
-
-      <ReviewNewForm open={openReviewForm.value} onClose={openReviewForm.onFalse} />
     </>
   );
 
@@ -64,22 +60,6 @@ export function EcommerceProductView({ product }: ViewProps) {
               priceSale={product?.priceSale || 0}
               ratingNumber={product?.ratingNumber || 0}
               totalReviews={product?.totalReviews || 0}
-            />
-          </Grid>
-        </Grid>
-
-        <Grid container columnSpacing={{ md: 8 }}>
-          <Grid size={{ xs: 12, md: 6, lg: 7 }}>
-            <Markdown
-              content={product?.description || ""}
-              sx={{
-                my: 10,
-                "& table": {
-                  "& td": { px: 2, typography: "body2" },
-                  "& td:first-of-type": { color: "text.secondary" },
-                  "tbody tr:nth-of-type(odd)": { bgcolor: "transparent" },
-                },
-              }}
             />
           </Grid>
         </Grid>
