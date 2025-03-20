@@ -25,7 +25,7 @@ jobs:
       - name: Test code quality
         run: npm run fm:check
       - name: Test code formatting
-        run: npm run prettier:check
+        run: npm run fm:check
 
   test_frontend:
     name: Test frontend
