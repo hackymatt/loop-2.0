@@ -9,5 +9,23 @@
     "header": "Certyfikat",
     "title": "Chcesz zdobyć wiedzę i otrzymać certyfikat?",
     "subtitle": "Zdobądź oficjalny certyfikat i pokaż swoje umiejętności!"
+  },
+  "pricing": {
+    "header": "Plany cenowe",
+    "title": "Przejrzyste ceny",
+    "subtitle": "Wybierz spośród elastycznych opcji cenowych dostosowanych do Twoich potrzeb i budżetu – bez ukrytych opłat."
+  },
+  "technology": {
+    "header": "Technologie",
+    "title": "Nowoczesne technologie",
+    "subtitle": "Odkryj zestaw nowoczesnych i potężnych technologii, które pomogą Ci rozwijać umiejętności i realizować projekty.",
+    "button": "Zobacz wszystkie"
+  },
+  "testimonial": "Co mówią nasi uczniowie",
+  "course": {
+    "header": "Kursy",
+    "title": "Najlepsze kursy dla Ciebie",
+    "subtitle": "Odkryj starannie opracowane kursy, które pomogą Ci opanować nowe umiejętności i rozwijać karierę w branży technologicznej.",
+    "button": "Zobacz wszystkie"
   }
 }

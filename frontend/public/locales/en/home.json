@@ -9,5 +9,23 @@
     "header": "Certification",
     "title": "Looking for a certificate?",
     "subtitle": "Get your official certificate and showcase your skills!"
+  },
+  "pricing": {
+    "header": "Pricing Plans",
+    "title": "Transparent Pricing",
+    "subtitle": "Choose from flexible pricing options tailored to your needs and budget – with no hidden fees."
+  },
+  "technology": {
+    "header": "Technologies",
+    "title": "Cutting-Edge Technologies",
+    "subtitle": "Explore a selection of modern and powerful technologies to enhance your development skills and projects.",
+    "button": "View all"
+  },
+  "testimonial": "What our students say",
+  "course": {
+    "header": "Courses",
+    "title": "Top courses for You",
+    "subtitle": "Discover expertly designed courses tailored to help you master new skills and advance your career in technology.",
+    "button": "View all"
   }
 }

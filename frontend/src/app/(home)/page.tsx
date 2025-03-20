@@ -1,6 +1,6 @@
 import { createMetadata } from "src/utils/create-metadata";
 
-import { HomeView } from "src/sections/_home/view/home-view";
+import { HomeView } from "src/sections/view/home-view";
 
 // ----------------------------------------------------------------------
 

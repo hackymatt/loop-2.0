@@ -19,7 +19,10 @@ export function HomeNewStart({ sx, ...other }: BoxProps) {
   return (
     <Box
       component="section"
-      sx={[{ pt: { xs: 10, md: 15 }, pb: { xs: 5, md: 10 } }, ...(Array.isArray(sx) ? sx : [sx])]}
+      sx={[
+        { bgcolor: "background.neutral", pt: { xs: 10, md: 15 }, pb: { xs: 5, md: 10 } },
+        ...(Array.isArray(sx) ? sx : [sx]),
+      ]}
       {...other}
     >
       <Container component={MotionViewport}>
@@ -33,7 +36,6 @@ export function HomeNewStart({ sx, ...other }: BoxProps) {
             textAlign: "center",
             alignItems: "center",
             flexDirection: "column",
-            bgcolor: "background.neutral",
           }}
         >
           <m.div variants={variants}>

@@ -8,19 +8,20 @@ import { useBackToTop } from "minimal-shared/hooks";
 import Fab from "@mui/material/Fab";
 import SvgIcon from "@mui/material/SvgIcon";
 
-import { _pricingHome } from "src/_mock";
+import { _courses, _coursePosts, _pricingHome, _testimonials } from "src/_mock";
 
 import { ScrollProgress, useScrollProgress } from "src/components/animate/scroll-progress";
 
-import { HomeHero } from "../home-hero";
-import { HomeFAQs } from "../home-faqs";
-import { HomePricing } from "../home-pricing";
-import { HomeNewStart } from "../home-new-start";
-import { HomeCertificate } from "../home-certificate";
-import { HomeForDesigner } from "../home-for-designer";
-import { HomeAdvertisement } from "../home-advertisement";
-import { HomeFeatureHighlights } from "../home-feature-highlights";
-import { HomeFlexibleComponents } from "../home-flexible-components";
+import { HomeHero } from "../_home/home-hero";
+import { HomeFAQs } from "../_home/home-faqs";
+import { HomePricing } from "../_home/home-pricing";
+import { HomeNewStart } from "../_home/home-new-start";
+import { HomeCertificate } from "../_home/home-certificate";
+import { HomeLatestPosts } from "../_home/home-latest-posts";
+import { HomeTestimonials } from "../_home/home-testimonials";
+import { HomeAdvertisement } from "../_home/home-advertisement";
+import { HomeFeaturedCourses } from "../_home/home-featured-courses";
+import { HomeFeatureTechnologies } from "../_home/home-feature-technologies";
 
 // ----------------------------------------------------------------------
 
@@ -45,15 +46,17 @@ export function HomeView() {
 
       <HomeCertificate />
 
-      <HomeFlexibleComponents />
+      <HomeFeaturedCourses courses={_courses.slice(0, 6)} />
 
-      <HomeFeatureHighlights />
-
-      <HomeForDesigner />
+      <HomeFeatureTechnologies />
 
       <HomePricing plans={_pricingHome} />
 
       <HomeFAQs />
+
+      <HomeTestimonials testimonials={_testimonials} />
+
+      <HomeLatestPosts posts={_coursePosts} />
 
       <HomeAdvertisement />
     </>

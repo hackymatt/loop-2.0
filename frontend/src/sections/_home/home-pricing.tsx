@@ -40,6 +40,7 @@ const variants: Variants = varFade("inUp", { distance: 24 });
 
 export function HomePricing({ plans, sx, ...other }: BoxProps & HomePricingProps) {
   const { t } = useTranslation("pricing");
+  const { t: home } = useTranslation("home");
 
   const packages = t("packages", { returnObjects: true }) as IPackage[];
 
@@ -93,21 +94,18 @@ export function HomePricing({ plans, sx, ...other }: BoxProps & HomePricingProps
         <Box sx={{ mx: "auto", maxWidth: 480, textAlign: "center", mb: { xs: 5, md: 10 } }}>
           <m.div variants={variants}>
             <Typography variant="overline" sx={{ color: "text.disabled" }}>
-              pricing plans
+              {home("pricing.header")}
             </Typography>
           </m.div>
 
           <m.div variants={variants}>
             <Typography variant="h2" sx={{ my: 3 }}>
-              Transparent pricing
+              {home("pricing.title")}
             </Typography>
           </m.div>
 
           <m.div variants={variants}>
-            <Typography sx={{ color: "text.secondary" }}>
-              Choose from flexible pricing options designed to fit your business needs and budget
-              with no hidden fees.
-            </Typography>
+            <Typography sx={{ color: "text.secondary" }}>{home("pricing.subtitle")}</Typography>
           </m.div>
         </Box>
 

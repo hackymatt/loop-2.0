@@ -2,6 +2,8 @@ import i18n from "i18next";
 import HttpApi from "i18next-http-backend";
 import { initReactI18next } from "react-i18next";
 
+import { CONFIG } from "src/global-config";
+
 i18n
   .use(HttpApi) // Load translations from the public folder
   .use(initReactI18next) // Bind with React
@@ -9,7 +11,7 @@ i18n
     fallbackLng: "en", // Default language
     supportedLngs: ["en", "pl"], // Available languages
     lng: "en", // Default language
-    debug: process.env.NODE_ENV === "development", // Debug in dev mode
+    debug: CONFIG.isLocal, // Debug in dev mode
     interpolation: {
       escapeValue: false, // React already escapes values
     },
