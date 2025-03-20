@@ -1,0 +1,48 @@
+name: Testing
+
+on:
+  pull_request:
+    branches: [develop]
+
+jobs:
+  lint_frontend:
+    name: Lint frontend
+
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        shell: bash
+        working-directory: ${{ github.workspace }}/frontend
+
+    steps:
+      - name: Checkout repository code
+        uses: actions/checkout@v4
+      - name: Pull nodejs
+        uses: actions/setup-node@v4
+      - name: Install dependencies
+        run: npm install
+      - name: Test code quality
+        run: npm run fm:check
+      - name: Test code formatting
+        run: npm run prettier:check
+
+  test_frontend:
+    name: Test frontend
+
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        shell: bash
+        working-directory: ${{ github.workspace }}/frontend
+
+    steps:
+      - name: Checkout repository code
+        uses: actions/checkout@v4
+      - name: Pull nodejs
+        uses: actions/setup-node@v4
+      - name: Install dependencies
+        run: npm install
+      - name: Run tests
+        run: npm run test:coverage
