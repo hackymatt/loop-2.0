@@ -9,6 +9,10 @@ import { Link } from "@mui/material";
 import { paths } from "src/routes/paths";
 import { RouterLink } from "src/routes/components";
 
+import { useFormErrorHandler } from "src/hooks/use-form-error-handler";
+
+import { useRegister } from "src/api/auth/register";
+
 import { Form } from "src/components/hook-form";
 
 import { FormHead } from "./components/form-head";
@@ -27,10 +31,11 @@ type Props = {
 export function SignUpView({ header, buttonText = "Utwórz konto" }: Props) {
   const { t } = useTranslation("sign-up");
 
+  const { mutateAsync: register } = useRegister();
+
   const defaultValues: SignUpSchemaType = {
     email: "",
     password: "",
-    confirmPassword: "",
     termsAcceptance: false,
     dataProcessingConsent: false,
   };
@@ -39,15 +44,19 @@ export function SignUpView({ header, buttonText = "Utwórz konto" }: Props) {
 
   const methods = useForm<SignUpSchemaType>({ resolver: zodResolver(SignUpSchema), defaultValues });
 
-  const { reset, handleSubmit } = methods;
+  const { reset, handleSubmit, clearErrors } = methods;
+
+  const handleFormError = useFormErrorHandler(methods);
 
   const onSubmit = handleSubmit(async (data) => {
+    clearErrors();
     try {
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      const { email, password } = data;
+      await register({ email, password });
       reset();
       console.info("DATA", data);
     } catch (error) {
-      console.error(error);
+      handleFormError(error);
     }
   });
 

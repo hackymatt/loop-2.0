@@ -26,7 +26,6 @@ export function SignUpIllustrationView() {
     fullName: "",
     email: "",
     password: "",
-    confirmPassword: "",
   };
 
   const methods = useForm<SignUpSchemaType>({ resolver: zodResolver(SignUpSchema), defaultValues });

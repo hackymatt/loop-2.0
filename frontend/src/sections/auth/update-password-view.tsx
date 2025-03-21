@@ -32,7 +32,6 @@ export function UpdatePasswordView() {
     code: "",
     email: "",
     password: "",
-    confirmPassword: "",
   };
 
   const methods = useForm<UpdatePasswordSchemaType>({
@@ -66,23 +65,6 @@ export function UpdatePasswordView() {
         name="password"
         label="Password"
         placeholder="6+ characters"
-        type={password.value ? "text" : "password"}
-        slotProps={{
-          input: {
-            endAdornment: (
-              <InputAdornment position="end">
-                <IconButton onClick={password.onToggle} edge="end">
-                  <Iconify icon={password.value ? "solar:eye-bold" : "solar:eye-closed-bold"} />
-                </IconButton>
-              </InputAdornment>
-            ),
-          },
-        }}
-      />
-
-      <Field.Text
-        name="confirmPassword"
-        label="Confirm password"
         type={password.value ? "text" : "password"}
         slotProps={{
           input: {

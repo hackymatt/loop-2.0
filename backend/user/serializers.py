@@ -1,5 +1,7 @@
 from django.contrib.auth import get_user_model
+from django.utils.translation import gettext as _
 from rest_framework import serializers
+import re
 
 
 class EmailOnlyUserSerializer(serializers.ModelSerializer):
@@ -13,6 +15,55 @@ class EmailOnlyUserSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             "password": {"write_only": True},
         }
+
+    def validate_email(self, value):
+        print(f"Validating email: {value}")
+        """
+        Check if the email is already registered.
+        """
+        if get_user_model().objects.filter(email=value).exists():
+            raise serializers.ValidationError(
+                _("Account with this email address already exists.")
+            )
+        return value
+    
+    def validate_password(self, value):
+        """
+        Validate the password to ensure it meets the required criteria:
+        - Minimum 8 characters
+        - At least 1 uppercase letter
+        - At least 1 lowercase letter
+        - At least 1 special character
+        - At least 1 digit
+        """
+        password = value
+
+        if len(password) < 8:
+            raise serializers.ValidationError(
+                _("Password must be at least 8 characters long.")
+            )
+
+        if not re.search(r'[A-Z]', password):
+            raise serializers.ValidationError(
+                _("Password must contain at least one uppercase letter.")
+            )
+
+        if not re.search(r'[a-z]', password):
+            raise serializers.ValidationError(
+                _("Password must contain at least one lowercase letter.")
+            )
+
+        if not re.search(r'[!@#$%^&*(),.?":{}|<>]', password):
+            raise serializers.ValidationError(
+                _("Password must contain at least one special character.")
+            )
+
+        if not re.search(r'\d', password):
+            raise serializers.ValidationError(
+                _("Password must contain at least one digit.")
+            )
+
+        return value
 
     def create(self, validated_data):
         # Get the email and extract the part before '@' to create the username

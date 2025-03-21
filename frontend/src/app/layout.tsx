@@ -15,6 +15,8 @@ import { ProgressBar } from "src/components/progress-bar";
 import { MotionLazy } from "src/components/animate/motion-lazy";
 import { SettingsDrawer, defaultSettings, SettingsProvider } from "src/components/settings";
 
+import { ReactQueryProvider } from "./react-query-provider";
+
 // ----------------------------------------------------------------------
 
 export const viewport: Viewport = {
@@ -46,25 +48,27 @@ export default async function RootLayout({ children }: Props) {
           attribute={themeConfig.cssVariables.colorSchemeSelector}
         />
 
-        <SettingsProvider defaultSettings={defaultSettings}>
-          <TranslationProvider>
-            <LocalizationProvider>
-              <AppRouterCacheProvider options={{ key: "css" }}>
-                <ThemeProvider
-                  themeOverrides={themeOverrides}
-                  defaultMode={themeConfig.defaultMode}
-                  modeStorageKey={themeConfig.modeStorageKey}
-                >
-                  <MotionLazy>
-                    <ProgressBar />
-                    <SettingsDrawer defaultSettings={defaultSettings} />
-                    {children}
-                  </MotionLazy>
-                </ThemeProvider>
-              </AppRouterCacheProvider>
-            </LocalizationProvider>
-          </TranslationProvider>
-        </SettingsProvider>
+        <ReactQueryProvider>
+          <SettingsProvider defaultSettings={defaultSettings}>
+            <TranslationProvider>
+              <LocalizationProvider>
+                <AppRouterCacheProvider options={{ key: "css" }}>
+                  <ThemeProvider
+                    themeOverrides={themeOverrides}
+                    defaultMode={themeConfig.defaultMode}
+                    modeStorageKey={themeConfig.modeStorageKey}
+                  >
+                    <MotionLazy>
+                      <ProgressBar />
+                      <SettingsDrawer defaultSettings={defaultSettings} />
+                      {children}
+                    </MotionLazy>
+                  </ThemeProvider>
+                </AppRouterCacheProvider>
+              </LocalizationProvider>
+            </TranslationProvider>
+          </SettingsProvider>
+        </ReactQueryProvider>
       </body>
     </html>
   );

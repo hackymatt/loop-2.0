@@ -62,26 +62,6 @@ export function SignUpForm({ buttonText = "Utwórz konto", sx, ...other }: Props
         }}
       />
 
-      <Field.Text
-        name="confirmPassword"
-        label={t("confirmPassword.label")}
-        placeholder={t("confirmPassword.placeholder")}
-        type={showPassword.value ? "text" : "password"}
-        slotProps={{
-          inputLabel: { shrink: true },
-          input: {
-            endAdornment: (
-              <InputAdornment position="end">
-                <IconButton onClick={showPassword.onToggle} edge="end">
-                  <Iconify
-                    icon={showPassword.value ? "solar:eye-outline" : "solar:eye-closed-outline"}
-                  />
-                </IconButton>
-              </InputAdornment>
-            ),
-          },
-        }}
-      />
       <LoadingButton
         fullWidth
         color="inherit"

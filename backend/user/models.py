@@ -14,7 +14,7 @@ def user_directory_path(instance, filename):
     return os.path.join("profiles", filename)
 
 
-class CustomUser(AbstractUser):
+class User(AbstractUser):
     email = models.EmailField(unique=True)  # Unique and required
     first_name = models.CharField(max_length=30, blank=True, null=True)  # Optional
     last_name = models.CharField(max_length=30, blank=True, null=True)  # Optional
@@ -30,3 +30,6 @@ class CustomUser(AbstractUser):
 
     def __str__(self):
         return self.email
+    
+    class Meta:
+        db_table = 'user'

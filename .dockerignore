@@ -14,6 +14,10 @@ app/*/*/*/__pycache__/
 .venv/
 venv/
 
+# Node.js
+package-lock.json
+yarn.lock
+
 # Local PostgreSQL data
 data/
 

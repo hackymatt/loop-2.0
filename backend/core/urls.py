@@ -1,42 +1,25 @@
 from django.urls import path, include
-from django.conf import settings
 from django.contrib import admin
+from django.conf import settings
 from django.conf.urls.static import static
 import debug_toolbar
 
-from user.views import RegisterView, ActivateAccountView
+from user.urls import urlpatterns as user_urls
 
-from .routers import Router
+api_urlpatterns = user_urls
 
-router = Router(trailing_slash=False)
-
-router.register(r"auth/register", RegisterView, basename="register")
-router.register(
-    r"auth/activate/(?P<uid>[0-9A-Za-z_\-]+)/(?P<token>.+)",
-    ActivateAccountView,
-    basename="activate",
-)
-
-api_urlpatterns = [
-    path("", include(router.urls)),
-]
-
+# Main URL patterns
 urlpatterns = [
-    path(
-        "api/",
-        include(api_urlpatterns),
-    ),
+    # Include all the API URLs under the /api prefix
+    path("api/", include(api_urlpatterns)),
+    # Admin route
     path("admin/", admin.site.urls),
 ]
 
+# Debug toolbar and static/media settings in development mode
 if settings.DEBUG:
     urlpatterns += [
         path("__debug__/", include(debug_toolbar.urls)),
-    ]  # pragma: no cover
-
-    urlpatterns += static(
-        settings.STATIC_URL, document_root=settings.STATIC_ROOT
-    )  # pragma: no cover
-    urlpatterns += static(
-        settings.MEDIA_URL, document_root=settings.MEDIA_ROOT
-    )  # pragma: no cover
+    ]
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

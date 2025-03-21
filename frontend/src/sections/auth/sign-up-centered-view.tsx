@@ -25,7 +25,6 @@ export function SignUpCenteredView() {
   const defaultValues: SignUpSchemaType = {
     email: "",
     password: "",
-    confirmPassword: "",
   };
 
   const methods = useForm<SignUpSchemaType>({ resolver: zodResolver(SignUpSchema), defaultValues });

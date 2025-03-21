@@ -8,4 +8,5 @@ export const CONFIG = {
   assetsDir: process.env.NEXT_PUBLIC_ASSETS_DIR ?? "",
   env: process.env.NEXT_PUBLIC_ENV ?? "LOCAL",
   isLocal: (process.env.NEXT_PUBLIC_ENV ?? "LOCAL") === "LOCAL",
+  api: process.env.NEXT_PUBLIC_API_URL ?? "",
 };

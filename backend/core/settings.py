@@ -37,6 +37,8 @@ ENV = os.getenv("ENV", "LOCAL")
 LOCAL = os.getenv("LOCAL", "True") == "True"
 DEBUG = LOCAL
 
+APPEND_SLASH = False
+
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True
 
@@ -112,6 +114,8 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "django.middleware.locale.LocaleMiddleware",
+    "core.locale.locale.LanguageMiddleware",
     "allauth.account.middleware.AccountMiddleware",
     "social_django.middleware.SocialAuthExceptionMiddleware",
 ]
@@ -324,7 +328,16 @@ logging.config.dictConfig(LOGGING)
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
-LANGUAGE_CODE = "pl-PL"
+LANGUAGES = (
+    ("pl", "Polish"),
+    ("en", "English"),
+)
+
+LANGUAGE_CODE = "en-US"
+
+LOCALE_PATHS = [
+    os.path.join(BASE_DIR, "core", "locale"),
+]
 
 TIME_ZONE = "UTC"
 

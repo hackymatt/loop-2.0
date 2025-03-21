@@ -7,9 +7,10 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny
-from .serializers import EmailOnlyUserSerializer
 from django.contrib.auth import get_user_model
-from django.contrib.auth.models import User
+from django.utils.translation import gettext as _
+from .serializers import EmailOnlyUserSerializer
+from mailer.mailer import Mailer
 
 
 class RegisterView(APIView):
@@ -24,15 +25,14 @@ class RegisterView(APIView):
         serializer = EmailOnlyUserSerializer(data=request.data)
 
         if serializer.is_valid():
+            # Save the user data after validation
             user = serializer.save()
 
             # Send the confirmation email with the activation link
             self.send_activation_email(user)
 
             return Response(
-                {
-                    "message": "Registration successful. Please check your email for activation."
-                },
+                {"email": user.email},
                 status=status.HTTP_201_CREATED,
             )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -45,16 +45,29 @@ class RegisterView(APIView):
         uid = urlsafe_base64_encode(str(user.pk).encode())
 
         activation_url = self.get_activation_url(uid, token)
+        email = user.email
 
-        # Send the email to the user with the activation link
-        subject = "Activate your account"
-        message = f"Hi {user.email},\n\nThank you for registering. Please click the link below to activate your account:\n\n{activation_url}"
+        mailer = Mailer()
 
-        send_mail(
-            subject,
-            message,
-            settings.DEFAULT_FROM_EMAIL,
-            [user.email],
+        subject = _("Activate your account")
+        message_1 = _(
+            "Hi %(email)s, Thank you for registering. Please click the link below to activate your account:"
+        ) % {"email": email}
+        message_2 = _(
+            "If you didn't register on our platform, you can safely ignore this email."
+        )
+
+        data = {
+            "message_1": message_1,
+            "activation_url": activation_url,
+            "message_2": message_2,
+        }
+
+        mailer.send(
+            email_template="activate.html",
+            to=[email],
+            subject=subject,
+            data=data,
         )
 
     def get_activation_url(self, uid, token):
@@ -89,16 +102,18 @@ class ActivateAccountView(APIView):
                 # Activate the user account
                 user.is_active = True
                 user.save()
+
                 return Response(
-                    {"message": "Account successfully activated!"},
+                    {},
                     status=status.HTTP_200_OK,
                 )
             else:
                 return Response(
-                    {"error": "Invalid token"}, status=status.HTTP_400_BAD_REQUEST
+                    {"error": _("Invalid token")}, status=status.HTTP_400_BAD_REQUEST
                 )
 
-        except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+        except (TypeError, ValueError, OverflowError, get_user_model().DoesNotExist):
             return Response(
-                {"error": "Invalid activation link"}, status=status.HTTP_400_BAD_REQUEST
+                {"error": _("Invalid activation link")},
+                status=status.HTTP_400_BAD_REQUEST,
             )

@@ -2,8 +2,8 @@ from django.conf import settings
 
 CONFIG = {
     "is_local": settings.LOCAL,
+    "language": settings.LANGUAGE_CODE,
     "storages": settings.STORAGES,
-    "frontend_url": settings.BASE_FRONTEND_URL,
     "admin_email": settings.ADMIN_EMAIL,
     "admin_password": settings.ADMIN_PASSWORD,
     "contact_email": settings.CONTACT_EMAIL,

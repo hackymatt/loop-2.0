@@ -27,7 +27,6 @@ export function SignUpSplitView() {
     fullName: "",
     email: "",
     password: "",
-    confirmPassword: "",
   };
 
   const methods = useForm<SignUpSchemaType>({ resolver: zodResolver(SignUpSchema), defaultValues });

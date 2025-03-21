@@ -1,0 +1,37 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language: pl\n"
+
+msgid "Activate your account"
+msgstr "Aktywuj swoje konto"
+
+msgid "Hi %(email)s, Thank you for registering. Please click the link below to activate your account:"
+msgstr "Cześć %(email)s, dziękujemy za rejestrację. Kliknij poniższy link, aby aktywować swoje konto:"
+
+msgid "If you didn't register on our platform, you can safely ignore this email."
+msgstr "Jeśli to nie Ty się zarejestrowałeś, możesz bez obaw zignorować tego maila."
+
+msgid "Account with this email address already exists."
+msgstr "Konto z podanym adresem e-mail już istnieje."
+
+msgid "Password must be at least 8 characters long."
+msgstr "Hasło musi mieć co najmniej 8 znaków."
+
+msgid "Password must contain at least one uppercase letter."
+msgstr "Hasło musi zawierać co najmniej jedną wielką literę."
+
+msgid "Password must contain at least one lowercase letter."
+msgstr "Hasło musi zawierać co najmniej jedną małą literę."
+
+msgid "Password must contain at least one special character."
+msgstr "Hasło musi zawierać co najmniej jeden znak specjalny."
+
+msgid "Password must contain at least one digit."
+msgstr "Hasło musi zawierać co najmniej jedną cyfrę."
+
+msgid "Invalid token"
+msgstr "Niepoprawny token"
+
+msgid "Invalid activation link"
+msgstr "Niepoprawny link aktywacyjny"
