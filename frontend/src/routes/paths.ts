@@ -1,7 +1,7 @@
 export const paths = {
   login: "/login",
-  register: "/register",
-  resetPassword: "/reset-password",
+  register: "/auth/register",
+  resetPassword: "/auth/reset-password",
   courses: "/courses",
   course: "/course",
   pricing: "/pricing",

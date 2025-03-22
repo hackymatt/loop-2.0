@@ -12,6 +12,8 @@ import { themeOverrides } from "src/theme/theme-overrides";
 import { TranslationProvider, LocalizationProvider } from "src/locales";
 
 import { ProgressBar } from "src/components/progress-bar";
+import { UserProvider } from "src/components/user/context";
+import { defaultUser } from "src/components/user/user-config";
 import { MotionLazy } from "src/components/animate/motion-lazy";
 import { SettingsDrawer, defaultSettings, SettingsProvider } from "src/components/settings";
 
@@ -49,25 +51,27 @@ export default async function RootLayout({ children }: Props) {
         />
 
         <ReactQueryProvider>
-          <SettingsProvider defaultSettings={defaultSettings}>
-            <TranslationProvider>
-              <LocalizationProvider>
-                <AppRouterCacheProvider options={{ key: "css" }}>
-                  <ThemeProvider
-                    themeOverrides={themeOverrides}
-                    defaultMode={themeConfig.defaultMode}
-                    modeStorageKey={themeConfig.modeStorageKey}
-                  >
-                    <MotionLazy>
-                      <ProgressBar />
-                      <SettingsDrawer defaultSettings={defaultSettings} />
-                      {children}
-                    </MotionLazy>
-                  </ThemeProvider>
-                </AppRouterCacheProvider>
-              </LocalizationProvider>
-            </TranslationProvider>
-          </SettingsProvider>
+          <UserProvider defaultUser={defaultUser}>
+            <SettingsProvider defaultSettings={defaultSettings}>
+              <TranslationProvider>
+                <LocalizationProvider>
+                  <AppRouterCacheProvider options={{ key: "css" }}>
+                    <ThemeProvider
+                      themeOverrides={themeOverrides}
+                      defaultMode={themeConfig.defaultMode}
+                      modeStorageKey={themeConfig.modeStorageKey}
+                    >
+                      <MotionLazy>
+                        <ProgressBar />
+                        <SettingsDrawer defaultSettings={defaultSettings} />
+                        {children}
+                      </MotionLazy>
+                    </ThemeProvider>
+                  </AppRouterCacheProvider>
+                </LocalizationProvider>
+              </TranslationProvider>
+            </SettingsProvider>
+          </UserProvider>
         </ReactQueryProvider>
       </body>
     </html>

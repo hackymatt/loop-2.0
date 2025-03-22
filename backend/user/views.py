@@ -1,8 +1,7 @@
-from django.core.mail import send_mail
+import jwt
+import datetime
 from django.conf import settings
-from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-from django.contrib.auth.tokens import default_token_generator
-from django.contrib.sites.shortcuts import get_current_site
+from django.utils.timezone import make_aware, now
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -11,7 +10,8 @@ from django.contrib.auth import get_user_model
 from django.utils.translation import gettext as _
 from .serializers import EmailOnlyUserSerializer
 from mailer.mailer import Mailer
-
+from utils.url.url import get_website_url
+from global_config import CONFIG
 
 class RegisterView(APIView):
     """
@@ -23,6 +23,8 @@ class RegisterView(APIView):
     def post(self, request, *args, **kwargs):
         # Use the simplified serializer that requires only email and password
         serializer = EmailOnlyUserSerializer(data=request.data)
+
+        serializer.validate_email(value=request.data["email"])
 
         if serializer.is_valid():
             # Save the user data after validation
@@ -41,19 +43,29 @@ class RegisterView(APIView):
         """
         Sends the email to activate the user account with a link.
         """
-        token = default_token_generator.make_token(user)
-        uid = urlsafe_base64_encode(str(user.pk).encode())
+        website_url = get_website_url(self.request)
 
-        activation_url = self.get_activation_url(uid, token)
+        expiration_time = datetime.datetime.now(datetime.UTC) + datetime.timedelta(hours=24)
+
+        token = jwt.encode(
+            {"user_id": user.id, "exp": expiration_time},
+            CONFIG["secret"],
+            algorithm="HS256"
+        )
+
+        activation_url = self.get_activation_url(website_url, token)
         email = user.email
 
-        mailer = Mailer()
+        mailer = Mailer(website_url)
 
         subject = _("Activate your account")
         message_1 = _(
             "Hi %(email)s, Thank you for registering. Please click the link below to activate your account:"
         ) % {"email": email}
         message_2 = _(
+            "The link is valid for 24 hours."
+        )
+        message_3 = _(
             "If you didn't register on our platform, you can safely ignore this email."
         )
 
@@ -61,6 +73,7 @@ class RegisterView(APIView):
             "message_1": message_1,
             "activation_url": activation_url,
             "message_2": message_2,
+            "message_3": message_3
         }
 
         mailer.send(
@@ -70,18 +83,12 @@ class RegisterView(APIView):
             data=data,
         )
 
-    def get_activation_url(self, uid, token):
+    def get_activation_url(self, website_url, token):
         """
         Generates the URL to confirm the user’s email address with the correct protocol.
         """
-        # Check if the request is using HTTPS or HTTP
-        scheme = self.request.scheme  # This gives us 'http' or 'https'
-
-        # Get the domain for the current site
-        domain = get_current_site(self.request).domain
-
         # Generate the activation URL using the correct scheme (http or https)
-        return f"{scheme}://{domain}/auth/activate/{uid}/{token}/"
+        return f"{website_url}/auth/activate/{token}"
 
 
 class ActivateAccountView(APIView):
@@ -89,31 +96,30 @@ class ActivateAccountView(APIView):
     View for handling account activation when the user clicks the activation link.
     """
 
-    def get(self, request, uid, token, *args, **kwargs):
+    def get(self, request, token, *args, **kwargs):
         try:
-            # Decode the user ID from the URL
-            uid = urlsafe_base64_decode(uid).decode()
+            decoded_token = jwt.decode(token, settings.SECRET_KEY, algorithms=["HS256"])
+            user_id = decoded_token.get("user_id")
+            exp_timestamp = decoded_token.get("exp")
 
-            # Get the user model
-            user = get_user_model().objects.get(pk=uid)
+            if not user_id or not exp_timestamp:
+                return Response({"error": _("Invalid token")}, status=status.HTTP_400_BAD_REQUEST)
 
-            # Check if the token is valid
-            if default_token_generator.check_token(user, token):
-                # Activate the user account
-                user.is_active = True
-                user.save()
+            expiration_time = make_aware(datetime.datetime.fromtimestamp(exp_timestamp))
+            if expiration_time < now():
+                return Response({"error": _("Invalid activation link")}, status=status.HTTP_400_BAD_REQUEST)
 
-                return Response(
-                    {},
-                    status=status.HTTP_200_OK,
-                )
-            else:
-                return Response(
-                    {"error": _("Invalid token")}, status=status.HTTP_400_BAD_REQUEST
-                )
+            user = get_user_model().objects.get(pk=user_id)
 
-        except (TypeError, ValueError, OverflowError, get_user_model().DoesNotExist):
-            return Response(
-                {"error": _("Invalid activation link")},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+            if user.is_active:
+                return Response({"error": _("Account is already active")}, status=status.HTTP_400_BAD_REQUEST)
+
+            user.is_active = True
+            user.save()
+
+            return Response({"email": user.email}, status=status.HTTP_200_OK)
+
+        except jwt.ExpiredSignatureError:
+            return Response({"error": _("Invalid activation link")}, status=status.HTTP_400_BAD_REQUEST)
+        except jwt.InvalidTokenError:
+            return Response({"error": _("Invalid token")}, status=status.HTTP_400_BAD_REQUEST)

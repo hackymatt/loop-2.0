@@ -1,6 +1,7 @@
 from django.conf import settings
 
 CONFIG = {
+    "secret": settings.SECRET_KEY,
     "is_local": settings.LOCAL,
     "language": settings.LANGUAGE_CODE,
     "storages": settings.STORAGES,

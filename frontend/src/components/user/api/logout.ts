@@ -26,6 +26,6 @@ export const useLogout = () => {
         queryClient.invalidateQueries({ queryKey: ["/personal-data"] });
         queryClient.invalidateQueries({ queryKey: ["/courses"] });
       },
-    },
+    }
   );
 };

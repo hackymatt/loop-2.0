@@ -14,6 +14,7 @@ import { useFormErrorHandler } from "src/hooks/use-form-error-handler";
 import { useRegister } from "src/api/auth/register";
 
 import { Form } from "src/components/hook-form";
+import { useUserContext } from "src/components/user/context";
 
 import { FormHead } from "./components/form-head";
 import { SignUpForm } from "./components/sign-up-form";
@@ -30,6 +31,8 @@ type Props = {
 
 export function SignUpView({ header, buttonText = "Utwórz konto" }: Props) {
   const { t } = useTranslation("sign-up");
+
+  const user = useUserContext();
 
   const { mutateAsync: register } = useRegister();
 
@@ -53,8 +56,8 @@ export function SignUpView({ header, buttonText = "Utwórz konto" }: Props) {
     try {
       const { email, password } = data;
       await register({ email, password });
+      user.setState({ email, isRegistered: true });
       reset();
-      console.info("DATA", data);
     } catch (error) {
       handleFormError(error);
     }

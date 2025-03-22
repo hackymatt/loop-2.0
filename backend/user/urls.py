@@ -7,6 +7,6 @@ urlpatterns = [
     # Registration and activation routes
     path("auth/register", RegisterView.as_view(), name="register"),
     path(
-        "auth/activate/<uid>/<token>", ActivateAccountView.as_view(), name="activate"
+        "auth/activate/<token>", ActivateAccountView.as_view(), name="activate"
     ),
 ]

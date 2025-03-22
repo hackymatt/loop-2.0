@@ -6,18 +6,19 @@ from utils.logger.logger import logger
 
 
 class Mailer:
-    def __init__(self):
+    def __init__(self, website_url):
         self.gmail_api = GmailApi(on_behalf_of=CONFIG["noreply_email"])
+        self.website_url = website_url
 
     def send(
-        self, email_template: str, to: List[str], subject: str, data, attachments=[]
+        self,  email_template: str, to: List[str], subject: str, data, attachments=[]
     ):
         email_body = render_to_string(
             email_template,
             {
                 **data,
                 **{
-                    "website_url": CONFIG["frontend_url"],
+                    "website_url": self.website_url,
                     "company": "loop",
                 },
             },

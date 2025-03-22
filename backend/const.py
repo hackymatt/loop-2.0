@@ -8,8 +8,9 @@ class CourseLevel(TextChoices):
 
 
 class UserType(TextChoices):
-    STUDENT = "student"
     ADMIN = "admin"
+    INSTRUCTOR = "instructor"
+    STUDENT = "student"
 
 
 class JoinType(TextChoices):

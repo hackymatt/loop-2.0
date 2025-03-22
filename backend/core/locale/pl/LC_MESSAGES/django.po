@@ -3,11 +3,17 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language: pl\n"
 
+msgid "You received this email to notify you of important changes to your account in loop."
+msgstr "Otrzymałeś tego e-maila, aby poinformować Cię o ważnych zmianach na Twoim koncie w loop."
+
 msgid "Activate your account"
 msgstr "Aktywuj swoje konto"
 
 msgid "Hi %(email)s, Thank you for registering. Please click the link below to activate your account:"
 msgstr "Cześć %(email)s, dziękujemy za rejestrację. Kliknij poniższy link, aby aktywować swoje konto:"
+
+msgid "The link is valid for 24 hours."
+msgstr "Link jest ważny przez 24 godziny."
 
 msgid "If you didn't register on our platform, you can safely ignore this email."
 msgstr "Jeśli to nie Ty się zarejestrowałeś, możesz bez obaw zignorować tego maila."
@@ -35,3 +41,6 @@ msgstr "Niepoprawny token"
 
 msgid "Invalid activation link"
 msgstr "Niepoprawny link aktywacyjny"
+
+msgid "Account is already active"
+msgstr "Konto jest już aktywne"
