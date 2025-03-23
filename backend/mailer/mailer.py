@@ -3,6 +3,7 @@ from typing import List
 from utils.google.gmail import GmailApi
 from global_config import CONFIG
 from utils.logger.logger import logger
+from django.utils.translation import gettext as _
 
 
 class Mailer:
@@ -19,6 +20,7 @@ class Mailer:
                 **data,
                 **{
                     "website_url": self.website_url,
+                    "footer": _("You received this email to notify you of important changes to your account in loop."),
                     "company": "loop",
                 },
             },

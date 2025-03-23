@@ -7,6 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Link } from "@mui/material";
 
 import { paths } from "src/routes/paths";
+import { useRouter } from "src/routes/hooks";
 import { RouterLink } from "src/routes/components";
 
 import { useFormErrorHandler } from "src/hooks/use-form-error-handler";
@@ -31,6 +32,8 @@ type Props = {
 
 export function SignUpView({ header, buttonText = "Utwórz konto" }: Props) {
   const { t } = useTranslation("sign-up");
+
+  const router = useRouter();
 
   const user = useUserContext();
 
@@ -57,6 +60,7 @@ export function SignUpView({ header, buttonText = "Utwórz konto" }: Props) {
       const { email, password } = data;
       await register({ email, password });
       user.setState({ email, isRegistered: true });
+      router.push(paths.activate);
       reset();
     } catch (error) {
       handleFormError(error);

@@ -41,10 +41,10 @@ class User(AbstractUser):
 
     def save(self, *args, **kwargs):
         # Automatically assign is_superuser and is_staff based on user type
-        if self.user_type == self.UserType.ADMIN:
+        if self.user_type == UserType.ADMIN:
             self.is_superuser = True
             self.is_staff = True
-        elif self.user_type == self.UserType.INSTRUCTOR:
+        elif self.user_type == UserType.INSTRUCTOR:
             self.is_superuser = False
             self.is_staff = True
         else:  # Student

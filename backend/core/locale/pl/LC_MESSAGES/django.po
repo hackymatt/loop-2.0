@@ -42,5 +42,5 @@ msgstr "Niepoprawny token"
 msgid "Invalid activation link"
 msgstr "Niepoprawny link aktywacyjny"
 
-msgid "Account is already active"
-msgstr "Konto jest już aktywne"
+msgid "User not found"
+msgstr "Użytkownik nie istnieje"

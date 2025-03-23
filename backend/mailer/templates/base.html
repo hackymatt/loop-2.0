@@ -1,5 +1,3 @@
-{% load i18n %}
-
 <!DOCTYPE html>
 <html>
   <head>
@@ -58,7 +56,7 @@
                     >
                       <a href="{{website_url}}" target="_blank"
                         ><img
-                          src="{{website_url}}/logo/email/logo-light.png"
+                          src="{{website_url}}/assets/logo/email/logo-light.png"
                           width="74"
                           height="24"
                           aria-hidden="true"
@@ -66,7 +64,7 @@
                           alt="loop"
                           class="only-on-light"
                           data-bit="iit" /><img
-                          src="{{website_url}}/logo/email/logo-dark.png"
+                          src="{{website_url}}/assets/logo/email/logo-dark.png"
                           width="74"
                           height="24"
                           aria-hidden="true"
@@ -117,7 +115,7 @@
                         "
                       >
                         <div>
-                          {% trans "You received this email to notify you of important changes to your account in loop." %}
+                          {{ footer }}
                         </div>
                         <div style="direction: ltr">
                           ©
