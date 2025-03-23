@@ -13,7 +13,7 @@ type IResend = {
   email?: string;
 };
 
-type IResendReturn = { email: string; status: number };
+type IResendReturn = { data: { email: string }; status: number };
 
 export const useResend = () => {
   const settings = useSettingsContext();
@@ -27,7 +27,7 @@ export const useResend = () => {
     });
     return {
       status: result.status,
-      email: result.data.email,
+      data: result.data,
     };
   });
 };

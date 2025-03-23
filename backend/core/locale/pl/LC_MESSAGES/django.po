@@ -36,6 +36,9 @@ msgstr "Hasło musi zawierać co najmniej jeden znak specjalny."
 msgid "Password must contain at least one digit."
 msgstr "Hasło musi zawierać co najmniej jedną cyfrę."
 
+msgid "You must provide either a token or an email."
+msgstr "Musisz podać token lub adres e-mail."
+
 msgid "Invalid token"
 msgstr "Niepoprawny token"
 

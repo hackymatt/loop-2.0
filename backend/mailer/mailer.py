@@ -12,7 +12,7 @@ class Mailer:
         self.website_url = website_url
 
     def send(
-        self,  email_template: str, to: List[str], subject: str, data, attachments=[]
+        self, email_template: str, to: List[str], subject: str, data, attachments=[]
     ):
         email_body = render_to_string(
             email_template,
@@ -20,7 +20,9 @@ class Mailer:
                 **data,
                 **{
                     "website_url": self.website_url,
-                    "footer": _("You received this email to notify you of important changes to your account in loop."),
+                    "footer": _(
+                        "You received this email to notify you of important changes to your account in loop."
+                    ),
                     "company": "loop",
                 },
             },

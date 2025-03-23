@@ -1,7 +1,8 @@
+import re
 from django.contrib.auth import get_user_model
 from django.utils.translation import gettext as _
 from rest_framework import serializers
-import re
+from global_config import CONFIG
 
 
 class EmailOnlyUserSerializer(serializers.ModelSerializer):
@@ -25,7 +26,7 @@ class EmailOnlyUserSerializer(serializers.ModelSerializer):
                 {"email": [_("Account with this email address already exists.")]}
             )
         return value
-    
+
     def validate_password(self, value):
         """
         Validate the password to ensure it meets the required criteria:
@@ -37,33 +38,33 @@ class EmailOnlyUserSerializer(serializers.ModelSerializer):
         """
         password = value
 
-        if len(password) < 8:
+        if len(password) < CONFIG["min_password_length"]:
             raise serializers.ValidationError(
-                {"password": [_("Password must be at least 8 characters long.")]}
+                [_("Password must be at least 8 characters long.")]
             )
 
-        if not re.search(r'[A-Z]', password):
+        if not re.search(r"[A-Z]", password):
             raise serializers.ValidationError(
-                {"password": [_("Password must contain at least one uppercase letter.")]}
+                [_("Password must contain at least one uppercase letter.")]
             )
 
-        if not re.search(r'[a-z]', password):
+        if not re.search(r"[a-z]", password):
             raise serializers.ValidationError(
-                {"password": [_("Password must contain at least one lowercase letter.")]}
+                [_("Password must contain at least one lowercase letter.")]
             )
 
         if not re.search(r'[!@#$%^&*(),.?":{}|<>]', password):
             raise serializers.ValidationError(
-                {"password": [_("Password must contain at least one special character.")]}
+                [_("Password must contain at least one special character.")]
             )
 
-        if not re.search(r'\d', password):
+        if not re.search(r"\d", password):
             raise serializers.ValidationError(
-                {"password": [_("Password must contain at least one digit.")]}
+                [_("Password must contain at least one digit.")]
             )
 
         return value
-    
+
     def create(self, validated_data):
         # Get the email and extract the part before '@' to create the username
         email = validated_data["email"]

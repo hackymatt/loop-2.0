@@ -12,8 +12,6 @@ class LanguageMiddleware:
     def __call__(self, request):
         # Get the language code from the 'Accept-Language' header or use the default
         language = request.LANGUAGE_CODE  # LocaleMiddleware usually sets this
-        if not language:
-            language = translation.get_language()  # Default language if none is found
 
         # Activate the chosen language for the request
         translation.activate(language)

@@ -11,6 +11,7 @@ from .serializers import EmailOnlyUserSerializer
 from .utils import send_activation_email
 from global_config import CONFIG
 
+
 class RegisterView(APIView):
     """
     Custom register view for email and password registration.
@@ -22,7 +23,8 @@ class RegisterView(APIView):
         # Use the simplified serializer that requires only email and password
         serializer = EmailOnlyUserSerializer(data=request.data)
 
-        serializer.validate_email(value=request.data["email"])
+        email = request.data.get("email")
+        serializer.validate_email(value=email)
 
         if serializer.is_valid():
             # Save the user data after validation
@@ -45,18 +47,10 @@ class ActivateAccountView(APIView):
 
     def post(self, request, *args, **kwargs):
         try:
-            token = request.data.get('token', "")
+            token = request.data.get("token", "")
 
             decoded_token = jwt.decode(token, CONFIG["secret"], algorithms=["HS256"])
             user_id = decoded_token.get("user_id")
-            exp_timestamp = decoded_token.get("exp")
-
-            if not user_id or not exp_timestamp:
-                return Response({"error": _("Invalid token")}, status=status.HTTP_400_BAD_REQUEST)
-
-            expiration_time = make_aware(datetime.datetime.fromtimestamp(exp_timestamp))
-            if expiration_time < now():
-                return Response({"error": _("Invalid activation link")}, status=status.HTTP_400_BAD_REQUEST)
 
             user = get_user_model().objects.get(pk=user_id)
 
@@ -69,12 +63,20 @@ class ActivateAccountView(APIView):
             return Response({"email": user.email}, status=status.HTTP_200_OK)
 
         except jwt.ExpiredSignatureError:
-            return Response({"error": _("Invalid activation link")}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"error": _("Invalid activation link")},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
         except jwt.InvalidTokenError:
-            return Response({"error": _("Invalid token")}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"error": _("Invalid token")}, status=status.HTTP_400_BAD_REQUEST
+            )
         except get_user_model().DoesNotExist:
-            return Response({"error": _("User not found")}, status=status.HTTP_404_NOT_FOUND)
-        
+            return Response(
+                {"error": _("User not found")}, status=status.HTTP_404_NOT_FOUND
+            )
+
+
 class ResendActivationLinkView(APIView):
     """
     View for handling reissue of activation link when the user requests.
@@ -84,28 +86,36 @@ class ResendActivationLinkView(APIView):
         token = request.data.get("token")
         email = request.data.get("email")
 
-        try:
-            user = None
+        if not token and not email:
+            return Response(
+                {"error": _("You must provide either a token or an email.")},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
-            if token:
-                try:
-                    decoded_token = jwt.decode(token, CONFIG["secret"], algorithms=["HS256"])
-                    user_id = decoded_token.get("user_id")
-                    user = get_user_model().objects.filter(pk=user_id).first()
-                except jwt.DecodeError:
-                    return Response({"error": _("Invalid token.")}, status=status.HTTP_400_BAD_REQUEST)
-            else:
-                user = get_user_model().objects.filter(email=email).first()
+        user = None
 
-            if not user:
-                return Response({"error": _("User not found.")}, status=status.HTTP_404_NOT_FOUND)
+        if token:
+            try:
+                decoded_token = jwt.decode(
+                    token, CONFIG["secret"], algorithms=["HS256"]
+                )
+                user_id = decoded_token.get("user_id")
+                user = get_user_model().objects.filter(pk=user_id).first()
+            except jwt.DecodeError:
+                return Response(
+                    {"error": _("Invalid token.")}, status=status.HTTP_400_BAD_REQUEST
+                )
+        else:
+            user = get_user_model().objects.filter(email=email).first()
 
-            if user.is_active:
-                return Response({"email": user.email}, status=status.HTTP_200_OK)
+        if not user:
+            return Response(
+                {"error": _("User not found.")}, status=status.HTTP_404_NOT_FOUND
+            )
 
-            send_activation_email(request, user)
+        if user.is_active:
+            return Response({"email": user.email}, status=status.HTTP_200_OK)
 
-            return Response({"email": user.email}, status=status.HTTP_201_CREATED)
+        send_activation_email(request, user)
 
-        except Exception as e:
-            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response({"email": user.email}, status=status.HTTP_201_CREATED)

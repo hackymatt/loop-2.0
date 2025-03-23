@@ -12,7 +12,7 @@ type IActivate = {
   token: string;
 };
 
-type IActivateReturn = { email: string };
+type IActivateReturn = { data: { email: string }; status: number };
 
 export const useActivate = () => {
   const settings = useSettingsContext();
@@ -24,6 +24,9 @@ export const useActivate = () => {
         "Accept-Language": language,
       },
     });
-    return result.data;
+    return {
+      status: result.status,
+      data: result.data,
+    };
   });
 };

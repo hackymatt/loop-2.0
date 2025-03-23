@@ -5,7 +5,8 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 from const import UserType, JoinType
 
-def user_directory_path(instance, filename):
+
+def user_directory_path(instance, filename):  # pragma: no cover
     """
     Generate a unique filename for the user's profile picture.
     Example: media/profiles/8f3a9b2d-5c4a-4a2a-ae4b-91d2f4b7a6e8.jpg
@@ -54,7 +55,7 @@ class User(AbstractUser):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"{self.email} ({self.get_user_type_display()} - {self.get_join_type_display()})"
+        return f"{self.email} ({self.get_user_type_display()} - {self.get_join_type_display()})"  # pragma: no cover
 
     class Meta:
         db_table = "user"

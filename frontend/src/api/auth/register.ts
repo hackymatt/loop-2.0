@@ -13,7 +13,7 @@ type IRegister = {
   password: string;
 };
 
-type IRegisterReturn = Omit<IRegister, "password">;
+type IRegisterReturn = { data: Omit<IRegister, "password">; status: number };
 
 export const useRegister = () => {
   const settings = useSettingsContext();
@@ -25,6 +25,9 @@ export const useRegister = () => {
         "Accept-Language": language,
       },
     });
-    return result.data;
+    return {
+      status: result.status,
+      data: result.data,
+    };
   });
 };

@@ -43,7 +43,7 @@ export const useSignUpSchema = () => {
       .min(6, { message: t("password.errors.minLength") })
       .regex(/[A-Z]/, { message: t("password.errors.bigLetter") })
       .regex(/[a-z]/, { message: t("password.errors.smallLetter") })
-      .regex(/[0-9]/, { message: t("password.errors.number") })
+      // .regex(/[0-9]/, { message: t("password.errors.number") })
       .regex(/[!@#$%^&]/, {
         message: t("password.errors.specialCharacter"),
       }),

@@ -5,18 +5,21 @@ from utils.url.url import get_website_url
 from global_config import CONFIG
 from django.utils.translation import gettext as _
 
+
 def send_activation_email(request, user):
     """
     Sends the email to activate the user account with a link.
     """
     website_url = get_website_url(request)
 
-    expiration_time = datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(hours=24)
+    expiration_time = datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(
+        hours=24
+    )
 
     token = jwt.encode(
         {"user_id": user.id, "exp": expiration_time},
         CONFIG["secret"],
-        algorithm="HS256"
+        algorithm="HS256",
     )
 
     activation_url = get_activation_url(website_url, token)
@@ -28,9 +31,7 @@ def send_activation_email(request, user):
     message_1 = _(
         "Hi %(email)s, Thank you for registering. Please click the link below to activate your account:"
     ) % {"email": email}
-    message_2 = _(
-        "The link is valid for 24 hours."
-    )
+    message_2 = _("The link is valid for 24 hours.")
     message_3 = _(
         "If you didn't register on our platform, you can safely ignore this email."
     )
@@ -39,7 +40,7 @@ def send_activation_email(request, user):
         "message_1": message_1,
         "activation_url": activation_url,
         "message_2": message_2,
-        "message_3": message_3
+        "message_3": message_3,
     }
 
     mailer.send(
@@ -48,6 +49,7 @@ def send_activation_email(request, user):
         subject=subject,
         data=data,
     )
+
 
 def get_activation_url(website_url, token):
     """
