@@ -5,6 +5,32 @@ on:
     branches: [develop]
 
 jobs:
+  lint_backend:
+    name: Lint backend
+
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        shell: bash
+        working-directory: ${{ github.workspace }}/backend
+
+    steps:
+      - name: Checkout repository code
+        uses: actions/checkout@v4
+      - name: Pull python
+        uses: actions/setup-python@v4
+      - name: Upgrade pip
+        run: pip install --upgrade pip
+      - name: Install lint requirements
+        run: pip install -r requirements_lint.txt
+      - name: Install requirements
+        run: pip install -r requirements.txt
+      - name: Test code quality
+        run: pylint core --recursive=true --fail-under=10
+      - name: Test code formatting
+        run: black . --check
+
   lint_frontend:
     name: Lint frontend
 
@@ -26,6 +52,69 @@ jobs:
         run: npm run fm:check
       - name: Test code formatting
         run: npm run fm:check
+
+  test_backend:
+    name: Test backend
+
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        shell: bash
+        working-directory: ${{ github.workspace }}/backend
+
+    env:
+      LOCAL: ${{ secrets.LOCAL }}
+
+      DB_NAME: ${{ secrets.DB_NAME }}
+      DB_HOST: ${{ secrets.DB_HOST }}
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+
+      REDIS_URL: ${{ secrets.REDIS_URL }}
+
+      CONTACT_EMAIL: ${{ secrets.CONTACT_EMAIL }}
+      NOREPLY_EMAIL: ${{ secrets.NOREPLY_EMAIL }}
+      GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
+
+      ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
+      ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
+
+      DUMMY_STUDENT_EMAIL: ${{ secrets.DUMMY_STUDENT_EMAIL }}
+      DUMMY_STUDENT_PASSWORD: ${{ secrets.DUMMY_STUDENT_PASSWORD }}
+
+    services:
+      redis:
+        image: redis:7.2.5-bookworm
+        ports:
+          - 6379:6379
+        options: --health-cmd "redis-cli ping" --health-interval 10s --health-timeout 5s --health-retries 5
+
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_DB: postgres
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+
+    steps:
+      - name: Checkout repository code
+        uses: actions/checkout@v4
+      - name: Pull python
+        uses: actions/setup-python@v4
+      - name: Upgrade pip
+        run: pip install --upgrade pip
+      - name: Install test requirements
+        run: pip install -r requirements_test.txt
+      - name: Install requirements
+        run: pip install -r requirements.txt
+      - name: Run tests
+        run: coverage run manage.py test
+      - name: Print report
+        run: coverage report
 
   test_frontend:
     name: Test frontend
