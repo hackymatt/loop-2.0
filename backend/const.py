@@ -7,6 +7,8 @@ class Urls:
     REGISTER = "auth/register"
     ACTIVATE = "auth/activate"
     RESEND = "auth/resend"
+    LOGIN = "auth/login"
+    LOGOUT = "auth/logout"
 
 
 class CourseLevel(TextChoices):

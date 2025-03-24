@@ -79,7 +79,9 @@ INSTALLED_APPS = [
     "dbbackup",
     "utils.filtering",
     "django.contrib.sites",
-    "rest_framework",
+    'rest_framework',
+    'rest_framework_simplejwt',
+    'rest_framework_simplejwt.token_blacklist',
     "rest_framework.authtoken",
     "dj_rest_auth",
     "allauth",
@@ -396,22 +398,22 @@ ACCOUNT_USERNAME_REQUIRED = True
 ACCOUNT_EMAIL_VERIFICATION = "mandatory"  # Users must verify their email
 
 SOCIALACCOUNT_PROVIDERS = {
-    'google': {
-        'SCOPE': ['email', 'profile'],
-        'AUTH_PARAMS': {'access_type': 'online'},
-        'CLIENT_ID': os.environ.get("GOOGLE_CLIENT_ID", ""),  
-        'SECRET': os.environ.get("GOOGLE_CLIENT_SECRET", ""),
+    "google": {
+        "SCOPE": ["email", "profile"],
+        "AUTH_PARAMS": {"access_type": "online"},
+        "CLIENT_ID": os.environ.get("GOOGLE_CLIENT_ID", ""),
+        "SECRET": os.environ.get("GOOGLE_CLIENT_SECRET", ""),
     },
-    'facebook': {
-        'SCOPE': ['email', 'public_profile'],
-        'AUTH_PARAMS': {'auth_type': 'reauthenticate'},
-        'CLIENT_ID': os.environ.get("FACEBOOK_CLIENT_ID", ""),  
-        'SECRET': os.environ.get("FACEBOOK_CLIENT_SECRET", ""),  
+    "facebook": {
+        "SCOPE": ["email", "public_profile"],
+        "AUTH_PARAMS": {"auth_type": "reauthenticate"},
+        "CLIENT_ID": os.environ.get("FACEBOOK_CLIENT_ID", ""),
+        "SECRET": os.environ.get("FACEBOOK_CLIENT_SECRET", ""),
     },
-    'github': {
-        'SCOPE': ['user:email'],
-        'CLIENT_ID': os.environ.get("GITHUB_CLIENT_ID", ""), 
-        'SECRET': os.environ.get("GITHUB_CLIENT_SECRET", ""),  
+    "github": {
+        "SCOPE": ["user:email"],
+        "CLIENT_ID": os.environ.get("GITHUB_CLIENT_ID", ""),
+        "SECRET": os.environ.get("GITHUB_CLIENT_SECRET", ""),
     },
 }
 

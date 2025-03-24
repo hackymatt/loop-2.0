@@ -45,5 +45,11 @@ msgstr "Niepoprawny token"
 msgid "Invalid activation link"
 msgstr "Niepoprawny link aktywacyjny"
 
-msgid "User not found"
-msgstr "Użytkownik nie istnieje"
+msgid "Incorrect email or password"
+msgstr "Niepoprawny email lub hasło"
+
+msgid "Inactive user"
+msgstr "Użytkownik nieaktywny"
+
+msgid "Refresh token is required"
+msgstr "Token odświeżania jest wymagany."

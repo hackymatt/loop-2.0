@@ -14,9 +14,6 @@ export function ReactQueryProvider({ children }: React.PropsWithChildren) {
             refetchOnWindowFocus: false,
             retry: 3, // retry failed queries 3 times
           },
-          mutations: {
-            retry: 2, // retry failed mutations 2 times
-          },
         },
       }),
     []

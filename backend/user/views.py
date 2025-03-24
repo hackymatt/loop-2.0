@@ -1,13 +1,12 @@
 import jwt
-import datetime
-from django.utils.timezone import make_aware, now
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import get_user_model
 from django.utils.translation import gettext as _
-from .serializers import EmailOnlyUserSerializer
+from .serializers import EmailOnlyUserSerializer, LoginSerializer
 from .utils import send_activation_email
 from global_config import CONFIG
 
@@ -119,3 +118,46 @@ class ResendActivationLinkView(APIView):
         send_activation_email(request, user)
 
         return Response({"email": user.email}, status=status.HTTP_201_CREATED)
+
+
+class LoginView(APIView):
+    def post(self, request, *args, **kwargs):
+        serializer = LoginSerializer(data=request.data)
+
+        if serializer.is_valid():
+            user = serializer.validated_data["user"]
+
+            # Create JWT token for the user
+            refresh_token = RefreshToken.for_user(user)
+            access_token = refresh_token.access_token
+
+            # Return the JWT token in the response
+            return Response(
+                {
+                    "access_token": str(access_token),
+                    "refresh_token": str(refresh_token),
+                },
+                status=status.HTTP_200_OK,
+            )
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class LogoutView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):    
+        refresh_token = request.data.get("refresh_token")
+
+        if not refresh_token:
+            return Response({"error": [_("Invalid token")]}, status=status.HTTP_400_BAD_REQUEST)
+        
+
+        # Blacklist the refresh token
+        try:
+            token = RefreshToken(refresh_token)
+            token.blacklist() 
+        except Exception as e:
+            return Response({"error": [_("Refresh token is required")]}, status=status.HTTP_400_BAD_REQUEST)
+
+        return Response({}, status=status.HTTP_205_RESET_CONTENT)
+

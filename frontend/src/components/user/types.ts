@@ -3,10 +3,12 @@ import type { UserType } from "src/types/user";
 // ----------------------------------------------------------------------
 
 export type UserState = {
-  isRegistered: boolean;
-  isActive: boolean;
   email: string;
   userType: UserType;
+  accessToken: string;
+  refreshToken: string;
+  isRegistered: boolean;
+  isActive: boolean;
 };
 
 export type UserContextValue = {

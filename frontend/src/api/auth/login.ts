@@ -1,0 +1,33 @@
+import type { AxiosError } from "axios";
+
+import { useMutation } from "@tanstack/react-query";
+
+import { useSettingsContext } from "src/components/settings";
+
+import { Api } from "../service";
+
+const endpoint = "/auth/login" as const;
+
+type ILogin = {
+  email: string;
+  password: string;
+};
+
+type ILoginReturn = { data: { refresh_token: string; access_token: string }; status: number };
+
+export const useLogin = () => {
+  const settings = useSettingsContext();
+  const { language } = settings.state;
+
+  return useMutation<ILoginReturn, AxiosError, ILogin>(async (variables) => {
+    const result = await Api.post(endpoint, variables, {
+      headers: {
+        "Accept-Language": language,
+      },
+    });
+    return {
+      status: result.status,
+      data: result.data,
+    };
+  });
+};
