@@ -15,12 +15,6 @@ CONFIG = {
     "words_per_minute": 250 * 6,
     "dummy_student_email": settings.DUMMY_STUDENT_EMAIL,
     "dummy_student_password": settings.DUMMY_STUDENT_PASSWORD,
-    "google_client_id": settings.GOOGLE_CLIENT_ID,
-    "google_client_secret": settings.GOOGLE_CLIENT_SECRET,
-    "facebook_client_id": settings.FACEBOOK_CLIENT_ID,
-    "facebook_client_secret": settings.FACEBOOK_CLIENT_SECRET,
-    "github_client_id": settings.GITHUB_CLIENT_ID,
-    "github_client_secret": settings.GITHUB_CLIENT_SECRET,
     "google_credentials": settings.GOOGLE_CREDENTIALS,
     "min_password_length": settings.MIN_PASSWORD_LENGTH,
 }

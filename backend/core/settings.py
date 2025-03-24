@@ -395,6 +395,26 @@ ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_USERNAME_REQUIRED = True
 ACCOUNT_EMAIL_VERIFICATION = "mandatory"  # Users must verify their email
 
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'SCOPE': ['email', 'profile'],
+        'AUTH_PARAMS': {'access_type': 'online'},
+        'CLIENT_ID': os.environ.get("GOOGLE_CLIENT_ID", ""),  
+        'SECRET': os.environ.get("GOOGLE_CLIENT_SECRET", ""),
+    },
+    'facebook': {
+        'SCOPE': ['email', 'public_profile'],
+        'AUTH_PARAMS': {'auth_type': 'reauthenticate'},
+        'CLIENT_ID': os.environ.get("FACEBOOK_CLIENT_ID", ""),  
+        'SECRET': os.environ.get("FACEBOOK_CLIENT_SECRET", ""),  
+    },
+    'github': {
+        'SCOPE': ['user:email'],
+        'CLIENT_ID': os.environ.get("GITHUB_CLIENT_ID", ""), 
+        'SECRET': os.environ.get("GITHUB_CLIENT_SECRET", ""),  
+    },
+}
+
 CONTACT_EMAIL = os.getenv("CONTACT_EMAIL", "")
 NOREPLY_EMAIL = os.getenv("NOREPLY_EMAIL", "")
 GOOGLE_CREDENTIALS = json.loads(
@@ -406,16 +426,5 @@ ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "")
 
 DUMMY_STUDENT_EMAIL = os.getenv("DUMMY_STUDENT_EMAIL", "")
 DUMMY_STUDENT_PASSWORD = os.getenv("DUMMY_STUDENT_PASSWORD", "")
-
-BASE_FRONTEND_URL = os.environ.get("BASE_URL", "http://localhost")
-
-GOOGLE_CLIENT_ID = os.environ.get("GOOGLE_CLIENT_ID", "")
-GOOGLE_CLIENT_SECRET = os.environ.get("GOOGLE_CLIENT_SECRET", "")
-
-FACEBOOK_CLIENT_ID = os.environ.get("FACEBOOK_CLIENT_ID", "")
-FACEBOOK_CLIENT_SECRET = os.environ.get("FACEBOOK_CLIENT_SECRET", "")
-
-GITHUB_CLIENT_ID = os.environ.get("GITHUB_CLIENT_ID", "")
-GITHUB_CLIENT_SECRET = os.environ.get("GITHUB_CLIENT_SECRET", "")
 
 MIN_PASSWORD_LENGTH = int(os.environ.get("MIN_PASSWORD_LENGTH", "8"))

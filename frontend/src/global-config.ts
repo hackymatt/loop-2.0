@@ -9,4 +9,7 @@ export const CONFIG = {
   env: process.env.NEXT_PUBLIC_ENV ?? "LOCAL",
   isLocal: (process.env.NEXT_PUBLIC_ENV ?? "LOCAL") === "LOCAL",
   api: process.env.NEXT_PUBLIC_API_URL ?? "",
+  googleClientId: process.env.NEXT_GOOGLE_CLIENT_ID ?? "",
+  githubClientId: process.env.NEXT_GITHUB_CLIENT_ID ?? "",
+  facebookClientId: process.env.NEXT_FACEBOOK_CLIENT_ID ?? "",
 };
