@@ -57,7 +57,7 @@ class ActivateAccountViewTest(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["email"], self.user.email)
 
-    @patch("user.views.jwt.decode")
+    @patch("user.activate.views.jwt.decode")
     def test_activate_account_invalid_token(self, mock_jwt_decode):
         """
         Test account activation with an invalid token.

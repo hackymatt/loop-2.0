@@ -1,12 +1,10 @@
 from django.urls import path
 
-from .views import (
-    RegisterView,
-    ActivateAccountView,
-    ResendActivationLinkView,
-    LoginView,
-    LogoutView
-)
+from .register.views import RegisterView
+from .activate.views import ActivateAccountView, ResendActivationLinkView
+from .login.views import LoginView
+from .logout.views import LogoutView
+
 
 from const import Urls
 
