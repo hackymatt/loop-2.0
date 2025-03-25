@@ -92,7 +92,7 @@ export function SignUpView({ header, buttonText = "Utwórz konto" }: Props) {
 
       <FormDivider label={t("or")} />
 
-      <FormSocials />
+      <FormSocials methods={methods} />
     </>
   );
 }

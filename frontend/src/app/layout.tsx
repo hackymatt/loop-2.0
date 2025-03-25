@@ -3,6 +3,8 @@ import "src/global.css";
 // ----------------------------------------------------------------------
 import type { Metadata, Viewport } from "next";
 
+import { GoogleOAuthProvider } from "@react-oauth/google";
+
 import InitColorSchemeScript from "@mui/material/InitColorSchemeScript";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v14-appRouter";
 
@@ -49,30 +51,31 @@ export default async function RootLayout({ children }: Props) {
           modeStorageKey={themeConfig.modeStorageKey}
           attribute={themeConfig.cssVariables.colorSchemeSelector}
         />
-
-        <ReactQueryProvider>
-          <UserProvider defaultUser={defaultUser}>
-            <SettingsProvider defaultSettings={defaultSettings}>
-              <TranslationProvider>
-                <LocalizationProvider>
-                  <AppRouterCacheProvider options={{ key: "css" }}>
-                    <ThemeProvider
-                      themeOverrides={themeOverrides}
-                      defaultMode={themeConfig.defaultMode}
-                      modeStorageKey={themeConfig.modeStorageKey}
-                    >
-                      <MotionLazy>
-                        <ProgressBar />
-                        <SettingsDrawer defaultSettings={defaultSettings} />
-                        {children}
-                      </MotionLazy>
-                    </ThemeProvider>
-                  </AppRouterCacheProvider>
-                </LocalizationProvider>
-              </TranslationProvider>
-            </SettingsProvider>
-          </UserProvider>
-        </ReactQueryProvider>
+        <GoogleOAuthProvider clientId={CONFIG.googleClientId}>
+          <ReactQueryProvider>
+            <UserProvider defaultUser={defaultUser}>
+              <SettingsProvider defaultSettings={defaultSettings}>
+                <TranslationProvider>
+                  <LocalizationProvider>
+                    <AppRouterCacheProvider options={{ key: "css" }}>
+                      <ThemeProvider
+                        themeOverrides={themeOverrides}
+                        defaultMode={themeConfig.defaultMode}
+                        modeStorageKey={themeConfig.modeStorageKey}
+                      >
+                        <MotionLazy>
+                          <ProgressBar />
+                          <SettingsDrawer defaultSettings={defaultSettings} />
+                          {children}
+                        </MotionLazy>
+                      </ThemeProvider>
+                    </AppRouterCacheProvider>
+                  </LocalizationProvider>
+                </TranslationProvider>
+              </SettingsProvider>
+            </UserProvider>
+          </ReactQueryProvider>
+        </GoogleOAuthProvider>
       </body>
     </html>
   );

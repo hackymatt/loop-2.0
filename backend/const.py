@@ -8,6 +8,7 @@ class Urls:
     ACTIVATE = "auth/activate"
     RESEND = "auth/resend"
     LOGIN = "auth/login"
+    GOOGLE_LOGIN = "auth/google-login"
     LOGOUT = "auth/logout"
     PASSWORD_RESET = "auth/reset-password"
     PASSWORD_RESET_CONFIRM = "auth/reset-password-confirm"

@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import Box from "@mui/material/Box";
+import { Typography } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
 
 import { paths } from "src/routes/paths";
@@ -42,7 +43,7 @@ export function ResetPasswordView() {
   const {
     reset,
     handleSubmit,
-    formState: { isSubmitting },
+    formState: { isSubmitting, errors },
   } = methods;
 
   const handleFormError = useFormErrorHandler(methods);
@@ -64,6 +65,12 @@ export function ResetPasswordView() {
         placeholder="email@example.com"
         slotProps={{ inputLabel: { shrink: true } }}
       />
+
+      {errors.root && (
+        <Typography variant="body2" color="error" sx={{ width: 1 }}>
+          {errors.root.message}
+        </Typography>
+      )}
 
       <LoadingButton
         fullWidth

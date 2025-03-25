@@ -5,6 +5,7 @@ import { useFormContext } from "react-hook-form";
 import { useBoolean } from "minimal-shared/hooks";
 
 import Box from "@mui/material/Box";
+import { Typography } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
 import LoadingButton from "@mui/lab/LoadingButton";
 import InputAdornment from "@mui/material/InputAdornment";
@@ -23,7 +24,7 @@ export function SignUpForm({ buttonText = "Utwórz konto", sx, ...other }: Props
   const showPassword = useBoolean();
 
   const {
-    formState: { isSubmitting },
+    formState: { isSubmitting, errors },
   } = useFormContext();
 
   return (
@@ -61,6 +62,12 @@ export function SignUpForm({ buttonText = "Utwórz konto", sx, ...other }: Props
           },
         }}
       />
+
+      {errors.root && (
+        <Typography variant="body2" color="error" sx={{ width: 1 }}>
+          {errors.root.message}
+        </Typography>
+      )}
 
       <LoadingButton
         fullWidth

@@ -32,16 +32,16 @@ class ActivateAccountView(APIView):
 
         except jwt.ExpiredSignatureError:
             return Response(
-                {"error": _("Invalid activation link")},
+                {"root": _("Invalid activation link")},
                 status=status.HTTP_400_BAD_REQUEST,
             )
         except jwt.InvalidTokenError:
             return Response(
-                {"error": _("Invalid token")}, status=status.HTTP_400_BAD_REQUEST
+                {"root": _("Invalid token")}, status=status.HTTP_400_BAD_REQUEST
             )
         except get_user_model().DoesNotExist:
             return Response(
-                {"error": _("User not found")}, status=status.HTTP_404_NOT_FOUND
+                {"root": _("User not found")}, status=status.HTTP_404_NOT_FOUND
             )
 
 
@@ -56,7 +56,7 @@ class ResendActivationLinkView(APIView):
 
         if not token and not email:
             return Response(
-                {"error": _("You must provide either a token or an email.")},
+                {"root": _("You must provide either a token or an email.")},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
@@ -71,14 +71,14 @@ class ResendActivationLinkView(APIView):
                 user = get_user_model().objects.filter(pk=user_id).first()
             except jwt.DecodeError:
                 return Response(
-                    {"error": _("Invalid token.")}, status=status.HTTP_400_BAD_REQUEST
+                    {"root": _("Invalid token.")}, status=status.HTTP_400_BAD_REQUEST
                 )
         else:
             user = get_user_model().objects.filter(email=email).first()
 
         if not user:
             return Response(
-                {"error": _("User not found.")}, status=status.HTTP_404_NOT_FOUND
+                {"root": _("User not found.")}, status=status.HTTP_404_NOT_FOUND
             )
 
         if user.is_active:

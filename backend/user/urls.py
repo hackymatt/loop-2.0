@@ -2,7 +2,8 @@ from django.urls import path
 
 from .register.views import RegisterView
 from .activate.views import ActivateAccountView, ResendActivationLinkView
-from .login.views import LoginView
+from .login.email.views import LoginView
+from .login.google.views import GoogleLoginView
 from .logout.views import LogoutView
 from .reset_password.views import PasswordResetView, PasswordResetConfirmView
 
@@ -17,6 +18,7 @@ urlpatterns = [
     path(Urls.RESEND, ResendActivationLinkView.as_view(), name="resend"),
     # Login routes
     path(Urls.LOGIN, LoginView.as_view(), name="login"),
+    path(Urls.GOOGLE_LOGIN, GoogleLoginView.as_view(), name="google-login"),
     # Logout routes
     path(Urls.LOGOUT, LogoutView.as_view(), name="logout"),
     # Password routes

@@ -49,11 +49,23 @@ export function SignInView() {
     try {
       const { data: responseData, status } = await login(data);
       if (status === 401) {
-        user.setField("isActive", false);
+        user.setState({
+          isRegistered: true,
+          isActive: false,
+          isLoggedIn: false,
+          email: data.email,
+        });
         router.push(paths.activate);
       } else {
-        const { access_token: accessToken, refresh_token: refreshToken } = responseData;
-        user.setState({ accessToken, refreshToken, isLoggedIn: true });
+        const { email, access_token: accessToken, refresh_token: refreshToken } = responseData;
+        user.setState({
+          accessToken,
+          refreshToken,
+          isRegistered: true,
+          isActive: true,
+          isLoggedIn: true,
+          email,
+        });
       }
       reset();
     } catch (error) {
@@ -81,7 +93,7 @@ export function SignInView() {
 
       <FormDivider label={t("or")} />
 
-      <FormSocials />
+      <FormSocials methods={methods} />
     </>
   );
 }

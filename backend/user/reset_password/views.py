@@ -51,16 +51,16 @@ class PasswordResetConfirmView(APIView):
 
             except jwt.ExpiredSignatureError:
                 return Response(
-                    {"error": _("Invalid reset password link")},
+                    {"root": _("Invalid reset password link")},
                     status=status.HTTP_400_BAD_REQUEST,
                 )
             except jwt.InvalidTokenError:
                 return Response(
-                    {"error": _("Invalid token")}, status=status.HTTP_400_BAD_REQUEST
+                    {"root": _("Invalid token")}, status=status.HTTP_400_BAD_REQUEST
                 )
             except get_user_model().DoesNotExist:
                 return Response(
-                    {"error": _("User not found")}, status=status.HTTP_404_NOT_FOUND
+                    {"root": _("User not found")}, status=status.HTTP_404_NOT_FOUND
                 )
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

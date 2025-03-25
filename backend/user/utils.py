@@ -5,7 +5,7 @@ from mailer.mailer import Mailer
 from utils.url.url import get_website_url
 from global_config import CONFIG
 from django.utils.translation import gettext as _
-
+from django.contrib.auth import get_user_model
 
 def check_password(value):
     """
@@ -138,3 +138,16 @@ def get_reset_password_url(website_url, token):
     """
     # Generate the password reset URL using the correct scheme (http or https)
     return f"{website_url}/auth/update-password/{token}"
+
+def get_unique_username(base_username):
+    """
+    Ensures the generated username is unique by appending a number if needed.
+    """
+    username = base_username
+    counter = 1
+
+    while get_user_model().objects.filter(username=username).exists():
+        username = f"{base_username}{counter}"
+        counter += 1
+
+    return username

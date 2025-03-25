@@ -6,11 +6,10 @@ import { useSettingsContext } from "src/components/settings";
 
 import { Api } from "../service";
 
-const endpoint = "/auth/login" as const;
+const endpoint = "/auth/google-login" as const;
 
 type ILogin = {
-  email: string;
-  password: string;
+  token: string;
 };
 
 type ILoginReturn = {

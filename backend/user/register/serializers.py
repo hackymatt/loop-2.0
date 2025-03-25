@@ -2,7 +2,7 @@ import re
 from django.contrib.auth import get_user_model
 from django.utils.translation import gettext as _
 from rest_framework import serializers
-from ..utils import check_password
+from ..utils import check_password, get_unique_username
 
 
 class EmailOnlyUserSerializer(serializers.ModelSerializer):
@@ -43,7 +43,7 @@ class EmailOnlyUserSerializer(serializers.ModelSerializer):
         username = email.split("@")[0]
 
         # Ensure the username is unique
-        username = self.get_unique_username(username)
+        username = get_unique_username(username)
 
         user = get_user_model().objects.create_user(
             username=username,  # Use the unique username
@@ -53,16 +53,3 @@ class EmailOnlyUserSerializer(serializers.ModelSerializer):
         user.is_active = False  # Set user as inactive initially
         user.save()
         return user
-
-    def get_unique_username(self, base_username):
-        """
-        Ensures the generated username is unique by appending a number if needed.
-        """
-        username = base_username
-        counter = 1
-
-        while get_user_model().objects.filter(username=username).exists():
-            username = f"{base_username}{counter}"
-            counter += 1
-
-        return username

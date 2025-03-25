@@ -66,7 +66,7 @@ export function ActivateView({ token }: { token: string | undefined }) {
         router.push(paths.login);
       }
     } catch (error) {
-      setState({ error: ((error as AxiosError).response?.data as { error: string }).error });
+      setState({ error: ((error as AxiosError).response?.data as { root: string }).root });
     }
   };
 

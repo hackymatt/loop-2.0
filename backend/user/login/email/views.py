@@ -19,6 +19,7 @@ class LoginView(APIView):
             # Return the JWT token in the response
             return Response(
                 {
+                    "email": user.email,
                     "access_token": str(access_token),
                     "refresh_token": str(refresh_token),
                 },
