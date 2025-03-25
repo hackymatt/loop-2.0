@@ -5,7 +5,6 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from .serializers import LoginSerializer
 
 
-
 class LoginView(APIView):
     def post(self, request, *args, **kwargs):
         serializer = LoginSerializer(data=request.data)

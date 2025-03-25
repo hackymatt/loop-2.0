@@ -24,4 +24,3 @@ class LoginSerializer(serializers.Serializer):
             )
 
         return {"user": user}
-

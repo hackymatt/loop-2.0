@@ -9,6 +9,8 @@ class Urls:
     RESEND = "auth/resend"
     LOGIN = "auth/login"
     LOGOUT = "auth/logout"
+    PASSWORD_RESET = "auth/reset-password"
+    PASSWORD_RESET_CONFIRM = "auth/reset-password-confirm"
 
 
 class CourseLevel(TextChoices):

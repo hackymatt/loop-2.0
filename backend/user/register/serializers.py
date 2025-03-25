@@ -2,7 +2,7 @@ import re
 from django.contrib.auth import get_user_model
 from django.utils.translation import gettext as _
 from rest_framework import serializers
-from global_config import CONFIG
+from ..utils import check_password
 
 
 class EmailOnlyUserSerializer(serializers.ModelSerializer):
@@ -29,39 +29,11 @@ class EmailOnlyUserSerializer(serializers.ModelSerializer):
 
     def validate_password(self, value):
         """
-        Validate the password to ensure it meets the required criteria:
-        - Minimum 8 characters
-        - At least 1 uppercase letter
-        - At least 1 lowercase letter
-        - At least 1 special character
-        - At least 1 digit
+        Validate the password to ensure it meets the required criteria
         """
-        password = value
-
-        if len(password) < CONFIG["min_password_length"]:
-            raise serializers.ValidationError(
-                [_("Password must be at least 8 characters long.")]
-            )
-
-        if not re.search(r"[A-Z]", password):
-            raise serializers.ValidationError(
-                [_("Password must contain at least one uppercase letter.")]
-            )
-
-        if not re.search(r"[a-z]", password):
-            raise serializers.ValidationError(
-                [_("Password must contain at least one lowercase letter.")]
-            )
-
-        if not re.search(r'[!@#$%^&*(),.?":{}|<>]', password):
-            raise serializers.ValidationError(
-                [_("Password must contain at least one special character.")]
-            )
-
-        if not re.search(r"\d", password):
-            raise serializers.ValidationError(
-                [_("Password must contain at least one digit.")]
-            )
+        error, error_message = check_password(value)
+        if error:
+            raise serializers.ValidationError([_(error_message)])
 
         return value
 
@@ -94,5 +66,3 @@ class EmailOnlyUserSerializer(serializers.ModelSerializer):
             counter += 1
 
         return username
-
-

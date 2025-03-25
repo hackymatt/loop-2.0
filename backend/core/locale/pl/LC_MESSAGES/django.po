@@ -18,6 +18,18 @@ msgstr "Link jest ważny przez 24 godziny."
 msgid "If you didn't register on our platform, you can safely ignore this email."
 msgstr "Jeśli to nie Ty się zarejestrowałeś, możesz bez obaw zignorować tego maila."
 
+msgid "Reset your password"
+msgstr "Zresetuj swoje hasło"
+
+msgid "Hi %(email)s, please click the link below to reset your password:"
+msgstr "Cześć %(email)s, kliknij poniższy link, aby zresetować swoje hasło:"
+
+msgid "If you didn't request password reset on our platform, you can safely ignore this email."
+msgstr "Jeśli to nie Ty się poprosiłeś o reset hasło, możesz bez obaw zignorować tego maila."
+
+msgid "Account with this email address does not exist."
+msgstr "Konto z podanym adresem e-mail nie istnieje."
+
 msgid "Account with this email address already exists."
 msgstr "Konto z podanym adresem e-mail już istnieje."
 

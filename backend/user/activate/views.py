@@ -7,6 +7,7 @@ from django.utils.translation import gettext as _
 from ..utils import send_activation_email
 from global_config import CONFIG
 
+
 class ActivateAccountView(APIView):
     """
     View for handling account activation when the user clicks the activation link.
