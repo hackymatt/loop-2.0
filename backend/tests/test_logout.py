@@ -38,7 +38,7 @@ class LogoutViewTest(APITestCase):
         )
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertIn("error", response.data)
+        self.assertIn("root", response.data)
 
     def test_invalid_refresh_token(self):
         """Ensure logout fails with an invalid refresh token."""
@@ -49,7 +49,7 @@ class LogoutViewTest(APITestCase):
         )
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertIn("error", response.data)
+        self.assertIn("root", response.data)
 
     def test_logout_without_authentication(self):
         """Ensure logout fails if user is not authenticated."""

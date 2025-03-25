@@ -6,6 +6,7 @@ import datetime
 from const import Urls
 from global_config import CONFIG
 
+
 class PasswordResetConfirmTests(APITestCase):
     def setUp(self):
         self.url = f"/{Urls.API}/{Urls.PASSWORD_RESET_CONFIRM}"
@@ -18,9 +19,8 @@ class PasswordResetConfirmTests(APITestCase):
         self.valid_token = jwt.encode(
             {
                 "user_id": self.user.id,
-                "exp": datetime.datetime.now(
-            datetime.timezone.utc
-        ) + datetime.timedelta(hours=1),  # 1-hour expiration
+                "exp": datetime.datetime.now(datetime.timezone.utc)
+                + datetime.timedelta(hours=1),  # 1-hour expiration
             },
             CONFIG["secret"],
             algorithm="HS256",
@@ -30,9 +30,8 @@ class PasswordResetConfirmTests(APITestCase):
         self.expired_token = jwt.encode(
             {
                 "user_id": self.user.id,
-                "exp": datetime.datetime.now(
-            datetime.timezone.utc
-        ) - datetime.timedelta(hours=1),  # Expired 1 hour ago
+                "exp": datetime.datetime.now(datetime.timezone.utc)
+                - datetime.timedelta(hours=1),  # Expired 1 hour ago
             },
             CONFIG["secret"],
             algorithm="HS256",
@@ -45,15 +44,12 @@ class PasswordResetConfirmTests(APITestCase):
         self.nonexistent_user_token = jwt.encode(
             {
                 "user_id": 9999,  # User ID that does not exist
-                "exp": datetime.datetime.now(
-            datetime.timezone.utc
-        ) + datetime.timedelta(hours=1),
+                "exp": datetime.datetime.now(datetime.timezone.utc)
+                + datetime.timedelta(hours=1),
             },
             CONFIG["secret"],
             algorithm="HS256",
         )
-
-        
 
     def test_successful_password_reset(self):
         """Ensure a valid token allows password reset."""
@@ -77,7 +73,7 @@ class PasswordResetConfirmTests(APITestCase):
             format="json",
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(response.data["error"], "Invalid reset password link")
+        self.assertEqual(response.data["root"], "Invalid reset password link")
 
     def test_invalid_token(self):
         """Ensure an invalid token returns a 400 error."""
@@ -87,7 +83,7 @@ class PasswordResetConfirmTests(APITestCase):
             format="json",
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(response.data["error"], "Invalid token")
+        self.assertEqual(response.data["root"], "Invalid token")
 
     def test_nonexistent_user(self):
         """Ensure a token for a nonexistent user returns a 404 error."""
@@ -97,7 +93,7 @@ class PasswordResetConfirmTests(APITestCase):
             format="json",
         )
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-        self.assertEqual(response.data["error"], "User not found")
+        self.assertEqual(response.data["root"], "User not found")
 
     def test_missing_token(self):
         """Ensure request without a token fails."""

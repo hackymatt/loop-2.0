@@ -7,6 +7,7 @@ from const import Urls
 from utils.google.gmail import GmailApi
 from .helpers import mock_send_message
 
+
 class PasswordResetTest(TestCase):
     def setUp(self):
         self.client = APIClient()

@@ -7,6 +7,7 @@ from global_config import CONFIG
 from django.utils.translation import gettext as _
 from django.contrib.auth import get_user_model
 
+
 def check_password(value):
     """
     Validate the password to ensure it meets the required criteria:
@@ -138,6 +139,7 @@ def get_reset_password_url(website_url, token):
     """
     # Generate the password reset URL using the correct scheme (http or https)
     return f"{website_url}/auth/update-password/{token}"
+
 
 def get_unique_username(base_username):
     """

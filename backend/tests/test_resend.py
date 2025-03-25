@@ -44,7 +44,7 @@ class ResendActivationLinkViewTest(APITestCase):
         response = self.client.post(self.url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(
-            response.data["error"], "You must provide either a token or an email."
+            response.data["root"], "You must provide either a token or an email."
         )
         send_message_mock.assert_not_called()
 
@@ -56,7 +56,7 @@ class ResendActivationLinkViewTest(APITestCase):
         data = {"token": invalid_token}
         response = self.client.post(self.url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(response.data["error"], "Invalid token.")
+        self.assertEqual(response.data["root"], "Invalid token.")
         send_message_mock.assert_not_called()
 
     @patch.object(GmailApi, "_send_message")
@@ -67,14 +67,14 @@ class ResendActivationLinkViewTest(APITestCase):
         data = {"token": non_existing_token}
         response = self.client.post(self.url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-        self.assertEqual(response.data["error"], "User not found.")
+        self.assertEqual(response.data["root"], "User not found.")
         send_message_mock.assert_not_called()
 
         # Test with email for a non-existing user
         data = {"email": "nonexistent@example.com"}
         response = self.client.post(self.url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-        self.assertEqual(response.data["error"], "User not found.")
+        self.assertEqual(response.data["root"], "User not found.")
         send_message_mock.assert_not_called()
 
     @patch.object(GmailApi, "_send_message")

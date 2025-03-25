@@ -7,6 +7,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 import requests
 from ...utils import get_unique_username
 
+
 class GoogleLoginView(APIView):
     def post(self, request):
         token = request.data.get("token")
@@ -14,12 +15,8 @@ class GoogleLoginView(APIView):
         # Verify token in Google
         google_response = requests.get(
             "https://www.googleapis.com/oauth2/v3/userinfo",
-            headers={"Authorization": f"Bearer {token}"}
+            headers={"Authorization": f"Bearer {token}"},
         ).json()
-
-
-        print(google_response)
-
 
         if "email" not in google_response:
             return Response(
@@ -34,7 +31,15 @@ class GoogleLoginView(APIView):
         picture = google_response.get("picture", "")
 
         # Create user or get
-        user, _ = get_user_model().objects.get_or_create(email=email, defaults={"username": email, "first_name": first_name, "last_name": last_name, "image": picture})
+        user, created = get_user_model().objects.get_or_create(
+            email=email,
+            defaults={
+                "username": email,
+                "first_name": first_name,
+                "last_name": last_name,
+                "image": picture,
+            },
+        )
 
         # Create JWT token for the user
         refresh_token = RefreshToken.for_user(user)

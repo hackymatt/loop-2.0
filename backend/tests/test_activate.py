@@ -69,7 +69,7 @@ class ActivateAccountViewTest(TestCase):
         response = self.client.post(self.url, data, format="json")
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(response.data["error"], "Invalid token")
+        self.assertEqual(response.data["root"], "Invalid token")
 
     def test_activate_account_expired_token(self):
         """
@@ -81,7 +81,7 @@ class ActivateAccountViewTest(TestCase):
         response = self.client.post(self.url, data, format="json")
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(response.data["error"], "Invalid activation link")
+        self.assertEqual(response.data["root"], "Invalid activation link")
 
     def test_activate_account_user_not_found(self):
         """
@@ -96,7 +96,7 @@ class ActivateAccountViewTest(TestCase):
         response = self.client.post(self.url, data, format="json")
 
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-        self.assertEqual(response.data["error"], "User not found")
+        self.assertEqual(response.data["root"], "User not found")
 
     def generate_expired_token(self, user_id):
         """
