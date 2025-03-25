@@ -37,7 +37,7 @@ export function SignUpForm({ buttonText = "Utwórz konto", sx, ...other }: Props
       <Field.Text
         name="email"
         label={t("email.label")}
-        placeholder="email@address.com"
+        placeholder="email@example.com"
         slotProps={{ inputLabel: { shrink: true } }}
       />
 

@@ -13,4 +13,5 @@ export const defaultUser: UserState = {
   refreshToken: "",
   isRegistered: false,
   isActive: false,
+  isLoggedIn: false,
 };

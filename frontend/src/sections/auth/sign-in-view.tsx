@@ -49,10 +49,11 @@ export function SignInView() {
     try {
       const { data: responseData, status } = await login(data);
       if (status === 401) {
+        user.setField("isActive", false);
         router.push(paths.activate);
       } else {
         const { access_token: accessToken, refresh_token: refreshToken } = responseData;
-        user.setState({ accessToken, refreshToken });
+        user.setState({ accessToken, refreshToken, isLoggedIn: true });
       }
       reset();
     } catch (error) {

@@ -61,6 +61,7 @@ export function ActivateView({ token }: { token: string | undefined }) {
     countdownSeconds.start();
     try {
       const { status } = await resend({ token, email: user.state.email });
+      user.setField("isActive", true);
       if (status === 200) {
         router.push(paths.login);
       }

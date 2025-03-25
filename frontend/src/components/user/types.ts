@@ -9,6 +9,7 @@ export type UserState = {
   refreshToken: string;
   isRegistered: boolean;
   isActive: boolean;
+  isLoggedIn: boolean;
 };
 
 export type UserContextValue = {

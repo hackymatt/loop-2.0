@@ -69,3 +69,23 @@ export const useResetPasswordSchema = () => {
       .email({ message: t("email.errors.invalid") }),
   });
 };
+
+// ----------------------------------------------------------------------
+
+export type UpdatePasswordSchemaType = zod.infer<ReturnType<typeof useUpdatePasswordSchema>>;
+
+export const useUpdatePasswordSchema = () => {
+  const { t } = useTranslation("account");
+  return zod.object({
+    password: zod
+      .string()
+      .min(1, { message: t("password.errors.required") })
+      .min(6, { message: t("password.errors.minLength") })
+      .regex(/[A-Z]/, { message: t("password.errors.bigLetter") })
+      .regex(/[a-z]/, { message: t("password.errors.smallLetter") })
+      .regex(/[0-9]/, { message: t("password.errors.number") })
+      .regex(/[!@#$%^&]/, {
+        message: t("password.errors.specialCharacter"),
+      }),
+  });
+};

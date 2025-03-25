@@ -17,6 +17,7 @@ venv/
 # Node.js
 package-lock.json
 yarn.lock
+node_modules/
 
 # Local PostgreSQL data
 data/
