@@ -18,6 +18,8 @@ jobs:
     steps:
       - name: Checkout repository code
         uses: actions/checkout@v4
+      - name: Install system dependencies
+        run: sudo apt-get install -y libjpeg-dev
       - name: Pull python
         uses: actions/setup-python@v4
       - name: Upgrade pip
@@ -47,7 +49,7 @@ jobs:
       - name: Pull nodejs
         uses: actions/setup-node@v4
       - name: Install dependencies
-        run: npm install
+        run: npm install --legacy-peer-deps
       - name: Test code quality
         run: npm run fm:check
       - name: Test code formatting
@@ -103,6 +105,8 @@ jobs:
     steps:
       - name: Checkout repository code
         uses: actions/checkout@v4
+      - name: Install system dependencies
+        run: sudo apt-get install -y libjpeg-dev
       - name: Pull python
         uses: actions/setup-python@v4
       - name: Upgrade pip
@@ -132,6 +136,6 @@ jobs:
       - name: Pull nodejs
         uses: actions/setup-node@v4
       - name: Install dependencies
-        run: npm install
+        run: npm install --legacy-peer-deps
       - name: Run tests
         run: npm run test:coverage
