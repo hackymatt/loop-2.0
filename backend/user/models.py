@@ -21,8 +21,8 @@ class User(AbstractUser):
     first_name = models.CharField(max_length=30, blank=True, null=True)  # Optional
     last_name = models.CharField(max_length=30, blank=True, null=True)  # Optional
     image = models.ImageField(
-        upload_to=user_directory_path, blank=True, null=True
-    )  # User profile picture
+        upload_to=user_directory_path, blank=True, null=True, max_length=500
+    )
     is_active = models.BooleanField(
         default=False
     )  # User must activate account via email

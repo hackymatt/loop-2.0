@@ -10,6 +10,7 @@ class Urls:
     LOGIN = "auth/login"
     GOOGLE_LOGIN = "auth/google-login"
     GITHUB_LOGIN = "auth/github-login"
+    FACEBOOK_LOGIN = "auth/facebook-login"
     LOGOUT = "auth/logout"
     PASSWORD_RESET = "auth/reset-password"
     PASSWORD_RESET_CONFIRM = "auth/reset-password-confirm"

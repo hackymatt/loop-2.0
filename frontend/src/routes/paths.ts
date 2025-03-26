@@ -10,6 +10,7 @@ export const paths = {
   post: "/post",
   about: "/about",
   contact: "/contact",
+  dashboard: "/dashboard",
   privacyPolicy: "/privacy-policy",
   termsAndConditions: "/terms-and-conditions",
   /**

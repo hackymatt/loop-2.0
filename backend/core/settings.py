@@ -278,7 +278,7 @@ LOGGING = {
     "disable_existing_loggers": False,
     "formatters": {
         "verbose": {
-            "format": "{levelname} {asctime} {module} {message}",
+            "format": "{levelname} {asctime} {message}",
             "style": "{",
         },
         "simple": {
@@ -289,7 +289,7 @@ LOGGING = {
     "handlers": {
         "console": {
             "class": "logging.StreamHandler",
-            "formatter": "verbose",
+            "formatter": "simple",  # Use a simpler format for console
         },
         "file": {
             "class": "logging.handlers.RotatingFileHandler",
@@ -309,17 +309,17 @@ LOGGING = {
     "loggers": {
         "django": {
             "handlers": ["console", "file"],
-            "level": "DEBUG" if DEBUG else "INFO",
+            "level": "WARNING",  # Log only WARNING and ERROR
             "propagate": True,
         },
         "core": {
             "handlers": ["console", "file"],
-            "level": "DEBUG",
+            "level": "WARNING",  # Log only WARNING and ERROR
             "propagate": False,
         },
         "django.request": {
             "handlers": ["error_file"],
-            "level": "ERROR",
+            "level": "ERROR",  # Only capture ERROR logs for requests
             "propagate": False,
         },
     },

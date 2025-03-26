@@ -5,6 +5,7 @@ from .activate.views import ActivateAccountView, ResendActivationLinkView
 from .login.email.views import LoginView
 from .login.google.views import GoogleLoginView
 from .login.github.views import GithubLoginView
+from .login.facebook.views import FacebookLoginView
 from .logout.views import LogoutView
 from .reset_password.views import PasswordResetView, PasswordResetConfirmView
 
@@ -21,6 +22,7 @@ urlpatterns = [
     path(Urls.LOGIN, LoginView.as_view(), name="login"),
     path(Urls.GOOGLE_LOGIN, GoogleLoginView.as_view(), name="google-login"),
     path(Urls.GITHUB_LOGIN, GithubLoginView.as_view(), name="github-login"),
+    path(Urls.FACEBOOK_LOGIN, FacebookLoginView.as_view(), name="facebook-login"),
     # Logout routes
     path(Urls.LOGOUT, LogoutView.as_view(), name="logout"),
     # Password routes

@@ -3240,6 +3240,13 @@
   dependencies:
     "@types/react" "^18"
 
+"@types/react-facebook-login@^4.1.11":
+  version "4.1.11"
+  resolved "https://registry.npmjs.org/@types/react-facebook-login/-/react-facebook-login-4.1.11.tgz"
+  integrity sha512-7S/qzQMrS/zyJupX1RTiP9YV8qA0RyjS+up19G28XM6C9IN3NYfkrbKJEHOAfc79HdFYgpt9qQd1IHNZxuH+eA==
+  dependencies:
+    "@types/react" "*"
+
 "@types/react-i18next@^7.8.3":
   version "7.8.3"
   resolved "https://registry.npmjs.org/@types/react-i18next/-/react-i18next-7.8.3.tgz"
@@ -7373,6 +7380,11 @@ react-error-boundary@^3.1.4:
   integrity sha512-uM9uPzZJTF6wRQORmSrvOIgt4lJ9MC1sNgEOj2XGsDTRE4kmpWxg7ENK9EWNKJRMAOY9z0MuF4yIfl6gp4sotA==
   dependencies:
     "@babel/runtime" "^7.12.5"
+
+react-facebook-login@^4.1.1:
+  version "4.1.1"
+  resolved "https://registry.npmjs.org/react-facebook-login/-/react-facebook-login-4.1.1.tgz"
+  integrity sha512-COnHEHlYGTKipz4963safFAK9PaNTcCiXfPXMS/yxo8El+/AJL5ye8kMJf23lKSSGGPgqFQuInskIHVqGqTvSw==
 
 react-fast-compare@^3.0.1:
   version "3.2.2"

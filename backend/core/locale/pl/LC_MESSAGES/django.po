@@ -74,3 +74,6 @@ msgstr "Nie udało się uzyskać tokena dostępu"
 
 msgid "No email found in GitHub account"
 msgstr "Nie znaleziono adresu e-mail na koncie GitHub"
+
+msgid "Access token is required"
+msgstr "Token dostępu jest wymagany"
