@@ -2,7 +2,7 @@ from django.contrib.auth import get_user_model
 from rest_framework.test import APITestCase, APIClient
 from rest_framework import status
 from unittest.mock import patch
-from .helpers import mock_google_auth
+from .helpers import mock_auth_return_value
 from const import Urls
 
 
@@ -10,42 +10,34 @@ class GoogleLoginViewTest(APITestCase):
     def setUp(self):
         self.client = APIClient()
         self.url = f"/{Urls.API}/{Urls.GOOGLE_LOGIN}"
-
-    @patch("requests.get")
-    def test_google_login_success(self, get_mock):
-        """Test successful login using Google OAuth"""
-        mock_return_value = {
+        self.google_data = {
             "email": "testuser@example.com",
             "given_name": "Test",
             "family_name": "User",
             "picture": "https://example.com/avatar.jpg",
         }
-        mock_google_auth(get_mock, mock_return_value)
+
+    @patch("requests.get")
+    def test_google_login_success(self, get_mock):
+        """Test successful login using Google OAuth"""
+        mock_auth_return_value(get_mock, self.google_data)
 
         response = self.client.post(self.url, {"token": "valid_token"}, format="json")
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn("access_token", response.data)
         self.assertIn("refresh_token", response.data)
-        self.assertEqual(response.data["email"], mock_return_value["email"])
+        self.assertEqual(response.data["email"], self.google_data["email"])
 
         # Check if the user was created
-        user = get_user_model().objects.filter(email=mock_return_value["email"]).first()
+        user = get_user_model().objects.filter(email=self.google_data["email"]).first()
         self.assertIsNotNone(user)
-        self.assertEqual(user.first_name, mock_return_value["given_name"])
+        self.assertEqual(user.first_name, self.google_data["given_name"])
 
     @patch("requests.get")
     def test_google_login_existing_user(self, get_mock):
         """Test login for an existing user"""
-        mock_google_auth(
-            get_mock,
-            {
-                "email": "testuser@example.com",
-                "given_name": "Test",
-                "family_name": "User",
-                "picture": "https://example.com/avatar.jpg",
-            },
-        )
+        mock_auth_return_value(get_mock, self.google_data)
 
         get_user_model().objects.create_user(
             email="testuser@example.com",
@@ -70,7 +62,7 @@ class GoogleLoginViewTest(APITestCase):
     @patch("requests.get")
     def test_google_login_invalid_token(self, get_mock):
         """Test invalid Google OAuth token"""
-        mock_google_auth(get_mock, {"error": "Invalid Token"})
+        mock_auth_return_value(get_mock, {"error": "Invalid Token"})
 
         response = self.client.post(self.url, {"token": "invalid_token"}, format="json")
 

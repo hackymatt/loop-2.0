@@ -6,6 +6,7 @@ from django.utils.translation import gettext as _
 from rest_framework_simplejwt.tokens import RefreshToken
 import requests
 from ...utils import get_unique_username
+from const import JoinType
 
 
 class GoogleLoginView(APIView):
@@ -38,6 +39,7 @@ class GoogleLoginView(APIView):
                 "first_name": first_name,
                 "last_name": last_name,
                 "image": picture,
+                "join_type": JoinType.GOOGLE,
             },
         )
 

@@ -6,10 +6,10 @@ import { useSettingsContext } from "src/components/settings";
 
 import { Api } from "../service";
 
-const endpoint = "/auth/google-login" as const;
+const endpoint = "/auth/github-login" as const;
 
 type ILogin = {
-  token: string;
+  code: string;
 };
 
 type ILoginReturn = {
@@ -17,7 +17,7 @@ type ILoginReturn = {
   status: number;
 };
 
-export const useLoginGoogle = () => {
+export const useLoginGithub = () => {
   const settings = useSettingsContext();
   const { language } = settings.state;
 

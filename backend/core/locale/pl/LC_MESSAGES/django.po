@@ -65,3 +65,12 @@ msgstr "Użytkownik nieaktywny"
 
 msgid "Refresh token is required"
 msgstr "Token odświeżania jest wymagany."
+
+msgid "Code is required"
+msgstr "Kod jest wymagany"
+
+msgid "Failed to retrieve access token"
+msgstr "Nie udało się uzyskać tokena dostępu"
+
+msgid "No email found in GitHub account"
+msgstr "Nie znaleziono adresu e-mail na koncie GitHub"
