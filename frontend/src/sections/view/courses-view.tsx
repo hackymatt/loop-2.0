@@ -8,6 +8,7 @@ import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 
 import { _courses } from "src/_mock";
+import { useCourseLevels } from "src/api/course/level/levels";
 
 import { Iconify } from "src/components/iconify";
 
@@ -22,9 +23,9 @@ const RATING_OPTIONS = ["4", "3", "2"];
 
 export function CoursesView() {
   const { t } = useTranslation("course");
+  const { data: courseLevels } = useCourseLevels();
 
   const courses = _courses.slice(0, 10);
-  const levels = ["Beginner", "Intermediate", "Advanced"];
   const technologies = [
     "React",
     "Angular",
@@ -65,7 +66,7 @@ export function CoursesView() {
         open={openMobile.value}
         onClose={openMobile.onFalse}
         options={{
-          levels,
+          levels: courseLevels ?? [],
           technologies,
           categories,
           ratings: RATING_OPTIONS,

@@ -16,3 +16,5 @@ export interface ListQueryResponse<T = any> extends GetQueryResponse<T> {
   count: number;
   pagesCount: number;
 }
+
+export type QueryType = { [key: string]: string };

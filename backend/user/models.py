@@ -18,8 +18,8 @@ def user_directory_path(instance, filename):  # pragma: no cover
 
 class User(AbstractUser):
     email = models.EmailField(unique=True)  # Unique and required
-    first_name = models.CharField(max_length=30, blank=True, null=True)  # Optional
-    last_name = models.CharField(max_length=30, blank=True, null=True)  # Optional
+    first_name = models.CharField(blank=True, null=True)  # Optional
+    last_name = models.CharField(blank=True, null=True)  # Optional
     image = models.ImageField(
         upload_to=user_directory_path, blank=True, null=True, max_length=500
     )
@@ -27,12 +27,12 @@ class User(AbstractUser):
         default=False
     )  # User must activate account via email
     user_type = models.CharField(
-        max_length=20,
+        max_length=max(len(choice[0]) for choice in UserType.choices),
         choices=UserType.choices,
         default=UserType.STUDENT,
     )
     join_type = models.CharField(
-        max_length=10,
+        max_length=max(len(choice[0]) for choice in JoinType.choices),
         choices=JoinType.choices,
         default=JoinType.EMAIL,
     )

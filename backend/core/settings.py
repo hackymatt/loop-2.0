@@ -15,8 +15,8 @@ import base64
 import json
 from socket import gethostname, gethostbyname_ex
 import logging.config
-from dotenv import load_dotenv
 from datetime import timedelta
+from dotenv import load_dotenv
 
 
 load_dotenv()
@@ -91,6 +91,7 @@ INSTALLED_APPS = [
     "allauth.socialaccount.providers.github",
     "allauth.socialaccount.providers.facebook",
     "user",
+    "course_level",
 ]
 
 DEBUG_TOOLBAR_PANELS = [

@@ -6,6 +6,7 @@ import "dayjs/locale/en";
 import { useEffect } from "react";
 import { I18nextProvider } from "react-i18next";
 import { useIsClient } from "minimal-shared/hooks";
+import { useQueryClient } from "@tanstack/react-query";
 
 import { useSettingsContext } from "src/components/settings";
 
@@ -17,12 +18,14 @@ type Props = {
 
 export function TranslationProvider({ children }: Props) {
   const settings = useSettingsContext();
+  const queryClient = useQueryClient();
   const isClient = useIsClient();
 
   useEffect(() => {
     const { language } = settings.state;
     i18n.changeLanguage(language);
-  }, [settings.state]);
+    queryClient.invalidateQueries();
+  }, [queryClient, settings.state]);
 
   if (!isClient) {
     return null;

@@ -2,13 +2,13 @@ import type { AxiosError, AxiosRequestConfig } from "axios";
 
 import { Api } from "./service";
 
-import type { GetApiResponse, ListApiResponse } from "./types";
+import type { QueryType, GetApiResponse, ListApiResponse } from "./types";
 
-export async function getListData<T>(queryUrl: string) {
+export async function getListData<T>(queryUrl: string, config?: AxiosRequestConfig<any>) {
   let data: ListApiResponse<T> = { results: [], records_count: 0, pages_count: 0 };
 
   try {
-    const response = await Api.get<ListApiResponse<T>>(queryUrl);
+    const response = await Api.get<ListApiResponse<T>>(queryUrl, config);
     ({ data } = response);
   } catch (error) {
     if (
@@ -42,3 +42,10 @@ export async function getData<T>(
   }
   return data;
 }
+
+export const formatQueryParams = (query?: QueryType): string => {
+  if (!query) return "";
+
+  const params = new URLSearchParams(query);
+  return params.toString();
+};

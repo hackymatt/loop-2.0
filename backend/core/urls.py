@@ -6,8 +6,9 @@ import debug_toolbar
 from const import Urls
 
 from user.urls import urlpatterns as user_urls
+from course_level.urls import urlpatterns as course_level_urls
 
-api_urlpatterns = user_urls
+api_urlpatterns = user_urls + course_level_urls
 
 # Main URL patterns
 urlpatterns = [

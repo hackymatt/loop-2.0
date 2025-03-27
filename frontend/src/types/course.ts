@@ -2,6 +2,11 @@ import type { DatePickerFormat } from "src/utils/format-time";
 
 // ----------------------------------------------------------------------
 
+export type ICourseLevelProp = {
+  slug: string;
+  name: string;
+};
+
 export type ICourseTeacherProp = {
   id: string;
   name: string;

@@ -1,15 +1,18 @@
+import type { ICourseLevelProp } from "src/types/course";
+
 import { useTranslation } from "react-i18next";
 
 import { paths } from "src/routes/paths";
 
 import { _courses } from "src/_mock";
+import { useCourseLevels } from "src/api/course/level/levels";
 
 // ----------------------------------------------------------------------
 
 export const usePageLinks = () => {
   const { t } = useTranslation("navigation");
+  const { data: courseLevels } = useCourseLevels();
 
-  const levels = ["Beginner", "Intermediate", "Advanced"];
   const technologies = [
     "React",
     "Angular",
@@ -21,29 +24,41 @@ export const usePageLinks = () => {
   ];
   const categories = ["Frontend", "Backend", "Full Stack", "DevOps", "Mobile App", "Desktop App"];
 
-  return [
-    {
-      subheader: t("levels"),
-      items: levels.map((level: string) => ({
-        title: level,
-        path: `${paths.courses}/?levels=${level}`,
-      })),
-    },
-    {
-      subheader: t("technologies"),
-      items: technologies.map((technology: string) => ({
-        title: technology,
-        path: `${paths.courses}/?technologies=${technology}`,
-      })),
-    },
-    {
-      subheader: t("categories"),
-      items: categories.map((category: string) => ({
-        title: category,
-        path: `${paths.courses}/?categories=${category}`,
-      })),
-    },
-  ];
+  const levelsSection = courseLevels?.length
+    ? {
+        subheader: t("levels"),
+        items: courseLevels.map(({ slug, name }: ICourseLevelProp) => ({
+          title: name,
+          path: `${paths.courses}/?levels=${slug}`,
+        })),
+      }
+    : null;
+
+  const technologiesSection = {
+    subheader: t("technologies"),
+    items: technologies.map((technology: string) => ({
+      title: technology,
+      path: `${paths.courses}/?technologies=${technology}`,
+    })),
+  };
+
+  const categoriesSection = {
+    subheader: t("categories"),
+    items: categories.map((category: string) => ({
+      title: category,
+      path: `${paths.courses}/?categories=${category}`,
+    })),
+  };
+
+  const links = [];
+
+  if (levelsSection) {
+    links.push(levelsSection);
+  }
+  links.push(technologiesSection);
+  links.push(categoriesSection);
+
+  return links;
 };
 
 const useCourseNav = () => {

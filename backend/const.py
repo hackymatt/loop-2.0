@@ -2,8 +2,10 @@ from django.db.models import TextChoices
 
 
 class Urls:
+    # ROOT
     API = "api"
     ADMIN = "admin"
+    # AUTH
     REGISTER = "auth/register"
     ACTIVATE = "auth/activate"
     RESEND = "auth/resend"
@@ -14,12 +16,8 @@ class Urls:
     LOGOUT = "auth/logout"
     PASSWORD_RESET = "auth/reset-password"
     PASSWORD_RESET_CONFIRM = "auth/reset-password-confirm"
-
-
-class CourseLevel(TextChoices):
-    BASIC = "basic"
-    INTERMEDIATE = "intermediate"
-    ADVANCED = "advanced"
+    # COURSE
+    COURSE_LEVELS = "course-levels"
 
 
 class UserType(TextChoices):
@@ -33,3 +31,8 @@ class JoinType(TextChoices):
     GOOGLE = "google"
     FACEBOOK = "facebook"
     GITHUB = "github"
+
+
+class Language(TextChoices):
+    EN = "en"
+    PL = "pl"
