@@ -1,13 +1,15 @@
 import type { Language } from "src/locales/types";
 import type { IconButtonProps } from "@mui/material/IconButton";
 
-import { useCallback } from "react";
+import { useEffect, useCallback } from "react";
 import { usePopover } from "minimal-shared/hooks";
 
 import Popover from "@mui/material/Popover";
 import MenuList from "@mui/material/MenuList";
 import MenuItem from "@mui/material/MenuItem";
 import IconButton from "@mui/material/IconButton";
+
+import i18n from "src/locales/i18n";
 
 import { FlagIcon } from "src/components/flag-icon";
 import { useSettingsContext } from "src/components/settings";
@@ -29,6 +31,10 @@ export function LanguagePopover({ data = [], sx, ...other }: LanguagePopoverProp
   const locale = settings.state.language ?? "pl";
 
   const currentLang = data.find((lang) => lang.value === locale);
+
+  useEffect(() => {
+    i18n.changeLanguage(locale);
+  }, [locale]);
 
   const handleChangeLang = useCallback(
     (newLang: Language) => {
