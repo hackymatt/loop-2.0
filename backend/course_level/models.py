@@ -4,6 +4,10 @@ from const import Language
 
 class CourseLevel(models.Model):
     slug = models.CharField(unique=True)
+    order = models.PositiveIntegerField(default=0)
+    
+    class Meta:
+        db_table = "course_level"
 
     def __str__(self):
         return self.slug
@@ -20,6 +24,7 @@ class CourseLevelTranslation(models.Model):
     name = models.CharField()
 
     class Meta:
+        db_table = "course_level_translation"
         unique_together = ("course_level", "language")
 
     def __str__(self):

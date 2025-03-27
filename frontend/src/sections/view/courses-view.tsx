@@ -23,7 +23,7 @@ const RATING_OPTIONS = ["4", "3", "2"];
 
 export function CoursesView() {
   const { t } = useTranslation("course");
-  const { data: courseLevels } = useCourseLevels();
+  const { data: courseLevels } = useCourseLevels({ sort_by: "order" });
 
   const courses = _courses.slice(0, 10);
   const technologies = [

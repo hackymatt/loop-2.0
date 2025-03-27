@@ -11,7 +11,7 @@ import { useCourseLevels } from "src/api/course/level/levels";
 
 export const usePageLinks = () => {
   const { t } = useTranslation("navigation");
-  const { data: courseLevels } = useCourseLevels();
+  const { data: courseLevels } = useCourseLevels({ sort_by: "order" });
 
   const technologies = [
     "React",
