@@ -42,7 +42,7 @@ export type ICourseProps = {
   id: string;
   slug: string;
   title: string;
-  level: string;
+  level: ICourseLevelProp;
   chatUrl: string;
   category: string;
   technology: string;

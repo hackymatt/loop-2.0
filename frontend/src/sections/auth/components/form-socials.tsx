@@ -162,7 +162,7 @@ function FacebookSignIn({ methods }: { methods: UseFormReturn<any> }) {
   return (
     <FacebookLogin
       appId={CONFIG.facebookClientId}
-      autoLoad
+      autoLoad={false}
       callback={handleLogin}
       render={(renderProps) => (
         <IconButton color="inherit" onClick={renderProps.onClick}>

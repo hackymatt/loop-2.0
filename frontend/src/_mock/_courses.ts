@@ -59,10 +59,9 @@ const getTeachers = (index: number) => {
 };
 
 const getLevel = (index: number) => {
-  if (index % 2) return "Intermediate";
-  if (index % 4) return "Advanced";
-  if (index % 5) return "All levels";
-  return "Beginner";
+  if (index % 2) return { slug: "intermediate", name: "Intermediate" };
+  if (index % 4) return { slug: "advanced", name: "Advanced" };
+  return { slug: "beginner", name: "Beginner" };
 };
 
 // ----------------------------------------------------------------------

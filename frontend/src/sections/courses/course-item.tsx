@@ -124,8 +124,8 @@ export function CourseItem({ course, isVertical }: Props) {
       }}
     >
       <Box sx={{ gap: 0.5, display: "flex", alignItems: "center" }}>
-        <Iconify icon={getLevelIcon(course.level)} />
-        {course.level}
+        <Iconify icon={getLevelIcon(course.level.slug)} />
+        {course.level.name}
       </Box>
 
       <Divider orientation="vertical" sx={{ height: 20, my: "auto" }} />

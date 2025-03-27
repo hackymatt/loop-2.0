@@ -75,8 +75,8 @@ export function CourseDetailsHero({
       }}
     >
       <Box sx={{ gap: 0.5, display: "flex", alignItems: "center" }}>
-        <Iconify icon={getLevelIcon(level ?? "")} />
-        {level}
+        <Iconify icon={getLevelIcon(level?.slug ?? "")} />
+        {level?.name}
       </Box>
 
       <Divider orientation="vertical" sx={{ height: 20, my: "auto" }} />
