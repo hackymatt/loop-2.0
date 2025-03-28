@@ -3,6 +3,7 @@ from django.contrib.auth import get_user_model
 from global_config import CONFIG
 from const import UserType
 
+
 def generate_superuser(apps, schema_editor):
     user = get_user_model()
     email = CONFIG["admin_email"]
@@ -10,9 +11,10 @@ def generate_superuser(apps, schema_editor):
     password = CONFIG["admin_password"]
 
     if not user.objects.filter(email=email).exists():
-        admin = user.objects.create(username=username, email=email, user_type=UserType.ADMIN)
+        admin = user.objects.create(
+            username=username, email=email, user_type=UserType.ADMIN, is_active=True
+        )
         admin.set_password(password)
-        admin.is_active = True
         admin.save()
 
 

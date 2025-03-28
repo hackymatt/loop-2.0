@@ -19,6 +19,7 @@ class CourseLevelViewTest(APITestCase):
             email=self.admin_data["email"],
             password=self.admin_data["password"],
             user_type=UserType.ADMIN,
+            is_active=True,
         )
 
         self.regular_user_data = {"email": "user@example.com", "password": "user123"}
@@ -26,6 +27,7 @@ class CourseLevelViewTest(APITestCase):
             username=get_unique_username(self.regular_user_data["email"]),
             email=self.regular_user_data["email"],
             password=self.regular_user_data["password"],
+            is_active=True,
         )
 
         # Create a course level and translations
@@ -37,92 +39,109 @@ class CourseLevelViewTest(APITestCase):
             course_level=self.course_level, language="pl", name="Początkujący"
         )
 
+    def get_jwt_token_from_login(self, email, password):
+        """Helper method to get JWT token from custom login API."""
+        # Assuming you have a login endpoint like /api/login/
+        response = self.client.post(
+            f"/{Urls.API}/{Urls.LOGIN}",
+            {"email": email, "password": password},
+            format="json",
+        )
+        return response.data["access_token"]
+
     # CREATE (Only Admin)
     def test_create_course_level_admin(self):
-        self.client.login(
-            email=self.admin_data["email"], password=self.admin_data["password"]
-        )  # Log in as admin
-        data = {"slug": "intermediate"}
+        token = self.get_jwt_token_from_login(
+            self.admin_data["email"], self.admin_data["password"]
+        )
+        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {token}")
+        data = {"slug": "intermediate", "language": "en", "name": "Intermediate"}
         response = self.client.post(self.url, data, format="json")
+
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(CourseLevel.objects.count(), 2)
         self.assertEqual(
-            CourseLevel.objects.count(), 2
-        )  # Ensure new object was created
-        self.assertEqual(
-            CourseLevel.objects.get(slug="intermediate").slug, "intermediate"
+            CourseLevelTranslation.objects.get(course_level__slug="intermediate").name,
+            "Intermediate",
         )
 
     def test_create_course_level_regular_user(self):
-        self.client.login(
-            email=self.regular_user_data["email"],
-            password=self.regular_user_data["password"],
-        )  # Log in as regular user
-        data = {"slug": "intermediate"}
+        token = self.get_jwt_token_from_login(
+            self.regular_user_data["email"], self.regular_user_data["password"]
+        )
+        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {token}")
+        data = {"slug": "intermediate", "language": "en", "name": "Intermediate"}
         response = self.client.post(self.url, data, format="json")
-        self.assertEqual(
-            response.status_code, status.HTTP_403_FORBIDDEN
-        )  # Forbidden for regular user
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     # READ (Allowed for Everyone)
     def test_get_course_levels_regular_user(self):
-        self.client.login(
-            email=self.regular_user_data["email"],
-            password=self.regular_user_data["password"],
-        )  # Log in as regular user
+        """Ensure users can fetch course levels in their preferred language."""
+        token = self.get_jwt_token_from_login(
+            self.regular_user_data["email"], self.regular_user_data["password"]
+        )
+        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {token}")
+        self.client.credentials(HTTP_ACCEPT_LANGUAGE="pl")
         response = self.client.get(self.url, format="json")
+
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(
-            len(response.data["results"]), 1
-        )  # Ensure we get the data of the course level
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(response.data["results"][0]["translated_name"], "Początkujący")
 
     def test_get_course_levels_anonymous(self):
-        response = self.client.get(self.url, format="json")  # Test as anonymous user
+        response = self.client.get(self.url, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(
-            len(response.data["results"]), 1
-        )  # Ensure we get the data of the course level
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(response.data["results"][0]["translated_name"], "Beginner")
 
-    # UPDATE (Only Admin)
-    def test_update_course_level_admin(self):
-        self.client.login(
-            email=self.admin_data["email"], password=self.admin_data["password"]
-        )  # Log in as admin
-        data = {"slug": "advanced"}
+    # UPDATE TRANSLATION (Only Admin)
+    def test_update_course_level_translation_admin(self):
+        """Ensure admins can update translations for existing course levels."""
+        token = self.get_jwt_token_from_login(
+            self.admin_data["email"], self.admin_data["password"]
+        )
+        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {token}")
+        data = {"slug": "beginner", "language": "pl", "name": "Nowa Nazwa"}
         url = f"{self.url}/{self.course_level.id}"
+
         response = self.client.put(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(CourseLevel.objects.get(slug="advanced").slug, "advanced")
-
-    def test_update_course_level_regular_user(self):
-        self.client.login(
-            email=self.regular_user_data["email"],
-            password=self.regular_user_data["password"],
-        )  # Log in as regular user
-        data = {"slug": "advanced"}
-        url = f"{self.url}/{self.course_level.id}"
-        response = self.client.put(url, data, format="json")
         self.assertEqual(
-            response.status_code, status.HTTP_403_FORBIDDEN
-        )  # Forbidden for regular user
+            CourseLevelTranslation.objects.get(
+                course_level=self.course_level, language="pl"
+            ).name,
+            "Nowa Nazwa",
+        )
+
+    def test_update_course_level_translation_regular_user(self):
+        token = self.get_jwt_token_from_login(
+            self.regular_user_data["email"], self.regular_user_data["password"]
+        )
+        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {token}")
+        data = {"language": "pl", "name": "Nowa Nazwa"}
+        url = f"{self.url}/{self.course_level.id}"
+
+        response = self.client.put(url, data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     # DELETE (Only Admin)
     def test_delete_course_level_admin(self):
-        self.client.login(
-            email=self.admin_data["email"], password=self.admin_data["password"]
-        )  # Log in as admin
+        token = self.get_jwt_token_from_login(
+            self.admin_data["email"], self.admin_data["password"]
+        )
+        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {token}")
         url = f"{self.url}/{self.course_level.id}"
+
         response = self.client.delete(url, format="json")
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-        with self.assertRaises(CourseLevel.DoesNotExist):
-            CourseLevel.objects.get(slug="beginner")
+        self.assertFalse(CourseLevel.objects.filter(slug="beginner").exists())
 
     def test_delete_course_level_regular_user(self):
-        self.client.login(
-            email=self.regular_user_data["email"],
-            password=self.regular_user_data["password"],
-        )  # Log in as regular user
+        token = self.get_jwt_token_from_login(
+            self.regular_user_data["email"], self.regular_user_data["password"]
+        )
+        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {token}")
         url = f"{self.url}/{self.course_level.id}"
+
         response = self.client.delete(url, format="json")
-        self.assertEqual(
-            response.status_code, status.HTTP_403_FORBIDDEN
-        )  # Forbidden for regular user
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)

@@ -1,11 +1,11 @@
-from rest_framework import permissions, viewsets
-from .models import CourseLevel
-from .serializers import CourseLevelSerializer
-from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from rest_framework import viewsets
+from course_level.models import CourseLevel
+from course_level.serializers import CourseLevelSerializer
+from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny
 
 
 class CourseLevelViewSet(viewsets.ModelViewSet):
-    queryset = CourseLevel.objects.all().order_by("slug")
+    queryset = CourseLevel.objects.prefetch_related("translations").order_by("order")
     serializer_class = CourseLevelSerializer
 
     def get_permissions(self):
@@ -15,5 +15,5 @@ class CourseLevelViewSet(viewsets.ModelViewSet):
                 IsAdminUser,
             ]  # Admin only for Create, Update, Delete
         else:
-            permission_classes = [permissions.AllowAny]  # Allow read (GET) for anyone
-        return [permission() for permission in permission_classes]
+            permission_classes = [AllowAny]  # Allow read (GET) for anyone
+        return [permission() for permission in permission_classes]  # Everyone can read

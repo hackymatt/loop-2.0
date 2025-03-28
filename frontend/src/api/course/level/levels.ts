@@ -11,9 +11,9 @@ import { useSettingsContext } from "src/components/settings";
 
 const endpoint = "/course-levels" as const;
 
-type ICourseLevels = {
+type ICourseLevel = {
   slug: string;
-  name: string;
+  translated_name: string;
 };
 
 export const courseLevelsQuery = (query?: QueryType, language?: Language) => {
@@ -22,12 +22,18 @@ export const courseLevelsQuery = (query?: QueryType, language?: Language) => {
   const queryUrl = urlParams ? `${url}?${urlParams}` : url;
 
   const queryFn = async (): Promise<ListQueryResponse<ICourseLevelProp[]>> => {
-    const { results, records_count, pages_count } = await getListData<ICourseLevels>(queryUrl, {
+    const { results, records_count, pages_count } = await getListData<ICourseLevel>(queryUrl, {
       headers: {
         "Accept-Language": language,
       },
     });
-    return { results, count: records_count, pagesCount: pages_count };
+    const modifiedResults: ICourseLevelProp[] = results.map(
+      ({ translated_name, ...rest }: ICourseLevel) => ({
+        ...rest,
+        name: translated_name,
+      })
+    );
+    return { results: modifiedResults, count: records_count, pagesCount: pages_count };
   };
 
   return { url, queryFn, queryKey: compact([url, urlParams, language]) };
