@@ -5,83 +5,68 @@ on:
     branches: [develop]
 
 jobs:
-  lint_backend:
-    name: Lint backend
-
+  lint:
+    name: Lint Codebase
     runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        project: [backend, frontend]
 
     defaults:
       run:
         shell: bash
-        working-directory: ${{ github.workspace }}/backend
+        working-directory: ${{ github.workspace }}/${{ matrix.project }}
 
     steps:
       - name: Checkout repository code
         uses: actions/checkout@v4
-      - name: Install system dependencies
-        run: sudo apt-get install -y libjpeg-dev
-      - name: Pull python
-        uses: actions/setup-python@v4
-      - name: Upgrade pip
-        run: pip install --upgrade pip
-      - name: Install lint requirements
-        run: pip install -r requirements-lint.txt
-      - name: Install requirements
-        run: pip install -r requirements.txt
-      - name: Test code quality
-        run: pylint core --recursive=true --fail-under=10
-      - name: Test code formatting
-        run: black . --check
 
-  lint_frontend:
-    name: Lint frontend
+      - name: Set up environment
+        run: |
+          if [ "${{ matrix.project }}" == "backend" ]; then
+            sudo apt-get install -y libjpeg-dev
+            python -m pip install --upgrade pip
+            pip install -r requirements-lint.txt
+            pip install -r requirements.txt
+          else
+            npm install --legacy-peer-deps
+          fi
 
+      - name: Run linters
+        run: |
+          if [ "${{ matrix.project }}" == "backend" ]; then
+            pylint core --recursive=true --fail-under=10
+            black . --check
+          else
+            npm run fm:check
+          fi
+
+  test:
+    name: Run Tests
     runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        project: [backend, frontend]
 
     defaults:
       run:
         shell: bash
-        working-directory: ${{ github.workspace }}/frontend
-
-    steps:
-      - name: Checkout repository code
-        uses: actions/checkout@v4
-      - name: Pull nodejs
-        uses: actions/setup-node@v4
-      - name: Install dependencies
-        run: npm install --legacy-peer-deps
-      - name: Test code quality
-        run: npm run fm:check
-      - name: Test code formatting
-        run: npm run fm:check
-
-  test_backend:
-    name: Test backend
-
-    runs-on: ubuntu-latest
-
-    defaults:
-      run:
-        shell: bash
-        working-directory: ${{ github.workspace }}/backend
+        working-directory: ${{ github.workspace }}/${{ matrix.project }}
 
     env:
       LOCAL: ${{ secrets.LOCAL }}
-
       DB_NAME: ${{ secrets.DB_NAME }}
       DB_HOST: ${{ secrets.DB_HOST }}
       DB_USER: postgres
       DB_PASSWORD: postgres
-
       REDIS_URL: ${{ secrets.REDIS_URL }}
-
       CONTACT_EMAIL: ${{ secrets.CONTACT_EMAIL }}
       NOREPLY_EMAIL: ${{ secrets.NOREPLY_EMAIL }}
       GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
-
       ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
       ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
-
       DUMMY_STUDENT_EMAIL: ${{ secrets.DUMMY_STUDENT_EMAIL }}
       DUMMY_STUDENT_PASSWORD: ${{ secrets.DUMMY_STUDENT_PASSWORD }}
 
@@ -105,37 +90,23 @@ jobs:
     steps:
       - name: Checkout repository code
         uses: actions/checkout@v4
-      - name: Install system dependencies
-        run: sudo apt-get install -y libjpeg-dev
-      - name: Pull python
-        uses: actions/setup-python@v4
-      - name: Upgrade pip
-        run: pip install --upgrade pip
-      - name: Install test requirements
-        run: pip install -r requirements-test.txt
-      - name: Install requirements
-        run: pip install -r requirements.txt
+
+      - name: Set up environment
+        run: |
+          if [ "${{ matrix.project }}" == "backend" ]; then
+            sudo apt-get install -y libjpeg-dev
+            python -m pip install --upgrade pip
+            pip install -r requirements-test.txt
+            pip install -r requirements.txt
+          else
+            npm install --legacy-peer-deps
+          fi
+
       - name: Run tests
-        run: coverage run manage.py test
-      - name: Print report
-        run: coverage report
-
-  test_frontend:
-    name: Test frontend
-
-    runs-on: ubuntu-latest
-
-    defaults:
-      run:
-        shell: bash
-        working-directory: ${{ github.workspace }}/frontend
-
-    steps:
-      - name: Checkout repository code
-        uses: actions/checkout@v4
-      - name: Pull nodejs
-        uses: actions/setup-node@v4
-      - name: Install dependencies
-        run: npm install --legacy-peer-deps
-      - name: Run tests
-        run: npm run test:coverage
+        run: |
+          if [ "${{ matrix.project }}" == "backend" ]; then
+            coverage run manage.py test
+            coverage report
+          else
+            npm run test:coverage
+          fi
