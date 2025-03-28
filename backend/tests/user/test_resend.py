@@ -8,7 +8,7 @@ import datetime
 from const import Urls
 from global_config import CONFIG
 from utils.google.gmail import GmailApi
-from .helpers import mock_send_message
+from ..helpers import mock_send_message
 
 
 class ResendActivationLinkViewTest(APITestCase):

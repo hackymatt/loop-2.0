@@ -2,7 +2,7 @@ from unittest.mock import patch
 from rest_framework.test import APITestCase
 from rest_framework import status
 from django.contrib.auth import get_user_model
-from .helpers import mock_auth_return_value
+from ..helpers import mock_auth_return_value
 from const import Urls
 
 

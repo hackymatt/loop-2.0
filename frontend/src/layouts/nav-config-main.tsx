@@ -1,4 +1,4 @@
-import type { ICourseLevelProp } from "src/types/course";
+import type { ICourseLevelProp, ICourseTechnologyProp } from "src/types/course";
 
 import { useTranslation } from "react-i18next";
 
@@ -6,22 +6,15 @@ import { paths } from "src/routes/paths";
 
 import { _courses } from "src/_mock";
 import { useCourseLevels } from "src/api/course/level/levels";
+import { useCourseTechnologies } from "src/api/course/technology/technologies";
 
 // ----------------------------------------------------------------------
 
 export const usePageLinks = () => {
   const { t } = useTranslation("navigation");
-  const { data: courseLevels } = useCourseLevels({ sort_by: "order" });
+  const { data: courseLevels } = useCourseLevels({ sort_by: "order", page_size: "-1" });
+  const { data: courseTechnologies } = useCourseTechnologies({ page_size: "-1" });
 
-  const technologies = [
-    "React",
-    "Angular",
-    "Vue",
-    "Bootstrap",
-    "Node.js",
-    "Laravel",
-    "Ruby on Rails",
-  ];
   const categories = ["Frontend", "Backend", "Full Stack", "DevOps", "Mobile App", "Desktop App"];
 
   const levelsSection = courseLevels?.length
@@ -34,13 +27,15 @@ export const usePageLinks = () => {
       }
     : null;
 
-  const technologiesSection = {
-    subheader: t("technologies"),
-    items: technologies.map((technology: string) => ({
-      title: technology,
-      path: `${paths.courses}/?technologies=${technology}`,
-    })),
-  };
+  const technologiesSection = courseTechnologies?.length
+    ? {
+        subheader: t("technologies"),
+        items: courseTechnologies.map(({ slug, name }: ICourseTechnologyProp) => ({
+          title: name,
+          path: `${paths.courses}/?technologies=${slug}`,
+        })),
+      }
+    : null;
 
   const categoriesSection = {
     subheader: t("categories"),
@@ -55,7 +50,9 @@ export const usePageLinks = () => {
   if (levelsSection) {
     links.push(levelsSection);
   }
-  links.push(technologiesSection);
+  if (technologiesSection) {
+    links.push(technologiesSection);
+  }
   links.push(categoriesSection);
 
   return links;

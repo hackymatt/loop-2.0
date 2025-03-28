@@ -1,6 +1,6 @@
 from rest_framework.test import APITestCase
 from rest_framework import status
-from course_level.models import CourseLevel, CourseLevelTranslation
+from course.level.models import CourseLevel, CourseLevelTranslation
 from rest_framework.test import APIClient
 from django.contrib.auth import get_user_model
 from const import Urls, UserType
@@ -10,7 +10,7 @@ from user.utils import get_unique_username
 class CourseLevelViewTest(APITestCase):
     def setUp(self):
         self.client = APIClient()
-        self.url = f"/{Urls.API}/{Urls.COURSE_LEVELS}"
+        self.url = f"/{Urls.API}/{Urls.COURSE_LEVEL}"
 
         # Create admin and regular user
         self.admin_data = {"email": "admin@example.com", "password": "admin123"}

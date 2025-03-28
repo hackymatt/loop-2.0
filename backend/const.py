@@ -17,7 +17,8 @@ class Urls:
     PASSWORD_RESET = "auth/reset-password"
     PASSWORD_RESET_CONFIRM = "auth/reset-password-confirm"
     # COURSE
-    COURSE_LEVELS = "course-levels"
+    COURSE_LEVEL = "course-levels"
+    COURSE_TECHNOLOGY = "course-technologies"
 
 
 class UserType(TextChoices):

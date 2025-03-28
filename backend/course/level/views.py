@@ -1,6 +1,6 @@
 from rest_framework import viewsets
-from course_level.models import CourseLevel
-from course_level.serializers import CourseLevelSerializer
+from .models import CourseLevel
+from .serializers import CourseLevelSerializer
 from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny
 
 

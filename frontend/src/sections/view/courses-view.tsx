@@ -9,6 +9,7 @@ import Typography from "@mui/material/Typography";
 
 import { _courses } from "src/_mock";
 import { useCourseLevels } from "src/api/course/level/levels";
+import { useCourseTechnologies } from "src/api/course/technology/technologies";
 
 import { Iconify } from "src/components/iconify";
 
@@ -23,18 +24,10 @@ const RATING_OPTIONS = ["4", "3", "2"];
 
 export function CoursesView() {
   const { t } = useTranslation("course");
-  const { data: courseLevels } = useCourseLevels({ sort_by: "order" });
+  const { data: courseLevels } = useCourseLevels({ sort_by: "order", page_size: "-1" });
+  const { data: courseTechnologies } = useCourseTechnologies({ page_size: "-1" });
 
   const courses = _courses.slice(0, 10);
-  const technologies = [
-    "React",
-    "Angular",
-    "Vue",
-    "Bootstrap",
-    "Node.js",
-    "Laravel",
-    "Ruby on Rails",
-  ];
   const categories = ["Frontend", "Backend", "Full Stack", "DevOps", "Mobile App", "Desktop App"];
 
   const openMobile = useBoolean();
@@ -67,7 +60,7 @@ export function CoursesView() {
         onClose={openMobile.onFalse}
         options={{
           levels: courseLevels ?? [],
-          technologies,
+          technologies: courseTechnologies ?? [],
           categories,
           ratings: RATING_OPTIONS,
         }}

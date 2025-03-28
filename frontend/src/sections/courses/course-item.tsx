@@ -131,8 +131,8 @@ export function CourseItem({ course, isVertical }: Props) {
       <Divider orientation="vertical" sx={{ height: 20, my: "auto" }} />
 
       <Box sx={{ gap: 0.5, display: "flex", alignItems: "center" }}>
-        <Iconify icon={getTechnologyIcon(course.technology)} />
-        {course.technology}
+        <Iconify icon={getTechnologyIcon(course.technology.slug)} />
+        {course.technology.name}
       </Box>
 
       <Divider orientation="vertical" sx={{ height: 20, my: "auto" }} />

@@ -1,6 +1,5 @@
 from rest_framework import serializers
-from course_level.models import CourseLevel, CourseLevelTranslation
-from django.utils.translation import get_language
+from .models import CourseLevel, CourseLevelTranslation
 
 
 class CourseLevelSerializer(serializers.ModelSerializer):

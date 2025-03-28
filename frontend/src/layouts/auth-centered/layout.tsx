@@ -7,7 +7,6 @@ import { useTranslation } from "react-i18next";
 
 import Box from "@mui/material/Box";
 import Link from "@mui/material/Link";
-import Alert from "@mui/material/Alert";
 
 import { paths } from "src/routes/paths";
 import { RouterLink } from "src/routes/components";
@@ -54,11 +53,6 @@ export function AuthCenteredLayout({
     const headerSlotProps: HeaderSectionProps["slotProps"] = { container: { maxWidth: false } };
 
     const headerSlots: HeaderSectionProps["slots"] = {
-      topArea: (
-        <Alert severity="info" sx={{ display: "none", borderRadius: 0 }}>
-          This is an info Alert.
-        </Alert>
-      ),
       leftArea: (
         <>
           {/** @slot Logo */}
