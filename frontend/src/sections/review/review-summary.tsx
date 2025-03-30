@@ -60,11 +60,10 @@ export function ReviewSummary({ sx, reviewNumber, ratingNumber, ...other }: Prop
                     sx={{ mb: 0.5, [`& .${svgIconClasses.root}`]: { color: "warning.main" } }}
                   />
                   <Typography variant="body2">
-                    {fShortenNumber(
-                      reviewNumber,
-                      {},
-                      { code: locale("code"), currency: locale("currency") }
-                    )}{" "}
+                    {fShortenNumber(reviewNumber, {
+                      code: locale("code"),
+                      currency: locale("currency"),
+                    })}{" "}
                     {languagePluralize(review, reviewNumber)}
                   </Typography>
                 </div>

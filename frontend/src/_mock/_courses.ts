@@ -70,6 +70,12 @@ const getTechnology = (index: number) => {
   return { slug: "vba", name: "Visual Basic for Application" };
 };
 
+const getCategory = (index: number) => {
+  if (index % 2) return { slug: "frontend", name: "Frontend" };
+  if (index % 4) return { slug: "backend", name: "Backend" };
+  return { slug: "fullstack", name: "Full Stack" };
+};
+
 // ----------------------------------------------------------------------
 
 export const _courses = Array.from({ length: 12 }, (_, index) => ({
@@ -85,7 +91,7 @@ export const _courses = Array.from({ length: 12 }, (_, index) => ({
   totalStudents: 180000,
   level: getLevel(index),
   technology: getTechnology(index),
-  category: _tags[index],
+  category: getCategory(index),
   teachers: getTeachers(index),
   title: _mock.courseNames(index),
   slug: slugify(_mock.courseNames(index)),

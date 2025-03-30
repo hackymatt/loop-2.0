@@ -5,6 +5,7 @@ services:
     hostname: backend
     build:
       context: ./backend
+      dockerfile: ./Dockerfile.local
     restart: always
     ports:
       - 8000:8000

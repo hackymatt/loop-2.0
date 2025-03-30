@@ -53,11 +53,7 @@ export function ReviewProgress({ sx, ...other }: BoxProps) {
           />
 
           <Typography variant="body2" sx={{ minWidth: 40, color: "text.disabled" }}>
-            {fShortenNumber(
-              rating.number,
-              {},
-              { code: locale("code"), currency: locale("currency") }
-            )}
+            {fShortenNumber(rating.number, { code: locale("code"), currency: locale("currency") })}
           </Typography>
         </Box>
       ))}

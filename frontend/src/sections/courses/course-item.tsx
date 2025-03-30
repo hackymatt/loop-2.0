@@ -48,7 +48,7 @@ export function CourseItem({ course, isVertical }: Props) {
   const renderTop = () => (
     <Box sx={{ gap: 1, display: "flex", alignItems: "center", flexWrap: "wrap" }}>
       <Typography variant="overline" sx={{ color: "primary.main", flexGrow: 1 }}>
-        {course.category}
+        {course.category.name}
       </Typography>
     </Box>
   );
@@ -146,11 +146,10 @@ export function CourseItem({ course, isVertical }: Props) {
 
       {course.totalReviews && (
         <Box>
-          {fShortenNumber(
-            course.totalReviews,
-            {},
-            { code: locale("code"), currency: locale("currency") }
-          )}{" "}
+          {fShortenNumber(course.totalReviews, {
+            code: locale("code"),
+            currency: locale("currency"),
+          })}{" "}
           {languagePluralize(review, course.totalReviews)}
         </Box>
       )}
@@ -159,11 +158,10 @@ export function CourseItem({ course, isVertical }: Props) {
 
       {course.totalStudents ? (
         <Box sx={{ display: "flex", alignItems: "center" }}>
-          {fShortenNumber(
-            course.totalStudents,
-            {},
-            { code: locale("code"), currency: locale("currency") }
-          )}
+          {fShortenNumber(course.totalStudents, {
+            code: locale("code"),
+            currency: locale("currency"),
+          })}
           <Box component="span" sx={{ ml: 0.5 }}>
             {languagePluralize(student, course.totalStudents)}
           </Box>

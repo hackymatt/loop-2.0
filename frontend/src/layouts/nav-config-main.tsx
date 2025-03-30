@@ -6,6 +6,7 @@ import { paths } from "src/routes/paths";
 
 import { _courses } from "src/_mock";
 import { useCourseLevels } from "src/api/course/level/levels";
+import { useCourseCategories } from "src/api/course/category/categories";
 import { useCourseTechnologies } from "src/api/course/technology/technologies";
 
 // ----------------------------------------------------------------------
@@ -14,8 +15,7 @@ export const usePageLinks = () => {
   const { t } = useTranslation("navigation");
   const { data: courseLevels } = useCourseLevels({ sort_by: "order", page_size: "-1" });
   const { data: courseTechnologies } = useCourseTechnologies({ page_size: "-1" });
-
-  const categories = ["Frontend", "Backend", "Full Stack", "DevOps", "Mobile App", "Desktop App"];
+  const { data: courseCategories } = useCourseCategories({ page_size: "-1" });
 
   const levelsSection = courseLevels?.length
     ? {
@@ -37,13 +37,15 @@ export const usePageLinks = () => {
       }
     : null;
 
-  const categoriesSection = {
-    subheader: t("categories"),
-    items: categories.map((category: string) => ({
-      title: category,
-      path: `${paths.courses}/?categories=${category}`,
-    })),
-  };
+  const categoriesSection = courseCategories?.length
+    ? {
+        subheader: t("categories"),
+        items: courseCategories.map(({ slug, name }: ICourseTechnologyProp) => ({
+          title: name,
+          path: `${paths.courses}/?categories=${slug}`,
+        })),
+      }
+    : null;
 
   const links = [];
 
@@ -53,7 +55,9 @@ export const usePageLinks = () => {
   if (technologiesSection) {
     links.push(technologiesSection);
   }
-  links.push(categoriesSection);
+  if (categoriesSection) {
+    links.push(categoriesSection);
+  }
 
   return links;
 };

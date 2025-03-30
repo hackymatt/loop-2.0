@@ -97,7 +97,7 @@ export function CourseDetailsHero({
 
       {totalReviews && (
         <Box>
-          {fShortenNumber(totalReviews, {}, { code: locale("code"), currency: locale("currency") })}{" "}
+          {fShortenNumber(totalReviews, { code: locale("code"), currency: locale("currency") })}{" "}
           {languagePluralize(review, totalReviews)}
         </Box>
       )}
@@ -106,11 +106,7 @@ export function CourseDetailsHero({
 
       {totalStudents ? (
         <Box sx={{ display: "flex", alignItems: "center" }}>
-          {fShortenNumber(
-            totalStudents,
-            {},
-            { code: locale("code"), currency: locale("currency") }
-          )}
+          {fShortenNumber(totalStudents, { code: locale("code"), currency: locale("currency") })}
           <Box component="span" sx={{ ml: 0.5 }}>
             {languagePluralize(student, totalStudents)}
           </Box>
@@ -122,7 +118,7 @@ export function CourseDetailsHero({
   const renderTexts = () => (
     <Box sx={{ gap: 2, display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
       <Typography variant="overline" sx={{ color: "secondary.main" }}>
-        {category}
+        {category?.name}
       </Typography>
 
       <Typography variant="h3" component="h1">

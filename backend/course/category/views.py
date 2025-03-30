@@ -1,13 +1,18 @@
 from django.db.models import F
 from rest_framework import viewsets
-from .models import CourseTechnology
-from .serializers import CourseTechnologySerializer
+from .models import CourseCategory
+from .serializers import CourseCategorySerializer
 from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny
 
 
-class CourseTechnologyViewSet(viewsets.ModelViewSet):
-    queryset = CourseTechnology.objects.order_by("name").distinct()
-    serializer_class = CourseTechnologySerializer
+class CourseCategoryViewSet(viewsets.ModelViewSet):
+    queryset = (
+        CourseCategory.objects.prefetch_related("translations")
+        .annotate(translation_name=F("translations__name"))
+        .order_by("translation_name")
+        .distinct()
+    )
+    serializer_class = CourseCategorySerializer
 
     def get_permissions(self):
         if self.action in ["create", "update", "destroy"]:

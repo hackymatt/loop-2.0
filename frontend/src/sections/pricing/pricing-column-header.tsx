@@ -45,7 +45,7 @@ export function PricingColumnHeader({ plan, sx, ...other }: PricingColumnHeaderP
       }}
     >
       <Typography component="span" variant="h3">
-        {fCurrency(plan.price, {}, { code: locale("code"), currency: locale("currency") })}
+        {fCurrency(plan.price, { code: locale("code"), currency: locale("currency") })}
       </Typography>
 
       <Typography component="span" variant="subtitle2">
@@ -88,7 +88,7 @@ export function PricingColumnHeader({ plan, sx, ...other }: PricingColumnHeaderP
       {renderIcons()}
 
       <Typography variant="body2" sx={{ color: "text.secondary" }}>
-        {fCurrency(plan.price * 12, {}, { code: locale("code"), currency: locale("currency") })}{" "}
+        {fCurrency(plan.price * 12, { code: locale("code"), currency: locale("currency") })}{" "}
         {t("perYear")}
       </Typography>
     </Box>

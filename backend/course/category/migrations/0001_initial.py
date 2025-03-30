@@ -11,7 +11,7 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name="CourseLevel",
+            name="CourseCategory",
             fields=[
                 (
                     "id",
@@ -25,15 +25,13 @@ class Migration(migrations.Migration):
                 ("modified_at", models.DateTimeField(auto_now=True)),
                 ("created_at", models.DateTimeField(auto_now_add=True)),
                 ("slug", models.CharField(unique=True)),
-                ("order", models.PositiveIntegerField(default=0)),
             ],
             options={
-                "verbose_name_plural": "Course levels",
-                "db_table": "course_level",
+                "db_table": "course_category",
             },
         ),
         migrations.CreateModel(
-            name="CourseLevelTranslation",
+            name="CourseCategoryTranslation",
             fields=[
                 (
                     "id",
@@ -54,17 +52,18 @@ class Migration(migrations.Migration):
                 ),
                 ("name", models.CharField()),
                 (
-                    "course_level",
+                    "course_category",
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
                         related_name="translations",
-                        to="level.courselevel",
+                        to="category.coursecategory",
                     ),
                 ),
             ],
             options={
-                "db_table": "course_level_translation",
-                "unique_together": {("course_level", "language")},
+                "verbose_name_plural": "Course categories",
+                "db_table": "course_category_translation",
+                "unique_together": {("course_category", "language")},
             },
         ),
     ]

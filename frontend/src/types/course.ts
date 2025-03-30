@@ -12,6 +12,11 @@ export type ICourseTechnologyProp = {
   name: string;
 };
 
+export type ICourseCategoryProp = {
+  slug: string;
+  name: string;
+};
+
 export type ICourseTeacherProp = {
   id: string;
   name: string;
@@ -49,7 +54,7 @@ export type ICourseProps = {
   title: string;
   level: ICourseLevelProp;
   chatUrl: string;
-  category: string;
+  category: ICourseCategoryProp;
   technology: ICourseTechnologyProp;
   totalPoints: number;
   totalHours: number;

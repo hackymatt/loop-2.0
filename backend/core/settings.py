@@ -93,6 +93,7 @@ INSTALLED_APPS = [
     "user",
     "course.level",
     "course.technology",
+    "course.category",
 ]
 
 DEBUG_TOOLBAR_PANELS = [
@@ -113,15 +114,14 @@ MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "debug_toolbar.middleware.DebugToolbarMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
-    "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
+    "django.middleware.common.CommonMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "django.middleware.locale.LocaleMiddleware",
     "core.locale.locale.LanguageMiddleware",
     "allauth.account.middleware.AccountMiddleware",
-    "social_django.middleware.SocialAuthExceptionMiddleware",
 ]
 
 REST_FRAMEWORK = {
@@ -150,6 +150,10 @@ if not DEBUG:
         "rest_framework.renderers.JSONRenderer",
     )  # pragma: no cover
 
+if DEBUG:
+    INSTALLED_APPS += ["corsheaders"]  # pragma: no cover
+    MIDDLEWARE.insert(0, "corsheaders.middleware.CorsMiddleware")  # pragma: no cover
+    CORS_ALLOW_ALL_ORIGINS = True  # pragma: no cover
 
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(days=1),

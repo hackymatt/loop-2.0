@@ -9,6 +9,7 @@ class CourseLevel(BaseModel):
 
     class Meta:
         db_table = "course_level"
+        verbose_name_plural = "Course levels"
 
     def __str__(self):
         return self.slug  # pragma: no cover

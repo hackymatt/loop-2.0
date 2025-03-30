@@ -1,5 +1,4 @@
 from django.contrib import admin
-from .models import CourseTechnology, CourseTechnologyTranslation
+from .models import CourseTechnology
 
 admin.site.register(CourseTechnology)
-admin.site.register(CourseTechnologyTranslation)

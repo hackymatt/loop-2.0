@@ -19,6 +19,9 @@ class Urls:
     # COURSE
     COURSE_LEVEL = "course-levels"
     COURSE_TECHNOLOGY = "course-technologies"
+    COURSE_CATEGORY = "course-categories"
+    # CONTACT
+    CONTACT = "contact"
 
 
 class UserType(TextChoices):

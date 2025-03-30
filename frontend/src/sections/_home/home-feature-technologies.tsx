@@ -1,5 +1,6 @@
 import type { Variants } from "framer-motion";
 import type { BoxProps } from "@mui/material/Box";
+import type { ICourseTechnologyProp } from "src/types/course";
 
 import { m } from "framer-motion";
 import { useTranslation } from "react-i18next";
@@ -16,20 +17,10 @@ import { RouterLink } from "src/routes/components";
 
 import { getTechnologyIcon } from "src/utils/technology-icon";
 
+import { useCourseTechnologies } from "src/api/course/technology/technologies";
+
 import { Iconify } from "src/components/iconify";
 import { varFade, MotionViewport } from "src/components/animate";
-
-// ----------------------------------------------------------------------
-
-const TECHNOLOGIES = [
-  "React",
-  "Angular",
-  "Vue",
-  "Bootstrap",
-  "Node.js",
-  "Laravel",
-  "Ruby on Rails",
-];
 
 // ----------------------------------------------------------------------
 
@@ -37,6 +28,7 @@ const variants: Variants = varFade("inUp", { distance: 24 });
 
 export function HomeFeatureTechnologies({ sx, ...other }: BoxProps) {
   const { t } = useTranslation("home");
+  const { data: courseTechnologies } = useCourseTechnologies({ page_size: "9" });
   return (
     <Box
       component="section"
@@ -82,44 +74,16 @@ export function HomeFeatureTechnologies({ sx, ...other }: BoxProps) {
           </Grid>
 
           <m.div variants={variants}>
-            <Grid size={{ xs: 12, md: 7 }}>
+            <Grid size={{ xs: 12, lg: 7 }}>
               <Box
                 sx={{
-                  rowGap: 5,
-                  columnGap: 3,
+                  gap: 3,
                   display: "grid",
-                  gridTemplateColumns: { xs: "repeat(2, 1fr)", sm: "repeat(3, 1fr)" },
+                  gridTemplateColumns: { xs: "repeat(2, 1fr)", md: "repeat(3, 1fr)" },
                 }}
               >
-                {TECHNOLOGIES.map((technology) => (
-                  <m.div key={technology}>
-                    <Link href={`${paths.courses}?technologies=${technology}`}>
-                      <Paper
-                        variant="outlined"
-                        sx={(theme) => ({
-                          p: 3,
-                          minWidth: 0,
-                          display: "flex",
-                          borderRadius: 1.5,
-                          cursor: "pointer",
-                          bgcolor: "transparent",
-                          flexDirection: "column",
-                          alignItems: "center",
-                          transition: theme.transitions.create(["all"], {
-                            duration: theme.transitions.duration.enteringScreen,
-                          }),
-                          "&:hover": {
-                            bgcolor: "background.paper",
-                            boxShadow: theme.vars.customShadows.z24,
-                            [`& .${linkClasses.root}`]: { color: "primary.main" },
-                          },
-                        })}
-                      >
-                        <Iconify icon={getTechnologyIcon(technology)} width={32} />
-                        {technology}
-                      </Paper>
-                    </Link>
-                  </m.div>
+                {(courseTechnologies ?? []).map((technology) => (
+                  <TechnologyItem key={technology.slug} technology={technology} />
                 ))}
               </Box>
             </Grid>
@@ -127,5 +91,45 @@ export function HomeFeatureTechnologies({ sx, ...other }: BoxProps) {
         </Grid>
       </Container>
     </Box>
+  );
+}
+
+// ----------------------------------------------------------------------
+
+type TechnologyItemProps = {
+  technology: ICourseTechnologyProp;
+};
+
+function TechnologyItem({ technology }: TechnologyItemProps) {
+  return (
+    <m.div>
+      <Link href={`${paths.courses}?technologies=${technology.slug}`}>
+        <Paper
+          variant="outlined"
+          sx={(theme) => ({
+            p: 3,
+            minWidth: 120,
+            gap: 1,
+            display: "flex",
+            alignItems: "center",
+            borderRadius: 1.5,
+            cursor: "pointer",
+            bgcolor: "transparent",
+            flexDirection: "column",
+            transition: theme.transitions.create(["all"], {
+              duration: theme.transitions.duration.enteringScreen,
+            }),
+            "&:hover": {
+              bgcolor: "background.paper",
+              boxShadow: theme.vars.customShadows.z24,
+              [`& .${linkClasses.root}`]: { color: "primary.main" },
+            },
+          })}
+        >
+          <Iconify icon={getTechnologyIcon(technology.slug)} width={24} />
+          {technology.name}
+        </Paper>
+      </Link>
+    </m.div>
   );
 }

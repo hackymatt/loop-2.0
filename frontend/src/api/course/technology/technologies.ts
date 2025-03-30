@@ -13,7 +13,7 @@ const endpoint = "/course-technologies" as const;
 
 type ICourseTechnology = {
   slug: string;
-  translated_name: string;
+  name: string;
 };
 
 export const courseTechnologiesQuery = (query?: QueryType, language?: Language) => {
@@ -27,13 +27,7 @@ export const courseTechnologiesQuery = (query?: QueryType, language?: Language) 
         "Accept-Language": language,
       },
     });
-    const modifiedResults: ICourseTechnologyProp[] = results.map(
-      ({ translated_name, ...rest }: ICourseTechnology) => ({
-        ...rest,
-        name: translated_name,
-      })
-    );
-    return { results: modifiedResults, count: records_count, pagesCount: pages_count };
+    return { results, count: records_count, pagesCount: pages_count };
   };
 
   return { url, queryFn, queryKey: compact([url, urlParams, language]) };
