@@ -3,21 +3,21 @@ from core.base_model import BaseModel
 from const import Language
 
 
-class CourseLevel(BaseModel):
-    slug = models.CharField(unique=True)
+class Level(BaseModel):
+    slug = models.SlugField(unique=True)
     order = models.PositiveIntegerField(default=0)
 
     class Meta:
-        db_table = "course_level"
-        verbose_name_plural = "Course levels"
+        db_table = "level"
+        verbose_name_plural = "Levels"
 
     def __str__(self):
         return self.slug  # pragma: no cover
 
 
-class CourseLevelTranslation(BaseModel):
-    course_level = models.ForeignKey(
-        CourseLevel, on_delete=models.CASCADE, related_name="translations"
+class LevelTranslation(BaseModel):
+    level = models.ForeignKey(
+        Level, on_delete=models.CASCADE, related_name="translations"
     )
     language = models.CharField(
         max_length=max(len(choice[0]) for choice in Language.choices),
@@ -26,8 +26,8 @@ class CourseLevelTranslation(BaseModel):
     name = models.CharField()
 
     class Meta:
-        db_table = "course_level_translation"
-        unique_together = ("course_level", "language")
+        db_table = "level_translation"
+        unique_together = ("level", "language")
 
     def __str__(self):
-        return f"{self.course_level.slug} ({self.language})"  # pragma: no cover
+        return f"{self.level.slug} ({self.language})"  # pragma: no cover

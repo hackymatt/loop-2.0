@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import CourseLevel, CourseLevelTranslation
+from .models import Level, LevelTranslation
 
-admin.site.register(CourseLevel)
-admin.site.register(CourseLevelTranslation)
+admin.site.register(Level)
+admin.site.register(LevelTranslation)

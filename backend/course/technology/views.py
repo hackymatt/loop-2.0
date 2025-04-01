@@ -1,13 +1,13 @@
 from django.db.models import F
 from rest_framework import viewsets
-from .models import CourseTechnology
-from .serializers import CourseTechnologySerializer
+from .models import Technology
+from .serializers import TechnologySerializer
 from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny
 
 
-class CourseTechnologyViewSet(viewsets.ModelViewSet):
-    queryset = CourseTechnology.objects.order_by("name").distinct()
-    serializer_class = CourseTechnologySerializer
+class TechnologyViewSet(viewsets.ModelViewSet):
+    queryset = Technology.objects.order_by("name")
+    serializer_class = TechnologySerializer
 
     def get_permissions(self):
         if self.action in ["create", "update", "destroy"]:

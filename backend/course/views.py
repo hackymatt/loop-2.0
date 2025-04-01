@@ -1,12 +1,12 @@
 from rest_framework import viewsets
-from .models import Level
-from .serializers import LevelSerializer
+from .models import Course
+from .serializers import CourseSerializer
 from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny
 
 
-class LevelViewSet(viewsets.ModelViewSet):
-    queryset = Level.objects.prefetch_related("translations").order_by("order")
-    serializer_class = LevelSerializer
+class CourseViewSet(viewsets.ModelViewSet):
+    queryset = Course.objects.prefetch_related("teachers", "chapters", "translations").order_by("slug")
+    serializer_class = CourseSerializer
 
     def get_permissions(self):
         if self.action in ["create", "update", "destroy"]:

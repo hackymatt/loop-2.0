@@ -7,11 +7,13 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
     initial = True
 
-    dependencies = []
+    dependencies = [
+        ("lesson", "0001_initial"),
+    ]
 
     operations = [
         migrations.CreateModel(
-            name="Category",
+            name="Chapter",
             fields=[
                 (
                     "id",
@@ -25,14 +27,19 @@ class Migration(migrations.Migration):
                 ("modified_at", models.DateTimeField(auto_now=True)),
                 ("created_at", models.DateTimeField(auto_now_add=True)),
                 ("slug", models.SlugField(unique=True)),
+                (
+                    "lessons",
+                    models.ManyToManyField(
+                        blank=True, related_name="chapters", to="lesson.lesson"
+                    ),
+                ),
             ],
             options={
-                "verbose_name_plural": "Categories",
-                "db_table": "category",
+                "db_table": "chapter",
             },
         ),
         migrations.CreateModel(
-            name="CategoryTranslation",
+            name="ChapterTranslation",
             fields=[
                 (
                     "id",
@@ -51,20 +58,21 @@ class Migration(migrations.Migration):
                         choices=[("en", "En"), ("pl", "Pl")], max_length=2
                     ),
                 ),
-                ("name", models.CharField()),
+                ("name", models.CharField(max_length=255)),
+                ("description", models.TextField()),
                 (
-                    "category",
+                    "chapter",
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
                         related_name="translations",
-                        to="category.category",
+                        to="chapter.chapter",
                     ),
                 ),
             ],
             options={
-                "verbose_name_plural": "Category translations",
-                "db_table": "category_translation",
-                "unique_together": {("category", "language")},
+                "verbose_name_plural": "Chapter translations",
+                "db_table": "chapter_translation",
+                "unique_together": {("chapter", "language")},
             },
         ),
     ]

@@ -1,6 +1,11 @@
 from django.db.models import TextChoices
 
 
+class Language(TextChoices):
+    EN = "en"
+    PL = "pl"
+
+
 class Urls:
     # ROOT
     API = "api"
@@ -20,6 +25,7 @@ class Urls:
     COURSE_LEVEL = "course-levels"
     COURSE_TECHNOLOGY = "course-technologies"
     COURSE_CATEGORY = "course-categories"
+    COURSE = "courses"
     # CONTACT
     CONTACT = "contact"
 
@@ -37,6 +43,13 @@ class JoinType(TextChoices):
     GITHUB = "github"
 
 
-class Language(TextChoices):
-    EN = "en"
-    PL = "pl"
+class LessonType(TextChoices):
+    READING = "reading"
+    VIDEO = "video"
+    QUIZ = "quiz"
+    CODING = "coding"
+
+
+class QuizType(TextChoices):
+    SINGLE = "single"
+    MULTI = "multi"

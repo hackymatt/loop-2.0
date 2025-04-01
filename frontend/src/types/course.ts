@@ -24,56 +24,44 @@ export type ICourseTeacherProp = {
   avatarUrl: string;
 };
 
-export type ICourseLessonType = "video" | "article" | "exercise" | "quiz";
+export type ICourseLessonType = "reading" | "video" | "quiz" | "coding";
 
 export type ICourseLessonProp = {
   id: string;
-  title: string;
   slug: string;
+  name: string;
   type: ICourseLessonType;
   totalPoints: number;
 };
 
 export type ICourseChapterProp = {
   id: string;
-  title: string;
   slug: string;
+  name: string;
   description: string;
   lessons: ICourseLessonProp[];
-};
-
-export type ICourseByCategoryProps = {
-  id: string;
-  name: string;
-  totalStudents: number;
 };
 
 export type ICourseProps = {
   id: string;
   slug: string;
-  title: string;
-  level: ICourseLevelProp;
-  chatUrl: string;
-  category: ICourseCategoryProp;
-  technology: ICourseTechnologyProp;
-  totalPoints: number;
-  totalHours: number;
+  name: string;
   description: string;
   overview: string;
+  level: ICourseLevelProp;
+  category: ICourseCategoryProp;
+  technology: ICourseTechnologyProp;
+  chapters: ICourseChapterProp[];
+  teachers: ICourseTeacherProp[];
+  totalHours: number;
+  chatUrl: string;
+
+  // calculated
+  totalPoints: number;
   ratingNumber: number;
   totalQuizzes: number;
   totalExercises: number;
   totalVideos: number;
   totalReviews: number;
-  createdAt: DatePickerFormat;
   totalStudents: number;
-  chapters: ICourseChapterProp[];
-  teachers: ICourseTeacherProp[];
-};
-
-export type ICourseFiltersProps = {
-  levels: string[];
-  technologies: string[];
-  categories: string[];
-  rating: string | null;
 };

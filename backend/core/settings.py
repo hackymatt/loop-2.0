@@ -94,6 +94,9 @@ INSTALLED_APPS = [
     "course.level",
     "course.technology",
     "course.category",
+    "course.lesson",
+    "course.chapter",
+    "course",
 ]
 
 DEBUG_TOOLBAR_PANELS = [

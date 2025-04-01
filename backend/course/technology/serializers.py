@@ -1,8 +1,8 @@
 from rest_framework import serializers
-from .models import CourseTechnology
+from .models import Technology
 
 
-class CourseTechnologySerializer(serializers.ModelSerializer):
+class TechnologySerializer(serializers.ModelSerializer):
     class Meta:
-        model = CourseTechnology
+        model = Technology
         fields = ["slug", "name"]

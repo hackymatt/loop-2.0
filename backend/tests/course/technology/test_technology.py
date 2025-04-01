@@ -1,13 +1,13 @@
 from rest_framework.test import APITestCase
 from rest_framework import status
-from course.technology.models import CourseTechnology
+from course.technology.models import Technology
 from rest_framework.test import APIClient
 from django.contrib.auth import get_user_model
 from const import Urls, UserType
 from user.utils import get_unique_username
 
 
-class CourseTechnologyViewTest(APITestCase):
+class TechnologyViewTest(APITestCase):
     def setUp(self):
         self.client = APIClient()
         self.url = f"/{Urls.API}/{Urls.COURSE_TECHNOLOGY}"
@@ -31,7 +31,7 @@ class CourseTechnologyViewTest(APITestCase):
         )
 
         # Create a course technology
-        self.course_technology = CourseTechnology.objects.create(
+        self.course_technology = Technology.objects.create(
             slug="typescript", name="TypeScript"
         )
 
@@ -53,7 +53,7 @@ class CourseTechnologyViewTest(APITestCase):
         response = self.client.post(self.url, data, format="json")
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(CourseTechnology.objects.count(), 2)
+        self.assertEqual(Technology.objects.count(), 2)
 
     def test_create_course_technology_regular_user(self):
         token = self.get_jwt_token_from_login(
@@ -103,7 +103,7 @@ class CourseTechnologyViewTest(APITestCase):
         url = f"{self.url}/{self.course_technology.id}"
         response = self.client.delete(url, format="json")
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-        self.assertFalse(CourseTechnology.objects.filter(slug="typescript").exists())
+        self.assertFalse(Technology.objects.filter(slug="typescript").exists())
 
     def test_delete_course_technology_regular_user(self):
         token = self.get_jwt_token_from_login(

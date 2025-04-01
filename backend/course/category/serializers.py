@@ -1,14 +1,14 @@
 from rest_framework import serializers
-from .models import CourseCategory, CourseCategoryTranslation
+from .models import Category, CategoryTranslation
 
 
-class CourseCategorySerializer(serializers.ModelSerializer):
+class CategorySerializer(serializers.ModelSerializer):
     name = serializers.CharField(write_only=True)  # Used for input
     language = serializers.CharField(write_only=True)  # Used for input
     translated_name = serializers.SerializerMethodField()  # Used for output
 
     class Meta:
-        model = CourseCategory
+        model = Category
         fields = ["slug", "name", "language", "translated_name"]
 
     def get_translated_name(self, obj):
@@ -21,25 +21,25 @@ class CourseCategorySerializer(serializers.ModelSerializer):
         language = validated_data["language"]
         name = validated_data["name"]
 
-        # Get or create CourseCategory
-        course_category, _ = CourseCategory.objects.get_or_create(slug=slug)
+        # Get or create Category
+        category, _ = Category.objects.get_or_create(slug=slug)
 
         # Create or update translation
-        translation, created = CourseCategoryTranslation.objects.update_or_create(
-            course_category=course_category,
+        translation, created = CategoryTranslation.objects.update_or_create(
+            category=category,
             language=language,
             defaults={"name": name},
         )
 
-        return course_category
+        return category
 
     def update(self, instance, validated_data):
         language = validated_data["language"]
         name = validated_data["name"]
 
         # Update or create translation
-        translation, created = CourseCategoryTranslation.objects.update_or_create(
-            course_category=instance, language=language, defaults={"name": name}
+        translation, created = CategoryTranslation.objects.update_or_create(
+            category=instance, language=language, defaults={"name": name}
         )
 
         return instance
