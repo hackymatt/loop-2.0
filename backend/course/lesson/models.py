@@ -21,7 +21,9 @@ class Lesson(BaseModel):
 
 
 class ReadingLesson(BaseModel):
-    lesson = models.OneToOneField(Lesson, on_delete=models.CASCADE, related_name="reading")
+    lesson = models.OneToOneField(
+        Lesson, on_delete=models.CASCADE, related_name="reading"
+    )
 
     class Meta:
         db_table = "reading_lesson"
@@ -51,7 +53,9 @@ class ReadingLessonTranslation(BaseModel):
 
 
 class VideoLesson(BaseModel):
-    lesson = models.OneToOneField(Lesson, on_delete=models.CASCADE, related_name="video")
+    lesson = models.OneToOneField(
+        Lesson, on_delete=models.CASCADE, related_name="video"
+    )
     video_url = models.URLField()
 
     class Meta:
@@ -115,7 +119,9 @@ class QuizLessonTranslation(BaseModel):
 
 
 class CodingLesson(BaseModel):
-    lesson = models.OneToOneField(Lesson, on_delete=models.CASCADE, related_name="coding")
+    lesson = models.OneToOneField(
+        Lesson, on_delete=models.CASCADE, related_name="coding"
+    )
     starter_code = models.TextField()
     solution_code = models.TextField()
     penalty_points = models.PositiveIntegerField(default=0)

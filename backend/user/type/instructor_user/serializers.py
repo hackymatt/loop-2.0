@@ -4,9 +4,12 @@ from .models import Instructor
 
 User = get_user_model()
 
+
 class InstructorSerializer(serializers.ModelSerializer):
     full_name = serializers.SerializerMethodField()  # Get full name
-    image = serializers.ImageField(source="user.image", read_only=True)  # Get user image
+    image = serializers.ImageField(
+        source="user.image", read_only=True
+    )  # Get user image
 
     class Meta:
         model = Instructor

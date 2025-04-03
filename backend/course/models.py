@@ -8,6 +8,7 @@ from .category.models import Category
 from .technology.models import Technology
 from user.type.instructor_user.models import Instructor
 
+
 class Course(BaseModel):
     slug = models.SlugField(unique=True)
     level = models.ForeignKey(Level, on_delete=models.PROTECT)

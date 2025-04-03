@@ -12,7 +12,4 @@ course_urlpatterns = level_urls + technology_urls + category_urls
 router = Router(trailing_slash=False)
 router.register(Urls.COURSE, CourseViewSet, basename="courses")
 
-urlpatterns = [
-    path("", include(course_urlpatterns)),
-    path("", include(router.urls))
-]
+urlpatterns = [path("", include(course_urlpatterns)), path("", include(router.urls))]

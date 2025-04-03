@@ -4,6 +4,7 @@ from django.core.exceptions import ValidationError
 from django.contrib.auth import get_user_model
 from const import UserType
 
+
 class Instructor(BaseModel):
     user = models.OneToOneField(
         get_user_model(), on_delete=models.CASCADE, related_name="instructor_profile"
@@ -13,7 +14,9 @@ class Instructor(BaseModel):
     def clean(self):
         """Ensure only users with user_type=INSTRUCTOR can be assigned"""
         if self.user.user_type != UserType.INSTRUCTOR:
-            raise ValidationError(f"Instructor profile can only be created for {UserType.INSTRUCTOR} users.")
+            raise ValidationError(
+                f"Instructor profile can only be created for {UserType.INSTRUCTOR} users."
+            )
 
     def save(self, *args, **kwargs):
         self.clean()

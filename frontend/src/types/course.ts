@@ -58,14 +58,12 @@ export type ICourseProps = {
 
   // calculated
   totalPoints: number;
-
-  ratingNumber: number;
-  totalReviews: number;
-
   totalReading: number;
   totalVideos: number;
   totalQuizzes: number;
   totalExercises: number;
+  ratingNumber: number;
+  totalReviews: number;
 
   totalStudents: number;
 };

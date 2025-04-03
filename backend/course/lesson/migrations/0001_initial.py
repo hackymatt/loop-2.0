@@ -5,153 +5,312 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='CodingLesson',
+            name="CodingLesson",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('modified_at', models.DateTimeField(auto_now=True)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('starter_code', models.TextField()),
-                ('solution_code', models.TextField()),
-                ('penalty_points', models.PositiveIntegerField(default=0)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("modified_at", models.DateTimeField(auto_now=True)),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("starter_code", models.TextField()),
+                ("solution_code", models.TextField()),
+                ("penalty_points", models.PositiveIntegerField(default=0)),
             ],
             options={
-                'verbose_name_plural': 'Coding lessons',
-                'db_table': 'coding_lesson',
+                "verbose_name_plural": "Coding lessons",
+                "db_table": "coding_lesson",
             },
         ),
         migrations.CreateModel(
-            name='Lesson',
+            name="Lesson",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('modified_at', models.DateTimeField(auto_now=True)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('slug', models.SlugField(unique=True)),
-                ('points', models.PositiveIntegerField(default=0)),
-                ('type', models.CharField(choices=[('reading', 'Reading'), ('video', 'Video'), ('quiz', 'Quiz'), ('coding', 'Coding')], max_length=7)),
-                ('active', models.BooleanField(default=False)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("modified_at", models.DateTimeField(auto_now=True)),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("slug", models.SlugField(unique=True)),
+                ("points", models.PositiveIntegerField(default=0)),
+                (
+                    "type",
+                    models.CharField(
+                        choices=[
+                            ("reading", "Reading"),
+                            ("video", "Video"),
+                            ("quiz", "Quiz"),
+                            ("coding", "Coding"),
+                        ],
+                        max_length=7,
+                    ),
+                ),
+                ("active", models.BooleanField(default=False)),
             ],
             options={
-                'verbose_name_plural': 'Lessons',
-                'db_table': 'lesson',
+                "verbose_name_plural": "Lessons",
+                "db_table": "lesson",
             },
         ),
         migrations.CreateModel(
-            name='QuizLesson',
+            name="QuizLesson",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('modified_at', models.DateTimeField(auto_now=True)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('quiz_type', models.CharField(choices=[('single', 'Single'), ('multi', 'Multi')], max_length=6)),
-                ('lesson', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, related_name='quiz', to='lesson.lesson')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("modified_at", models.DateTimeField(auto_now=True)),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                (
+                    "quiz_type",
+                    models.CharField(
+                        choices=[("single", "Single"), ("multi", "Multi")], max_length=6
+                    ),
+                ),
+                (
+                    "lesson",
+                    models.OneToOneField(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="quiz",
+                        to="lesson.lesson",
+                    ),
+                ),
             ],
             options={
-                'verbose_name_plural': 'Quiz lessons',
-                'db_table': 'quiz_lesson',
+                "verbose_name_plural": "Quiz lessons",
+                "db_table": "quiz_lesson",
             },
         ),
         migrations.CreateModel(
-            name='ReadingLesson',
+            name="ReadingLesson",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('modified_at', models.DateTimeField(auto_now=True)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('lesson', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, related_name='reading', to='lesson.lesson')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("modified_at", models.DateTimeField(auto_now=True)),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                (
+                    "lesson",
+                    models.OneToOneField(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="reading",
+                        to="lesson.lesson",
+                    ),
+                ),
             ],
             options={
-                'verbose_name_plural': 'Reading lessons',
-                'db_table': 'reading_lesson',
+                "verbose_name_plural": "Reading lessons",
+                "db_table": "reading_lesson",
             },
         ),
         migrations.CreateModel(
-            name='VideoLesson',
+            name="VideoLesson",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('modified_at', models.DateTimeField(auto_now=True)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('video_url', models.URLField()),
-                ('lesson', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, related_name='video', to='lesson.lesson')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("modified_at", models.DateTimeField(auto_now=True)),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("video_url", models.URLField()),
+                (
+                    "lesson",
+                    models.OneToOneField(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="video",
+                        to="lesson.lesson",
+                    ),
+                ),
             ],
             options={
-                'verbose_name_plural': 'Video lessons',
-                'db_table': 'video_lesson',
+                "verbose_name_plural": "Video lessons",
+                "db_table": "video_lesson",
             },
         ),
         migrations.CreateModel(
-            name='VideoLessonTranslation',
+            name="VideoLessonTranslation",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('modified_at', models.DateTimeField(auto_now=True)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('language', models.CharField(choices=[('en', 'En'), ('pl', 'Pl')], max_length=2)),
-                ('name', models.CharField(max_length=255)),
-                ('lesson', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='translations', to='lesson.videolesson')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("modified_at", models.DateTimeField(auto_now=True)),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                (
+                    "language",
+                    models.CharField(
+                        choices=[("en", "En"), ("pl", "Pl")], max_length=2
+                    ),
+                ),
+                ("name", models.CharField(max_length=255)),
+                (
+                    "lesson",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="translations",
+                        to="lesson.videolesson",
+                    ),
+                ),
             ],
             options={
-                'verbose_name_plural': 'Video lesson translations',
-                'db_table': 'video_lesson_translation',
+                "verbose_name_plural": "Video lesson translations",
+                "db_table": "video_lesson_translation",
             },
         ),
         migrations.CreateModel(
-            name='ReadingLessonTranslation',
+            name="ReadingLessonTranslation",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('modified_at', models.DateTimeField(auto_now=True)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('language', models.CharField(choices=[('en', 'En'), ('pl', 'Pl')], max_length=2)),
-                ('name', models.CharField(max_length=255)),
-                ('text', models.TextField()),
-                ('lesson', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='translations', to='lesson.readinglesson')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("modified_at", models.DateTimeField(auto_now=True)),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                (
+                    "language",
+                    models.CharField(
+                        choices=[("en", "En"), ("pl", "Pl")], max_length=2
+                    ),
+                ),
+                ("name", models.CharField(max_length=255)),
+                ("text", models.TextField()),
+                (
+                    "lesson",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="translations",
+                        to="lesson.readinglesson",
+                    ),
+                ),
             ],
             options={
-                'verbose_name_plural': 'Reading lesson translations',
-                'db_table': 'reading_lesson_translation',
+                "verbose_name_plural": "Reading lesson translations",
+                "db_table": "reading_lesson_translation",
             },
         ),
         migrations.CreateModel(
-            name='QuizLessonTranslation',
+            name="QuizLessonTranslation",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('modified_at', models.DateTimeField(auto_now=True)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('language', models.CharField(choices=[('en', 'En'), ('pl', 'Pl')], max_length=2)),
-                ('name', models.CharField(max_length=255)),
-                ('questions', models.JSONField()),
-                ('lesson', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='translations', to='lesson.quizlesson')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("modified_at", models.DateTimeField(auto_now=True)),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                (
+                    "language",
+                    models.CharField(
+                        choices=[("en", "En"), ("pl", "Pl")], max_length=2
+                    ),
+                ),
+                ("name", models.CharField(max_length=255)),
+                ("questions", models.JSONField()),
+                (
+                    "lesson",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="translations",
+                        to="lesson.quizlesson",
+                    ),
+                ),
             ],
             options={
-                'verbose_name_plural': 'Quiz lesson translations',
-                'db_table': 'quiz_lesson_translation',
+                "verbose_name_plural": "Quiz lesson translations",
+                "db_table": "quiz_lesson_translation",
             },
         ),
         migrations.CreateModel(
-            name='CodingLessonTranslation',
+            name="CodingLessonTranslation",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('modified_at', models.DateTimeField(auto_now=True)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('language', models.CharField(choices=[('en', 'En'), ('pl', 'Pl')], max_length=2)),
-                ('name', models.CharField(max_length=255)),
-                ('introduction', models.TextField()),
-                ('instructions', models.TextField()),
-                ('hint', models.TextField(blank=True, null=True)),
-                ('lesson', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='translations', to='lesson.codinglesson')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("modified_at", models.DateTimeField(auto_now=True)),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                (
+                    "language",
+                    models.CharField(
+                        choices=[("en", "En"), ("pl", "Pl")], max_length=2
+                    ),
+                ),
+                ("name", models.CharField(max_length=255)),
+                ("introduction", models.TextField()),
+                ("instructions", models.TextField()),
+                ("hint", models.TextField(blank=True, null=True)),
+                (
+                    "lesson",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="translations",
+                        to="lesson.codinglesson",
+                    ),
+                ),
             ],
             options={
-                'verbose_name_plural': 'Coding lesson translations',
-                'db_table': 'coding_lesson_translation',
+                "verbose_name_plural": "Coding lesson translations",
+                "db_table": "coding_lesson_translation",
             },
         ),
         migrations.AddField(
-            model_name='codinglesson',
-            name='lesson',
-            field=models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, related_name='coding', to='lesson.lesson'),
+            model_name="codinglesson",
+            name="lesson",
+            field=models.OneToOneField(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="coding",
+                to="lesson.lesson",
+            ),
         ),
     ]

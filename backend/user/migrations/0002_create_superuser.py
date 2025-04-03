@@ -6,8 +6,8 @@ from const import UserType
 
 User = get_user_model()
 
-def generate_superuser(apps, schema_editor):
 
+def generate_superuser(apps, schema_editor):
     email = CONFIG["admin_email"]
     username = email.split("@")[0]
     password = CONFIG["admin_password"]
@@ -20,7 +20,6 @@ def generate_superuser(apps, schema_editor):
         admin.save()
 
         Admin.objects.create(user=admin)
-
 
 
 def delete_superuser(apps, schema_editor):

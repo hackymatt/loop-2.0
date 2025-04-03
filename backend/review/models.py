@@ -3,15 +3,19 @@ from core.base_model import BaseModel
 from django.core.validators import MinValueValidator, MaxValueValidator
 from user.type.student_user.models import Student
 from course.models import Course
-from django.conf import settings
+from global_config import CONFIG
+
+
+def get_dummy_student():
+    """Returns the dummy student instance."""
+    return Student.objects.get(user__email=CONFIG["dummy_student_email"])
+
 
 class Review(BaseModel):
     student = models.ForeignKey(
-        Student, on_delete=models.CASCADE, related_name="reviews"
+        Student, on_delete=models.SET(get_dummy_student), related_name="reviews"
     )
-    course = models.ForeignKey(
-        Course, on_delete=models.CASCADE, related_name="reviews"
-    )
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="reviews")
     rating = models.IntegerField(
         validators=[MinValueValidator(1), MaxValueValidator(5)]
     )
@@ -22,4 +26,7 @@ class Review(BaseModel):
 
     class Meta:
         db_table = "review"
-        unique_together = ("student", "course")  # A student can review a course only once
+        unique_together = (
+            "student",
+            "course",
+        )  # A student can review a course only once

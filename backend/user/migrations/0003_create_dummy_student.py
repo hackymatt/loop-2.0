@@ -6,8 +6,8 @@ from const import UserType
 
 User = get_user_model()
 
-def generate_dummy_student(apps, schema_editor):
 
+def generate_dummy_student(apps, schema_editor):
     email = CONFIG["dummy_student_email"]
     username = email.split("@")[0]
     password = CONFIG["dummy_student_password"]
@@ -40,10 +40,8 @@ def delete_dummy_student(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('user', '0002_create_superuser'),
+        ("user", "0002_create_superuser"),
     ]
 
-    operations = [
-    ]
+    operations = []
