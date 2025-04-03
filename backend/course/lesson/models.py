@@ -10,6 +10,7 @@ class Lesson(BaseModel):
         max_length=max(len(choice[0]) for choice in LessonType.choices),
         choices=LessonType.choices,
     )
+    active = models.BooleanField(default=False)
 
     class Meta:
         db_table = "lesson"

@@ -6,9 +6,7 @@ from .chapter.models import Chapter
 from .level.models import Level
 from .category.models import Category
 from .technology.models import Technology
-
-Teacher = get_user_model()
-
+from user.type.instructor_user.models import Instructor
 
 class Course(BaseModel):
     slug = models.SlugField(unique=True)
@@ -16,9 +14,10 @@ class Course(BaseModel):
     category = models.ForeignKey(Category, on_delete=models.PROTECT)
     technology = models.ForeignKey(Technology, on_delete=models.PROTECT)
     chapters = models.ManyToManyField(Chapter, related_name="courses")
-    teachers = models.ManyToManyField(Teacher, related_name="courses")
+    instructors = models.ManyToManyField(Instructor, related_name="courses")
     duration = models.PositiveIntegerField()
-    chat_url = models.URLField(blank=True, null=True)
+    chat_url = models.URLField()
+    active = models.BooleanField(default=False)
 
     class Meta:
         db_table = "course"

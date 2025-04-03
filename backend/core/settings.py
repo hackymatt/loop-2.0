@@ -91,12 +91,16 @@ INSTALLED_APPS = [
     "allauth.socialaccount.providers.github",
     "allauth.socialaccount.providers.facebook",
     "user",
+    "user.type.admin_user",
+    "user.type.student_user",
+    "user.type.instructor_user",
     "course.level",
     "course.technology",
     "course.category",
     "course.lesson",
     "course.chapter",
     "course",
+    "review",
 ]
 
 DEBUG_TOOLBAR_PANELS = [

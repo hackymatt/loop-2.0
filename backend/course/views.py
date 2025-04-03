@@ -5,7 +5,7 @@ from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny
 
 
 class CourseViewSet(viewsets.ModelViewSet):
-    queryset = Course.objects.prefetch_related("teachers", "chapters", "translations").order_by("slug")
+    queryset = Course.objects.prefetch_related("instructors", "chapters", "translations").order_by("slug")
     serializer_class = CourseSerializer
 
     def get_permissions(self):

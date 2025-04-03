@@ -7,6 +7,7 @@ from ..lesson.models import Lesson
 class Chapter(BaseModel):
     slug = models.SlugField(unique=True)
     lessons = models.ManyToManyField(Lesson, related_name="chapters", blank=True)
+    active = models.BooleanField(default=False)
 
     class Meta:
         db_table = "chapter"

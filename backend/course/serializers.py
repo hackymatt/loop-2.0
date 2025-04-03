@@ -1,15 +1,11 @@
 from rest_framework import serializers
-from django.db.models import Sum
-from .models import Course, CourseTranslation, Teacher
+from django.db.models import Sum, Count, Q
+from .models import Course, CourseTranslation
 from .level.serializers import LevelSerializer
 from .category.serializers import CategorySerializer
 from .technology.serializers import TechnologySerializer
-
-class TeacherSerializer(serializers.ModelSerializer):
-    """Serializer for teachers"""
-    class Meta:
-        model = Teacher
-        fields = ["id", "first_name", "last_name", "email"]  # Adjust as needed
+from user.type.instructor_user.serializers import InstructorSerializer
+from const import LessonType
 
 
 class CourseSerializer(serializers.ModelSerializer):
@@ -19,8 +15,12 @@ class CourseSerializer(serializers.ModelSerializer):
     level = LevelSerializer(read_only=True)
     category = CategorySerializer(read_only=True)
     technology = TechnologySerializer(read_only=True)
-    teachers = TeacherSerializer(many=True, read_only=True)  # FIXED
+    instructors = InstructorSerializer(many=True, read_only=True)
     points = serializers.SerializerMethodField()  # Sum lesson points
+    readings = serializers.SerializerMethodField()  # Sum lesson points
+    videos = serializers.SerializerMethodField()  # Sum lesson points
+    quizzes = serializers.SerializerMethodField()  # Sum lesson points
+    codings = serializers.SerializerMethodField()  # Sum lesson points
 
     class Meta:
         model = Course
@@ -32,10 +32,14 @@ class CourseSerializer(serializers.ModelSerializer):
             "level",
             "category",
             "technology",
-            "teachers",
+            "instructors",
             "duration",
             "chat_url",
             "points",
+            "readings",
+            "videos",
+            "quizzes",
+            "codings",
         ]
 
     def get_translated_name(self, obj):
@@ -46,7 +50,31 @@ class CourseSerializer(serializers.ModelSerializer):
 
     def get_points(self, obj):
         """Calculate total points from lessons in all chapters of the course"""
-        return 0
+        return obj.chapters.aggregate(Sum("lessons__points"))["lessons__points__sum"] or 0
+    
+    def get_readings(self, obj):
+        """Count the number of reading lessons in all chapters of the course"""
+        return obj.chapters.aggregate(
+            total_readings=Count("lessons", filter=Q(lessons__type=LessonType.READING))
+        )["total_readings"] or 0
+
+    def get_videos(self, obj):
+        """Count the number of video lessons in all chapters of the course"""
+        return obj.chapters.aggregate(
+            total_videos=Count("lessons", filter=Q(lessons__type=LessonType.VIDEO))
+        )["total_videos"] or 0
+
+    def get_quizzes(self, obj):
+        """Count the number of quiz lessons in all chapters of the course"""
+        return obj.chapters.aggregate(
+            total_quizzes=Count("lessons", filter=Q(lessons__type=LessonType.QUIZ))
+        )["total_quizzes"] or 0
+
+    def get_codings(self, obj):
+        """Count the number of coding lessons in all chapters of the course"""
+        return obj.chapters.aggregate(
+            total_codings=Count("lessons", filter=Q(lessons__type=LessonType.CODING))
+        )["total_codings"] or 0
 
     def create(self, validated_data):
         slug = validated_data["slug"]

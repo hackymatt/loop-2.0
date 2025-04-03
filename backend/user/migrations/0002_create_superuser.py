@@ -1,32 +1,42 @@
 from django.db import migrations
 from django.contrib.auth import get_user_model
+from user.type.admin_user.models import Admin
 from global_config import CONFIG
 from const import UserType
 
+User = get_user_model()
 
 def generate_superuser(apps, schema_editor):
-    user = get_user_model()
+
     email = CONFIG["admin_email"]
     username = email.split("@")[0]
     password = CONFIG["admin_password"]
 
-    if not user.objects.filter(email=email).exists():
-        admin = user.objects.create(
+    if not User.objects.filter(email=email).exists():
+        admin = User.objects.create(
             username=username, email=email, user_type=UserType.ADMIN, is_active=True
         )
         admin.set_password(password)
         admin.save()
 
+        Admin.objects.create(user=admin)
+
+
 
 def delete_superuser(apps, schema_editor):
-    user = get_user_model()
     email = CONFIG["admin_email"]
 
     # Deleting the superuser if it exists
     try:
-        admin = user.objects.get(email=email)
+        admin = User.objects.get(email=email)
         admin.delete()
-    except user.DoesNotExist:
+    except User.DoesNotExist:
+        pass
+
+    try:
+        admin = Admin.objects.get(user__email=email)
+        admin.delete()
+    except Admin.DoesNotExist:
         pass
 
 
