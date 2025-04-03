@@ -70,7 +70,7 @@ class CourseRetrieveSerializer(BaseCourseSerializer):
     video_count = serializers.SerializerMethodField()
     quiz_count = serializers.SerializerMethodField()
     coding_count = serializers.SerializerMethodField()
-    chapters = ChapterSerializer(many=True, read_only=True)
+    chapters = serializers.SerializerMethodField()
 
     class Meta(BaseCourseSerializer.Meta):
         fields = BaseCourseSerializer.Meta.fields + [
@@ -103,6 +103,9 @@ class CourseRetrieveSerializer(BaseCourseSerializer):
 
     def get_coding_count(self, obj):
         return self.get_lesson_count_by_type(obj, LessonType.CODING)
+    
+    def get_chapters(self, obj):
+        return ChapterSerializer(obj.chapters.all(), many=True, context=self.context).data
 
     def create(self, validated_data):
         course, _ = Course.objects.get_or_create(slug=validated_data["slug"])

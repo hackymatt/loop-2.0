@@ -17,16 +17,15 @@ class LessonSerializer(serializers.ModelSerializer):
 
     def get_translated_name(self, obj):
         """Retrieve the translated name based on request language"""
-        request = self.context.get("request")
-        language = request.GET.get("lang", "en")
+        lang = self.context.get("request").LANGUAGE_CODE
         if obj.type == LessonType.READING:
-            translation = ReadingLessonTranslation.objects.filter(lesson=obj.reading, language=language).first()
+            translation = ReadingLessonTranslation.objects.filter(lesson=obj.reading, language=lang).first()
         elif obj.type == LessonType.VIDEO:
-            translation = VideoLessonTranslation.objects.filter(lesson=obj.video, language=language).first()
+            translation = VideoLessonTranslation.objects.filter(lesson=obj.video, language=lang).first()
         elif obj.type == LessonType.QUIZ:
-            translation = QuizLessonTranslation.objects.filter(lesson=obj.quiz, language=language).first()
+            translation = QuizLessonTranslation.objects.filter(lesson=obj.quiz, language=lang).first()
         elif obj.type == LessonType.CODING:
-            translation = CodingLessonTranslation.objects.filter(lesson=obj.coding, language=language).first()
+            translation = CodingLessonTranslation.objects.filter(lesson=obj.coding, language=lang).first()
         else:
             translation = None
         return translation.name if translation else obj.slug

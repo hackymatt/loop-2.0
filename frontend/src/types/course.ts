@@ -1,3 +1,5 @@
+import type { COURSE_TYPE } from "src/consts/course";
+
 export type ICourseLevelProp = {
   slug: string;
   name: string;
@@ -19,7 +21,7 @@ export type ICourseTeacherProp = {
   avatarUrl: string | null;
 };
 
-export type ICourseLessonType = "reading" | "video" | "quiz" | "coding";
+export type ICourseLessonType = (typeof COURSE_TYPE)[keyof typeof COURSE_TYPE];
 
 export type ICourseLessonProp = {
   slug: string;
@@ -47,7 +49,6 @@ export type ICourseProps = {
   teachers: ICourseTeacherProp[];
   totalHours: number;
   chatUrl: string | null;
-
   // calculated
   totalLessons: number;
   totalPoints: number;
@@ -57,7 +58,6 @@ export type ICourseProps = {
   totalExercises: number;
   ratingNumber: number | null;
   totalReviews: number;
-
   totalStudents: number;
 };
 

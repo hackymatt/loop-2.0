@@ -6,7 +6,7 @@ from ..lesson.serializers import LessonSerializer  # Import Lesson serializer if
 class ChapterSerializer(serializers.ModelSerializer):
     translated_name = serializers.SerializerMethodField()  # Used for output
     translated_description = serializers.SerializerMethodField()  # Used for output
-    lessons = LessonSerializer(many=True)  # Serialize related lessons
+    lessons = serializers.SerializerMethodField()
 
     class Meta:
         model = Chapter
@@ -14,14 +14,15 @@ class ChapterSerializer(serializers.ModelSerializer):
 
     def get_translated_name(self, obj):
         """Retrieve the translated name based on request language"""
-        request = self.context.get("request")
-        language = request.GET.get("lang", "en")  # Default to English if no lang is provided
-        translation = obj.translations.filter(language=language).first()
+        lang = self.context.get("request").LANGUAGE_CODE
+        translation = obj.translations.filter(language=lang).first()
         return translation.name if translation else ""
 
     def get_translated_description(self, obj):
         """Retrieve the translated description based on request language"""
-        request = self.context.get("request")
-        language = request.GET.get("lang", "en")
-        translation = obj.translations.filter(language=language).first()
+        lang = self.context.get("request").LANGUAGE_CODE
+        translation = obj.translations.filter(language=lang).first()
         return translation.description if translation else ""
+
+    def get_lessons(self, obj):
+        return LessonSerializer(obj.lessons.all(), many=True, context=self.context).data
