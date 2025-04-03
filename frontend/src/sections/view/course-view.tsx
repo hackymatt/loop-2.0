@@ -1,12 +1,11 @@
 "use client";
 
-import { useMemo } from "react";
-
 import Grid from "@mui/material/Grid2";
 import Divider from "@mui/material/Divider";
 import Container from "@mui/material/Container";
 
 import { _courses, _reviews } from "src/_mock";
+import { useCourse } from "src/api/course/course";
 
 import { ReviewList } from "../review/review-list";
 import { ReviewSummary } from "../review/review-summary";
@@ -19,13 +18,9 @@ import { CourseCertificateDetailsInfo } from "../courses/course-certificate-deta
 
 // ----------------------------------------------------------------------
 
-const course = _courses[0];
 const relatedCourses = _courses.slice(0, 3);
-export function CourseView() {
-  const totalLessons = useMemo(
-    () => course.chapters.reduce((total, chapter) => total + chapter.lessons.length, 0),
-    []
-  );
+export function CourseView({ slug }: { slug: string }) {
+  const { data: course } = useCourse(slug);
 
   const renderReview = () => (
     <>
@@ -41,11 +36,11 @@ export function CourseView() {
     <>
       <CourseDetailsHero
         slug={course?.slug || ""}
-        title={course?.title || ""}
-        level={course?.level || ""}
+        title={course?.name || ""}
+        level={course?.level || { slug: "", name: "" }}
         teachers={course?.teachers || []}
-        category={course?.category || ""}
-        technology={course?.technology || ""}
+        category={course?.category || { slug: "", name: "" }}
+        technology={course?.technology || { slug: "", name: "" }}
         totalPoints={course?.totalPoints || 0}
         totalHours={course?.totalHours || 0}
         description={course?.description || ""}
@@ -54,14 +49,14 @@ export function CourseView() {
         totalExercises={course?.totalExercises || 0}
         totalVideos={course?.totalVideos || 0}
         totalQuizzes={course?.totalQuizzes || 0}
-        totalLessons={totalLessons}
+        totalLessons={course?.totalLessons || 0}
         totalStudents={course?.totalStudents || 0}
       />
 
       <Container sx={{ py: { xs: 5, md: 10 } }}>
         <Grid container spacing={{ xs: 5, md: 8 }}>
           <Grid size={{ xs: 12, md: 7, lg: 8 }}>
-            <CourseDetailsSummary course={course} />
+            {course && <CourseDetailsSummary course={course} />}
           </Grid>
 
           <Grid size={{ xs: 12, md: 5, lg: 4 }}>
@@ -69,11 +64,12 @@ export function CourseView() {
 
             <CourseCertificateDetailsInfo
               slug={course?.slug || ""}
-              title={course?.title || ""}
+              name={course?.name || ""}
+              chapters={course?.chapters || []}
               sx={{ mb: 3 }}
             />
 
-            <CourseChatDetailsInfo slug={course?.slug || ""} />
+            <CourseChatDetailsInfo slug={course?.slug || ""} chatUrl={course?.chatUrl || null} />
           </Grid>
         </Grid>
       </Container>

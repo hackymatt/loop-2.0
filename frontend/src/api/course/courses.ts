@@ -62,30 +62,20 @@ export const coursesQuery = (query?: QueryType, language?: Language) => {
       ({
         translated_name,
         translated_description,
+        level,
+        category,
+        technology,
         instructors,
         duration,
         lessons_count,
         average_rating,
         ratings_count,
         students_count,
-        level,
-        category,
-        technology,
         ...rest
       }: ICourse) => ({
         ...rest,
         name: translated_name,
         description: translated_description,
-        totalHours: duration / 60,
-        totalLessons: lessons_count,
-        ratingNumber: average_rating,
-        totalReviews: ratings_count,
-        totalStudents: students_count,
-        teachers: instructors.map(({ full_name, image, ...restInstructor }) => ({
-          ...restInstructor,
-          name: full_name,
-          avatarUrl: image,
-        })),
         level: {
           slug: level.slug,
           name: level.translated_name,
@@ -98,6 +88,16 @@ export const coursesQuery = (query?: QueryType, language?: Language) => {
           slug: technology.slug,
           name: technology.name,
         },
+        teachers: instructors.map(({ full_name, image, ...restInstructor }) => ({
+          ...restInstructor,
+          name: full_name,
+          avatarUrl: image,
+        })),
+        totalHours: duration / 60,
+        totalLessons: lessons_count,
+        ratingNumber: average_rating,
+        totalReviews: ratings_count,
+        totalStudents: students_count,
       })
     );
     return { results: modifiedResults, count: records_count, pagesCount: pages_count };

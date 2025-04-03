@@ -1,7 +1,3 @@
-import type { DatePickerFormat } from "src/utils/format-time";
-
-// ----------------------------------------------------------------------
-
 export type ICourseLevelProp = {
   slug: string;
   name: string;
@@ -50,9 +46,10 @@ export type ICourseProps = {
   chapters: ICourseChapterProp[];
   teachers: ICourseTeacherProp[];
   totalHours: number;
-  chatUrl: string;
+  chatUrl: string | null;
 
   // calculated
+  totalLessons: number;
   totalPoints: number;
   totalReading: number;
   totalVideos: number;
@@ -74,4 +71,4 @@ export type ICourseListProps = Omit<
   | "totalVideos"
   | "totalQuizzes"
   | "totalExercises"
-> & { totalLessons: number };
+>;

@@ -6,10 +6,13 @@ from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny
 
 
 class CourseViewSet(viewsets.ModelViewSet):
+    http_method_names = ["get"]
     queryset = Course.objects.prefetch_related(
         "instructors", "chapters", "translations"
     ).order_by("slug")
+    serializer_class = CourseRetrieveSerializer
     filterset_class = CourseFilter
+    lookup_field = "slug"
 
     def get_serializer_class(self):
         # Return different serializer depending on the action

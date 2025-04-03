@@ -5,6 +5,7 @@ export const paths = {
   resetPassword: "/auth/reset-password",
   courses: "/courses",
   course: "/course",
+  lesson: "/lesson",
   pricing: "/pricing",
   posts: "/posts",
   post: "/post",

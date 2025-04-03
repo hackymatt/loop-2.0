@@ -35,16 +35,16 @@ export function CourseDetailsChapterList({ course }: Props) {
       <Box sx={{ gap: 1, display: "flex", flexDirection: "column" }}>
         {course.chapters.map((chapter, index) => (
           <Card
-            key={chapter.id}
+            key={chapter.slug}
             sx={{ p: 3, gap: 2, borderRadius: 2, display: "flex", flexDirection: "column" }}
           >
             <CourseDetailsChapterItem
-              key={chapter.id}
+              key={chapter.slug}
               course={course}
               chapter={chapter}
               index={index + 1}
-              expanded={expanded === chapter.id}
-              onExpanded={handleExpandedChapter(chapter.id)}
+              expanded={expanded === chapter.slug}
+              onExpanded={handleExpandedChapter(chapter.slug)}
             />
           </Card>
         ))}

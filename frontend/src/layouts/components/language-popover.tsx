@@ -10,6 +10,7 @@ import MenuItem from "@mui/material/MenuItem";
 import IconButton from "@mui/material/IconButton";
 
 import i18n from "src/locales/i18n";
+import { LANGUAGE } from "src/consts/language";
 
 import { FlagIcon } from "src/components/flag-icon";
 import { useSettingsContext } from "src/components/settings";
@@ -28,7 +29,7 @@ export function LanguagePopover({ data = [], sx, ...other }: LanguagePopoverProp
   const settings = useSettingsContext();
   const { open, onClose, onOpen, anchorEl } = usePopover();
 
-  const locale = settings.state.language ?? "pl";
+  const locale = settings.state.language ?? LANGUAGE.PL;
 
   const currentLang = data.find((lang) => lang.value === locale);
 

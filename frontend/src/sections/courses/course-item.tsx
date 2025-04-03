@@ -18,7 +18,7 @@ import { getLevelIcon } from "src/utils/level-icon";
 import { fShortenNumber } from "src/utils/format-number";
 import { getTechnologyIcon } from "src/utils/technology-icon";
 
-import { CONFIG } from "src/global-config";
+import { DEFAULT_AVATAR_URL } from "src/consts/avatar";
 
 import { Iconify } from "src/components/iconify";
 
@@ -94,11 +94,7 @@ export function CourseItem({ course, isVertical }: Props) {
 
   const renderTeacher = () => (
     <Box sx={{ gap: 1.5, display: "flex", alignItems: "center" }}>
-      <Avatar
-        src={
-          course.teachers[0]?.avatarUrl ?? `${CONFIG.assetsDir}/assets/images/avatar/avatar-25.webp`
-        }
-      />
+      <Avatar src={course.teachers[0]?.avatarUrl ?? DEFAULT_AVATAR_URL} />
 
       <Box sx={{ gap: 0.75, display: "flex", alignItems: "center", flexWrap: "wrap" }}>
         <Typography variant="body2">{course.teachers[0]?.name}</Typography>

@@ -1,3 +1,4 @@
+import { LANGUAGE } from "src/consts/language";
 import { themeConfig } from "src/theme/theme-config";
 
 import type { SettingsState } from "./types";
@@ -12,5 +13,5 @@ export const defaultSettings: SettingsState = {
   primaryColor: "default",
   fontSize: 16,
   fontFamily: themeConfig.fontFamily.primary,
-  language: "pl",
+  language: LANGUAGE.PL,
 };

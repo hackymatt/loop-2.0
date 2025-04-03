@@ -33,7 +33,7 @@ export function CourseDetailsLessonItem({ course, chapter, lesson }: LessonItemP
     >
       <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
         <Iconify icon={getLessonTypeIcon(lesson.type)} />
-        {lesson.title}
+        {lesson.name}
       </Box>
       <Typography variant="body2">{lesson.totalPoints} XP</Typography>
     </Button>

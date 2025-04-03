@@ -88,21 +88,20 @@ export function CourseDetailsHero({
 
       <Divider orientation="vertical" sx={{ height: 20, my: "auto" }} />
 
-      <Box sx={{ gap: 0.5, display: "flex", alignItems: "center" }}>
-        <Iconify icon="eva:star-fill" sx={{ color: "warning.main" }} />
-        {Number.isInteger(ratingNumber) ? `${ratingNumber}.0` : ratingNumber}
-      </Box>
-
-      <Divider orientation="vertical" sx={{ height: 20, my: "auto" }} />
-
-      {totalReviews && (
-        <Box>
-          {fShortenNumber(totalReviews, { code: locale("code"), currency: locale("currency") })}{" "}
-          {languagePluralize(review, totalReviews)}
-        </Box>
-      )}
-
-      <Divider orientation="vertical" sx={{ height: 20, my: "auto" }} />
+      {totalReviews ? (
+        <>
+          <Box sx={{ gap: 0.5, display: "flex", alignItems: "center" }}>
+            <Iconify icon="eva:star-fill" sx={{ color: "warning.main" }} />
+            {Number.isInteger(ratingNumber) ? `${ratingNumber}.0` : ratingNumber}
+          </Box>
+          <Divider orientation="vertical" sx={{ height: 20, my: "auto" }} />
+          <Box>
+            {fShortenNumber(totalReviews, { code: locale("code"), currency: locale("currency") })}{" "}
+            {languagePluralize(review, totalReviews)}
+          </Box>
+          <Divider orientation="vertical" sx={{ height: 20, my: "auto" }} />
+        </>
+      ) : null}
 
       {totalStudents ? (
         <Box sx={{ display: "flex", alignItems: "center" }}>
