@@ -7,7 +7,9 @@ import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 
-import { _courses } from "src/_mock";
+import { useQueryParams } from "src/hooks/use-query-params";
+
+import { useCourses } from "src/api/course/courses";
 import { useCourseLevels } from "src/api/course/level/levels";
 import { useCourseCategories } from "src/api/course/category/categories";
 import { useCourseTechnologies } from "src/api/course/technology/technologies";
@@ -25,11 +27,13 @@ const RATING_OPTIONS = ["4", "3", "2"];
 
 export function CoursesView() {
   const { t } = useTranslation("course");
+
+  const { handleChange, query } = useQueryParams();
+
   const { data: courseLevels } = useCourseLevels({ sort_by: "order", page_size: "-1" });
   const { data: courseTechnologies } = useCourseTechnologies({ page_size: "-1" });
   const { data: courseCategories } = useCourseCategories({ page_size: "-1" });
-
-  const courses = _courses.slice(0, 10);
+  const { data: courses, count } = useCourses(query);
 
   const openMobile = useBoolean();
 
@@ -50,7 +54,12 @@ export function CoursesView() {
 
   const renderListView = () => (
     <Box sx={{ gap: 4, display: "flex", flexDirection: "column" }}>
-      <CourseList courses={courses} />
+      <CourseList
+        courses={courses ?? []}
+        count={count ?? 0}
+        page={Number(query.page) || 1}
+        onPageChange={(selectedPage: number) => handleChange("page", String(selectedPage))}
+      />
     </Box>
   );
 

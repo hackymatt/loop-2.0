@@ -1,6 +1,5 @@
-import type { ICourseProps } from "src/types/course";
+import type { ICourseListProps } from "src/types/course";
 
-import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
 import Box from "@mui/material/Box";
@@ -19,12 +18,14 @@ import { getLevelIcon } from "src/utils/level-icon";
 import { fShortenNumber } from "src/utils/format-number";
 import { getTechnologyIcon } from "src/utils/technology-icon";
 
+import { CONFIG } from "src/global-config";
+
 import { Iconify } from "src/components/iconify";
 
 // ----------------------------------------------------------------------
 
 type Props = {
-  course: ICourseProps;
+  course: ICourseListProps;
   isVertical?: boolean;
 };
 
@@ -39,11 +40,6 @@ export function CourseItem({ course, isVertical }: Props) {
   const lesson = t("lesson", { returnObjects: true }) as string[];
 
   const languagePluralize = usePluralize();
-
-  const totalLessons = useMemo(
-    () => course.chapters.reduce((total, chapter) => total + chapter.lessons.length, 0),
-    [course.chapters]
-  );
 
   const renderTop = () => (
     <Box sx={{ gap: 1, display: "flex", alignItems: "center", flexWrap: "wrap" }}>
@@ -71,7 +67,7 @@ export function CourseItem({ course, isVertical }: Props) {
 
       <Box sx={{ gap: 1, display: "flex", alignItems: "center" }}>
         <Iconify icon="solar:documents-minimalistic-outline" />
-        {totalLessons} {languagePluralize(lesson, totalLessons)}
+        {course.totalLessons} {languagePluralize(lesson, course.totalLessons)}
       </Box>
     </Box>
   );
@@ -79,7 +75,7 @@ export function CourseItem({ course, isVertical }: Props) {
   const renderTexts = () => (
     <Box sx={{ minWidth: 0 }}>
       <Typography color="inherit" variant="h6" noWrap>
-        {course.title}
+        {course.name}
       </Typography>
 
       <Typography
@@ -98,7 +94,11 @@ export function CourseItem({ course, isVertical }: Props) {
 
   const renderTeacher = () => (
     <Box sx={{ gap: 1.5, display: "flex", alignItems: "center" }}>
-      <Avatar src={course.teachers[0]?.avatarUrl} />
+      <Avatar
+        src={
+          course.teachers[0]?.avatarUrl ?? `${CONFIG.assetsDir}/assets/images/avatar/avatar-25.webp`
+        }
+      />
 
       <Box sx={{ gap: 0.75, display: "flex", alignItems: "center", flexWrap: "wrap" }}>
         <Typography variant="body2">{course.teachers[0]?.name}</Typography>
@@ -137,24 +137,25 @@ export function CourseItem({ course, isVertical }: Props) {
 
       <Divider orientation="vertical" sx={{ height: 20, my: "auto" }} />
 
-      <Box sx={{ gap: 0.5, display: "flex", alignItems: "center" }}>
-        <Iconify icon="eva:star-fill" sx={{ color: "warning.main" }} />
-        {Number.isInteger(course.ratingNumber) ? `${course.ratingNumber}.0` : course.ratingNumber}
-      </Box>
-
-      <Divider orientation="vertical" sx={{ height: 20, my: "auto" }} />
-
-      {course.totalReviews && (
-        <Box>
-          {fShortenNumber(course.totalReviews, {
-            code: locale("code"),
-            currency: locale("currency"),
-          })}{" "}
-          {languagePluralize(review, course.totalReviews)}
-        </Box>
-      )}
-
-      <Divider orientation="vertical" sx={{ height: 20, my: "auto" }} />
+      {course.totalReviews ? (
+        <>
+          <Box sx={{ gap: 0.5, display: "flex", alignItems: "center" }}>
+            <Iconify icon="eva:star-fill" sx={{ color: "warning.main" }} />
+            {Number.isInteger(course.ratingNumber)
+              ? `${course.ratingNumber}.0`
+              : course.ratingNumber}
+          </Box>
+          <Divider orientation="vertical" sx={{ height: 20, my: "auto" }} />
+          <Box>
+            {fShortenNumber(course.totalReviews, {
+              code: locale("code"),
+              currency: locale("currency"),
+            })}{" "}
+            {languagePluralize(review, course.totalReviews)}
+          </Box>
+          <Divider orientation="vertical" sx={{ height: 20, my: "auto" }} />
+        </>
+      ) : null}
 
       {course.totalStudents ? (
         <Box sx={{ display: "flex", alignItems: "center" }}>

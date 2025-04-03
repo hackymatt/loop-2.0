@@ -18,16 +18,14 @@ export type ICourseCategoryProp = {
 };
 
 export type ICourseTeacherProp = {
-  id: string;
   name: string;
   role: string;
-  avatarUrl: string;
+  avatarUrl: string | null;
 };
 
 export type ICourseLessonType = "reading" | "video" | "quiz" | "coding";
 
 export type ICourseLessonProp = {
-  id: string;
   slug: string;
   name: string;
   type: ICourseLessonType;
@@ -35,7 +33,6 @@ export type ICourseLessonProp = {
 };
 
 export type ICourseChapterProp = {
-  id: string;
   slug: string;
   name: string;
   description: string;
@@ -43,7 +40,6 @@ export type ICourseChapterProp = {
 };
 
 export type ICourseProps = {
-  id: string;
   slug: string;
   name: string;
   description: string;
@@ -62,8 +58,20 @@ export type ICourseProps = {
   totalVideos: number;
   totalQuizzes: number;
   totalExercises: number;
-  ratingNumber: number;
+  ratingNumber: number | null;
   totalReviews: number;
 
   totalStudents: number;
 };
+
+export type ICourseListProps = Omit<
+  ICourseProps,
+  | "overview"
+  | "chapters"
+  | "chatUrl"
+  | "totalPoints"
+  | "totalReading"
+  | "totalVideos"
+  | "totalQuizzes"
+  | "totalExercises"
+> & { totalLessons: number };

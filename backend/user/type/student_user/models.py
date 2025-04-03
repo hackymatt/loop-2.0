@@ -12,7 +12,7 @@ class Student(BaseModel):
 
     def clean(self):
         """Ensure only users with user_type=STUDENT can be assigned"""
-        if self.user.user_type != UserType.ADMIN:
+        if self.user.user_type != UserType.STUDENT:
             raise ValidationError(
                 f"Student profile can only be created for {UserType.STUDENT} users."
             )

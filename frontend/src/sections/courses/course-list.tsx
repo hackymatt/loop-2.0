@@ -1,5 +1,5 @@
 import type { BoxProps } from "@mui/material/Box";
-import type { ICourseProps } from "src/types/course";
+import type { ICourseListProps } from "src/types/course";
 
 import Box from "@mui/material/Box";
 import Pagination, { paginationClasses } from "@mui/material/Pagination";
@@ -9,10 +9,13 @@ import { CourseItem } from "./course-item";
 // ----------------------------------------------------------------------
 
 type Props = BoxProps & {
-  courses: ICourseProps[];
+  courses: ICourseListProps[];
+  count: number;
+  page: number;
+  onPageChange: (selectedPage: number) => void;
 };
 
-export function CourseList({ courses, sx, ...other }: Props) {
+export function CourseList({ courses, count, page, onPageChange, sx, ...other }: Props) {
   return (
     <>
       <Box
@@ -23,12 +26,14 @@ export function CourseList({ courses, sx, ...other }: Props) {
         {...other}
       >
         {courses.map((course) => (
-          <CourseItem key={course.id} course={course} />
+          <CourseItem key={course.slug} course={course} />
         ))}
       </Box>
 
       <Pagination
-        count={10}
+        count={count}
+        page={page}
+        onChange={(event, selectedPage: number) => onPageChange(selectedPage)}
         sx={{ my: 10, [`& .${paginationClasses.ul}`]: { justifyContent: "center" } }}
       />
     </>

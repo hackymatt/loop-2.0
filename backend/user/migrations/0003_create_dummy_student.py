@@ -44,4 +44,6 @@ class Migration(migrations.Migration):
         ("user", "0002_create_superuser"),
     ]
 
-    operations = []
+    operations = [
+        migrations.RunPython(generate_dummy_student, reverse_code=delete_dummy_student),
+    ]

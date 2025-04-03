@@ -1,5 +1,6 @@
 from django.db import models
 from core.base_model import BaseModel
+from django.core.exceptions import ValidationError
 from const import LessonType, QuizType, Language
 
 
@@ -31,6 +32,17 @@ class ReadingLesson(BaseModel):
 
     def __str__(self):
         return f"Reading: {self.lesson.slug}"  # pragma: no cover
+
+    def clean(self):
+        """Ensure only lesson with type=READING can be assigned"""
+        if self.lesson.type != LessonType.READING:
+            raise ValidationError(
+                f"Reading can only be created for {LessonType.READING} lesson."
+            )
+
+    def save(self, *args, **kwargs):
+        self.clean()
+        super().save(*args, **kwargs)
 
 
 class ReadingLessonTranslation(BaseModel):
@@ -65,6 +77,17 @@ class VideoLesson(BaseModel):
     def __str__(self):
         return f"Video: {self.lesson.slug}"  # pragma: no cover
 
+    def clean(self):
+        """Ensure only lesson with type=VIDEO can be assigned"""
+        if self.lesson.type != LessonType.VIDEO:
+            raise ValidationError(
+                f"Video can only be created for {LessonType.VIDEO} lesson."
+            )
+
+    def save(self, *args, **kwargs):
+        self.clean()
+        super().save(*args, **kwargs)
+
 
 class VideoLessonTranslation(BaseModel):
     lesson = models.ForeignKey(
@@ -97,6 +120,17 @@ class QuizLesson(BaseModel):
 
     def __str__(self):
         return f"Quiz: {self.lesson.slug}"  # pragma: no cover
+
+    def clean(self):
+        """Ensure only lesson with type=QUIZ can be assigned"""
+        if self.lesson.type != LessonType.QUIZ:
+            raise ValidationError(
+                f"Quiz can only be created for {LessonType.QUIZ} lesson."
+            )
+
+    def save(self, *args, **kwargs):
+        self.clean()
+        super().save(*args, **kwargs)
 
 
 class QuizLessonTranslation(BaseModel):
@@ -132,6 +166,17 @@ class CodingLesson(BaseModel):
 
     def __str__(self):
         return f"Coding: {self.lesson.slug}"  # pragma: no cover
+
+    def clean(self):
+        """Ensure only lesson with type=CODING can be assigned"""
+        if self.lesson.type != LessonType.CODING:
+            raise ValidationError(
+                f"Coding can only be created for {LessonType.CODING} lesson."
+            )
+
+    def save(self, *args, **kwargs):
+        self.clean()
+        super().save(*args, **kwargs)
 
 
 class CodingLessonTranslation(BaseModel):

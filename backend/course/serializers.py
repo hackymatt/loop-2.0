@@ -10,10 +10,82 @@ from review.models import Review
 from const import LessonType
 
 
-class CourseSerializer(serializers.ModelSerializer):
+class CourseListSerializer(serializers.ModelSerializer):
     name = serializers.CharField(write_only=True)  # Used for input
     language = serializers.CharField(write_only=True)  # Used for input
     translated_name = serializers.SerializerMethodField()  # Used for output
+    translated_description = serializers.SerializerMethodField()  # Used for output
+    level = LevelSerializer(read_only=True)
+    category = CategorySerializer(read_only=True)
+    technology = TechnologySerializer(read_only=True)
+    instructors = InstructorSerializer(many=True, read_only=True)
+    lessons_count = serializers.SerializerMethodField()  # Total number of lessons
+    average_rating = serializers.SerializerMethodField()  # Average rating of the course
+    ratings_count = (
+        serializers.SerializerMethodField()
+    )  # Total number of ratings for the course
+    students_count = serializers.SerializerMethodField()  # Number of students enrolled
+
+    class Meta:
+        model = Course
+        fields = [
+            "slug",
+            "name",
+            "language",
+            "translated_name",
+            "translated_description",
+            "level",
+            "category",
+            "technology",
+            "instructors",
+            "duration",
+            "lessons_count",
+            "average_rating",
+            "ratings_count",
+            "students_count",
+        ]
+
+    def get_translated_name(self, obj):
+        """Retrieve the translated name based on request language"""
+        lang = self.context.get("request").LANGUAGE_CODE
+        translation = obj.translations.filter(language=lang).first()
+        return translation.name if translation else None
+
+    def get_translated_description(self, obj):
+        """Retrieve the translated description based on request language"""
+        lang = self.context.get("request").LANGUAGE_CODE
+        translation = obj.translations.filter(language=lang).first()
+        return translation.description if translation else None
+
+    def get_lessons_count(self, obj):
+        """Calculate total number of lessons in all chapters of the course"""
+        total_lessons = obj.chapters.aggregate(total_lessons=Count("lessons"))[
+            "total_lessons"
+        ]
+        return total_lessons if total_lessons is not None else 0
+
+    def get_average_rating(self, obj):
+        """Calculate the average rating of the course"""
+        avg_rating = Review.objects.filter(course=obj).aggregate(Avg("rating"))[
+            "rating__avg"
+        ]
+        return round(avg_rating, 1) if avg_rating is not None else None
+
+    def get_ratings_count(self, obj):
+        """Count the total number of ratings for the course"""
+        return Review.objects.filter(course=obj).count()
+
+    def get_students_count(self, obj):
+        """Count the total number of students enrolled in the course"""
+        return CourseEnrollment.objects.filter(course=obj).count()
+
+
+class CourseRetrieveSerializer(serializers.ModelSerializer):
+    name = serializers.CharField(write_only=True)  # Used for input
+    language = serializers.CharField(write_only=True)  # Used for input
+    translated_name = serializers.SerializerMethodField()  # Used for output
+    translated_description = serializers.SerializerMethodField()  # Used for output
+    translated_overview = serializers.SerializerMethodField()  # Used for output
     level = LevelSerializer(read_only=True)
     category = CategorySerializer(read_only=True)
     technology = TechnologySerializer(read_only=True)
@@ -38,6 +110,8 @@ class CourseSerializer(serializers.ModelSerializer):
             "name",
             "language",
             "translated_name",
+            "translated_description",
+            "translated_overview",
             "level",
             "category",
             "technology",
@@ -59,6 +133,18 @@ class CourseSerializer(serializers.ModelSerializer):
         lang = self.context.get("request").LANGUAGE_CODE
         translation = obj.translations.filter(language=lang).first()
         return translation.name if translation else None
+
+    def get_translated_description(self, obj):
+        """Retrieve the translated description based on request language"""
+        lang = self.context.get("request").LANGUAGE_CODE
+        translation = obj.translations.filter(language=lang).first()
+        return translation.description if translation else None
+
+    def get_translated_overview(self, obj):
+        """Retrieve the translated overview based on request language"""
+        lang = self.context.get("request").LANGUAGE_CODE
+        translation = obj.translations.filter(language=lang).first()
+        return translation.overview if translation else None
 
     def get_points(self, obj):
         """Calculate total points from lessons in all chapters of the course"""
