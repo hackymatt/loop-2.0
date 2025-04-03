@@ -1,6 +1,8 @@
 from rest_framework import serializers
 from .models import Chapter
-from ..lesson.serializers import LessonSerializer  # Import Lesson serializer if available
+from ..lesson.serializers import (
+    LessonSerializer,
+)  # Import Lesson serializer if available
 
 
 class ChapterSerializer(serializers.ModelSerializer):

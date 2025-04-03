@@ -28,9 +28,20 @@ class BaseCourseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Course
         fields = [
-            "slug", "name", "language", "translated_name", "translated_description",
-            "level", "category", "technology", "instructors", "duration",
-            "lessons_count", "average_rating", "ratings_count", "students_count"
+            "slug",
+            "name",
+            "language",
+            "translated_name",
+            "translated_description",
+            "level",
+            "category",
+            "technology",
+            "instructors",
+            "duration",
+            "lessons_count",
+            "average_rating",
+            "ratings_count",
+            "students_count",
         ]
 
     def _get_translation(self, obj, field):
@@ -45,10 +56,14 @@ class BaseCourseSerializer(serializers.ModelSerializer):
         return self._get_translation(obj, "description")
 
     def get_lessons_count(self, obj):
-        return obj.chapters.aggregate(total_lessons=Count("lessons"))["total_lessons"] or 0
+        return (
+            obj.chapters.aggregate(total_lessons=Count("lessons"))["total_lessons"] or 0
+        )
 
     def get_average_rating(self, obj):
-        avg_rating = Review.objects.filter(course=obj).aggregate(Avg("rating"))["rating__avg"]
+        avg_rating = Review.objects.filter(course=obj).aggregate(Avg("rating"))[
+            "rating__avg"
+        ]
         return round(avg_rating, 1) if avg_rating else None
 
     def get_ratings_count(self, obj):
@@ -74,8 +89,14 @@ class CourseRetrieveSerializer(BaseCourseSerializer):
 
     class Meta(BaseCourseSerializer.Meta):
         fields = BaseCourseSerializer.Meta.fields + [
-            "translated_overview", "chat_url", "points", "reading_count", "video_count",
-            "quiz_count", "coding_count", "chapters"
+            "translated_overview",
+            "chat_url",
+            "points",
+            "reading_count",
+            "video_count",
+            "quiz_count",
+            "coding_count",
+            "chapters",
         ]
 
     def get_translated_overview(self, obj):
@@ -85,12 +106,17 @@ class CourseRetrieveSerializer(BaseCourseSerializer):
         return None
 
     def get_points(self, obj):
-        return obj.chapters.aggregate(Sum("lessons__points"))["lessons__points__sum"] or 0
+        return (
+            obj.chapters.aggregate(Sum("lessons__points"))["lessons__points__sum"] or 0
+        )
 
     def get_lesson_count_by_type(self, obj, lesson_type):
-        return obj.chapters.aggregate(
-            total=Count("lessons", filter=Q(lessons__type=lesson_type))
-        )["total"] or 0
+        return (
+            obj.chapters.aggregate(
+                total=Count("lessons", filter=Q(lessons__type=lesson_type))
+            )["total"]
+            or 0
+        )
 
     def get_reading_count(self, obj):
         return self.get_lesson_count_by_type(obj, LessonType.READING)
@@ -103,22 +129,26 @@ class CourseRetrieveSerializer(BaseCourseSerializer):
 
     def get_coding_count(self, obj):
         return self.get_lesson_count_by_type(obj, LessonType.CODING)
-    
+
     def get_chapters(self, obj):
-        return ChapterSerializer(obj.chapters.all(), many=True, context=self.context).data
+        return ChapterSerializer(
+            obj.chapters.all(), many=True, context=self.context
+        ).data
 
     def create(self, validated_data):
         course, _ = Course.objects.get_or_create(slug=validated_data["slug"])
         CourseTranslation.objects.update_or_create(
-            course=course, language=validated_data["language"],
-            defaults={"name": validated_data["name"]}
+            course=course,
+            language=validated_data["language"],
+            defaults={"name": validated_data["name"]},
         )
         return course
 
     def update(self, instance, validated_data):
         if "language" in validated_data and "name" in validated_data:
             CourseTranslation.objects.update_or_create(
-                course=instance, language=validated_data["language"],
-                defaults={"name": validated_data["name"]}
+                course=instance,
+                language=validated_data["language"],
+                defaults={"name": validated_data["name"]},
             )
         return instance

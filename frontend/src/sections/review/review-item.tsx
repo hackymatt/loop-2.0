@@ -9,13 +9,15 @@ import { svgIconClasses } from "@mui/material/SvgIcon";
 
 import { fDate } from "src/utils/format-time";
 
+import { DEFAULT_AVATAR_URL } from "src/consts/avatar";
+
 // ----------------------------------------------------------------------
 
 type Props = Partial<IReviewItemProp> & {
   sx?: SxProps<Theme>;
 };
 
-export function ReviewItem({ name, rating, message, createdAt, avatarUrl, sx }: Props) {
+export function ReviewItem({ student, rating, message, createdAt, sx }: Props) {
   const renderContent = () => (
     <Box sx={{ gap: 1, display: "flex", flexDirection: "column" }}>
       <Rating
@@ -26,7 +28,7 @@ export function ReviewItem({ name, rating, message, createdAt, avatarUrl, sx }: 
         sx={{ [`& .${svgIconClasses.root}`]: { color: "warning.main" } }}
       />
 
-      <Typography variant="subtitle1">{name}</Typography>
+      <Typography variant="subtitle1">{student?.name}</Typography>
 
       {createdAt && (
         <Typography variant="caption" sx={{ color: "text.disabled" }}>
@@ -49,7 +51,11 @@ export function ReviewItem({ name, rating, message, createdAt, avatarUrl, sx }: 
         ...(Array.isArray(sx) ? sx : [sx]),
       ]}
     >
-      <Avatar alt={name} src={avatarUrl} sx={{ width: 64, height: 64, mr: 2.5 }} />
+      <Avatar
+        alt={student?.name}
+        src={student?.avatarUrl || DEFAULT_AVATAR_URL}
+        sx={{ width: 64, height: 64, mr: 2.5 }}
+      />
 
       {renderContent()}
     </Box>

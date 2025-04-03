@@ -1,11 +1,14 @@
 "use client";
 
+import { useSetState } from "minimal-shared/hooks";
+
 import Grid from "@mui/material/Grid2";
 import Divider from "@mui/material/Divider";
 import Container from "@mui/material/Container";
 
-import { _courses, _reviews } from "src/_mock";
+import { _courses } from "src/_mock";
 import { useCourse } from "src/api/course/course";
+import { useReviews } from "src/api/review/reviews";
 
 import { ReviewList } from "../review/review-list";
 import { ReviewSummary } from "../review/review-summary";
@@ -20,14 +23,28 @@ import { CourseCertificateDetailsInfo } from "../courses/course-certificate-deta
 
 const relatedCourses = _courses.slice(0, 3);
 export function CourseView({ slug }: { slug: string }) {
+  const query = useSetState({
+    page: "1",
+  });
+
   const { data: course } = useCourse(slug);
+  const { data: reviews, count } = useReviews(slug);
 
   const renderReview = () => (
     <>
-      <ReviewSummary ratingNumber={4.1} reviewNumber={123456} />
+      <ReviewSummary
+        slug={slug}
+        ratingNumber={course?.ratingNumber || 0}
+        reviewNumber={course?.totalReviews || 0}
+      />
 
       <Container>
-        <ReviewList reviews={_reviews} />
+        <ReviewList
+          reviews={reviews || []}
+          count={count ?? 0}
+          page={Number(query.state.page) || 1}
+          onPageChange={(selectedPage: number) => query.setField("page", String(selectedPage))}
+        />
       </Container>
     </>
   );
@@ -35,7 +52,7 @@ export function CourseView({ slug }: { slug: string }) {
   return (
     <>
       <CourseDetailsHero
-        slug={course?.slug || ""}
+        slug={slug}
         title={course?.name || ""}
         level={course?.level || { slug: "", name: "" }}
         teachers={course?.teachers || []}
@@ -63,13 +80,13 @@ export function CourseView({ slug }: { slug: string }) {
             <CourseDetailsTeachers teachers={course?.teachers || []} sx={{ mb: 3 }} />
 
             <CourseCertificateDetailsInfo
-              slug={course?.slug || ""}
+              slug={slug}
               name={course?.name || ""}
               chapters={course?.chapters || []}
               sx={{ mb: 3 }}
             />
 
-            <CourseChatDetailsInfo slug={course?.slug || ""} chatUrl={course?.chatUrl || null} />
+            <CourseChatDetailsInfo slug={slug} chatUrl={course?.chatUrl || null} />
           </Grid>
         </Grid>
       </Container>

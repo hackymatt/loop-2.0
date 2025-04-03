@@ -7,9 +7,10 @@ from const import Urls
 
 from user.urls import urlpatterns as user_urls
 from course.urls import urlpatterns as course_urls
+from review.urls import urlpatterns as review_urls
 from contact.urls import urlpatterns as contact_urls
 
-api_urlpatterns = user_urls + course_urls + contact_urls
+api_urlpatterns = user_urls + course_urls + review_urls + contact_urls
 
 # Main URL patterns
 urlpatterns = [

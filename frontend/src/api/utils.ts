@@ -22,6 +22,24 @@ export async function getListData<T>(queryUrl: string, config?: AxiosRequestConf
   return data;
 }
 
+export async function getSimpleListData<T>(queryUrl: string, config?: AxiosRequestConfig<any>) {
+  let data: T[] = [];
+
+  try {
+    const response = await Api.get<T[]>(queryUrl, config);
+    ({ data } = response);
+  } catch (error) {
+    if (
+      (error as AxiosError).response &&
+      ((error as AxiosError).response?.status === 400 ||
+        (error as AxiosError).response?.status === 404)
+    ) {
+      data = [];
+    }
+  }
+  return data;
+}
+
 export async function getData<T>(
   queryUrl: string,
   config?: AxiosRequestConfig<any>
