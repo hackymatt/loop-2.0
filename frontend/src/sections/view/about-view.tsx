@@ -1,6 +1,7 @@
 "use client";
 
 import { _faqs, _coursePosts } from "src/_mock";
+import { useFeaturedReviews } from "src/api/review/featured";
 
 import { Faqs } from "../faqs";
 import { Testimonial } from "../testimonial";
@@ -14,6 +15,7 @@ import { AboutOurMission } from "../about/about-our-mission";
 const latestPosts = _coursePosts.slice(0, 5);
 
 export function AboutView() {
+  const { data: featuredReviews } = useFeaturedReviews();
   return (
     <>
       <AboutHero />
@@ -22,7 +24,9 @@ export function AboutView() {
 
       <AboutCoreValues sx={{ bgcolor: "background.neutral" }} />
 
-      <Testimonial />
+      {(featuredReviews ?? []).length > 0 ? (
+        <Testimonial testimonials={featuredReviews ?? []} />
+      ) : null}
 
       <Faqs data={_faqs} />
 

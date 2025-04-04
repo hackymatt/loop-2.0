@@ -9,6 +9,9 @@ import Fab from "@mui/material/Fab";
 import SvgIcon from "@mui/material/SvgIcon";
 
 import { _coursePosts } from "src/_mock";
+import { useFeaturedCourses } from "src/api/course/featured";
+import { useFeaturedReviews } from "src/api/review/featured";
+import { useFeaturedTechnologies } from "src/api/course/technology/featured";
 
 import { ScrollProgress, useScrollProgress } from "src/components/animate/scroll-progress";
 
@@ -31,6 +34,10 @@ export function HomeView() {
 
   const { onBackToTop, isVisible } = useBackToTop("90%");
 
+  const { data: featuredCourses } = useFeaturedCourses();
+  const { data: featuredTechnologies } = useFeaturedTechnologies();
+  const { data: featuredReviews } = useFeaturedReviews();
+
   return (
     <>
       <ScrollProgress
@@ -47,15 +54,21 @@ export function HomeView() {
 
       <HomeCertificate />
 
-      <HomeFeaturedCourses />
+      {(featuredCourses ?? []).length > 0 ? (
+        <HomeFeaturedCourses courses={featuredCourses ?? []} />
+      ) : null}
 
-      <HomeFeatureTechnologies />
+      {(featuredTechnologies ?? []).length > 0 ? (
+        <HomeFeatureTechnologies technologies={featuredTechnologies ?? []} />
+      ) : null}
 
       <HomePricing />
 
       <HomeFAQs />
 
-      <HomeTestimonials />
+      {(featuredReviews ?? []).length > 0 ? (
+        <HomeTestimonials testimonials={featuredReviews ?? []} />
+      ) : null}
 
       <HomeLatestPosts posts={_coursePosts} />
 

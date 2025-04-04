@@ -8,8 +8,6 @@ import { useTranslation } from "react-i18next";
 import Box from "@mui/material/Box";
 import { Rating, Container, Typography } from "@mui/material";
 
-import { useFeaturedReviews } from "src/api/review/featured";
-
 import { varFade, MotionViewport } from "src/components/animate";
 import {
   Carousel,
@@ -22,9 +20,12 @@ import {
 
 const variants: Variants = varFade("inUp", { distance: 24 });
 
-export function HomeTestimonials({ sx, ...other }: BoxProps) {
+type TestimonialsProps = {
+  testimonials: ITestimonialProps[];
+} & BoxProps;
+
+export function HomeTestimonials({ testimonials, sx, ...other }: TestimonialsProps) {
   const { t } = useTranslation("home");
-  const { data: featuredReviews } = useFeaturedReviews();
 
   const carousel = useCarousel();
 
@@ -47,7 +48,7 @@ export function HomeTestimonials({ sx, ...other }: BoxProps) {
 
           <m.div variants={variants}>
             <Carousel carousel={carousel}>
-              {(featuredReviews ?? []).map((testimonial, index) => (
+              {testimonials.map((testimonial, index) => (
                 <TestimonialItem key={index} testimonial={testimonial} />
               ))}
             </Carousel>

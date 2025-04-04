@@ -10,8 +10,6 @@ import Typography from "@mui/material/Typography";
 
 import { fDate } from "src/utils/format-time";
 
-import { useFeaturedReviews } from "src/api/review/featured";
-
 import {
   Carousel,
   useCarousel,
@@ -21,9 +19,12 @@ import {
 
 // ----------------------------------------------------------------------
 
-export function Testimonial({ sx, ...other }: BoxProps) {
+type TestimonialsProps = {
+  testimonials: ITestimonialProps[];
+} & BoxProps;
+
+export function Testimonial({ testimonials, sx, ...other }: TestimonialsProps) {
   const { t } = useTranslation("testimonial");
-  const { data: featuredReviews } = useFeaturedReviews();
 
   const carousel = useCarousel({
     slidesToShow: { xs: 1, sm: 2, md: 3, lg: 4 },
@@ -50,7 +51,7 @@ export function Testimonial({ sx, ...other }: BoxProps) {
         </Box>
 
         <Carousel carousel={carousel}>
-          {(featuredReviews ?? []).map((testimonial, index) => (
+          {testimonials.map((testimonial, index) => (
             <TestimonialItem key={index} testimonial={testimonial} />
           ))}
         </Carousel>
