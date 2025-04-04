@@ -8,7 +8,7 @@ import { useBackToTop } from "minimal-shared/hooks";
 import Fab from "@mui/material/Fab";
 import SvgIcon from "@mui/material/SvgIcon";
 
-import { _courses, _coursePosts, _pricingHome, _testimonials } from "src/_mock";
+import { _coursePosts, _testimonials } from "src/_mock";
 
 import { ScrollProgress, useScrollProgress } from "src/components/animate/scroll-progress";
 
@@ -47,11 +47,11 @@ export function HomeView() {
 
       <HomeCertificate />
 
-      <HomeFeaturedCourses courses={_courses.slice(0, 6)} />
+      <HomeFeaturedCourses />
 
       <HomeFeatureTechnologies />
 
-      <HomePricing plans={_pricingHome} />
+      <HomePricing />
 
       <HomeFAQs />
 

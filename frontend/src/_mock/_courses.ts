@@ -93,7 +93,7 @@ export const _courses = Array.from({ length: 12 }, (_, index) => ({
   technology: getTechnology(index),
   category: getCategory(index),
   teachers: getTeachers(index),
-  title: _mock.courseNames(index),
+  name: _mock.courseNames(index),
   slug: slugify(_mock.courseNames(index)),
   coverUrl: _mock.image.course(index),
   createdAt: dayjs(new Date()).format(),

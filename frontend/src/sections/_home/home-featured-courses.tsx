@@ -1,6 +1,5 @@
 import type { Variants } from "framer-motion";
 import type { BoxProps } from "@mui/material/Box";
-import type { ICourseProps } from "src/types/course";
 
 import { m } from "framer-motion";
 import { useTranslation } from "react-i18next";
@@ -14,6 +13,8 @@ import Typography from "@mui/material/Typography";
 import { paths } from "src/routes/paths";
 import { RouterLink } from "src/routes/components";
 
+import { useFeaturedCourses } from "src/api/course/featured";
+
 import { Iconify } from "src/components/iconify";
 import { varFade, MotionViewport } from "src/components/animate";
 
@@ -22,12 +23,9 @@ import { CourseItem } from "../courses/course-item";
 
 const variants: Variants = varFade("inUp", { distance: 24 });
 
-type Props = BoxProps & {
-  courses: ICourseProps[];
-};
-
-export function HomeFeaturedCourses({ courses, sx, ...other }: Props) {
+export function HomeFeaturedCourses({ sx, ...other }: BoxProps) {
   const { t } = useTranslation("home");
+  const { data: featuredCourses } = useFeaturedCourses();
   return (
     <Box
       component="section"
@@ -68,9 +66,9 @@ export function HomeFeaturedCourses({ courses, sx, ...other }: Props) {
             },
           }}
         >
-          {courses.map((course) => (
-            <m.div key={course.id} variants={variants}>
-              <CourseItem key={course.id} course={course} />
+          {(featuredCourses ?? []).map((course) => (
+            <m.div key={course.slug} variants={variants}>
+              <CourseItem key={course.slug} course={course} />
             </m.div>
           ))}
         </Box>

@@ -17,7 +17,7 @@ import { RouterLink } from "src/routes/components";
 
 import { getTechnologyIcon } from "src/utils/technology-icon";
 
-import { useCourseTechnologies } from "src/api/course/technology/technologies";
+import { useFeaturedTechnologies } from "src/api/course/technology/featured";
 
 import { Iconify } from "src/components/iconify";
 import { varFade, MotionViewport } from "src/components/animate";
@@ -28,7 +28,7 @@ const variants: Variants = varFade("inUp", { distance: 24 });
 
 export function HomeFeatureTechnologies({ sx, ...other }: BoxProps) {
   const { t } = useTranslation("home");
-  const { data: courseTechnologies } = useCourseTechnologies({ page_size: "9" });
+  const { data: featuredTechnologies } = useFeaturedTechnologies();
   return (
     <Box
       component="section"
@@ -82,7 +82,7 @@ export function HomeFeatureTechnologies({ sx, ...other }: BoxProps) {
                   gridTemplateColumns: { xs: "repeat(2, 1fr)", md: "repeat(3, 1fr)" },
                 }}
               >
-                {(courseTechnologies ?? []).map((technology) => (
+                {(featuredTechnologies ?? []).map((technology) => (
                   <TechnologyItem key={technology.slug} technology={technology} />
                 ))}
               </Box>
