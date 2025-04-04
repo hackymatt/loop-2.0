@@ -89,7 +89,7 @@ export function NavDropdownContent({
 
             {data.tags.map((tag, index) => (
               <Link
-                key={tag.title}
+                key={index}
                 component={RouterLink}
                 href={tag.path}
                 variant="caption"

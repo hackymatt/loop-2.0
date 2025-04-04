@@ -1,6 +1,6 @@
 "use client";
 
-import { _faqs, _coursePosts, _testimonials } from "src/_mock";
+import { _faqs, _coursePosts } from "src/_mock";
 
 import { Faqs } from "../faqs";
 import { Testimonial } from "../testimonial";
@@ -22,7 +22,7 @@ export function AboutView() {
 
       <AboutCoreValues sx={{ bgcolor: "background.neutral" }} />
 
-      <Testimonial testimonials={_testimonials} />
+      <Testimonial />
 
       <Faqs data={_faqs} />
 

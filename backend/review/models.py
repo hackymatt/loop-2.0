@@ -3,6 +3,7 @@ from core.base_model import BaseModel
 from django.core.validators import MinValueValidator, MaxValueValidator
 from user.type.student_user.models import Student
 from course.models import Course
+from const import Language
 from global_config import CONFIG
 
 
@@ -20,6 +21,10 @@ class Review(BaseModel):
         validators=[MinValueValidator(1), MaxValueValidator(5)]
     )
     comment = models.TextField(blank=True, null=True)
+    language = models.CharField(
+        max_length=max(len(choice[0]) for choice in Language.choices),
+        choices=Language.choices,
+    )
 
     def __str__(self):
         return f"{self.student.user.email} - {self.course.slug} ({self.rating}/5)"

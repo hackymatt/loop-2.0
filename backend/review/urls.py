@@ -1,4 +1,4 @@
-from .views import ReviewSummaryViewSet, ReviewViewSet
+from .views import ReviewSummaryViewSet, ReviewViewSet, FeaturedReviewsView
 from django.urls import path
 from const import Urls
 
@@ -13,4 +13,5 @@ urlpatterns = [
         ReviewViewSet.as_view({"get": "list"}),
         name="course-reviews",
     ),
+    path(Urls.FEATURED_REVIEWS, FeaturedReviewsView.as_view(), name="featured-reviews")
 ]

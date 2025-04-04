@@ -10,6 +10,8 @@ import Typography from "@mui/material/Typography";
 
 import { fDate } from "src/utils/format-time";
 
+import { useFeaturedReviews } from "src/api/review/featured";
+
 import {
   Carousel,
   useCarousel,
@@ -19,12 +21,9 @@ import {
 
 // ----------------------------------------------------------------------
 
-type Props = BoxProps & {
-  testimonials: ITestimonialProps[];
-};
-
-export function Testimonial({ testimonials, sx, ...other }: Props) {
+export function Testimonial({ sx, ...other }: BoxProps) {
   const { t } = useTranslation("testimonial");
+  const { data: featuredReviews } = useFeaturedReviews();
 
   const carousel = useCarousel({
     slidesToShow: { xs: 1, sm: 2, md: 3, lg: 4 },
@@ -51,8 +50,8 @@ export function Testimonial({ testimonials, sx, ...other }: Props) {
         </Box>
 
         <Carousel carousel={carousel}>
-          {testimonials.map((testimonial) => (
-            <TestimonialItem key={testimonial.id} testimonial={testimonial} />
+          {(featuredReviews ?? []).map((testimonial, index) => (
+            <TestimonialItem key={index} testimonial={testimonial} />
           ))}
         </Carousel>
 
@@ -98,10 +97,10 @@ function TestimonialItem({ testimonial, sx, ...other }: TestimonialItemProps) {
       <Typography variant="caption" sx={{ color: "text.disabled" }}>
         {fDate(testimonial.createdAt)}
       </Typography>
-      <Typography variant="subtitle2">{testimonial.name}</Typography>
-      <Rating size="small" value={testimonial.ratingNumber} readOnly />
+      <Typography variant="subtitle2">{testimonial.student.name}</Typography>
+      <Rating size="small" value={testimonial.rating} readOnly />
       <Typography variant="body2" sx={{ color: "text.secondary" }}>
-        {testimonial.content}
+        {testimonial.message}
       </Typography>
     </Box>
   );

@@ -1,8 +1,8 @@
-from rest_framework import viewsets
+from rest_framework import viewsets, views
 from rest_framework.response import Response
 from review.serializers import ReviewSummarySerializer, ReviewSerializer
 from .models import Review
-from django.db.models import Count
+from django.db.models import Count, functions
 from course.models import Course
 from django.shortcuts import get_object_or_404
 
@@ -41,3 +41,17 @@ class ReviewViewSet(viewsets.ModelViewSet):
         course_slug = self.kwargs["slug"]
         course = get_object_or_404(Course, slug=course_slug)
         return Review.objects.filter(course=course).order_by("-created_at")
+
+
+class FeaturedReviewsView(views.APIView):
+    def get(self, request):
+        lang = request.LANGUAGE_CODE
+        reviews = (
+            Review.objects
+            .filter(rating=5, language=lang)
+            .annotate(comment_length=functions.Length("comment"))
+            .select_related("course", "student", "student__user")
+            .order_by("-comment_length")
+        )
+        serializer = ReviewSerializer(reviews, many=True, context={"request": request})
+        return Response(serializer.data)

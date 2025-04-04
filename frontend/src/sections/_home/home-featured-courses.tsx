@@ -66,11 +66,11 @@ export function HomeFeaturedCourses({ sx, ...other }: BoxProps) {
             },
           }}
         >
-          {(featuredCourses ?? []).map((course) => (
-            <m.div key={course.slug} variants={variants}>
+          <m.div variants={variants}>
+            {(featuredCourses ?? []).map((course) => (
               <CourseItem key={course.slug} course={course} />
-            </m.div>
-          ))}
+            ))}
+          </m.div>
         </Box>
 
         <m.div variants={variants}>

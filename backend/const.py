@@ -28,6 +28,7 @@ class Urls:
     COURSE = "courses"
     FEATURED_COURSE = "featured-courses"
     FEATURED_TECHNOLOGIES = "featured-technologies"
+    FEATURED_REVIEWS = "featured-reviews"
     # REVIEW
     COURSE_REVIEW_SUMMARY = "reviews/summary/<slug:slug>"
     COURSE_REVIEWS = "reviews/<slug:slug>"
