@@ -24,9 +24,7 @@ export function AboutView() {
 
       <AboutCoreValues sx={{ bgcolor: "background.neutral" }} />
 
-      {(featuredReviews ?? []).length > 0 ? (
-        <Testimonial testimonials={featuredReviews ?? []} />
-      ) : null}
+      {!!featuredReviews?.length && <Testimonial testimonials={featuredReviews ?? []} />}
 
       <Faqs data={_faqs} />
 

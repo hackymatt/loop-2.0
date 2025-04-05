@@ -75,7 +75,7 @@ const useCourseNav = () => {
       path: paths.courses,
     },
     tags: popularCourses.map((course) => ({
-      title: course.title,
+      title: course.name,
       path: `${paths.course}/${course.slug}/`,
     })),
     children,

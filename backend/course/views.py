@@ -4,7 +4,8 @@ from .models import Course
 from .serializers import CourseListSerializer, CourseRetrieveSerializer
 from .filters import CourseFilter
 from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny
-from django.db.models import Avg, Count
+from django.db.models import Avg, Count, Q
+from django.shortcuts import get_object_or_404
 
 
 class CourseViewSet(viewsets.ModelViewSet):
@@ -62,4 +63,19 @@ class FeaturedCoursesView(views.APIView):
         unique_courses = list({course.id: course for course in all_courses}.values())[:6]
 
         serializer = CourseListSerializer(unique_courses, many=True, context={"request": request})
+        return Response(serializer.data)
+    
+
+class SimilarCoursesView(views.APIView):
+    permission_classes = [AllowAny]
+    def get(self, request, slug):
+        course = get_object_or_404(Course, slug=slug)
+
+        similar_courses = Course.objects.filter(
+            Q(category=course.category) |
+            Q(technology=course.technology) |
+            Q(level=course.level)
+        ).exclude(id=course.id).distinct()[:3]
+
+        serializer = CourseListSerializer(similar_courses, many=True, context={"request": request})
         return Response(serializer.data)

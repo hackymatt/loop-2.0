@@ -1,5 +1,5 @@
 import type { BoxProps } from "@mui/material/Box";
-import type { ICourseProps } from "src/types/course";
+import type { ICourseListProps } from "src/types/course";
 
 import { useTranslation } from "react-i18next";
 
@@ -18,7 +18,7 @@ import { CourseItem } from "./course-item";
 // ----------------------------------------------------------------------
 
 type Props = BoxProps & {
-  courses: ICourseProps[];
+  courses: ICourseListProps[];
 };
 
 export function CourseListSimilar({ courses, sx, ...other }: Props) {
@@ -60,7 +60,7 @@ export function CourseListSimilar({ courses, sx, ...other }: Props) {
           }}
         >
           {courses.map((course) => (
-            <CourseItem key={course.id} course={course} isVertical />
+            <CourseItem key={course.slug} course={course} isVertical />
           ))}
         </Box>
       </Container>

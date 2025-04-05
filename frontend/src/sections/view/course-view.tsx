@@ -6,9 +6,9 @@ import Grid from "@mui/material/Grid2";
 import Divider from "@mui/material/Divider";
 import Container from "@mui/material/Container";
 
-import { _courses } from "src/_mock";
 import { useCourse } from "src/api/course/course";
 import { useReviews } from "src/api/review/reviews";
+import { useSimilarCourses } from "src/api/course/similar";
 
 import { ReviewList } from "../review/review-list";
 import { ReviewSummary } from "../review/review-summary";
@@ -21,7 +21,6 @@ import { CourseCertificateDetailsInfo } from "../courses/course-certificate-deta
 
 // ----------------------------------------------------------------------
 
-const relatedCourses = _courses.slice(0, 3);
 export function CourseView({ slug }: { slug: string }) {
   const query = useSetState({
     page: "1",
@@ -29,6 +28,7 @@ export function CourseView({ slug }: { slug: string }) {
 
   const { data: course } = useCourse(slug);
   const { data: reviews, count } = useReviews(slug);
+  const { data: similarCourses } = useSimilarCourses(slug);
 
   const renderReview = () => (
     <>
@@ -94,7 +94,7 @@ export function CourseView({ slug }: { slug: string }) {
 
       {renderReview()}
 
-      {!!relatedCourses?.length && <CourseListSimilar courses={relatedCourses} />}
+      {!!similarCourses?.length && <CourseListSimilar courses={similarCourses} />}
     </>
   );
 }

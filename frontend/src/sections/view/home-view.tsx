@@ -54,21 +54,17 @@ export function HomeView() {
 
       <HomeCertificate />
 
-      {(featuredCourses ?? []).length > 0 ? (
-        <HomeFeaturedCourses courses={featuredCourses ?? []} />
-      ) : null}
+      {!!featuredCourses?.length && <HomeFeaturedCourses courses={featuredCourses ?? []} />}
 
-      {(featuredTechnologies ?? []).length > 0 ? (
+      {!!featuredTechnologies?.length && (
         <HomeFeatureTechnologies technologies={featuredTechnologies ?? []} />
-      ) : null}
+      )}
 
       <HomePricing />
 
       <HomeFAQs />
 
-      {(featuredReviews ?? []).length > 0 ? (
-        <HomeTestimonials testimonials={featuredReviews ?? []} />
-      ) : null}
+      {!!featuredReviews?.length && <HomeTestimonials testimonials={featuredReviews ?? []} />}
 
       <HomeLatestPosts posts={_coursePosts} />
 
