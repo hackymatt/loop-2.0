@@ -94,7 +94,7 @@ export function CourseItem({ course, isVertical }: Props) {
 
   const renderTeacher = () => (
     <Box sx={{ gap: 1.5, display: "flex", alignItems: "center" }}>
-      <Avatar src={course.teachers[0]?.avatarUrl ?? DEFAULT_AVATAR_URL} />
+      <Avatar src={course.teachers[0]?.avatarUrl || DEFAULT_AVATAR_URL} />
 
       <Box sx={{ gap: 0.75, display: "flex", alignItems: "center", flexWrap: "wrap" }}>
         <Typography variant="body2">{course.teachers[0]?.name}</Typography>

@@ -27,7 +27,7 @@ import { Markdown } from "src/components/markdown";
 import { CustomBreadcrumbs } from "src/components/custom-breadcrumbs";
 
 import { PostTags } from "../../blog/post-tags";
-import { PostTime } from "../../blog/post-time";
+import { PostTime } from "../../blog/post-header";
 import { PostAuthor } from "../../blog/post-author";
 import { CareerNewsletter } from "../career-newsletter";
 import { CareerLatestPosts } from "../posts/career-latest-posts";

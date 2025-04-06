@@ -5,11 +5,12 @@ import type { QueryType, ListQueryResponse } from "src/api/types";
 import { compact } from "lodash-es";
 import { useQuery } from "@tanstack/react-query";
 
+import { URLS } from "src/api/urls";
 import { getListData, formatQueryParams } from "src/api/utils";
 
 import { useSettingsContext } from "src/components/settings";
 
-const endpoint = "/course-levels" as const;
+const endpoint = URLS.COURSE_LEVELS;
 
 type ICourseLevel = {
   slug: string;

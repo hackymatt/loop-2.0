@@ -10,7 +10,7 @@ class Chapter(BaseModel):
     active = models.BooleanField(default=False)
 
     class Meta:
-        db_table = "chapter"
+        db_table = "course_chapter"
 
     def __str__(self):
         return self.slug  # pragma: no cover
@@ -28,7 +28,7 @@ class ChapterTranslation(BaseModel):
     description = models.TextField()
 
     class Meta:
-        db_table = "chapter_translation"
+        db_table = "course_chapter_translation"
         unique_together = ("chapter", "language")
         verbose_name_plural = "Chapter translations"
 

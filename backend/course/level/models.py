@@ -8,7 +8,7 @@ class Level(BaseModel):
     order = models.PositiveIntegerField(default=0)
 
     class Meta:
-        db_table = "level"
+        db_table = "course_level"
         verbose_name_plural = "Levels"
 
     def __str__(self):
@@ -26,7 +26,7 @@ class LevelTranslation(BaseModel):
     name = models.CharField()
 
     class Meta:
-        db_table = "level_translation"
+        db_table = "course_level_translation"
         unique_together = ("level", "language")
 
     def __str__(self):

@@ -51,7 +51,7 @@ function TeacherItem({ teacher }: TeacherItemProps) {
         display: "flex",
       }}
     >
-      <Avatar src={teacher.avatarUrl ?? DEFAULT_AVATAR_URL} sx={{ width: 48, height: 48 }} />
+      <Avatar src={teacher.avatarUrl || DEFAULT_AVATAR_URL} sx={{ width: 48, height: 48 }} />
 
       <Box sx={{ flexGrow: 1, display: "flex", flexDirection: "column" }}>
         <Typography variant="subtitle1">{teacher.name}</Typography>

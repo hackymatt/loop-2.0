@@ -5,11 +5,12 @@ import type { ICourseTechnologyProp } from "src/types/course";
 import { compact } from "lodash-es";
 import { useQuery } from "@tanstack/react-query";
 
+import { URLS } from "src/api/urls";
 import { getSimpleListData } from "src/api/utils";
 
 import { useSettingsContext } from "src/components/settings";
 
-const endpoint = "/featured-technologies" as const;
+const endpoint = URLS.FEATURED_TECHNOLOGIES;
 
 type ICourseTechnology = {
   slug: string;

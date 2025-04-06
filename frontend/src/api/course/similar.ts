@@ -9,7 +9,9 @@ import { getSimpleListData } from "src/api/utils";
 
 import { useSettingsContext } from "src/components/settings";
 
-const endpoint = "/similar-courses" as const;
+import { URLS } from "../urls";
+
+const endpoint = URLS.SIMILAR_COURSES;
 
 type ILevel = {
   slug: string;

@@ -14,7 +14,7 @@ class Lesson(BaseModel):
     active = models.BooleanField(default=False)
 
     class Meta:
-        db_table = "lesson"
+        db_table = "course_lesson"
         verbose_name_plural = "Lessons"
 
     def __str__(self):
@@ -27,7 +27,7 @@ class ReadingLesson(BaseModel):
     )
 
     class Meta:
-        db_table = "reading_lesson"
+        db_table = "course_reading_lesson"
         verbose_name_plural = "Reading lessons"
 
     def __str__(self):
@@ -57,7 +57,7 @@ class ReadingLessonTranslation(BaseModel):
     text = models.TextField()
 
     class Meta:
-        db_table = "reading_lesson_translation"
+        db_table = "course_reading_lesson_translation"
         verbose_name_plural = "Reading lesson translations"
 
     def __str__(self):
@@ -71,7 +71,7 @@ class VideoLesson(BaseModel):
     video_url = models.URLField()
 
     class Meta:
-        db_table = "video_lesson"
+        db_table = "course_video_lesson"
         verbose_name_plural = "Video lessons"
 
     def __str__(self):
@@ -100,7 +100,7 @@ class VideoLessonTranslation(BaseModel):
     name = models.CharField(max_length=255)
 
     class Meta:
-        db_table = "video_lesson_translation"
+        db_table = "course_video_lesson_translation"
         verbose_name_plural = "Video lesson translations"
 
     def __str__(self):
@@ -115,7 +115,7 @@ class QuizLesson(BaseModel):
     )
 
     class Meta:
-        db_table = "quiz_lesson"
+        db_table = "course_quiz_lesson"
         verbose_name_plural = "Quiz lessons"
 
     def __str__(self):
@@ -145,7 +145,7 @@ class QuizLessonTranslation(BaseModel):
     questions = models.JSONField()
 
     class Meta:
-        db_table = "quiz_lesson_translation"
+        db_table = "course_quiz_lesson_translation"
         verbose_name_plural = "Quiz lesson translations"
 
     def __str__(self):
@@ -161,7 +161,7 @@ class CodingLesson(BaseModel):
     penalty_points = models.PositiveIntegerField(default=0)
 
     class Meta:
-        db_table = "coding_lesson"
+        db_table = "course_coding_lesson"
         verbose_name_plural = "Coding lessons"
 
     def __str__(self):
@@ -193,7 +193,7 @@ class CodingLessonTranslation(BaseModel):
     hint = models.TextField(blank=True, null=True)
 
     class Meta:
-        db_table = "coding_lesson_translation"
+        db_table = "course_coding_lesson_translation"
         verbose_name_plural = "Coding lesson translations"
 
     def __str__(self):

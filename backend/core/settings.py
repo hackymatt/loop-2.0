@@ -102,6 +102,9 @@ INSTALLED_APPS = [
     "course.enrollment",
     "course",
     "review",
+    "blog.topic",
+    "blog.tag",
+    "blog",
 ]
 
 DEBUG_TOOLBAR_PANELS = [

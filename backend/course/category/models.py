@@ -7,7 +7,7 @@ class Category(BaseModel):
     slug = models.SlugField(unique=True)
 
     class Meta:
-        db_table = "category"
+        db_table = "course_category"
         verbose_name_plural = "Categories"
 
     def __str__(self):
@@ -25,7 +25,7 @@ class CategoryTranslation(BaseModel):
     name = models.CharField()
 
     class Meta:
-        db_table = "category_translation"
+        db_table = "course_category_translation"
         verbose_name_plural = "Category translations"
         unique_together = ("category", "language")
 

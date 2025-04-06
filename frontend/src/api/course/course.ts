@@ -9,7 +9,9 @@ import { getData } from "src/api/utils";
 
 import { useSettingsContext } from "src/components/settings";
 
-const endpoint = "/courses" as const;
+import { URLS } from "../urls";
+
+const endpoint = URLS.COURSES;
 
 type ILevel = {
   slug: string;

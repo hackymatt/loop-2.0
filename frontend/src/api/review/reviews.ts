@@ -9,7 +9,9 @@ import { getListData } from "src/api/utils";
 
 import { useSettingsContext } from "src/components/settings";
 
-const endpoint = "/reviews" as const;
+import { URLS } from "../urls";
+
+const endpoint = URLS.REVIEWS;
 
 type IStudent = {
   first_name: string;

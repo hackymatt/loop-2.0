@@ -4,9 +4,10 @@ import { useMutation } from "@tanstack/react-query";
 
 import { useSettingsContext } from "src/components/settings";
 
+import { URLS } from "../urls";
 import { Api } from "../service";
 
-const endpoint = "/auth/google-login" as const;
+const endpoint = URLS.LOGIN_GOOGLE;
 
 type ILogin = {
   token: string;

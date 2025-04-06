@@ -48,14 +48,13 @@ function slugify(text: string): string {
 
 const base = (index: number) => ({
   id: _mock.id(index),
-  category: "Marketing",
-  duration: "8 min",
-  title: _mock.postTitle(index),
+  category: { slug: "marketing", name: "Marketing" },
+  duration: 8,
+  name: _mock.postTitle(index),
   slug: slugify(_mock.postTitle(index)),
-  favorited: _mock.boolean(index),
   description: _mock.description(index),
-  tags: _tags.slice(index + 1, index + 2),
-  createdAt: "2024-08-12T16:00:00.000Z",
+  tags: _tags.slice(index + 1, index + 2).map((tag) => ({ slug: slugify(tag), name: tag })),
+  publishedAt: "2024-08-12T16:00:00.000Z",
   author: {
     name: _mock.fullName(index),
     role: _mock.role(index),
@@ -92,6 +91,21 @@ export const _careerPosts = Array.from({ length: 12 }, (_, index) => ({
 export const _coursePosts = Array.from({ length: 12 }, (_, index) => ({
   ...base(index),
   content: content("course"),
-  coverUrl: _mock.image.course(index),
-  heroUrl: `${CONFIG.assetsDir}/assets/images/course/course-large-1.webp`,
+  heroUrl: _mock.image.course(index),
+  prevPost:
+    index === 0
+      ? null
+      : {
+          slug: base(index - 1).slug,
+          name: base(index - 1).name,
+          heroUrl: `${CONFIG.assetsDir}/assets/images/career/career-large-1.webp`,
+        },
+  nextPost:
+    index === 2
+      ? null
+      : {
+          slug: base(index + 1).slug,
+          name: base(index + 1).name,
+          heroUrl: `${CONFIG.assetsDir}/assets/images/career/career-large-1.webp`,
+        },
 }));

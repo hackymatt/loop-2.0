@@ -8,7 +8,8 @@ import { useBackToTop } from "minimal-shared/hooks";
 import Fab from "@mui/material/Fab";
 import SvgIcon from "@mui/material/SvgIcon";
 
-import { _coursePosts } from "src/_mock";
+import { useRecentPosts } from "src/api/blog/recent";
+import { useFeaturedPost } from "src/api/blog/featured";
 import { useFeaturedCourses } from "src/api/course/featured";
 import { useFeaturedReviews } from "src/api/review/featured";
 import { useFeaturedTechnologies } from "src/api/course/technology/featured";
@@ -37,6 +38,8 @@ export function HomeView() {
   const { data: featuredCourses } = useFeaturedCourses();
   const { data: featuredTechnologies } = useFeaturedTechnologies();
   const { data: featuredReviews } = useFeaturedReviews();
+  const { data: featuredPost } = useFeaturedPost();
+  const { data: recentPosts } = useRecentPosts();
 
   return (
     <>
@@ -54,19 +57,21 @@ export function HomeView() {
 
       <HomeCertificate />
 
-      {!!featuredCourses?.length && <HomeFeaturedCourses courses={featuredCourses ?? []} />}
+      {!!featuredCourses?.length && <HomeFeaturedCourses courses={featuredCourses} />}
 
       {!!featuredTechnologies?.length && (
-        <HomeFeatureTechnologies technologies={featuredTechnologies ?? []} />
+        <HomeFeatureTechnologies technologies={featuredTechnologies} />
       )}
 
       <HomePricing />
 
       <HomeFAQs />
 
-      {!!featuredReviews?.length && <HomeTestimonials testimonials={featuredReviews ?? []} />}
+      {!!featuredReviews?.length && <HomeTestimonials testimonials={featuredReviews} />}
 
-      <HomeLatestPosts posts={_coursePosts} />
+      {featuredPost && !!recentPosts?.length && (
+        <HomeLatestPosts featuredPost={featuredPost} recentPosts={recentPosts} />
+      )}
 
       <HomeAdvertisement />
 

@@ -1,5 +1,9 @@
 import type { COURSE_TYPE } from "src/consts/course";
 
+import type { IInstructorProps } from "./user";
+
+// ----------------------------------------------------------------------
+
 export type ICourseLevelProp = {
   slug: string;
   name: string;
@@ -15,11 +19,7 @@ export type ICourseCategoryProp = {
   name: string;
 };
 
-export type ICourseTeacherProp = {
-  name: string;
-  role: string;
-  avatarUrl: string | null;
-};
+export type ICourseTeacherProp = IInstructorProps;
 
 export type ICourseLessonType = (typeof COURSE_TYPE)[keyof typeof COURSE_TYPE];
 
@@ -37,38 +37,31 @@ export type ICourseChapterProp = {
   lessons: ICourseLessonProp[];
 };
 
-export type ICourseProps = {
+type ICourseBaseProps = {
   slug: string;
   name: string;
   description: string;
-  overview: string;
   level: ICourseLevelProp;
   category: ICourseCategoryProp;
   technology: ICourseTechnologyProp;
-  chapters: ICourseChapterProp[];
   teachers: ICourseTeacherProp[];
   totalHours: number;
-  chatUrl: string | null;
   // calculated
   totalLessons: number;
-  totalPoints: number;
-  totalReading: number;
-  totalVideos: number;
-  totalQuizzes: number;
-  totalExercises: number;
   ratingNumber: number | null;
   totalReviews: number;
   totalStudents: number;
 };
 
-export type ICourseListProps = Omit<
-  ICourseProps,
-  | "overview"
-  | "chapters"
-  | "chatUrl"
-  | "totalPoints"
-  | "totalReading"
-  | "totalVideos"
-  | "totalQuizzes"
-  | "totalExercises"
->;
+export type ICourseListProps = ICourseBaseProps;
+
+export type ICourseProps = ICourseBaseProps & {
+  overview: string;
+  chapters: ICourseChapterProp[];
+  totalPoints: number;
+  totalReading: number;
+  totalVideos: number;
+  totalQuizzes: number;
+  totalExercises: number;
+  chatUrl: string | null;
+};

@@ -4,9 +4,10 @@ import { useMutation } from "@tanstack/react-query";
 
 import { useSettingsContext } from "src/components/settings";
 
+import { URLS } from "../urls";
 import { Api } from "../service";
 
-const endpoint = "/auth/reset-password-confirm" as const;
+const endpoint = URLS.PASSWORD_UPDATE;
 
 type IPasswordUpdate = {
   token: string;

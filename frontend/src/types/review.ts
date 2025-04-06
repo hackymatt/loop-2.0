@@ -1,5 +1,7 @@
 import type { DatePickerFormat } from "src/utils/format-time";
 
+import type { IStudentProps } from "./user";
+
 // ----------------------------------------------------------------------
 
 export type IReviewSummaryProps = {
@@ -7,10 +9,7 @@ export type IReviewSummaryProps = {
   count: number;
 };
 
-type IReviewUser = {
-  name: string;
-  avatarUrl: string | null;
-};
+type IReviewUser = IStudentProps;
 
 export type IReviewItemProp = {
   rating: number;

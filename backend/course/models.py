@@ -1,5 +1,4 @@
 from django.db import models
-from django.contrib.auth import get_user_model
 from core.base_model import BaseModel
 from const import Language
 from .chapter.models import Chapter

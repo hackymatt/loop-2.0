@@ -7,7 +7,7 @@ class Technology(BaseModel):
     name = models.CharField()
 
     class Meta:
-        db_table = "technology"
+        db_table = "course_technology"
         verbose_name_plural = "Technologies"
 
     def __str__(self):

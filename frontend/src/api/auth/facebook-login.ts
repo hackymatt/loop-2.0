@@ -4,9 +4,10 @@ import { useMutation } from "@tanstack/react-query";
 
 import { useSettingsContext } from "src/components/settings";
 
+import { URLS } from "../urls";
 import { Api } from "../service";
 
-const endpoint = "/auth/facebook-login" as const;
+const endpoint = URLS.LOGIN_FACEBOOK;
 
 type ILogin = {
   access_token: string;

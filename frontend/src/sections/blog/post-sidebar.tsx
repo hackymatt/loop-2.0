@@ -1,41 +1,30 @@
-import type { IPostProps } from "src/types/blog";
 import type { BoxProps } from "@mui/material/Box";
-import type { IAuthorProps } from "src/types/author";
 import type { Theme, SxProps } from "@mui/material/styles";
+import type { IBlogTagProp, IBlogTopicProp, IBlogRecentProps } from "src/types/blog";
 
 import { useTranslation } from "react-i18next";
 
 import Box from "@mui/material/Box";
 import Chip from "@mui/material/Chip";
-import Avatar from "@mui/material/Avatar";
 import Typography from "@mui/material/Typography";
-import IconButton from "@mui/material/IconButton";
 import { Stack, Checkbox, FormControlLabel } from "@mui/material";
 
-import { useResponsive } from "src/hooks/use-responsive";
 import { useQueryParams } from "src/hooks/use-query-params";
-
-import { _socials } from "src/_mock";
-import { TwitterIcon, FacebookIcon, LinkedinIcon, InstagramIcon } from "src/assets/icons";
-
-import Search from "src/components/search/search";
 
 import { PostItemMobile } from "./post-item-mobile";
 
 // ----------------------------------------------------------------------
 
 type PostSidebarProps = BoxProps & {
-  tags?: string[];
-  author?: IAuthorProps;
-  recentPosts?: IPostProps[];
-  categories?: string[];
+  tags: IBlogTagProp[];
+  recentPosts: IBlogRecentProps[];
+  categories: IBlogTopicProp[];
   slots?: {
     topNode?: React.ReactNode;
     bottomNode?: React.ReactNode;
   };
   slotProps?: {
     tags?: SxProps<Theme>;
-    author?: SxProps<Theme>;
     categories?: SxProps<Theme>;
     recentPosts?: SxProps<Theme>;
   };
@@ -45,7 +34,6 @@ export function PostSidebar({
   sx,
   tags,
   slots,
-  author,
   slotProps,
   categories,
   recentPosts,
@@ -54,64 +42,6 @@ export function PostSidebar({
   const { t } = useTranslation("blog");
 
   const { query, handleChange } = useQueryParams();
-
-  const mdUp = useResponsive("up", "md");
-
-  const renderSearch = () => {
-    const currentValue = query?.search ?? "";
-    return (
-      <Search
-        placeholder={`${t("search")}...`}
-        value={currentValue}
-        onChange={(newValue) => handleChange("search", newValue as string)}
-        sx={{ display: { xs: "none", md: "inline-flex" } }}
-      />
-    );
-  };
-
-  const renderSocials = () => (
-    <Box sx={{ display: "flex" }}>
-      {_socials.map((social) => (
-        <IconButton key={social.label}>
-          {social.value === "twitter" && <TwitterIcon />}
-          {social.value === "facebook" && <FacebookIcon />}
-          {social.value === "instagram" && <InstagramIcon />}
-          {social.value === "linkedin" && <LinkedinIcon />}
-        </IconButton>
-      ))}
-    </Box>
-  );
-
-  const renderAuthor = () =>
-    author && (
-      <Box
-        sx={[
-          {
-            gap: 2,
-            mb: { md: 5 },
-            display: { xs: "none", md: "flex" },
-          },
-          ...(Array.isArray(slotProps?.author) ? (slotProps?.author ?? []) : [slotProps?.author]),
-        ]}
-      >
-        <Avatar src={author.avatarUrl} sx={{ width: 64, height: 64 }} />
-
-        <div>
-          <Typography component="span" variant="h6">
-            {author.name}
-          </Typography>
-          <Typography
-            component="span"
-            variant="body2"
-            sx={{ mb: 1, mt: 0.5, display: "block", color: "text.secondary" }}
-          >
-            {author.role}
-          </Typography>
-
-          {renderSocials()}
-        </div>
-      </Box>
-    );
 
   const renderCategories = () => {
     const currentValue = query?.category ?? "";
@@ -122,10 +52,10 @@ export function PostSidebar({
 
           <Stack spacing={0.5} alignItems="flex-start" mt={1}>
             {categories.map((category) => {
-              const isSelected = currentValue.includes(category);
+              const isSelected = currentValue.includes(category.slug);
               return (
                 <FormControlLabel
-                  key={category}
+                  key={category.slug}
                   value={category}
                   control={
                     <Checkbox
@@ -133,28 +63,28 @@ export function PostSidebar({
                       value={category}
                       checked={isSelected}
                       onChange={() =>
-                        currentValue !== category
-                          ? handleChange("category", category)
+                        currentValue !== category.slug
+                          ? handleChange("category", category.slug)
                           : handleChange("category", "")
                       }
                       sx={{ display: "none" }}
                     />
                   }
                   label={
-                    <Box key={category} gap={2} display="flex" alignItems="center">
+                    <Box key={category.slug} gap={2} display="flex" alignItems="center">
                       <Box
                         component="span"
                         sx={{ width: 6, height: 6, borderRadius: "50%", bgcolor: "primary.main" }}
                       />
 
-                      {category}
+                      {category.name}
                     </Box>
                   }
                   sx={{
                     m: 0,
                     fontWeight: "fontWeightSemiBold",
                     "&:hover": { color: "primary.main" },
-                    ...(category === currentValue && {
+                    ...(category.slug === currentValue && {
                       color: "primary.main",
                     }),
                   }}
@@ -173,7 +103,7 @@ export function PostSidebar({
         <Typography variant="h5">{t("recentPosts")}</Typography>
 
         {recentPosts.map((post) => (
-          <PostItemMobile key={post.id} post={post} onSidebar sx={{ mt: 2 }} />
+          <PostItemMobile key={post.slug} post={post} onSidebar sx={{ mt: 2 }} />
         ))}
       </Box>
     );
@@ -194,17 +124,17 @@ export function PostSidebar({
 
           <Box sx={{ mt: 2, gap: 1, display: "flex", flexWrap: "wrap" }}>
             {tags.map((tag) => {
-              const isSelected = currentTags.includes(tag);
+              const isSelected = currentTags.includes(tag.slug);
               return (
                 <Chip
-                  key={tag}
-                  label={tag}
+                  key={tag.slug}
+                  label={tag.name}
                   variant={isSelected ? "filled" : "outlined"}
                   size="small"
                   component="a"
                   clickable
                   onClick={() => {
-                    handleChange("tags", getSelected(currentTags, tag).join(","));
+                    handleChange("tags", getSelected(currentTags, tag.slug).join(","));
                   }}
                 />
               );
@@ -219,16 +149,12 @@ export function PostSidebar({
     <>
       {slots?.topNode}
 
-      {renderAuthor()}
-      {mdUp && renderSearch()}
-
       <Box
         sx={[
           {
             gap: 5,
             display: "flex",
             flexDirection: "column",
-            pt: { md: 5 },
             pb: { xs: 10, md: 0 },
           },
           ...(Array.isArray(sx) ? sx : [sx]),

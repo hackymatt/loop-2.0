@@ -31,8 +31,14 @@ class Urls:
     FEATURED_REVIEWS = "featured-reviews"
     SIMILAR_COURSES = "similar-courses/<slug:slug>"
     # REVIEW
-    COURSE_REVIEW_SUMMARY = "reviews/summary/<slug:slug>"
+    COURSE_REVIEW_SUMMARY = "reviews-summary/<slug:slug>"
     COURSE_REVIEWS = "reviews/<slug:slug>"
+    # BLOG
+    POST_TOPICS = "post-topics"
+    POST_TAGS = "post-tags"
+    POST = "posts"
+    RECENT_POST = "recent-posts"
+    FEATURED_POST = "featured-post"
     # CONTACT
     CONTACT = "contact"
 

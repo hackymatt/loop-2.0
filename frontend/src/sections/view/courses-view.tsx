@@ -33,7 +33,7 @@ export function CoursesView() {
   const { data: courseLevels } = useCourseLevels({ sort_by: "order", page_size: "-1" });
   const { data: courseTechnologies } = useCourseTechnologies({ page_size: "-1" });
   const { data: courseCategories } = useCourseCategories({ page_size: "-1" });
-  const { data: courses, count } = useCourses(query);
+  const { data: courses, pageSize } = useCourses(query);
 
   const openMobile = useBoolean();
 
@@ -56,7 +56,7 @@ export function CoursesView() {
     <Box sx={{ gap: 4, display: "flex", flexDirection: "column" }}>
       <CourseList
         courses={courses ?? []}
-        count={count ?? 0}
+        count={pageSize || 0}
         page={Number(query.page) || 1}
         onPageChange={(selectedPage: number) => handleChange("page", String(selectedPage))}
       />

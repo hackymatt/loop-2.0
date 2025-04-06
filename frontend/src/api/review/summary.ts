@@ -9,7 +9,9 @@ import { getSimpleListData } from "src/api/utils";
 
 import { useSettingsContext } from "src/components/settings";
 
-const endpoint = "/reviews/summary" as const;
+import { URLS } from "../urls";
+
+const endpoint = URLS.REVIEWS_SUMMARY;
 
 type IReviewSummary = {
   rating: number;

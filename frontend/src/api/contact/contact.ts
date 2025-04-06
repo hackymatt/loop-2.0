@@ -2,9 +2,10 @@ import type { AxiosError } from "axios";
 
 import { useMutation } from "@tanstack/react-query";
 
+import { URLS } from "../urls";
 import { Api } from "../service";
 
-const endpoint = "/contact" as const;
+const endpoint = URLS.CONTACT;
 
 type ICreateContact = {
   full_name: string;

@@ -1,4 +1,5 @@
 import type { BoxProps } from "@mui/material/Box";
+import type { IBlogTagProp } from "src/types/blog";
 
 import { useTranslation } from "react-i18next";
 
@@ -11,7 +12,7 @@ import { paths } from "src/routes/paths";
 // ----------------------------------------------------------------------
 
 type PostTagsProps = BoxProps & {
-  tags: string[];
+  tags: IBlogTagProp[];
 };
 
 export function PostTags({ tags, sx, ...other }: PostTagsProps) {
@@ -30,12 +31,12 @@ export function PostTags({ tags, sx, ...other }: PostTagsProps) {
       <Box sx={{ gap: 1, display: "flex", flexWrap: "wrap" }}>
         {tags.map((tag) => (
           <Chip
-            key={tag}
-            label={tag}
+            key={tag.slug}
+            label={tag.name}
             variant="outlined"
             size="small"
             component="a"
-            href={`${paths.posts}/?tags=${tag}`}
+            href={`${paths.posts}/?tags=${tag.slug}`}
             clickable
           />
         ))}
