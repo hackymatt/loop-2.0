@@ -11,7 +11,9 @@ from review.urls import urlpatterns as review_urls
 from contact.urls import urlpatterns as contact_urls
 from blog.urls import urlpatterns as blog_urlpatterns
 
-api_urlpatterns = user_urls + course_urls + review_urls + contact_urls + blog_urlpatterns
+api_urlpatterns = (
+    user_urls + course_urls + review_urls + contact_urls + blog_urlpatterns
+)
 
 # Main URL patterns
 urlpatterns = [

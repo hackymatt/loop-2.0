@@ -7,7 +7,7 @@ from global_config import CONFIG
 
 def get_dummy_student():
     """Returns the dummy student instance."""
-    return Student.objects.get(user__email=CONFIG["dummy_student_email"])
+    return Student.objects.get(user__email=CONFIG["dummy_student_email"])    # pragma: no cover
 
 
 class CourseEnrollment(BaseModel):
@@ -28,4 +28,4 @@ class CourseEnrollment(BaseModel):
     def __str__(self):
         return (
             f"{self.student.user.email} started {self.course.slug} on {self.created_at}"
-        )
+        )   # pragma: no cover

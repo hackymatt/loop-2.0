@@ -11,6 +11,9 @@ blog_urlpatterns = topic_urls + tag_urls
 router = Router(trailing_slash=False)
 router.register(Urls.POST, BlogViewSet, basename="posts")
 
-urlpatterns = [path("", include(blog_urlpatterns)), path("", include(router.urls)),
-               path(Urls.RECENT_POST, RecentBlogsView.as_view(), name="recent-posts"),
-               path(Urls.FEATURED_POST, FeaturedBlogView.as_view(), name="featured-post"),]
+urlpatterns = [
+    path("", include(blog_urlpatterns)),
+    path("", include(router.urls)),
+    path(Urls.RECENT_POST, RecentBlogsView.as_view(), name="recent-posts"),
+    path(Urls.FEATURED_POST, FeaturedBlogView.as_view(), name="featured-post"),
+]

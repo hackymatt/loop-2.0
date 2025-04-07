@@ -2,8 +2,6 @@ from rest_framework import serializers
 from .models import Instructor
 
 
-
-
 class InstructorSerializer(serializers.ModelSerializer):
     full_name = serializers.SerializerMethodField()  # Get full name
     image = serializers.ImageField(

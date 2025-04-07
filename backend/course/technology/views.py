@@ -21,13 +21,14 @@ class TechnologyViewSet(viewsets.ModelViewSet):
         return [permission() for permission in permission_classes]  # Everyone can read
 
 
-
 class FeaturedTechnologiesView(views.APIView):
     def get(self, request):
         # Aggregate stats per technology
         technologies = (
             Technology.objects.annotate(
-                course_count=Count("course", filter=Q(course__active=True), distinct=True),
+                course_count=Count(
+                    "course", filter=Q(course__active=True), distinct=True
+                ),
                 avg_rating=Avg("course__reviews__rating"),
                 total_enrollments=Count("course__enrollments", distinct=True),
             )
@@ -35,5 +36,7 @@ class FeaturedTechnologiesView(views.APIView):
             .order_by("-total_enrollments", "-avg_rating")[:9]
         )
 
-        serializer = TechnologySerializer(technologies, many=True, context={"request": request})
+        serializer = TechnologySerializer(
+            technologies, many=True, context={"request": request}
+        )
         return Response(serializer.data)

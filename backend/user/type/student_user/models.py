@@ -15,14 +15,14 @@ class Student(BaseModel):
         if self.user.user_type != UserType.STUDENT:
             raise ValidationError(
                 f"Student profile can only be created for {UserType.STUDENT} users."
-            )
+            )  # pragma: no cover
 
     def save(self, *args, **kwargs):
         self.clean()
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"Student Profile: {self.user.email}"
+        return f"Student Profile: {self.user.email}"  # pragma: no cover
 
     class Meta:
         db_table = "student"

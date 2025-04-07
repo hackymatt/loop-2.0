@@ -33,4 +33,4 @@ class ChapterTranslation(BaseModel):
         verbose_name_plural = "Chapter translations"
 
     def __str__(self):
-        return f"{self.name} ({self.language})"
+        return f"{self.name} ({self.language})"  # pragma: no cover

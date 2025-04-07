@@ -5,7 +5,7 @@ from rest_framework.test import APIClient
 from django.contrib.auth import get_user_model
 from const import Urls, UserType
 from user.utils import get_unique_username
-
+from ...helpers import get_jwt_token_from_login
 
 class CategoryViewTest(APITestCase):
     def setUp(self):
@@ -39,19 +39,9 @@ class CategoryViewTest(APITestCase):
             category=self.category, language="pl", name="Frontend"
         )
 
-    def get_jwt_token_from_login(self, email, password):
-        """Helper method to get JWT token from custom login API."""
-        # Assuming you have a login endpoint like /api/login/
-        response = self.client.post(
-            f"/{Urls.API}/{Urls.LOGIN}",
-            {"email": email, "password": password},
-            format="json",
-        )
-        return response.data["access_token"]
-
     # CREATE (Only Admin)
     def test_create_category_admin(self):
-        token = self.get_jwt_token_from_login(
+        token = get_jwt_token_from_login(self,
             self.admin_data["email"], self.admin_data["password"]
         )
         self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {token}")
@@ -66,7 +56,7 @@ class CategoryViewTest(APITestCase):
         )
 
     def test_create_category_regular_user(self):
-        token = self.get_jwt_token_from_login(
+        token = get_jwt_token_from_login(self,
             self.regular_user_data["email"], self.regular_user_data["password"]
         )
         self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {token}")
@@ -77,7 +67,7 @@ class CategoryViewTest(APITestCase):
     # READ (Allowed for Everyone)
     def test_get_course_categories_regular_user(self):
         """Ensure users can fetch course categories in their preferred language."""
-        token = self.get_jwt_token_from_login(
+        token = get_jwt_token_from_login(self,
             self.regular_user_data["email"], self.regular_user_data["password"]
         )
         self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {token}")
@@ -97,7 +87,7 @@ class CategoryViewTest(APITestCase):
     # UPDATE TRANSLATION (Only Admin)
     def test_update_category_translation_admin(self):
         """Ensure admins can update translations for existing course categories."""
-        token = self.get_jwt_token_from_login(
+        token = get_jwt_token_from_login(self,
             self.admin_data["email"], self.admin_data["password"]
         )
         self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {token}")
@@ -112,7 +102,7 @@ class CategoryViewTest(APITestCase):
         )
 
     def test_update_category_translation_regular_user(self):
-        token = self.get_jwt_token_from_login(
+        token = get_jwt_token_from_login(self,
             self.regular_user_data["email"], self.regular_user_data["password"]
         )
         self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {token}")
@@ -124,7 +114,7 @@ class CategoryViewTest(APITestCase):
 
     # DELETE (Only Admin)
     def test_delete_category_admin(self):
-        token = self.get_jwt_token_from_login(
+        token = get_jwt_token_from_login(self,
             self.admin_data["email"], self.admin_data["password"]
         )
         self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {token}")
@@ -135,7 +125,7 @@ class CategoryViewTest(APITestCase):
         self.assertFalse(Category.objects.filter(slug="frontend").exists())
 
     def test_delete_category_regular_user(self):
-        token = self.get_jwt_token_from_login(
+        token = get_jwt_token_from_login(self,
             self.regular_user_data["email"], self.regular_user_data["password"]
         )
         self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {token}")

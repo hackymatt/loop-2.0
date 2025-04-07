@@ -2,10 +2,10 @@ from rest_framework import serializers
 from .models import Review
 from user.type.student_user.serializers import StudentSerializer
 
+
 class ReviewSummarySerializer(serializers.Serializer):
     rating = serializers.IntegerField()
     count = serializers.IntegerField()
-
 
 
 class ReviewSerializer(serializers.ModelSerializer):

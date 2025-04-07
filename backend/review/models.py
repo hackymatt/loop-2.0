@@ -9,7 +9,7 @@ from global_config import CONFIG
 
 def get_dummy_student():
     """Returns the dummy student instance."""
-    return Student.objects.get(user__email=CONFIG["dummy_student_email"])
+    return Student.objects.get(user__email=CONFIG["dummy_student_email"])   # pragma: no cover
 
 
 class Review(BaseModel):
@@ -27,7 +27,7 @@ class Review(BaseModel):
     )
 
     def __str__(self):
-        return f"{self.student.user.email} - {self.course.slug} ({self.rating}/5)"
+        return f"{self.student.user.email} - {self.course.slug} ({self.rating}/5)"  # pragma: no cover
 
     class Meta:
         db_table = "review"

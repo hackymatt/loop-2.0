@@ -10,5 +10,9 @@ router.register(
 
 urlpatterns = [
     path("", include(router.urls)),
-    path(Urls.FEATURED_TECHNOLOGIES, FeaturedTechnologiesView.as_view(), name="featured-courses"),
+    path(
+        Urls.FEATURED_TECHNOLOGIES,
+        FeaturedTechnologiesView.as_view(),
+        name="featured-courses",
+    ),
 ]

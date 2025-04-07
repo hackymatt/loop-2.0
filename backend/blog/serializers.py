@@ -3,16 +3,15 @@ import re
 import markdown
 from bs4 import BeautifulSoup
 from rest_framework import serializers
-from .models import Blog, BlogTranslation
+from .models import Blog
 from .topic.serializers import TopicSerializer
 from .tag.serializers import TagSerializer
 from user.type.instructor_user.serializers import InstructorSerializer
 
+
 class BlogNavSerializer(serializers.ModelSerializer):
     translated_name = serializers.SerializerMethodField()
-    image = serializers.ImageField(
-        read_only=True
-    )
+    image = serializers.ImageField(read_only=True)
 
     class Meta:
         model = Blog
@@ -20,7 +19,6 @@ class BlogNavSerializer(serializers.ModelSerializer):
             "slug",
             "translated_name",
             "image",
-       
         ]
 
     def _get_translation(self, obj, field):
@@ -30,18 +28,7 @@ class BlogNavSerializer(serializers.ModelSerializer):
 
     def get_translated_name(self, obj):
         return self._get_translation(obj, "name")
-    
-    def get_duration(self, obj):
-        content = self._get_translation(obj, "content")
-        html = markdown.markdown(content)
 
-        # Strip HTML tags
-        soup = BeautifulSoup(html, features="html.parser")
-        plain_text = soup.get_text()
-
-        # Count words
-        words = re.findall(r'\w+', plain_text)
-        return math.ceil(len(words) / 200)  # Assuming 200 words per minute
 
 class BaseBlogSerializer(serializers.ModelSerializer):
     name = serializers.CharField(write_only=True)
@@ -49,9 +36,7 @@ class BaseBlogSerializer(serializers.ModelSerializer):
     translated_name = serializers.SerializerMethodField()
     topic = TopicSerializer(read_only=True)
     duration = serializers.SerializerMethodField()
-    image = serializers.ImageField(
-        read_only=True
-    )
+    image = serializers.ImageField(read_only=True)
 
     class Meta:
         model = Blog
@@ -63,7 +48,7 @@ class BaseBlogSerializer(serializers.ModelSerializer):
             "topic",
             "image",
             "published_at",
-            "duration",           
+            "duration",
         ]
 
     def _get_translation(self, obj, field):
@@ -73,7 +58,7 @@ class BaseBlogSerializer(serializers.ModelSerializer):
 
     def get_translated_name(self, obj):
         return self._get_translation(obj, "name")
-    
+
     def get_duration(self, obj):
         content = self._get_translation(obj, "content")
         html = markdown.markdown(content)
@@ -83,7 +68,7 @@ class BaseBlogSerializer(serializers.ModelSerializer):
         plain_text = soup.get_text()
 
         # Count words
-        words = re.findall(r'\w+', plain_text)
+        words = re.findall(r"\w+", plain_text)
         return math.ceil(len(words) / 200)  # Assuming 200 words per minute
 
 
@@ -125,15 +110,16 @@ class BlogRetrieveSerializer(BaseBlogSerializer):
 
     def get_translated_description(self, obj):
         return self._get_translation(obj, "description")
-    
+
     def get_translated_content(self, obj):
         return self._get_translation(obj, "content")
-    
+
     def _blog_nav_data(self, blog):
         if not blog:
             return None
 
-        return BlogNavSerializer(blog, context=self.context).data    
+        return BlogNavSerializer(blog, context=self.context).data
+
     def get_prev(self, obj):
         previous = (
             Blog.objects.filter(published_at__lt=obj.published_at, active=True)
@@ -149,21 +135,3 @@ class BlogRetrieveSerializer(BaseBlogSerializer):
             .first()
         )
         return self._blog_nav_data(next_post)
-    
-    def create(self, validated_data):
-        blog, _ = Blog.objects.get_or_create(slug=validated_data["slug"])
-        BlogTranslation.objects.update_or_create(
-            blog=blog,
-            language=validated_data["language"],
-            defaults={"name": validated_data["name"]},
-        )
-        return blog
-
-    def update(self, instance, validated_data):
-        if "language" in validated_data and "name" in validated_data:
-            Blog.objects.update_or_create(
-                blog=instance,
-                language=validated_data["language"],
-                defaults={"name": validated_data["name"]},
-            )
-        return instance

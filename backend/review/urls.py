@@ -9,9 +9,9 @@ urlpatterns = [
         name="reviews-summary",
     ),
     path(
-        Urls.COURSE_REVIEWS,  
+        Urls.COURSE_REVIEWS,
         ReviewViewSet.as_view({"get": "list"}),
         name="course-reviews",
     ),
-    path(Urls.FEATURED_REVIEWS, FeaturedReviewsView.as_view(), name="featured-reviews")
+    path(Urls.FEATURED_REVIEWS, FeaturedReviewsView.as_view(), name="featured-reviews"),
 ]

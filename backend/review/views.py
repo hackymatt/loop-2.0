@@ -31,11 +31,9 @@ class ReviewSummaryViewSet(viewsets.ViewSet):
         return Response(serializer.data)
 
 
-
 class ReviewViewSet(viewsets.ModelViewSet):
     http_method_names = ["get"]  # Only allow GET requests
     serializer_class = ReviewSerializer
-    
 
     def get_queryset(self):
         course_slug = self.kwargs["slug"]
@@ -47,8 +45,7 @@ class FeaturedReviewsView(views.APIView):
     def get(self, request):
         lang = request.LANGUAGE_CODE
         reviews = (
-            Review.objects
-            .filter(rating=5, language=lang)
+            Review.objects.filter(rating=5, language=lang)
             .annotate(comment_length=functions.Length("comment"))
             .select_related("course", "student", "student__user")
             .order_by("-comment_length")

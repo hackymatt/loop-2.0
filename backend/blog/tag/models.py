@@ -15,9 +15,7 @@ class Tag(BaseModel):
 
 
 class TagTranslation(BaseModel):
-    tag = models.ForeignKey(
-        Tag, on_delete=models.CASCADE, related_name="translations"
-    )
+    tag = models.ForeignKey(Tag, on_delete=models.CASCADE, related_name="translations")
     language = models.CharField(
         max_length=max(len(choice[0]) for choice in Language.choices),
         choices=Language.choices,

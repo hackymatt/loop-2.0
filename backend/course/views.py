@@ -50,32 +50,42 @@ class FeaturedCoursesView(views.APIView):
         )
 
         # Most enrolled
-        most_enrolled = (
-            Course.objects.annotate(enrollment_count=Count("enrollments"))
-            .order_by("-enrollment_count")[:5]
-        )
+        most_enrolled = Course.objects.annotate(
+            enrollment_count=Count("enrollments")
+        ).order_by("-enrollment_count")[:5]
 
         # Newest
         newest = Course.objects.order_by("-created_at")[:5]
 
         # Merge all courses, deduplicate by ID
         all_courses = list(best_rated) + list(most_enrolled) + list(newest)
-        unique_courses = list({course.id: course for course in all_courses}.values())[:6]
+        unique_courses = list({course.id: course for course in all_courses}.values())[
+            :6
+        ]
 
-        serializer = CourseListSerializer(unique_courses, many=True, context={"request": request})
+        serializer = CourseListSerializer(
+            unique_courses, many=True, context={"request": request}
+        )
         return Response(serializer.data)
-    
+
 
 class SimilarCoursesView(views.APIView):
     permission_classes = [AllowAny]
+
     def get(self, request, slug):
         course = get_object_or_404(Course, slug=slug)
 
-        similar_courses = Course.objects.filter(
-            Q(category=course.category) |
-            Q(technology=course.technology) |
-            Q(level=course.level)
-        ).exclude(id=course.id).distinct()[:3]
+        similar_courses = (
+            Course.objects.filter(
+                Q(category=course.category)
+                | Q(technology=course.technology)
+                | Q(level=course.level)
+            )
+            .exclude(id=course.id)
+            .distinct()[:3]
+        )
 
-        serializer = CourseListSerializer(similar_courses, many=True, context={"request": request})
+        serializer = CourseListSerializer(
+            similar_courses, many=True, context={"request": request}
+        )
         return Response(serializer.data)

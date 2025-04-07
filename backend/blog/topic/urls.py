@@ -4,7 +4,7 @@ from .views import TopicViewSet
 from const import Urls
 
 router = Router(trailing_slash=False)
-router.register(Urls.POST_TOPICS, TopicViewSet, basename="post-topics")
+router.register(Urls.POST_TOPIC, TopicViewSet, basename="post-topics")
 
 urlpatterns = [
     path("", include(router.urls)),

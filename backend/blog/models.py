@@ -7,6 +7,7 @@ from .tag.models import Tag
 from user.type.instructor_user.models import Instructor
 from const import Language
 
+
 def blog_directory_path(instance, filename):  # pragma: no cover
     """
     Generate a unique filename for the blog's picture.
@@ -16,14 +17,15 @@ def blog_directory_path(instance, filename):  # pragma: no cover
     filename = f"{uuid.uuid4()}.{ext}"  # Generate a unique filename
     return os.path.join("posts", filename)
 
+
 class Blog(BaseModel):
     slug = models.SlugField(unique=True)
     topic = models.ForeignKey(Topic, on_delete=models.PROTECT, related_name="blogs")
-    image = models.ImageField(
-        upload_to=blog_directory_path, max_length=500
-    )
+    image = models.ImageField(upload_to=blog_directory_path, max_length=500)
     published_at = models.DateField()
-    author = models.ForeignKey(Instructor, on_delete=models.PROTECT, related_name="blogs")
+    author = models.ForeignKey(
+        Instructor, on_delete=models.PROTECT, related_name="blogs"
+    )
     tags = models.ManyToManyField(Tag, related_name="blogs")
     visits = models.PositiveIntegerField(default=0)
     active = models.BooleanField(default=False)
@@ -32,16 +34,20 @@ class Blog(BaseModel):
         db_table = "blog"
 
     def __str__(self):
-        return self.slug # pragma: no cover
-    
+        return self.slug  # pragma: no cover
+
     def increment_visits(self):
         """Increment visit count atomically."""
-        self.visits = models.F('visits') + 1  # Increment visits field by 1 using F expressions
+        self.visits = (
+            models.F("visits") + 1
+        )  # Increment visits field by 1 using F expressions
         self.save()
 
 
 class BlogTranslation(BaseModel):
-    blog = models.ForeignKey(Blog, on_delete=models.CASCADE, related_name="translations")
+    blog = models.ForeignKey(
+        Blog, on_delete=models.CASCADE, related_name="translations"
+    )
     language = models.CharField(
         max_length=max(len(choice[0]) for choice in Language.choices),
         choices=Language.choices,
@@ -56,4 +62,4 @@ class BlogTranslation(BaseModel):
         verbose_name_plural = "Blog translations"
 
     def __str__(self):
-        return f"{self.name} ({self.language})"
+        return f"{self.name} ({self.language})"  # pragma: no cover

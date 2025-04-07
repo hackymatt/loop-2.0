@@ -34,8 +34,8 @@ class Urls:
     COURSE_REVIEW_SUMMARY = "reviews-summary/<slug:slug>"
     COURSE_REVIEWS = "reviews/<slug:slug>"
     # BLOG
-    POST_TOPICS = "post-topics"
-    POST_TAGS = "post-tags"
+    POST_TOPIC = "post-topics"
+    POST_TAG = "post-tags"
     POST = "posts"
     RECENT_POST = "recent-posts"
     FEATURED_POST = "featured-post"
