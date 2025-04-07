@@ -42,8 +42,8 @@ class TagViewTest(APITestCase):
 
     # CREATE (Only Admin)
     def test_create_tag_admin(self):
-        token = get_jwt_token_from_login(self,
-            self.admin_data["email"], self.admin_data["password"]
+        token = get_jwt_token_from_login(
+            self, self.admin_data["email"], self.admin_data["password"]
         )
         self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {token}")
         data = {"slug": "backend", "language": "en", "name": "Backend"}
@@ -57,8 +57,8 @@ class TagViewTest(APITestCase):
         )
 
     def test_create_tag_regular_user(self):
-        token = get_jwt_token_from_login(self,
-            self.regular_user_data["email"], self.regular_user_data["password"]
+        token = get_jwt_token_from_login(
+            self, self.regular_user_data["email"], self.regular_user_data["password"]
         )
         self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {token}")
         data = {"slug": "backend", "language": "en", "name": "Backend"}
@@ -68,8 +68,8 @@ class TagViewTest(APITestCase):
     # READ (Allowed for Everyone)
     def test_get_course_tags_regular_user(self):
         """Ensure users can fetch course tags in their preferred language."""
-        token = get_jwt_token_from_login(self,
-            self.regular_user_data["email"], self.regular_user_data["password"]
+        token = get_jwt_token_from_login(
+            self, self.regular_user_data["email"], self.regular_user_data["password"]
         )
         self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {token}")
         self.client.credentials(HTTP_ACCEPT_LANGUAGE="pl")
@@ -88,8 +88,8 @@ class TagViewTest(APITestCase):
     # UPDATE TRANSLATION (Only Admin)
     def test_update_tag_translation_admin(self):
         """Ensure admins can update translations for existing course tags."""
-        token = get_jwt_token_from_login(self,
-            self.admin_data["email"], self.admin_data["password"]
+        token = get_jwt_token_from_login(
+            self, self.admin_data["email"], self.admin_data["password"]
         )
         self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {token}")
         data = {"slug": "backend", "language": "pl", "name": "Backend"}
@@ -103,8 +103,8 @@ class TagViewTest(APITestCase):
         )
 
     def test_update_tag_translation_regular_user(self):
-        token = get_jwt_token_from_login(self,
-            self.regular_user_data["email"], self.regular_user_data["password"]
+        token = get_jwt_token_from_login(
+            self, self.regular_user_data["email"], self.regular_user_data["password"]
         )
         self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {token}")
         data = {"language": "pl", "name": "Backend"}
@@ -115,8 +115,8 @@ class TagViewTest(APITestCase):
 
     # DELETE (Only Admin)
     def test_delete_tag_admin(self):
-        token = get_jwt_token_from_login(self,
-            self.admin_data["email"], self.admin_data["password"]
+        token = get_jwt_token_from_login(
+            self, self.admin_data["email"], self.admin_data["password"]
         )
         self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {token}")
         url = f"{self.url}/{self.tag.id}"
@@ -126,8 +126,8 @@ class TagViewTest(APITestCase):
         self.assertFalse(Tag.objects.filter(slug="frontend").exists())
 
     def test_delete_tag_regular_user(self):
-        token = get_jwt_token_from_login(self,
-            self.regular_user_data["email"], self.regular_user_data["password"]
+        token = get_jwt_token_from_login(
+            self, self.regular_user_data["email"], self.regular_user_data["password"]
         )
         self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {token}")
         url = f"{self.url}/{self.tag.id}"

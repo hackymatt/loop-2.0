@@ -9,7 +9,9 @@ from global_config import CONFIG
 
 def get_dummy_student():
     """Returns the dummy student instance."""
-    return Student.objects.get(user__email=CONFIG["dummy_student_email"])   # pragma: no cover
+    return Student.objects.get(
+        user__email=CONFIG["dummy_student_email"]
+    )  # pragma: no cover
 
 
 class Review(BaseModel):

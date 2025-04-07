@@ -20,18 +20,12 @@ class BlogViewSetTestCase(TestCase):
         # Create topic and its translation
         self.topic = Topic.objects.create(slug="tech")
         TopicTranslation.objects.create(
-            topic=self.topic,
-            language="en",
-            name="Technology"
+            topic=self.topic, language="en", name="Technology"
         )
 
         # Create tag and its translation
         self.tag = Tag.objects.create(slug="python")
-        TagTranslation.objects.create(
-            tag=self.tag,
-            language="en",
-            name="Python"
-        )
+        TagTranslation.objects.create(tag=self.tag, language="en", name="Python")
 
         # Create instructor
         self.instructor = Instructor.objects.create(
@@ -40,7 +34,7 @@ class BlogViewSetTestCase(TestCase):
                 password="password",
                 username="test",
                 user_type=UserType.INSTRUCTOR,
-                is_active=True
+                is_active=True,
             ),
         )
 
@@ -51,7 +45,7 @@ class BlogViewSetTestCase(TestCase):
             author=self.instructor,
             published_at=timezone.now() + timedelta(weeks=1),
             active=True,
-            visits=5
+            visits=5,
         )
         self.blog1.tags.add(self.tag)
 
@@ -60,7 +54,7 @@ class BlogViewSetTestCase(TestCase):
             language="en",
             name="Introduction to Python",
             description="A beginner's guide to Python",
-            content="Python content here."
+            content="Python content here.",
         )
 
         # Second blog post
@@ -70,7 +64,7 @@ class BlogViewSetTestCase(TestCase):
             author=self.instructor,
             published_at=timezone.now(),
             active=True,
-            visits=10  # This one has higher visit count
+            visits=10,  # This one has higher visit count
         )
         self.blog2.tags.add(self.tag)
 
@@ -79,7 +73,7 @@ class BlogViewSetTestCase(TestCase):
             language="en",
             name="Advanced Python Tricks",
             description="Advanced tips and tricks in Python",
-            content="Advanced content here."
+            content="Advanced content here.",
         )
 
         self.admin_data = {"email": "admin@example.com", "password": "admin123"}
@@ -99,7 +93,6 @@ class BlogViewSetTestCase(TestCase):
             password=self.regular_user_data["password"],
             is_active=True,
         )
-       
 
     def test_blog_list(self):
         # Test the list view of BlogViewSet
@@ -124,7 +117,9 @@ class BlogViewSetTestCase(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["slug"], self.blog1.slug)
         self.assertEqual(response.data["translated_name"], self.blog1_translation.name)
-        self.assertEqual(response.data["translated_description"], self.blog1_translation.description)
+        self.assertEqual(
+            response.data["translated_description"], self.blog1_translation.description
+        )
 
     def test_blog_filter_by_category(self):
         # Test filtering blogs by category (topic)
@@ -161,7 +156,7 @@ class BlogViewSetTestCase(TestCase):
             author=self.instructor,
             published_at=timezone.now(),
             active=True,
-            visits=5
+            visits=5,
         )
         another_blog.tags.add(self.tag)
         BlogTranslation.objects.create(
@@ -169,13 +164,15 @@ class BlogViewSetTestCase(TestCase):
             language="en",
             name="Introduction to Python",
             description="A beginner's guide to Python",
-            content="Python content here."
+            content="Python content here.",
         )
 
         response = self.client.get(self.url)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data["results"]), 2)  # The most visited blog should be excluded
+        self.assertEqual(
+            len(response.data["results"]), 2
+        )  # The most visited blog should be excluded
         self.assertEqual(response.data["results"][0]["slug"], another_blog.slug)
 
 
@@ -186,7 +183,9 @@ class RecentBlogsViewTestCase(TestCase):
 
         # Topic and tag
         self.topic = Topic.objects.create(slug="tech")
-        TopicTranslation.objects.create(topic=self.topic, language="en", name="Technology")
+        TopicTranslation.objects.create(
+            topic=self.topic, language="en", name="Technology"
+        )
 
         self.tag = Tag.objects.create(slug="python")
         TagTranslation.objects.create(tag=self.tag, language="en", name="Python")
@@ -217,7 +216,7 @@ class RecentBlogsViewTestCase(TestCase):
             language="en",
             name="Most Visited Blog",
             description="This is the most visited blog.",
-            content="Content of the most visited blog."
+            content="Content of the most visited blog.",
         )
 
         # Blog 2
@@ -235,7 +234,7 @@ class RecentBlogsViewTestCase(TestCase):
             language="en",
             name="Recent Blog 1",
             description="A recent blog post.",
-            content="Some content here."
+            content="Some content here.",
         )
 
         # Blog 3
@@ -253,7 +252,7 @@ class RecentBlogsViewTestCase(TestCase):
             language="en",
             name="Recent Blog 2",
             description="Another recent blog post.",
-            content="More content here."
+            content="More content here.",
         )
 
     def test_recent_blogs_excludes_most_visited(self):
@@ -283,7 +282,7 @@ class RecentBlogsViewTestCase(TestCase):
                 language="en",
                 name=f"Recent Blog {i+4}",
                 description="Desc",
-                content="Content"
+                content="Content",
             )
 
         response = self.client.get(self.url)
@@ -297,6 +296,7 @@ class RecentBlogsViewTestCase(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data, [])  # no active blogs means empty list
 
+
 class FeaturedBlogViewTestCase(TestCase):
     def setUp(self):
         self.client = APIClient()
@@ -304,7 +304,9 @@ class FeaturedBlogViewTestCase(TestCase):
 
         # Topic and tag
         self.topic = Topic.objects.create(slug="tech")
-        TopicTranslation.objects.create(topic=self.topic, language="en", name="Technology")
+        TopicTranslation.objects.create(
+            topic=self.topic, language="en", name="Technology"
+        )
 
         self.tag = Tag.objects.create(slug="python")
         TagTranslation.objects.create(tag=self.tag, language="en", name="Python")
@@ -335,7 +337,7 @@ class FeaturedBlogViewTestCase(TestCase):
             language="en",
             name="Python Basics",
             description="Basics of Python",
-            content="Some content"
+            content="Some content",
         )
 
         # Blog 2 (higher visits — should be featured)
@@ -353,7 +355,7 @@ class FeaturedBlogViewTestCase(TestCase):
             language="en",
             name="Deep Dive into Python",
             description="Advanced topics",
-            content="Advanced content"
+            content="Advanced content",
         )
 
     def test_featured_blog_is_most_visited(self):
@@ -368,4 +370,7 @@ class FeaturedBlogViewTestCase(TestCase):
         response = self.client.get(self.url)
         # Adjust this part depending on your API's actual behavior
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data, {'slug': '', 'name': '', 'language': '', 'published_at': None})
+        self.assertEqual(
+            response.data,
+            {"slug": "", "name": "", "language": "", "published_at": None},
+        )

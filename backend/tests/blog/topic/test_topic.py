@@ -7,6 +7,7 @@ from const import Urls, UserType
 from user.utils import get_unique_username
 from ...helpers import get_jwt_token_from_login
 
+
 class TopicViewTest(APITestCase):
     def setUp(self):
         self.client = APIClient()
@@ -41,8 +42,8 @@ class TopicViewTest(APITestCase):
 
     # CREATE (Only Admin)
     def test_create_topic_admin(self):
-        token = get_jwt_token_from_login(self,
-            self.admin_data["email"], self.admin_data["password"]
+        token = get_jwt_token_from_login(
+            self, self.admin_data["email"], self.admin_data["password"]
         )
         self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {token}")
         data = {"slug": "backend", "language": "en", "name": "Backend"}
@@ -56,8 +57,8 @@ class TopicViewTest(APITestCase):
         )
 
     def test_create_topic_regular_user(self):
-        token = get_jwt_token_from_login(self,
-            self.regular_user_data["email"], self.regular_user_data["password"]
+        token = get_jwt_token_from_login(
+            self, self.regular_user_data["email"], self.regular_user_data["password"]
         )
         self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {token}")
         data = {"slug": "backend", "language": "en", "name": "Backend"}
@@ -67,8 +68,8 @@ class TopicViewTest(APITestCase):
     # READ (Allowed for Everyone)
     def test_get_course_topics_regular_user(self):
         """Ensure users can fetch course topics in their preferred language."""
-        token = get_jwt_token_from_login(self,
-            self.regular_user_data["email"], self.regular_user_data["password"]
+        token = get_jwt_token_from_login(
+            self, self.regular_user_data["email"], self.regular_user_data["password"]
         )
         self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {token}")
         self.client.credentials(HTTP_ACCEPT_LANGUAGE="pl")
@@ -87,8 +88,8 @@ class TopicViewTest(APITestCase):
     # UPDATE TRANSLATION (Only Admin)
     def test_update_topic_translation_admin(self):
         """Ensure admins can update translations for existing course topics."""
-        token = get_jwt_token_from_login(self,
-            self.admin_data["email"], self.admin_data["password"]
+        token = get_jwt_token_from_login(
+            self, self.admin_data["email"], self.admin_data["password"]
         )
         self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {token}")
         data = {"slug": "backend", "language": "pl", "name": "Backend"}
@@ -102,8 +103,8 @@ class TopicViewTest(APITestCase):
         )
 
     def test_update_topic_translation_regular_user(self):
-        token = get_jwt_token_from_login(self,
-            self.regular_user_data["email"], self.regular_user_data["password"]
+        token = get_jwt_token_from_login(
+            self, self.regular_user_data["email"], self.regular_user_data["password"]
         )
         self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {token}")
         data = {"language": "pl", "name": "Backend"}
@@ -114,8 +115,8 @@ class TopicViewTest(APITestCase):
 
     # DELETE (Only Admin)
     def test_delete_topic_admin(self):
-        token = get_jwt_token_from_login(self,
-            self.admin_data["email"], self.admin_data["password"]
+        token = get_jwt_token_from_login(
+            self, self.admin_data["email"], self.admin_data["password"]
         )
         self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {token}")
         url = f"{self.url}/{self.topic.id}"
@@ -125,8 +126,8 @@ class TopicViewTest(APITestCase):
         self.assertFalse(Topic.objects.filter(slug="frontend").exists())
 
     def test_delete_topic_regular_user(self):
-        token = get_jwt_token_from_login(self,
-            self.regular_user_data["email"], self.regular_user_data["password"]
+        token = get_jwt_token_from_login(
+            self, self.regular_user_data["email"], self.regular_user_data["password"]
         )
         self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {token}")
         url = f"{self.url}/{self.topic.id}"

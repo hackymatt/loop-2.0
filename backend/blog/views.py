@@ -12,9 +12,11 @@ from rest_framework.permissions import AllowAny
 
 class BlogViewSet(viewsets.ModelViewSet):
     http_method_names = ["get"]
-    queryset = Blog.objects.filter(active=True).prefetch_related(
-        "topic", "tags", "author", "translations"
-    ).order_by("slug")
+    queryset = (
+        Blog.objects.filter(active=True)
+        .prefetch_related("topic", "tags", "author", "translations")
+        .order_by("slug")
+    )
     serializer_class = BlogRetrieveSerializer
     filterset_class = BlogFilter
     lookup_field = "slug"
@@ -37,7 +39,9 @@ class BlogViewSet(viewsets.ModelViewSet):
         # Return different serializer depending on the action
         if self.action == "list":
             return BlogListSerializer  # Use list serializer for listing
-        return BlogRetrieveSerializer  # Use retrieve serializer for single blog retrieval
+        return (
+            BlogRetrieveSerializer  # Use retrieve serializer for single blog retrieval
+        )
 
     def retrieve(self, request, *args, **kwargs):
         """Override retrieve to increment views count when a blog is accessed."""

@@ -22,7 +22,7 @@ class Admin(BaseModel):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"Admin Profile: {self.user.email}"   # pragma: no cover
+        return f"Admin Profile: {self.user.email}"  # pragma: no cover
 
     class Meta:
         db_table = "admin"
