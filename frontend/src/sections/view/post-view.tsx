@@ -26,6 +26,7 @@ import { CustomBreadcrumbs } from "src/components/custom-breadcrumbs";
 
 import { PostTags } from "../blog/post-tags";
 import { LatestPosts } from "../posts/latest-posts";
+import { NotFoundView } from "../error/not-found-view";
 import { PrevNextButton } from "../blog/post-prev-and-next";
 
 // ----------------------------------------------------------------------
@@ -33,7 +34,7 @@ import { PrevNextButton } from "../blog/post-prev-and-next";
 export function PostView({ slug }: { slug: string }) {
   const { t } = useTranslation("navigation");
 
-  const { data: post } = usePost(slug);
+  const { data: post, isError } = usePost(slug);
   const { data: featuredPost } = useFeaturedPost();
   const { data: recentPosts } = useRecentPosts();
 
@@ -160,6 +161,10 @@ export function PostView({ slug }: { slug: string }) {
       )}
     </Box>
   );
+
+  if (isError) {
+    return <NotFoundView />;
+  }
 
   return (
     <>

@@ -20,17 +20,24 @@ export async function generateMetadata({
 }: {
   params: { slug: string };
 }): Promise<Metadata> {
-  const { queryFn } = postQuery(params.slug, LANGUAGE.PL);
+  try {
+    const { queryFn } = postQuery(params.slug, LANGUAGE.PL);
 
-  const { results: post } = await queryFn();
-  const title = `${post.name} - przeczytaj artykuł już teraz`;
-  const description = `Przeczytaj nasz artykuł pod tytułem ${post.name}. Odkryj praktyczne porady i najlepsze praktyki, które pomogą Ci w rozwoju umiejętności programistycznych.`;
-  const coverUrl = post.heroUrl;
+    const { results: post } = await queryFn();
+    const title = `${post.name} - przeczytaj artykuł już teraz`;
+    const description = `Przeczytaj nasz artykuł pod tytułem ${post.name}. Odkryj praktyczne porady i najlepsze praktyki, które pomogą Ci w rozwoju umiejętności programistycznych.`;
+    const coverUrl = post.heroUrl;
 
-  return createMetadata({
-    title,
-    description,
-    path: `${paths.post}/${params.slug}`,
-    image: coverUrl,
-  });
+    return createMetadata({
+      title,
+      description,
+      path: `${paths.post}/${params.slug}`,
+      image: coverUrl,
+    });
+  } catch {
+    return createMetadata({
+      title: "Nie znaleziono artykułu",
+      description: "Nie znaleziono artykułu",
+    });
+  }
 }

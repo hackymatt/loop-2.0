@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 
 import { paths } from "src/routes/paths";
 
-import { _courses } from "src/_mock";
+import { useFeaturedCourses } from "src/api/course/featured";
 import { useCourseLevels } from "src/api/course/level/levels";
 import { useCourseCategories } from "src/api/course/category/categories";
 import { useCourseTechnologies } from "src/api/course/technology/technologies";
@@ -65,7 +65,7 @@ export const usePageLinks = () => {
 const useCourseNav = () => {
   const { t } = useTranslation("navigation");
 
-  const popularCourses = _courses.slice(0, 4);
+  const { data: featuredCourses } = useFeaturedCourses();
 
   const children = usePageLinks();
 
@@ -74,7 +74,7 @@ const useCourseNav = () => {
       title: t("more"),
       path: paths.courses,
     },
-    tags: popularCourses.map((course) => ({
+    tags: (featuredCourses || []).map((course) => ({
       title: course.name,
       path: `${paths.course}/${course.slug}/`,
     })),

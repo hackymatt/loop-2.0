@@ -2,27 +2,9 @@
 
 import type { Breakpoint } from "@mui/material/styles";
 
-import { merge } from "es-toolkit";
-import { useTranslation } from "react-i18next";
-
-import Box from "@mui/material/Box";
-import Link from "@mui/material/Link";
-import Alert from "@mui/material/Alert";
-
-import { paths } from "src/routes/paths";
-import { RouterLink } from "src/routes/components";
-
-import { CONFIG } from "src/global-config";
-
-import { Logo } from "src/components/logo";
-
-import { langs } from "../langs-config";
 import { SimpleCompactContent } from "./content";
 import { MainSection } from "../core/main-section";
 import { LayoutSection } from "../core/layout-section";
-import { HeaderSection } from "../core/header-section";
-import { SettingsButton } from "../components/settings-button";
-import { LanguagePopover } from "../components/language-popover";
 
 import type { SimpleCompactContentProps } from "./content";
 import type { MainSectionProps } from "../core/main-section";
@@ -49,53 +31,7 @@ export function SimpleLayout({
   slotProps,
   layoutQuery = "md",
 }: SimpleLayoutProps) {
-  const { t } = useTranslation("navigation");
-  const renderHeader = () => {
-    const headerSlotProps: HeaderSectionProps["slotProps"] = { container: { maxWidth: false } };
-
-    const headerSlots: HeaderSectionProps["slots"] = {
-      topArea: (
-        <Alert severity="info" sx={{ display: "none", borderRadius: 0 }}>
-          This is an info Alert.
-        </Alert>
-      ),
-      leftArea: (
-        <>
-          {/** @slot Logo */}
-          <Logo />
-        </>
-      ),
-      rightArea: (
-        <Box sx={{ gap: 1, display: "flex", alignItems: "center" }}>
-          {/** @slot Help link */}
-          <Link
-            component={RouterLink}
-            href={paths.support}
-            color="inherit"
-            sx={{ typography: "subtitle2" }}
-          >
-            {t("help")}
-          </Link>
-
-          {/** @slot Language popover */}
-          {CONFIG.isLocal && <LanguagePopover data={langs} />}
-
-          {/** @slot Settings button */}
-          {CONFIG.isLocal && <SettingsButton />}
-        </Box>
-      ),
-    };
-
-    return (
-      <HeaderSection
-        layoutQuery={layoutQuery}
-        {...slotProps?.header}
-        slots={{ ...headerSlots, ...slotProps?.header?.slots }}
-        slotProps={merge(headerSlotProps, slotProps?.header?.slotProps ?? {})}
-        sx={slotProps?.header?.sx}
-      />
-    );
-  };
+  const renderHeader = () => null;
 
   const renderFooter = () => null;
 

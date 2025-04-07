@@ -11,6 +11,7 @@ import { useReviews } from "src/api/review/reviews";
 import { useSimilarCourses } from "src/api/course/similar";
 
 import { ReviewList } from "../review/review-list";
+import { NotFoundView } from "../error/not-found-view";
 import { ReviewSummary } from "../review/review-summary";
 import { CourseDetailsHero } from "../courses/course-details-hero";
 import { CourseListSimilar } from "../courses/course-list-similar";
@@ -26,7 +27,7 @@ export function CourseView({ slug }: { slug: string }) {
     page: "1",
   });
 
-  const { data: course } = useCourse(slug);
+  const { data: course, isError } = useCourse(slug);
   const { data: reviews, count } = useReviews(slug);
   const { data: similarCourses } = useSimilarCourses(slug);
 
@@ -48,6 +49,10 @@ export function CourseView({ slug }: { slug: string }) {
       </Container>
     </>
   );
+
+  if (isError) {
+    return <NotFoundView />;
+  }
 
   return (
     <>

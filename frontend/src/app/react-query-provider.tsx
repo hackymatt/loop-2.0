@@ -12,7 +12,7 @@ export function ReactQueryProvider({ children }: React.PropsWithChildren) {
             staleTime: 1000 * 60 * 5, // 5 minutes
             cacheTime: 1000 * 60 * 10, // 10 minutes
             refetchOnWindowFocus: false,
-            retry: 3, // retry failed queries 3 times
+            retry: 0, // do not retry
           },
         },
       }),
