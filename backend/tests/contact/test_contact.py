@@ -1,6 +1,5 @@
 from rest_framework.test import APITestCase
 from rest_framework import status
-from global_config import CONFIG
 from unittest.mock import patch
 from const import Urls
 from utils.google.gmail import GmailApi

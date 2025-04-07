@@ -1,98 +1,29 @@
 from django.test import TestCase
 from rest_framework.test import APIClient
-from django.contrib.auth import get_user_model
-from blog.models import Blog, BlogTranslation
-from blog.tag.models import Tag, TagTranslation
-from blog.topic.models import Topic, TopicTranslation
-from user.type.instructor_user.models import Instructor
-from user.utils import get_unique_username
+from blog.models import Blog
 from rest_framework import status
-from datetime import timedelta
 from django.utils import timezone
-from const import Urls, UserType
-
+from const import Urls
+from ..factory import create_blog, create_admin_user, create_student_user
 
 class BlogViewSetTestCase(TestCase):
     def setUp(self):
         self.client = APIClient()
         self.url = f"/{Urls.API}/{Urls.POST}"
 
-        # Create topic and its translation
-        self.topic = Topic.objects.create(slug="tech")
-        TopicTranslation.objects.create(
-            topic=self.topic, language="en", name="Technology"
-        )
-
-        # Create tag and its translation
-        self.tag = Tag.objects.create(slug="python")
-        TagTranslation.objects.create(tag=self.tag, language="en", name="Python")
-
-        # Create instructor
-        self.instructor = Instructor.objects.create(
-            user=get_user_model().objects.create_user(
-                email="test@instructor.com",
-                password="password",
-                username="test",
-                user_type=UserType.INSTRUCTOR,
-                is_active=True,
-            ),
-        )
-
         # First blog post
-        self.blog1 = Blog.objects.create(
-            slug="introduction-to-python",
-            topic=self.topic,
-            author=self.instructor,
-            published_at=timezone.now() + timedelta(weeks=1),
-            active=True,
-            visits=5,
-        )
-        self.blog1.tags.add(self.tag)
-
-        self.blog1_translation = BlogTranslation.objects.create(
-            blog=self.blog1,
-            language="en",
-            name="Introduction to Python",
-            description="A beginner's guide to Python",
-            content="Python content here.",
-        )
+        self.blog1, self.blog1_data = create_blog()
+        self.blog1.published_at = self.blog1.published_at - timezone.timedelta(weeks=1)
+        self.blog1.visits = 5
+        self.blog1.save()
 
         # Second blog post
-        self.blog2 = Blog.objects.create(
-            slug="advanced-python-tricks",
-            topic=self.topic,
-            author=self.instructor,
-            published_at=timezone.now(),
-            active=True,
-            visits=10,  # This one has higher visit count
-        )
-        self.blog2.tags.add(self.tag)
+        self.blog2, self.blog2_data = create_blog()
+        self.blog2.visits = 10
+        self.blog2.save()
 
-        self.blog2_translation = BlogTranslation.objects.create(
-            blog=self.blog2,
-            language="en",
-            name="Advanced Python Tricks",
-            description="Advanced tips and tricks in Python",
-            content="Advanced content here.",
-        )
-
-        self.admin_data = {"email": "admin@example.com", "password": "admin123"}
-        self.admin_user = get_user_model().objects.create_user(
-            username=get_unique_username(self.admin_data["email"]),
-            email=self.admin_data["email"],
-            password=self.admin_data["password"],
-            user_type=UserType.ADMIN,
-            is_active=True,
-        )
-
-        # Create regular user
-        self.regular_user_data = {"email": "user@example.com", "password": "user123"}
-        self.regular_user = get_user_model().objects.create_user(
-            username=get_unique_username(self.regular_user_data["email"]),
-            email=self.regular_user_data["email"],
-            password=self.regular_user_data["password"],
-            is_active=True,
-        )
+        self.admin_user, self.admin_data = create_admin_user()
+        self.regular_user, self.regular_user_data = create_student_user()
 
     def test_blog_list(self):
         # Test the list view of BlogViewSet
@@ -116,21 +47,21 @@ class BlogViewSetTestCase(TestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["slug"], self.blog1.slug)
-        self.assertEqual(response.data["translated_name"], self.blog1_translation.name)
+        self.assertEqual(response.data["translated_name"], self.blog1_data["en"]["name"])
         self.assertEqual(
-            response.data["translated_description"], self.blog1_translation.description
+            response.data["translated_description"], self.blog1_data["en"]["description"]
         )
 
     def test_blog_filter_by_category(self):
         # Test filtering blogs by category (topic)
-        response = self.client.get(f"{self.url}?category={self.topic.slug}")
+        response = self.client.get(f"{self.url}?category={self.blog1_data['topic'].slug}")
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data["results"]), 1)
 
     def test_blog_filter_by_tags(self):
         # Test filtering blogs by tags
-        response = self.client.get(f"{self.url}?tags={self.tag.slug}")
+        response = self.client.get(f"{self.url}?tags={self.blog1_data['tags'][0].slug}")
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data["results"]), 1)
@@ -150,22 +81,9 @@ class BlogViewSetTestCase(TestCase):
         self.blog1.save()
 
         # Add another blog with fewer visits
-        another_blog = Blog.objects.create(
-            slug="another-blog",
-            topic=self.topic,
-            author=self.instructor,
-            published_at=timezone.now(),
-            active=True,
-            visits=5,
-        )
-        another_blog.tags.add(self.tag)
-        BlogTranslation.objects.create(
-            blog=another_blog,
-            language="en",
-            name="Introduction to Python",
-            description="A beginner's guide to Python",
-            content="Python content here.",
-        )
+        another_blog, _ = create_blog()
+        another_blog.visits = 5
+        another_blog.save()
 
         response = self.client.get(self.url)
 
@@ -173,7 +91,7 @@ class BlogViewSetTestCase(TestCase):
         self.assertEqual(
             len(response.data["results"]), 2
         )  # The most visited blog should be excluded
-        self.assertEqual(response.data["results"][0]["slug"], another_blog.slug)
+        self.assertEqual(response.data["results"][1]["slug"], another_blog.slug)
 
 
 class RecentBlogsViewTestCase(TestCase):
@@ -181,79 +99,24 @@ class RecentBlogsViewTestCase(TestCase):
         self.client = APIClient()
         self.url = f"/{Urls.API}/{Urls.RECENT_POST}"  # adjust to your actual RecentBlogsView URL
 
-        # Topic and tag
-        self.topic = Topic.objects.create(slug="tech")
-        TopicTranslation.objects.create(
-            topic=self.topic, language="en", name="Technology"
-        )
+        # First blog post
+        self.blog1, self.blog1_data = create_blog()
+        self.blog1.published_at = self.blog1.published_at - timezone.timedelta(weeks=1)
+        self.blog1.visits = 20
+        self.blog1.save()
 
-        self.tag = Tag.objects.create(slug="python")
-        TagTranslation.objects.create(tag=self.tag, language="en", name="Python")
+        # Second blog post
+        self.blog2, self.blog2_data = create_blog()
+        self.blog2.visits = 5
+        self.blog2.save()
 
-        # Instructor
-        self.instructor = Instructor.objects.create(
-            user=get_user_model().objects.create_user(
-                email="test@instructor.com",
-                password="password",
-                username="test",
-                user_type=UserType.INSTRUCTOR,
-                is_active=True,
-            )
-        )
+        # Third blog post
+        self.blog3, self.blog3_data = create_blog()
+        self.blog3.visits = 7
+        self.blog3.save()
 
-        # Blog 1 (higher visits)
-        self.blog1 = Blog.objects.create(
-            slug="most-visited-blog",
-            topic=self.topic,
-            author=self.instructor,
-            published_at=timezone.now(),
-            active=True,
-            visits=20,
-        )
-        self.blog1.tags.add(self.tag)
-        BlogTranslation.objects.create(
-            blog=self.blog1,
-            language="en",
-            name="Most Visited Blog",
-            description="This is the most visited blog.",
-            content="Content of the most visited blog.",
-        )
-
-        # Blog 2
-        self.blog2 = Blog.objects.create(
-            slug="recent-blog-1",
-            topic=self.topic,
-            author=self.instructor,
-            published_at=timezone.now() - timezone.timedelta(days=1),
-            active=True,
-            visits=5,
-        )
-        self.blog2.tags.add(self.tag)
-        BlogTranslation.objects.create(
-            blog=self.blog2,
-            language="en",
-            name="Recent Blog 1",
-            description="A recent blog post.",
-            content="Some content here.",
-        )
-
-        # Blog 3
-        self.blog3 = Blog.objects.create(
-            slug="recent-blog-2",
-            topic=self.topic,
-            author=self.instructor,
-            published_at=timezone.now() - timezone.timedelta(days=2),
-            active=True,
-            visits=7,
-        )
-        self.blog3.tags.add(self.tag)
-        BlogTranslation.objects.create(
-            blog=self.blog3,
-            language="en",
-            name="Recent Blog 2",
-            description="Another recent blog post.",
-            content="More content here.",
-        )
+        self.admin_user, self.admin_data = create_admin_user()
+        self.regular_user, self.regular_user_data = create_student_user()
 
     def test_recent_blogs_excludes_most_visited(self):
         response = self.client.get(self.url)
@@ -268,22 +131,9 @@ class RecentBlogsViewTestCase(TestCase):
     def test_recent_blogs_returns_up_to_five(self):
         # Create 4 more recent blogs to reach 6 total (1 will be excluded)
         for i in range(4):
-            blog = Blog.objects.create(
-                slug=f"recent-blog-{i+4}",
-                topic=self.topic,
-                author=self.instructor,
-                published_at=timezone.now() - timezone.timedelta(days=i + 3),
-                active=True,
-                visits=1,
-            )
-            blog.tags.add(self.tag)
-            BlogTranslation.objects.create(
-                blog=blog,
-                language="en",
-                name=f"Recent Blog {i+4}",
-                description="Desc",
-                content="Content",
-            )
+            blog, _ = create_blog()
+            blog.published_at = timezone.now() - timezone.timedelta(days=i + 3)
+            blog.save()
 
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -302,67 +152,25 @@ class FeaturedBlogViewTestCase(TestCase):
         self.client = APIClient()
         self.url = f"/{Urls.API}/{Urls.FEATURED_POST}"  # replace with your actual featured blog endpoint
 
-        # Topic and tag
-        self.topic = Topic.objects.create(slug="tech")
-        TopicTranslation.objects.create(
-            topic=self.topic, language="en", name="Technology"
-        )
+        # First blog post
+        self.blog1, self.blog1_data = create_blog()
+        self.blog1.published_at = self.blog1.published_at - timezone.timedelta(weeks=1)
+        self.blog1.visits = 5
+        self.blog1.save()
 
-        self.tag = Tag.objects.create(slug="python")
-        TagTranslation.objects.create(tag=self.tag, language="en", name="Python")
+        # Second blog post
+        self.blog2, self.blog2_data = create_blog()
+        self.blog2.visits = 10
+        self.blog2.save()
 
-        # Instructor
-        self.instructor = Instructor.objects.create(
-            user=get_user_model().objects.create_user(
-                email="test@instructor.com",
-                password="password",
-                username="test",
-                user_type=UserType.INSTRUCTOR,
-                is_active=True,
-            )
-        )
-
-        # Blog 1 (lower visits)
-        self.blog1 = Blog.objects.create(
-            slug="python-basics",
-            topic=self.topic,
-            author=self.instructor,
-            published_at=timezone.now(),
-            active=True,
-            visits=5,
-        )
-        self.blog1.tags.add(self.tag)
-        BlogTranslation.objects.create(
-            blog=self.blog1,
-            language="en",
-            name="Python Basics",
-            description="Basics of Python",
-            content="Some content",
-        )
-
-        # Blog 2 (higher visits — should be featured)
-        self.blog2 = Blog.objects.create(
-            slug="deep-dive-python",
-            topic=self.topic,
-            author=self.instructor,
-            published_at=timezone.now(),
-            active=True,
-            visits=20,
-        )
-        self.blog2.tags.add(self.tag)
-        BlogTranslation.objects.create(
-            blog=self.blog2,
-            language="en",
-            name="Deep Dive into Python",
-            description="Advanced topics",
-            content="Advanced content",
-        )
+        self.admin_user, self.admin_data = create_admin_user()
+        self.regular_user, self.regular_user_data = create_student_user()
 
     def test_featured_blog_is_most_visited(self):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["slug"], self.blog2.slug)
-        self.assertEqual(response.data["translated_name"], "Deep Dive into Python")
+        self.assertEqual(response.data["translated_name"], self.blog2_data["en"]["name"])
 
     def test_featured_blog_when_no_blogs(self):
         Blog.objects.all().delete()

@@ -43,3 +43,8 @@ def get_jwt_token_from_login(self, email, password):
         format="json",
     )
     return response.data["access_token"]
+
+
+def login(self, email, password):
+    token = get_jwt_token_from_login(self, email, password)
+    self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {token}")

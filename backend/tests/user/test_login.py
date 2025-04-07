@@ -12,7 +12,7 @@ class LoginViewTest(APITestCase):
 
         # Create an inactive user
         self.inactive_user, self.inactive_user_data = create_user()
-        self.inactive_user.is_active= False
+        self.inactive_user.is_active = False
         self.inactive_user.save()
 
     def test_successful_login(self):
@@ -39,7 +39,10 @@ class LoginViewTest(APITestCase):
         """Test login with inactive user returns 401."""
         response = self.client.post(
             self.url,
-            {"email": self.inactive_user_data["email"], "password": self.inactive_user_data["password"]},
+            {
+                "email": self.inactive_user_data["email"],
+                "password": self.inactive_user_data["password"],
+            },
         )
 
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)

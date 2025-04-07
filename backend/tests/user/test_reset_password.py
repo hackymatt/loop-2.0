@@ -7,6 +7,7 @@ from utils.google.gmail import GmailApi
 from ..helpers import mock_send_message
 from ..factory import create_user
 
+
 class PasswordResetTest(TestCase):
     def setUp(self):
         self.client = APIClient()

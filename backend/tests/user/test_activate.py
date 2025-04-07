@@ -77,9 +77,7 @@ class ActivateAccountViewTest(TestCase):
         Test account activation with a valid token, but the user doesn't exist.
         """
         # Create an invalid token for a non-existing user ID
-        invalid_token = generate_valid_token(
-            999999
-        )  # Assuming this user doesn't exist
+        invalid_token = generate_valid_token(999999)  # Assuming this user doesn't exist
 
         data = {"token": invalid_token}
         response = self.client.post(self.url, data, format="json")
