@@ -1,6 +1,5 @@
 "use client";
 
-import { useState, useCallback } from "react";
 import { usePopover } from "minimal-shared/hooks";
 
 import Fab from "@mui/material/Fab";
@@ -11,53 +10,32 @@ import Avatar from "@mui/material/Avatar";
 import Divider from "@mui/material/Divider";
 import Popover from "@mui/material/Popover";
 import MenuItem from "@mui/material/MenuItem";
-import Checkbox from "@mui/material/Checkbox";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
-
-import { paths } from "src/routes/paths";
-
-import { fDate } from "src/utils/format-time";
 
 import { _socials, _coursePosts } from "src/_mock";
 import { TwitterIcon, FacebookIcon, LinkedinIcon, InstagramIcon } from "src/assets/icons";
 
 import { Image } from "src/components/image";
 import { Iconify } from "src/components/iconify";
-import { Markdown } from "src/components/markdown";
-import { CustomBreadcrumbs } from "src/components/custom-breadcrumbs";
 
 import { PostTags } from "../../blog/post-tags";
-import { PostAuthor } from "../../blog/post-author";
 import { ElearningNewsletter } from "../elearning-newsletter";
-import { PrevNextButton } from "../../blog/post-prev-and-next";
 import { ElearningLatestPosts } from "../posts/elearning-latest-posts";
 
 // ----------------------------------------------------------------------
 
 const post = _coursePosts[0];
-const prevPost = _coursePosts[1];
-const nextPost = _coursePosts[2];
 const latestPosts = _coursePosts.slice(3, 6);
 
 export function ElearningPostView() {
   const openSocial = usePopover();
 
-  const [favorite, setFavorite] = useState(post.favorited);
-
-  const handleChangeFavorite = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-    setFavorite(event.target.checked);
-  }, []);
-
   const renderHead = () => (
     <Box sx={{ textAlign: "center", mt: { xs: 5, md: 10 } }}>
       <Typography variant="body2" sx={{ color: "text.disabled" }}>
         {post.duration}
-      </Typography>
-
-      <Typography variant="h2" component="h1" sx={{ my: 3 }}>
-        {post.title}
       </Typography>
 
       <Typography variant="h5" component="p">
@@ -132,22 +110,11 @@ export function ElearningPostView() {
 
       <Box sx={{ flexGrow: 1 }}>
         <Typography variant="subtitle2">{post.author.name}</Typography>
-        <Typography variant="caption" sx={{ mt: 0.5, display: "block", color: "text.secondary" }}>
-          {fDate(post.createdAt)}
-        </Typography>
       </Box>
 
       <IconButton onClick={openSocial.onOpen} color={openSocial.open ? "primary" : "default"}>
         <Iconify icon="solar:share-outline" />
       </IconButton>
-      <Checkbox
-        color="error"
-        checked={favorite}
-        onChange={handleChangeFavorite}
-        icon={<Iconify icon="solar:heart-outline" />}
-        checkedIcon={<Iconify icon="solar:heart-bold" />}
-        inputProps={{ id: "favorite-checkbox", "aria-label": "Favorite checkbox" }}
-      />
     </Box>
   );
 
@@ -180,34 +147,11 @@ export function ElearningPostView() {
     </Box>
   );
 
-  const renderPrevNextButtons = () => (
-    <Box
-      sx={{
-        gap: 5,
-        py: 10,
-        display: "grid",
-        gridTemplateColumns: { xs: "repeat(1, 1fr)", md: "repeat(2, 1fr)" },
-      }}
-    >
-      <PrevNextButton title={prevPost?.title} coverUrl={prevPost?.coverUrl} href="#" />
-      <PrevNextButton isNext title={nextPost?.title} coverUrl={nextPost?.coverUrl} href="#" />
-    </Box>
-  );
-
   return (
     <>
       <Divider />
 
       <Container>
-        <CustomBreadcrumbs
-          links={[
-            { name: "Home", href: "/" },
-            { name: "Blog", href: paths.eLearning.posts },
-            { name: post.title },
-          ]}
-          sx={{ my: { xs: 3, md: 5 } }}
-        />
-
         {renderVideo()}
 
         <Grid container spacing={3} sx={{ justifyContent: { md: "center" } }}>
@@ -216,19 +160,13 @@ export function ElearningPostView() {
 
             {renderToolbar()}
 
-            <Markdown content={post.content} firstLetter />
-
             {!!post.tags.length && <PostTags tags={post.tags} />}
 
             {renderSocials()}
 
             <Divider sx={{ mt: 10 }} />
 
-            <PostAuthor author={post.author} />
-
             <Divider />
-
-            {renderPrevNextButtons()}
           </Grid>
         </Grid>
       </Container>
