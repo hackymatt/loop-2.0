@@ -6,6 +6,7 @@ from django.utils import timezone
 from const import Urls
 from ..factory import create_blog, create_admin_user, create_student_user
 
+
 class BlogViewSetTestCase(TestCase):
     def setUp(self):
         self.client = APIClient()
@@ -47,14 +48,19 @@ class BlogViewSetTestCase(TestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["slug"], self.blog1.slug)
-        self.assertEqual(response.data["translated_name"], self.blog1_data["en"]["name"])
         self.assertEqual(
-            response.data["translated_description"], self.blog1_data["en"]["description"]
+            response.data["translated_name"], self.blog1_data["en"]["name"]
+        )
+        self.assertEqual(
+            response.data["translated_description"],
+            self.blog1_data["en"]["description"],
         )
 
     def test_blog_filter_by_category(self):
         # Test filtering blogs by category (topic)
-        response = self.client.get(f"{self.url}?category={self.blog1_data['topic'].slug}")
+        response = self.client.get(
+            f"{self.url}?category={self.blog1_data['topic'].slug}"
+        )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data["results"]), 1)
@@ -170,7 +176,9 @@ class FeaturedBlogViewTestCase(TestCase):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["slug"], self.blog2.slug)
-        self.assertEqual(response.data["translated_name"], self.blog2_data["en"]["name"])
+        self.assertEqual(
+            response.data["translated_name"], self.blog2_data["en"]["name"]
+        )
 
     def test_featured_blog_when_no_blogs(self):
         Blog.objects.all().delete()

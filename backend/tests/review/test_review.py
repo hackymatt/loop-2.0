@@ -1,45 +1,18 @@
 from rest_framework import status
 from rest_framework.test import APITestCase
-from course.models import Course
-from course.level.models import Level
-from course.category.models import Category
-from course.technology.models import Technology
 from review.models import Review
-from django.contrib.auth import get_user_model
-from user.type.student_user.models import Student
-from const import Language, Urls, UserType
+from const import Language, Urls
+from ..factory import create_student, create_course
 
 
 class ReviewSummaryViewSetTest(APITestCase):
     def setUp(self):
         self.url = f"/{Urls.API}/{Urls.COURSE_REVIEW_SUMMARY}"
         # Set up test data
-        self.user_1 = get_user_model().objects.create_user(
-            email="test@student.com",
-            password="password",
-            username="test",
-            user_type=UserType.STUDENT,
-        )
-        self.student_1 = Student.objects.create(user=self.user_1)
-        self.user_2 = get_user_model().objects.create_user(
-            email="test_2@student.com",
-            password="password",
-            username="test_2",
-            user_type=UserType.STUDENT,
-        )
-        self.student_2 = Student.objects.create(user=self.user_2)
-        level = Level.objects.create(slug="beginner")
-        category = Category.objects.create(slug="web-development")
-        technology = Technology.objects.create(slug="python")
-        self.course = Course.objects.create(
-            slug="test-course",
-            level=level,
-            category=category,
-            technology=technology,
-            duration=100,
-            chat_url="example.com",
-            active=True,
-        )
+        self.student_1, _ = create_student()
+        self.student_2, _ = create_student()
+        self.course, _= create_course()
+
         self.review_1 = Review.objects.create(
             student=self.student_1,
             course=self.course,
@@ -71,32 +44,9 @@ class ReviewViewSetTest(APITestCase):
     def setUp(self):
         self.url = f"/{Urls.API}/{Urls.COURSE_REVIEWS}"
         # Set up test data
-        self.user_1 = get_user_model().objects.create_user(
-            email="test@student.com",
-            password="password",
-            username="test",
-            user_type=UserType.STUDENT,
-        )
-        self.student_1 = Student.objects.create(user=self.user_1)
-        self.user_2 = get_user_model().objects.create_user(
-            email="test_2@student.com",
-            password="password",
-            username="test_2",
-            user_type=UserType.STUDENT,
-        )
-        self.student_2 = Student.objects.create(user=self.user_2)
-        level = Level.objects.create(slug="beginner")
-        category = Category.objects.create(slug="web-development")
-        technology = Technology.objects.create(slug="python")
-        self.course = Course.objects.create(
-            slug="test-course",
-            level=level,
-            category=category,
-            technology=technology,
-            duration=100,
-            chat_url="example.com",
-            active=True,
-        )
+        self.student_1, _ = create_student()
+        self.student_2, _ = create_student()
+        self.course, _= create_course()
         self.review_1 = Review.objects.create(
             student=self.student_1,
             course=self.course,
@@ -126,32 +76,9 @@ class FeaturedReviewsViewTest(APITestCase):
     def setUp(self):
         self.url = f"/{Urls.API}/{Urls.FEATURED_REVIEWS}"
         # Set up test data
-        self.user_1 = get_user_model().objects.create_user(
-            email="test@student.com",
-            password="password",
-            username="test",
-            user_type=UserType.STUDENT,
-        )
-        self.student_1 = Student.objects.create(user=self.user_1)
-        self.user_2 = get_user_model().objects.create_user(
-            email="test_2@student.com",
-            password="password",
-            username="test_2",
-            user_type=UserType.STUDENT,
-        )
-        self.student_2 = Student.objects.create(user=self.user_2)
-        level = Level.objects.create(slug="beginner")
-        category = Category.objects.create(slug="web-development")
-        technology = Technology.objects.create(slug="python")
-        self.course = Course.objects.create(
-            slug="test-course",
-            level=level,
-            category=category,
-            technology=technology,
-            duration=100,
-            chat_url="example.com",
-            active=True,
-        )
+        self.student_1, _ = create_student()
+        self.student_2, _ = create_student()
+        self.course, _= create_course()
         self.review_1 = Review.objects.create(
             student=self.student_1,
             course=self.course,
