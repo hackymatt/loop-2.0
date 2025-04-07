@@ -1,12 +1,11 @@
 from django.test import TestCase
 from unittest.mock import patch
-from django.contrib.auth import get_user_model
 from rest_framework import status
 from rest_framework.test import APIClient
 import jwt
-import datetime
 from const import Urls
-from global_config import CONFIG
+from ..factory import create_user
+from ..helpers import generate_valid_token, generate_expired_token
 
 
 class ActivateAccountViewTest(TestCase):
@@ -14,20 +13,10 @@ class ActivateAccountViewTest(TestCase):
         self.client = APIClient()
         self.url = f"/{Urls.API}/{Urls.ACTIVATE}"
 
-        self.user = get_user_model().objects.create_user(
-            email="testuser@example.com", password="Test1234!", username="testuser"
-        )
+        self.user, _ = create_user()
 
         # Generate a valid JWT token
-        self.valid_token = self.generate_valid_token(self.user.id)
-
-    def generate_valid_token(self, user_id):
-        # Generate a valid JWT token that expires in 1 hour
-        expiration_time = datetime.datetime.now(
-            datetime.timezone.utc
-        ) + datetime.timedelta(hours=24)
-        payload = {"user_id": user_id, "exp": expiration_time}
-        return jwt.encode(payload, CONFIG["secret"], algorithm="HS256")
+        self.valid_token = generate_valid_token(self.user.id)
 
     def test_activate_account_success(self):
         """
@@ -75,7 +64,7 @@ class ActivateAccountViewTest(TestCase):
         """
         Test account activation with an expired token.
         """
-        expired_token = self.generate_expired_token(self.user.id)
+        expired_token = generate_expired_token(self.user.id)
         data = {"token": expired_token}
 
         response = self.client.post(self.url, data, format="json")
@@ -88,7 +77,7 @@ class ActivateAccountViewTest(TestCase):
         Test account activation with a valid token, but the user doesn't exist.
         """
         # Create an invalid token for a non-existing user ID
-        invalid_token = self.generate_valid_token(
+        invalid_token = generate_valid_token(
             999999
         )  # Assuming this user doesn't exist
 
@@ -97,11 +86,3 @@ class ActivateAccountViewTest(TestCase):
 
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
         self.assertEqual(response.data["root"], "User not found")
-
-    def generate_expired_token(self, user_id):
-        """
-        Generate a token that is already expired.
-        """
-        expiration_time = datetime.datetime.now(datetime.timezone.utc)  # Expired token
-        payload = {"user_id": user_id, "exp": expiration_time}
-        return jwt.encode(payload, CONFIG["secret"], algorithm="HS256")

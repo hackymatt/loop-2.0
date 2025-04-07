@@ -2,13 +2,10 @@ from rest_framework import status
 from rest_framework.test import APIClient
 from rest_framework.test import APITestCase
 from unittest.mock import patch
-from django.contrib.auth import get_user_model
-import jwt
-import datetime
 from const import Urls
-from global_config import CONFIG
 from utils.google.gmail import GmailApi
-from ..helpers import mock_send_message
+from ..helpers import mock_send_message, generate_valid_token
+from ..factory import create_user
 
 
 class ResendActivationLinkViewTest(APITestCase):
@@ -16,25 +13,12 @@ class ResendActivationLinkViewTest(APITestCase):
         self.client = APIClient()
         self.url = f"/{Urls.API}/{Urls.RESEND}"
         # Create a test user (inactive)
-        self.user = get_user_model().objects.create_user(
-            email="user@example.com",
-            password="validpassword123",
-            username="user",
-            is_active=False,
-        )
+        self.user, _ = create_user()
+        self.user.is_active = False
+        self.user.save()
 
         # Generate a token for the user
-        self.token = self.generate_valid_token(self.user.id)
-
-    def generate_valid_token(self, user_id):
-        """
-        Generate a valid JWT token for a specific user ID.
-        """
-        expiration_time = datetime.datetime.now(
-            datetime.timezone.utc
-        ) + datetime.timedelta(hours=24)
-        payload = {"user_id": user_id, "exp": int(expiration_time.timestamp())}
-        return jwt.encode(payload, CONFIG["secret"], algorithm="HS256")
+        self.token = generate_valid_token(self.user.id)
 
     @patch.object(GmailApi, "_send_message")  # Mocking send_activation_email
     def test_resend_activation_link_missing_token_and_email(self, send_message_mock):
@@ -63,7 +47,7 @@ class ResendActivationLinkViewTest(APITestCase):
     def test_resend_activation_link_user_not_found(self, send_message_mock):
         mock_send_message(mock=send_message_mock)
         """Test when the user is not found (invalid token or email)."""
-        non_existing_token = self.generate_valid_token(999999)  # Non-existing user ID
+        non_existing_token = generate_valid_token(999999)  # Non-existing user ID
         data = {"token": non_existing_token}
         response = self.client.post(self.url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)

@@ -1,55 +1,27 @@
-from django.contrib.auth import get_user_model
 from rest_framework import status
 from rest_framework.test import APITestCase
-import jwt
-import datetime
 from const import Urls
-from global_config import CONFIG
+from ..factory import create_user
+from ..helpers import generate_valid_token, generate_expired_token
 
 
 class PasswordResetConfirmTests(APITestCase):
     def setUp(self):
         self.url = f"/{Urls.API}/{Urls.PASSWORD_RESET_CONFIRM}"
         """Create a test user."""
-        self.user = get_user_model().objects.create_user(
-            email="test@example.com", password="OldPassword123", username="test"
-        )
+        self.user, _ = create_user()
 
         # Generate a valid JWT token for the user
-        self.valid_token = jwt.encode(
-            {
-                "user_id": self.user.id,
-                "exp": datetime.datetime.now(datetime.timezone.utc)
-                + datetime.timedelta(hours=1),  # 1-hour expiration
-            },
-            CONFIG["secret"],
-            algorithm="HS256",
-        )
+        self.valid_token = generate_valid_token(self.user.id)
 
         # Generate an expired JWT token
-        self.expired_token = jwt.encode(
-            {
-                "user_id": self.user.id,
-                "exp": datetime.datetime.now(datetime.timezone.utc)
-                - datetime.timedelta(hours=1),  # Expired 1 hour ago
-            },
-            CONFIG["secret"],
-            algorithm="HS256",
-        )
+        self.expired_token = generate_expired_token(self.user.id)
 
         # Invalid token (corrupted string)
         self.invalid_token = "invalid.token.string"
 
         # Nonexistent user token
-        self.nonexistent_user_token = jwt.encode(
-            {
-                "user_id": 9999,  # User ID that does not exist
-                "exp": datetime.datetime.now(datetime.timezone.utc)
-                + datetime.timedelta(hours=1),
-            },
-            CONFIG["secret"],
-            algorithm="HS256",
-        )
+        self.nonexistent_user_token = generate_valid_token(9999)
 
     def test_successful_password_reset(self):
         """Ensure a valid token allows password reset."""

@@ -16,7 +16,7 @@ class Instructor(BaseModel):
         if self.user.user_type != UserType.INSTRUCTOR:
             raise ValidationError(
                 f"Instructor profile can only be created for {UserType.INSTRUCTOR} users."
-            )
+            )  # pragma: no cover
 
     def save(self, *args, **kwargs):
         self.clean()

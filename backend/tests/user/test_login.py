@@ -1,35 +1,26 @@
-from django.contrib.auth import get_user_model
 from rest_framework.test import APITestCase
 from rest_framework import status
 from const import Urls
+from ..factory import create_user
 
 
 class LoginViewTest(APITestCase):
     def setUp(self):
         self.url = f"/{Urls.API}/{Urls.LOGIN}"
         # Create an active user
-        self.user = get_user_model().objects.create_user(
-            email="testuser@example.com",
-            password="testpassword",
-            username="testuser",
-            is_active=True,
-        )
+        self.user, self.user_data = create_user()
 
         # Create an inactive user
-        self.inactive_user = get_user_model().objects.create_user(
-            email="inactive@example.com",
-            password="testpassword",
-            username="inactive",
-            is_active=False,
-        )
+        self.inactive_user, self.inactive_user_data = create_user()
+        self.inactive_user.is_active= False
+        self.inactive_user.save()
 
     def test_successful_login(self):
         """Test login with valid credentials returns 200 and JWT tokens."""
         response = self.client.post(
             self.url,
-            {"email": "testuser@example.com", "password": "testpassword"},
+            {"email": self.user_data["email"], "password": self.user_data["password"]},
         )
-
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn("access_token", response.data)
         self.assertIn("refresh_token", response.data)
@@ -38,7 +29,7 @@ class LoginViewTest(APITestCase):
         """Test login with incorrect credentials returns 400."""
         response = self.client.post(
             self.url,
-            {"email": "testuser@example.com", "password": "wrongpassword"},
+            {"email": self.user_data["email"], "password": "wrongpassword"},
         )
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
@@ -48,7 +39,7 @@ class LoginViewTest(APITestCase):
         """Test login with inactive user returns 401."""
         response = self.client.post(
             self.url,
-            {"email": "inactive@example.com", "password": "testpassword"},
+            {"email": self.inactive_user_data["email"], "password": self.inactive_user_data["password"]},
         )
 
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
@@ -57,10 +48,10 @@ class LoginViewTest(APITestCase):
 
     def test_missing_email_or_password(self):
         """Test login fails when email or password is missing."""
-        response = self.client.post(self.url, {"email": "testuser@example.com"})
+        response = self.client.post(self.url, {"email": self.user_data["email"]})
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
-        response = self.client.post(self.url, {"password": "testpassword"})
+        response = self.client.post(self.url, {"password": self.user_data["password"]})
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
         response = self.client.post(self.url, {})

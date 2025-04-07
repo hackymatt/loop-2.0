@@ -1,4 +1,3 @@
-from django.contrib.auth import get_user_model
 from unittest.mock import patch
 from django.test import TestCase
 from rest_framework.test import APIClient
@@ -6,15 +5,13 @@ from rest_framework import status
 from const import Urls
 from utils.google.gmail import GmailApi
 from ..helpers import mock_send_message
-
+from ..factory import create_user
 
 class PasswordResetTest(TestCase):
     def setUp(self):
         self.client = APIClient()
         self.url = f"/{Urls.API}/{Urls.PASSWORD_RESET}"
-        self.user = get_user_model().objects.create_user(
-            email="test@example.com", password="password123", username="test"
-        )
+        self.user, _ = create_user()
 
     @patch.object(GmailApi, "_send_message")
     def test_password_reset_request_valid_email(self, send_message_mock):

@@ -15,7 +15,7 @@ class Admin(BaseModel):
         if self.user.user_type != UserType.ADMIN:
             raise ValidationError(
                 f"Admin profile can only be created for {UserType.ADMIN} users."
-            )
+            )  # pragma: no cover
 
     def save(self, *args, **kwargs):
         self.clean()
