@@ -84,6 +84,7 @@ export const _courses = Array.from({ length: 12 }, (_, index) => ({
   totalHours: 100,
   totalPoints: 3459,
   chapters: CHAPTERS,
+  totalLessons: LESSONS.length,
   totalQuizzes: 4,
   totalExercises: 10,
   totalVideos: 6,
@@ -100,6 +101,7 @@ export const _courses = Array.from({ length: 12 }, (_, index) => ({
   description: _mock.description(index),
   overview: _mock.description(index),
   ratingNumber: _mock.number.rating(index),
+  progress: Math.floor(Math.random() * 100) + 1,
 }));
 
 export const _coursesByCategories = Array.from({ length: 9 }, (_, index) => ({

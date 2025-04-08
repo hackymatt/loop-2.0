@@ -159,6 +159,10 @@ export function MainLayout({
               carousel: { sx: {}, options: {} },
               masonry: { sx: {}, columns: 3, defaultColumns: 3 },
             }}
+            sx={(theme) => ({
+              display: "none",
+              [theme.breakpoints.up(layoutQuery)]: { display: "flex" },
+            })}
           />
         </Toolbar>
       ),

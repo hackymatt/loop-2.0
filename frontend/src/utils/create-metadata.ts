@@ -82,7 +82,7 @@ export const createMetadata = ({
   path,
   image,
 }: Props) => {
-  const location = path ? `${path}/` : "/";
+  const location = path || "/";
 
   const { appName: name } = CONFIG;
 

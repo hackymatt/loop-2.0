@@ -102,7 +102,7 @@ export function PostView({ slug }: { slug: string }) {
       <IconButton
         onClick={() =>
           navigator.share({
-            url: `${paths.post}/${post?.slug}/`,
+            url: `${paths.post}/${post?.slug}`,
             title: post?.name,
             text: post?.description,
           })
@@ -143,7 +143,7 @@ export function PostView({ slug }: { slug: string }) {
         <PrevNextButton
           title={post?.prevPost.name}
           coverUrl={post?.prevPost.heroUrl}
-          href={`${paths.post}/${post?.prevPost.slug}/`}
+          href={`${paths.post}/${post?.prevPost.slug}`}
         />
       ) : (
         <Box />
@@ -154,7 +154,7 @@ export function PostView({ slug }: { slug: string }) {
           isNext
           title={post?.nextPost.name}
           coverUrl={post?.nextPost.heroUrl}
-          href={`${paths.post}/${post?.nextPost.slug}/`}
+          href={`${paths.post}/${post?.nextPost.slug}`}
         />
       ) : (
         <Box />

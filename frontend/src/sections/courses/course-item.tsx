@@ -7,6 +7,7 @@ import Card from "@mui/material/Card";
 import Link from "@mui/material/Link";
 import Avatar from "@mui/material/Avatar";
 import Divider from "@mui/material/Divider";
+import { LinearProgress } from "@mui/material";
 import Typography from "@mui/material/Typography";
 
 import { paths } from "src/routes/paths";
@@ -46,6 +47,20 @@ export function CourseItem({ course, isVertical }: Props) {
       <Typography variant="overline" sx={{ color: "primary.main", flexGrow: 1 }}>
         {course.category.name}
       </Typography>
+
+      {course.progress ? (
+        <>
+          <LinearProgress
+            color="primary"
+            variant="determinate"
+            value={75}
+            sx={{ flex: "1 1 auto" }}
+          />
+          <Typography variant="body2" sx={{ color: "text.secondary" }}>
+            75%
+          </Typography>
+        </>
+      ) : null}
     </Box>
   );
 
@@ -205,7 +220,7 @@ export function CourseItem({ course, isVertical }: Props) {
   return (
     <Link
       component={RouterLink}
-      href={`${paths.course}/${course.slug}/`}
+      href={`${paths.course}/${course.slug}`}
       color="inherit"
       underline="none"
     >

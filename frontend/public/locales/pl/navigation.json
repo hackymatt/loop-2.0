@@ -21,5 +21,6 @@
   "termsAndConditions": "Regulamin",
   "accountSettings": "Ustawienia konta",
   "logout": "Wyloguj",
-  "upgrade": "Zaktualizuj plan"
+  "upgrade": "Zmień plan",
+  "certificates": "Certyfikaty"
 }

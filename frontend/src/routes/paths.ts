@@ -14,6 +14,7 @@ export const paths = {
   about: "/about",
   contact: "/contact",
   dashboard: "/dashboard",
+  certificates: "/certificates",
   privacyPolicy: "/privacy-policy",
   termsAndConditions: "/terms-and-conditions",
   support: "/support",

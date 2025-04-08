@@ -51,9 +51,11 @@ type ICourseBaseProps = {
   ratingNumber: number | null;
   totalReviews: number;
   totalStudents: number;
+  progress: number | null;
 };
 
 export type ICourseListProps = ICourseBaseProps;
+export type ICourseListUserProps = ICourseListProps;
 
 export type ICourseProps = ICourseBaseProps & {
   overview: string;

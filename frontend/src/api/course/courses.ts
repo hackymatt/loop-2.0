@@ -47,6 +47,7 @@ type ICourse = {
   average_rating: number | null;
   ratings_count: number;
   students_count: number;
+  progress: number | null;
 };
 
 export const coursesQuery = (query?: QueryType, language?: Language) => {

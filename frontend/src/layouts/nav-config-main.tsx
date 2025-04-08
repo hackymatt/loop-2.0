@@ -24,7 +24,7 @@ export const usePageLinks = () => {
         subheader: t("levels"),
         items: courseLevels.map(({ slug, name }: ICourseLevelProp) => ({
           title: name,
-          path: `${paths.courses}/?levels=${slug}`,
+          path: `${paths.courses}?levels=${slug}`,
         })),
       }
     : null;
@@ -34,7 +34,7 @@ export const usePageLinks = () => {
         subheader: t("technologies"),
         items: courseTechnologies.map(({ slug, name }: ICourseTechnologyProp) => ({
           title: name,
-          path: `${paths.courses}/?technologies=${slug}`,
+          path: `${paths.courses}?technologies=${slug}`,
         })),
       }
     : null;
@@ -44,7 +44,7 @@ export const usePageLinks = () => {
         subheader: t("categories"),
         items: courseCategories.map(({ slug, name }: ICourseTechnologyProp) => ({
           title: name,
-          path: `${paths.courses}/?categories=${slug}`,
+          path: `${paths.courses}?categories=${slug}`,
         })),
       }
     : null;
@@ -78,7 +78,7 @@ const useCourseNav = () => {
     },
     tags: (featuredCourses || []).map((course) => ({
       title: course.name,
-      path: `${paths.course}/${course.slug}/`,
+      path: `${paths.course}/${course.slug}`,
     })),
     children,
   };
@@ -91,12 +91,13 @@ export const useNavData = () => {
 
   return user.state.isLoggedIn
     ? [
-        { title: t("courses"), path: paths.pages, ...coursesNav },
+        { title: t("courses"), path: paths.courses, ...coursesNav },
+        { title: t("certificates"), path: paths.certificates, disabled: true },
         { title: t("blog"), path: paths.posts },
         { title: t("contact"), path: paths.contact },
       ]
     : [
-        { title: t("courses"), path: paths.pages, ...coursesNav },
+        { title: t("courses"), path: paths.courses, ...coursesNav },
         { title: t("pricing"), path: paths.pricing },
         { title: t("blog"), path: paths.posts },
         { title: t("about"), path: paths.about },

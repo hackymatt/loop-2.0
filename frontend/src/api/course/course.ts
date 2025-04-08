@@ -69,6 +69,7 @@ type ICourse = {
   ratings_count: number;
   students_count: number;
   chapters: IChapter[];
+  progress: number | null;
 };
 
 export const courseQuery = (slug: string, language?: Language) => {
