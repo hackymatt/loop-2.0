@@ -29,6 +29,7 @@ jobs:
             python -m pip install --upgrade pip
             pip install -r requirements-lint.txt
             pip install -r requirements.txt
+            pip install django-cors-headers
           else
             npm install --legacy-peer-deps
           fi
@@ -40,6 +41,7 @@ jobs:
             black . --check
           else
             npm run fm:check
+            npm run lint:check
           fi
 
   test:
@@ -98,6 +100,7 @@ jobs:
             python -m pip install --upgrade pip
             pip install -r requirements-test.txt
             pip install -r requirements.txt
+            pip install django-cors-headers
           else
             npm install --legacy-peer-deps
           fi

@@ -7,7 +7,7 @@
 
 export type InputNumberValue = string | number | null | undefined;
 
-type Options = Intl.NumberFormatOptions & { code: string; currency: string };
+type Options = Intl.NumberFormatOptions & { code?: string; currency?: string };
 
 const DEFAULT_LOCALE = { code: "pl-PL", currency: "PLN" };
 
