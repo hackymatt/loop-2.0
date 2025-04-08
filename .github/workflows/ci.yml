@@ -29,7 +29,6 @@ jobs:
             python -m pip install --upgrade pip
             pip install -r requirements-lint.txt
             pip install -r requirements.txt
-            pip install django-cors-headers
           else
             npm install --legacy-peer-deps
           fi
