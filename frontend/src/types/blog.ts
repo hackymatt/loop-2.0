@@ -1,28 +1,51 @@
 import type { DatePickerFormat } from "src/utils/format-time";
 
-import type { IAuthorProps } from "./author";
-import type { ISocialLinks } from "./socials";
+import type { IInstructorProps } from "./user";
 
 // ----------------------------------------------------------------------
 
-export type IPostCategoryProps = {
-  label: string;
-  path: string;
+export type IBlogTopicProp = {
+  slug: string;
+  name: string;
 };
 
-export type IPostProps = {
-  id: string;
-  title: string;
+export type IBlogTagProp = {
   slug: string;
+  name: string;
+};
+
+export type IBlogAuthorListProps = IInstructorProps;
+
+export type IBlogAuthorProps = IInstructorProps;
+
+type IBlogBaseProps = {
+  name: string;
+  slug: string;
+  category: IBlogTopicProp;
   heroUrl: string;
-  tags?: string[];
-  content: string;
-  category: string;
-  coverUrl: string;
-  duration: string;
-  favorited: boolean;
+  publishedAt: DatePickerFormat;
+  // calculated
+  duration: number;
+};
+
+export type IBlogListProps = IBlogBaseProps & { description: string; author: IBlogAuthorListProps };
+
+export type IBlogRecentProps = IBlogBaseProps;
+
+export type IBlogFeaturedPost = IBlogListProps;
+
+type IBlogNavigationProps = {
+  slug: string;
+  name: string;
+  heroUrl: string;
+};
+
+export type IBlogProps = IBlogBaseProps & {
   description: string;
-  author: IAuthorProps;
-  createdAt: DatePickerFormat;
-  shareLinks?: ISocialLinks;
+  author: IBlogAuthorProps;
+  tags: IBlogTagProp[];
+  content: string;
+  // calculated
+  prevPost: IBlogNavigationProps | null;
+  nextPost: IBlogNavigationProps | null;
 };

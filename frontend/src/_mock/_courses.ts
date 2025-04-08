@@ -59,10 +59,21 @@ const getTeachers = (index: number) => {
 };
 
 const getLevel = (index: number) => {
-  if (index % 2) return "Intermediate";
-  if (index % 4) return "Advanced";
-  if (index % 5) return "All levels";
-  return "Beginner";
+  if (index % 2) return { slug: "intermediate", name: "Intermediate" };
+  if (index % 4) return { slug: "advanced", name: "Advanced" };
+  return { slug: "beginner", name: "Beginner" };
+};
+
+const getTechnology = (index: number) => {
+  if (index % 2) return { slug: "typescript", name: "TypeScript" };
+  if (index % 4) return { slug: "c-plusplus", name: "C++" };
+  return { slug: "vba", name: "Visual Basic for Application" };
+};
+
+const getCategory = (index: number) => {
+  if (index % 2) return { slug: "frontend", name: "Frontend" };
+  if (index % 4) return { slug: "backend", name: "Backend" };
+  return { slug: "fullstack", name: "Full Stack" };
 };
 
 // ----------------------------------------------------------------------
@@ -79,10 +90,10 @@ export const _courses = Array.from({ length: 12 }, (_, index) => ({
   totalReviews: 3458,
   totalStudents: 180000,
   level: getLevel(index),
-  technology: "Python",
-  category: _tags[index],
+  technology: getTechnology(index),
+  category: getCategory(index),
   teachers: getTeachers(index),
-  title: _mock.courseNames(index),
+  name: _mock.courseNames(index),
   slug: slugify(_mock.courseNames(index)),
   coverUrl: _mock.image.course(index),
   createdAt: dayjs(new Date()).format(),

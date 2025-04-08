@@ -1,5 +1,5 @@
-import type { IPostProps } from "src/types/blog";
 import type { BoxProps } from "@mui/material/Box";
+import type { IBlogRecentProps } from "src/types/blog";
 
 import Box from "@mui/material/Box";
 import Link from "@mui/material/Link";
@@ -12,12 +12,12 @@ import { fDate } from "src/utils/format-time";
 
 import { Image } from "src/components/image";
 
-import { PostTime } from "./post-time";
+import { PostHeader } from "./post-header";
 
 // ----------------------------------------------------------------------
 
 type Props = BoxProps & {
-  post: IPostProps;
+  post: IBlogRecentProps;
   onSidebar?: boolean;
 };
 
@@ -42,8 +42,8 @@ export function PostItemMobile({ post, onSidebar, sx, ...other }: Props) {
         {...other}
       >
         <Image
-          alt={post.title}
-          src={post.coverUrl}
+          alt={post.name}
+          src={post.heroUrl}
           sx={{ width: 64, height: 64, flexShrink: 0, borderRadius: 1.5 }}
         />
 
@@ -59,10 +59,14 @@ export function PostItemMobile({ post, onSidebar, sx, ...other }: Props) {
               mb: onSidebar ? 0.5 : 1,
             })}
           >
-            {post.title}
+            {post.name}
           </Typography>
 
-          <PostTime createdAt={fDate(post.createdAt)} duration={post.duration} />
+          <PostHeader
+            publishedAt={fDate(post.publishedAt)}
+            duration={post.duration}
+            category={post.category}
+          />
         </Box>
       </Box>
     </Link>

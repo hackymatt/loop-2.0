@@ -7,7 +7,12 @@ import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 
-import { _courses } from "src/_mock";
+import { useQueryParams } from "src/hooks/use-query-params";
+
+import { useCourses } from "src/api/course/courses";
+import { useCourseLevels } from "src/api/course/level/levels";
+import { useCourseCategories } from "src/api/course/category/categories";
+import { useCourseTechnologies } from "src/api/course/technology/technologies";
 
 import { Iconify } from "src/components/iconify";
 
@@ -23,18 +28,12 @@ const RATING_OPTIONS = ["4", "3", "2"];
 export function CoursesView() {
   const { t } = useTranslation("course");
 
-  const courses = _courses.slice(0, 10);
-  const levels = ["Beginner", "Intermediate", "Advanced"];
-  const technologies = [
-    "React",
-    "Angular",
-    "Vue",
-    "Bootstrap",
-    "Node.js",
-    "Laravel",
-    "Ruby on Rails",
-  ];
-  const categories = ["Frontend", "Backend", "Full Stack", "DevOps", "Mobile App", "Desktop App"];
+  const { handleChange, query } = useQueryParams();
+
+  const { data: courseLevels } = useCourseLevels({ sort_by: "order", page_size: "-1" });
+  const { data: courseTechnologies } = useCourseTechnologies({ page_size: "-1" });
+  const { data: courseCategories } = useCourseCategories({ page_size: "-1" });
+  const { data: courses, pageSize } = useCourses(query);
 
   const openMobile = useBoolean();
 
@@ -55,7 +54,12 @@ export function CoursesView() {
 
   const renderListView = () => (
     <Box sx={{ gap: 4, display: "flex", flexDirection: "column" }}>
-      <CourseList courses={courses} />
+      <CourseList
+        courses={courses ?? []}
+        count={pageSize || 0}
+        page={Number(query.page) || 1}
+        onPageChange={(selectedPage: number) => handleChange("page", String(selectedPage))}
+      />
     </Box>
   );
 
@@ -65,9 +69,9 @@ export function CoursesView() {
         open={openMobile.value}
         onClose={openMobile.onFalse}
         options={{
-          levels,
-          technologies,
-          categories,
+          levels: courseLevels ?? [],
+          technologies: courseTechnologies ?? [],
+          categories: courseCategories ?? [],
           ratings: RATING_OPTIONS,
         }}
       />

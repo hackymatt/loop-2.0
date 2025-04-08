@@ -15,14 +15,6 @@
       "specialCharacter": "Hasło musi zawierać co najmniej jeden znak specjalny"
     }
   },
-  "confirmPassword": {
-    "label": "Potwierdź hasło",
-    "placeholder": "Powtórz hasło",
-    "errors": {
-      "required": "Potwierdzenie hasła jest wymagane",
-      "match": "Hasła muszą być identyczne"
-    }
-  },
   "termsAcceptance": {
     "label": {
       "accept": "Akceptuję",

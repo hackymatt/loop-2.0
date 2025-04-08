@@ -39,7 +39,7 @@ export function CourseDetailsChapterItem({
       variant="contained"
       size="medium"
       color="primary"
-      href={`${paths.register}?redirect=${paths.course}/${course.slug}`}
+      href={`${paths.register}?redirect=${paths.lesson}/${course.slug}/${chapter.slug}/${chapter.lessons[0].slug}`}
       sx={{ px: 2, textAlign: "center" }}
     >
       {t("chapters.button")}
@@ -71,7 +71,7 @@ export function CourseDetailsChapterItem({
           <Badge color="primary" badgeContent={index} sx={{ ml: 1 }} />
 
           <Typography variant="subtitle1" sx={{ flexGrow: 1, ml: 2 }}>
-            {chapter.title}
+            {chapter.name}
           </Typography>
 
           {renderButton()}

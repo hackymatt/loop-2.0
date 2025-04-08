@@ -1,5 +1,5 @@
-import type { IPostProps } from "src/types/blog";
 import type { BoxProps } from "@mui/material/Box";
+import type { IBlogListProps } from "src/types/blog";
 import type { PaperProps } from "@mui/material/Paper";
 
 import Box from "@mui/material/Box";
@@ -15,15 +15,20 @@ import { RouterLink } from "src/routes/components";
 
 import { fDate } from "src/utils/format-time";
 
+import { DEFAULT_AVATAR_URL } from "src/consts/avatar";
+
 import { Image } from "src/components/image";
 
 // ----------------------------------------------------------------------
 
 type Props = BoxProps & {
-  posts: IPostProps[];
+  posts: IBlogListProps[];
+  count: number;
+  page: number;
+  onPageChange: (selectedPage: number) => void;
 };
 
-export function Posts({ posts, sx, ...other }: Props) {
+export function Posts({ posts, count, page, onPageChange, sx, ...other }: Props) {
   return (
     <>
       <Box
@@ -39,12 +44,14 @@ export function Posts({ posts, sx, ...other }: Props) {
         {...other}
       >
         {posts.map((post) => (
-          <PostItem key={post.id} post={post} />
+          <PostItem key={post.slug} post={post} />
         ))}
       </Box>
 
       <Pagination
-        count={10}
+        count={count}
+        page={page}
+        onChange={(event, selectedPage: number) => onPageChange(selectedPage)}
         sx={{ py: 10, [`& .${paginationClasses.ul}`]: { justifyContent: "center" } }}
       />
     </>
@@ -54,7 +61,7 @@ export function Posts({ posts, sx, ...other }: Props) {
 // ----------------------------------------------------------------------
 
 type PostItemProps = PaperProps & {
-  post: IPostProps;
+  post: IBlogListProps;
 };
 
 export function PostItem({ post, sx, ...other }: PostItemProps) {
@@ -73,15 +80,15 @@ export function PostItem({ post, sx, ...other }: PostItemProps) {
         ]}
         {...other}
       >
-        <Image src={post.coverUrl} alt={post.title} ratio="1/1" />
+        <Image src={post.heroUrl} alt={post.name} ratio="1/1" />
         <Box sx={{ display: "flex", gap: 3, p: 3 }}>
           <Box sx={{ textAlign: "center" }}>
             <Typography variant="subtitle2" component="span">
-              {fDate(post.createdAt, "MMM")}
+              {fDate(post.publishedAt, "MMM")}
             </Typography>
             <Divider sx={{ mt: 1, mb: 0.5 }} />
             <Typography variant="h3" component="span">
-              {fDate(post.createdAt, "DD")}
+              {fDate(post.publishedAt, "DD")}
             </Typography>
           </Box>
 
@@ -93,7 +100,7 @@ export function PostItem({ post, sx, ...other }: PostItemProps) {
                 ...theme.mixins.maxLine({ line: 2, persistent: theme.typography.h6 }),
               })}
             >
-              {post.title}
+              {post.name}
             </Typography>
 
             <Typography
@@ -107,15 +114,34 @@ export function PostItem({ post, sx, ...other }: PostItemProps) {
             </Typography>
 
             <Box sx={{ gap: 1.5, display: "flex", alignItems: "center", pt: 1.5 }}>
-              <Avatar src={post.author.avatarUrl} />
+              <Avatar src={post.author.avatarUrl || DEFAULT_AVATAR_URL} />
               <Box sx={{ gap: 0.5, display: "flex", flexDirection: "column" }}>
                 <Box component="span" sx={{ typography: "body2" }}>
                   {post.author.name}
                 </Box>
 
-                <Typography variant="caption" sx={{ color: "text.disabled" }}>
-                  {post.duration}
-                </Typography>
+                <Box
+                  sx={{
+                    gap: 0.5,
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    color: "text.disabled",
+                  }}
+                >
+                  <Typography variant="caption">{post.duration} min</Typography>
+                  <Box
+                    component="span"
+                    sx={{
+                      mx: 1,
+                      width: 4,
+                      height: 4,
+                      borderRadius: "50%",
+                      backgroundColor: "currentColor",
+                    }}
+                  />
+                  <Typography variant="caption">{post.category.name}</Typography>
+                </Box>
               </Box>
             </Box>
           </Box>

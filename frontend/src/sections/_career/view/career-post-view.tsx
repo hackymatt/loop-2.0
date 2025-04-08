@@ -1,6 +1,5 @@
 "use client";
 
-import { useState, useCallback } from "react";
 import { usePopover } from "minimal-shared/hooks";
 
 import Box from "@mui/material/Box";
@@ -9,26 +8,17 @@ import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import Divider from "@mui/material/Divider";
 import Popover from "@mui/material/Popover";
-import Checkbox from "@mui/material/Checkbox";
 import MenuItem from "@mui/material/MenuItem";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 
-import { paths } from "src/routes/paths";
-
-import { fDate } from "src/utils/format-time";
-
 import { _socials, _careerPosts } from "src/_mock";
 import { TwitterIcon, FacebookIcon, LinkedinIcon, InstagramIcon } from "src/assets/icons";
 
 import { Iconify } from "src/components/iconify";
-import { Markdown } from "src/components/markdown";
-import { CustomBreadcrumbs } from "src/components/custom-breadcrumbs";
 
 import { PostTags } from "../../blog/post-tags";
-import { PostTime } from "../../blog/post-time";
-import { PostAuthor } from "../../blog/post-author";
 import { CareerNewsletter } from "../career-newsletter";
 import { CareerLatestPosts } from "../posts/career-latest-posts";
 
@@ -39,12 +29,6 @@ const latestPosts = _careerPosts.slice(0, 5);
 
 export function CareerPostView() {
   const openSocial = usePopover();
-
-  const [favorite, setFavorite] = useState(post.favorited);
-
-  const handleChangeFavorite = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-    setFavorite(event.target.checked);
-  }, []);
 
   const renderSocials = () => (
     <Box sx={{ gap: 1.5, display: "flex", mt: 5 }}>
@@ -103,21 +87,11 @@ export function CareerPostView() {
         <Typography variant="subtitle2" sx={{ mb: 0.5 }}>
           {post.author.name}
         </Typography>
-        <PostTime createdAt={fDate(post.createdAt)} duration={post.duration} />
       </Box>
 
       <IconButton onClick={openSocial.onOpen} color={openSocial.open ? "primary" : "default"}>
         <Iconify icon="solar:share-outline" />
       </IconButton>
-
-      <Checkbox
-        color="error"
-        checked={favorite}
-        onChange={handleChangeFavorite}
-        icon={<Iconify icon="solar:heart-outline" />}
-        checkedIcon={<Iconify icon="solar:heart-bold" />}
-        inputProps={{ id: "favorite-checkbox", "aria-label": "Favorite checkbox" }}
-      />
     </Box>
   );
 
@@ -128,34 +102,17 @@ export function CareerPostView() {
       <Container sx={{ overflow: "hidden" }}>
         <Grid container spacing={3} sx={{ justifyContent: { md: "center" } }}>
           <Grid size={{ xs: 12, md: 8 }}>
-            <CustomBreadcrumbs
-              links={[
-                { name: "Home", href: "/" },
-                { name: "Blog", href: paths.career.posts },
-                { name: post.title },
-              ]}
-              sx={{ my: { xs: 3, md: 5 } }}
-            />
-
-            <Typography variant="h2" component="h1">
-              {post.title}
-            </Typography>
-
             {renderToolbar()}
 
             <Typography variant="h5" sx={{ mb: 5 }}>
               {post.description}
             </Typography>
 
-            <Markdown content={post.content} firstLetter />
-
             {!!post.tags.length && <PostTags tags={post.tags} />}
 
             {renderSocials()}
 
             <Divider sx={{ mt: 10 }} />
-
-            <PostAuthor author={post.author} />
           </Grid>
         </Grid>
       </Container>

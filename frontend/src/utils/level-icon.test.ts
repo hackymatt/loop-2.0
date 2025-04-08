@@ -2,14 +2,14 @@ import { getLevelIcon } from "./level-icon";
 
 describe("getLevelIcon", () => {
   // Returns the correct icon for English level "Beginner"
-  it('should return BEGINNER_ICON when level is "Beginner"', () => {
-    const result = getLevelIcon("Beginner");
+  it('should return BEGINNER_ICON when level is "beginner"', () => {
+    const result = getLevelIcon("beginner");
     expect(result).toBe("carbon:skill-level-basic");
   });
 
   // Returns the correct icon for English level "Intermediate"
-  it('should return INTERMEDIATE_ICON when level is "Intermediate"', () => {
-    const result = getLevelIcon("Intermediate");
+  it('should return INTERMEDIATE_ICON when level is "intermediate"', () => {
+    const result = getLevelIcon("intermediate");
     expect(result).toBe("carbon:skill-level-intermediate");
   });
 
@@ -21,9 +21,9 @@ describe("getLevelIcon", () => {
 
   // Handles case sensitivity (exact match required)
   it("should be case sensitive and return fallback for incorrect casing", () => {
-    const result = getLevelIcon("advanced");
+    const result = getLevelIcon("Advanced");
     expect(result).toBe("carbon:skill-level-basic");
-    expect(result).not.toBe(getLevelIcon("Advanced"));
+    expect(result).not.toBe(getLevelIcon("advanced"));
   });
 
   // Handles empty string as input

@@ -1,13 +1,11 @@
 "use client";
 
-import { useState, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid2";
 import Avatar from "@mui/material/Avatar";
 import Divider from "@mui/material/Divider";
-import Checkbox from "@mui/material/Checkbox";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
@@ -16,7 +14,10 @@ import { paths } from "src/routes/paths";
 
 import { fDate } from "src/utils/format-time";
 
-import { _coursePosts } from "src/_mock";
+import { usePost } from "src/api/blog/post";
+import { useRecentPosts } from "src/api/blog/recent";
+import { DEFAULT_AVATAR_URL } from "src/consts/avatar";
+import { useFeaturedPost } from "src/api/blog/featured";
 
 import { Image } from "src/components/image";
 import { Iconify } from "src/components/iconify";
@@ -24,38 +25,51 @@ import { Markdown } from "src/components/markdown";
 import { CustomBreadcrumbs } from "src/components/custom-breadcrumbs";
 
 import { PostTags } from "../blog/post-tags";
-import { PostAuthor } from "../blog/post-author";
 import { LatestPosts } from "../posts/latest-posts";
+import { NotFoundView } from "../error/not-found-view";
 import { PrevNextButton } from "../blog/post-prev-and-next";
 
 // ----------------------------------------------------------------------
 
-const post = _coursePosts[0];
-const prevPost = _coursePosts[1];
-const nextPost = _coursePosts[2];
-const latestPosts = _coursePosts;
-
-export function PostView() {
+export function PostView({ slug }: { slug: string }) {
   const { t } = useTranslation("navigation");
 
-  const [favorite, setFavorite] = useState(post.favorited);
-
-  const handleChangeFavorite = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-    setFavorite(event.target.checked);
-  }, []);
+  const { data: post, isError } = usePost(slug);
+  const { data: featuredPost } = useFeaturedPost();
+  const { data: recentPosts } = useRecentPosts();
 
   const renderHead = () => (
     <Box sx={{ textAlign: "center", mt: { xs: 5, md: 10 } }}>
-      <Typography variant="body2" sx={{ color: "text.disabled" }}>
-        {post.duration}
-      </Typography>
+      <Box
+        sx={{
+          gap: 0.5,
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "center",
+          alignItems: "center",
+          color: "text.disabled",
+        }}
+      >
+        <Typography variant="body2">{post?.duration} min</Typography>
+        <Box
+          component="span"
+          sx={{
+            mx: 1,
+            width: 4,
+            height: 4,
+            borderRadius: "50%",
+            backgroundColor: "currentColor",
+          }}
+        />
+        <Typography variant="body2">{post?.category.name}</Typography>
+      </Box>
 
       <Typography variant="h2" component="h1" sx={{ my: 3 }}>
-        {post.title}
+        {post?.name}
       </Typography>
 
       <Typography variant="h5" component="p">
-        {post.description}
+        {post?.description}
       </Typography>
     </Box>
   );
@@ -73,34 +87,29 @@ export function PostView() {
         }),
       ]}
     >
-      <Avatar src={post.author.avatarUrl} sx={{ mr: 2, width: 48, height: 48 }} />
+      <Avatar
+        src={post?.author.avatarUrl || DEFAULT_AVATAR_URL}
+        sx={{ mr: 2, width: 48, height: 48 }}
+      />
 
       <Box sx={{ flexGrow: 1 }}>
-        <Typography variant="subtitle2">{post.author.name}</Typography>
+        <Typography variant="subtitle2">{post?.author.name}</Typography>
         <Typography variant="caption" sx={{ mt: 0.5, display: "block", color: "text.secondary" }}>
-          {fDate(post.createdAt)}
+          {fDate(post?.publishedAt)}
         </Typography>
       </Box>
 
       <IconButton
         onClick={() =>
           navigator.share({
-            url: `${paths.post}/${post.slug}/`,
-            title: post?.title,
+            url: `${paths.post}/${post?.slug}/`,
+            title: post?.name,
             text: post?.description,
           })
         }
       >
         <Iconify icon="solar:share-outline" />
       </IconButton>
-      <Checkbox
-        color="error"
-        checked={favorite}
-        onChange={handleChangeFavorite}
-        icon={<Iconify icon="solar:heart-outline" />}
-        checkedIcon={<Iconify icon="solar:heart-bold" />}
-        inputProps={{ id: "favorite-checkbox", "aria-label": "Favorite checkbox" }}
-      />
     </Box>
   );
 
@@ -114,8 +123,8 @@ export function PostView() {
       }}
     >
       <Image
-        alt={post.title}
-        src={post.heroUrl}
+        alt={post?.name}
+        src={post?.heroUrl}
         ratio={{ xs: "16/9", md: "21/9" }}
         sx={{ borderRadius: 2 }}
       />
@@ -130,10 +139,32 @@ export function PostView() {
         gridTemplateColumns: { xs: "repeat(1, 1fr)", md: "repeat(2, 1fr)" },
       }}
     >
-      <PrevNextButton title={prevPost?.title} coverUrl={prevPost?.coverUrl} href="#" />
-      <PrevNextButton isNext title={nextPost?.title} coverUrl={nextPost?.coverUrl} href="#" />
+      {post?.prevPost ? (
+        <PrevNextButton
+          title={post?.prevPost.name}
+          coverUrl={post?.prevPost.heroUrl}
+          href={`${paths.post}/${post?.prevPost.slug}/`}
+        />
+      ) : (
+        <Box />
+      )}
+
+      {post?.nextPost ? (
+        <PrevNextButton
+          isNext
+          title={post?.nextPost.name}
+          coverUrl={post?.nextPost.heroUrl}
+          href={`${paths.post}/${post?.nextPost.slug}/`}
+        />
+      ) : (
+        <Box />
+      )}
     </Box>
   );
+
+  if (isError) {
+    return <NotFoundView />;
+  }
 
   return (
     <>
@@ -144,7 +175,7 @@ export function PostView() {
           links={[
             { name: t("home"), href: "/" },
             { name: t("blog"), href: paths.posts },
-            { name: post.title },
+            { name: post?.name },
           ]}
           sx={{ my: { xs: 3, md: 5 } }}
         />
@@ -155,24 +186,26 @@ export function PostView() {
 
             {renderToolbar()}
 
-            <Markdown content={post.content} />
+            {post && <Markdown content={post.content} />}
 
-            {!!post.tags.length && <PostTags tags={post.tags} />}
+            {!!post?.tags.length && <PostTags tags={post?.tags} />}
 
             <Divider sx={{ mt: 10 }} />
 
-            <PostAuthor author={post.author} />
-
-            <Divider />
-
-            {renderPrevNextButtons()}
+            {(post?.prevPost || post?.nextPost) && renderPrevNextButtons()}
           </Grid>
         </Grid>
       </Container>
 
       <Divider />
 
-      <LatestPosts largePost={latestPosts[0]} smallPosts={latestPosts.slice(1, 5)} />
+      {featuredPost && !!recentPosts?.length && (
+        <LatestPosts
+          largePost={featuredPost}
+          smallPosts={recentPosts}
+          sx={{ bgcolor: "background.neutral" }}
+        />
+      )}
     </>
   );
 }

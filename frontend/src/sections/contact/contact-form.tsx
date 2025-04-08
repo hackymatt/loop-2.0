@@ -11,15 +11,18 @@ import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 import LoadingButton from "@mui/lab/LoadingButton";
 
+import { useFormErrorHandler } from "src/hooks/use-form-error-handler";
+
+import { useContact } from "src/api/contact/contact";
 import { useTermsAcceptance } from "src/consts/acceptances";
 
 import { Form, Field } from "src/components/hook-form";
 
 // ----------------------------------------------------------------------
 
-export type CareerContactSchemaType = zod.infer<ReturnType<typeof useCareerContactSchema>>;
+export type ContactSchemaType = zod.infer<ReturnType<typeof useContactSchema>>;
 
-export const useCareerContactSchema = () => {
+export const useContactSchema = () => {
   const { t } = useTranslation("contact");
   return zod.object({
     fullName: zod.string().min(1, { message: t("fullName.errors.required") }),
@@ -40,9 +43,11 @@ export const useCareerContactSchema = () => {
 export function ContactForm({ sx, ...other }: BoxProps) {
   const { t } = useTranslation("contact");
 
+  const { mutateAsync: contact } = useContact();
+
   const termsAcceptance = useTermsAcceptance();
 
-  const defaultValues: CareerContactSchemaType = {
+  const defaultValues: ContactSchemaType = {
     fullName: "",
     subject: "",
     email: "",
@@ -50,10 +55,10 @@ export function ContactForm({ sx, ...other }: BoxProps) {
     termsAcceptance: false,
   };
 
-  const CareerContactSchema = useCareerContactSchema();
+  const ContactSchema = useContactSchema();
 
-  const methods = useForm<CareerContactSchemaType>({
-    resolver: zodResolver(CareerContactSchema),
+  const methods = useForm<ContactSchemaType>({
+    resolver: zodResolver(ContactSchema),
     defaultValues,
   });
 
@@ -63,13 +68,15 @@ export function ContactForm({ sx, ...other }: BoxProps) {
     formState: { isSubmitting },
   } = methods;
 
+  const handleFormError = useFormErrorHandler(methods);
+
   const onSubmit = handleSubmit(async (data) => {
+    const { fullName, subject, email, message } = data;
     try {
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      await contact({ full_name: fullName, subject, email, message });
       reset();
-      console.info("DATA", data);
     } catch (error) {
-      console.error(error);
+      handleFormError(error);
     }
   });
 

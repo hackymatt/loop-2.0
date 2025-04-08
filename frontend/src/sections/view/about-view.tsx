@@ -1,6 +1,9 @@
 "use client";
 
-import { _faqs, _coursePosts, _testimonials } from "src/_mock";
+import { _faqs } from "src/_mock";
+import { useRecentPosts } from "src/api/blog/recent";
+import { useFeaturedPost } from "src/api/blog/featured";
+import { useFeaturedReviews } from "src/api/review/featured";
 
 import { Faqs } from "../faqs";
 import { Testimonial } from "../testimonial";
@@ -11,9 +14,11 @@ import { AboutOurMission } from "../about/about-our-mission";
 
 // ----------------------------------------------------------------------
 
-const latestPosts = _coursePosts.slice(0, 5);
-
 export function AboutView() {
+  const { data: featuredReviews } = useFeaturedReviews();
+  const { data: featuredPost } = useFeaturedPost();
+  const { data: recentPosts } = useRecentPosts();
+
   return (
     <>
       <AboutHero />
@@ -22,15 +27,17 @@ export function AboutView() {
 
       <AboutCoreValues sx={{ bgcolor: "background.neutral" }} />
 
-      <Testimonial testimonials={_testimonials} />
+      {!!featuredReviews?.length && <Testimonial testimonials={featuredReviews || []} />}
 
       <Faqs data={_faqs} />
 
-      <LatestPosts
-        largePost={latestPosts[0]}
-        smallPosts={latestPosts.slice(1, 5)}
-        sx={{ bgcolor: "background.neutral" }}
-      />
+      {featuredPost && !!recentPosts?.length && (
+        <LatestPosts
+          largePost={featuredPost}
+          smallPosts={recentPosts}
+          sx={{ bgcolor: "background.neutral" }}
+        />
+      )}
     </>
   );
 }

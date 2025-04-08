@@ -18,11 +18,12 @@ import { ReviewProgress } from "./review-progress";
 // ----------------------------------------------------------------------
 
 type Props = BoxProps & {
+  slug: string;
   reviewNumber: number;
   ratingNumber: number;
 };
 
-export function ReviewSummary({ sx, reviewNumber, ratingNumber, ...other }: Props) {
+export function ReviewSummary({ sx, slug, reviewNumber, ratingNumber, ...other }: Props) {
   const { t } = useTranslation("course");
   const { t: locale } = useTranslation("locale");
 
@@ -49,7 +50,7 @@ export function ReviewSummary({ sx, reviewNumber, ratingNumber, ...other }: Prop
 
               <Box sx={{ gap: 2, display: "flex", alignItems: "center", my: 3 }}>
                 <Typography component="span" variant="h2">
-                  {ratingNumber}
+                  {Number.isInteger(ratingNumber) ? `${ratingNumber}.0` : ratingNumber}
                 </Typography>
 
                 <div>
@@ -60,11 +61,10 @@ export function ReviewSummary({ sx, reviewNumber, ratingNumber, ...other }: Prop
                     sx={{ mb: 0.5, [`& .${svgIconClasses.root}`]: { color: "warning.main" } }}
                   />
                   <Typography variant="body2">
-                    {fShortenNumber(
-                      reviewNumber,
-                      {},
-                      { code: locale("code"), currency: locale("currency") }
-                    )}{" "}
+                    {fShortenNumber(reviewNumber, {
+                      code: locale("code"),
+                      currency: locale("currency"),
+                    })}{" "}
                     {languagePluralize(review, reviewNumber)}
                   </Typography>
                 </div>
@@ -73,7 +73,7 @@ export function ReviewSummary({ sx, reviewNumber, ratingNumber, ...other }: Prop
           </Grid>
 
           <Grid size={{ xs: 12, md: 4 }}>
-            <ReviewProgress />
+            <ReviewProgress slug={slug} />
           </Grid>
         </Grid>
       </Container>

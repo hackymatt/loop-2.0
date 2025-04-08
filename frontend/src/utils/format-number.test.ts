@@ -3,9 +3,7 @@ import { fData, fNumber, fPercent, fCurrency, fShortenNumber } from "./format-nu
 describe("fNumber", () => {
   // Format a number with custom locale
   it("should format a number with custom locale", () => {
-    const result = fNumber(1000, undefined, { code: "en-US", currency: "USD" })
-      .replace(/\s+/g, " ")
-      .trim();
+    const result = fNumber(1000, { code: "en-US", currency: "USD" }).replace(/\s+/g, " ").trim();
     expect(result).toBe("1,000");
   });
 
@@ -37,7 +35,7 @@ describe("fNumber", () => {
 describe("fCurrency", () => {
   // Format a number with custom locale and currency
   it("should format a number with custom locale and currency", () => {
-    const result = fCurrency(1000, undefined, { code: "en-US", currency: "USD" });
+    const result = fCurrency(1000, { code: "en-US", currency: "USD" });
     expect(result).toBe("$1,000");
   });
 
@@ -69,7 +67,7 @@ describe("fPercent", () => {
 
   // Formats a number as a percentage with custom locale
   it("should format a number as percentage with custom locale", () => {
-    const result = fPercent(75, undefined, { code: "en-US", currency: "USD" });
+    const result = fPercent(75, { code: "en-US", currency: "USD" });
     expect(result).toBe("75%");
   });
 
@@ -125,7 +123,7 @@ describe("fPercent", () => {
 describe("fShortenNumber", () => {
   // Format numbers with custom locale
   it("should format numbers with custom locale", () => {
-    const result = fShortenNumber(1000, undefined, { code: "en-US", currency: "USD" });
+    const result = fShortenNumber(1000, { code: "en-US", currency: "USD" });
     expect(result).toBe("1k");
   });
 

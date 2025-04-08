@@ -17,7 +17,7 @@ export function CourseDetailsLessonList({ course, chapter }: Props) {
       <Box sx={{ gap: 1, display: "flex", flexDirection: "column" }}>
         {chapter.lessons.map((lesson) => (
           <CourseDetailsLessonItem
-            key={lesson.id}
+            key={lesson.slug}
             course={course}
             chapter={chapter}
             lesson={lesson}

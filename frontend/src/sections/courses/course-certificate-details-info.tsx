@@ -16,8 +16,8 @@ import { Certificate } from "../certificate";
 
 // ----------------------------------------------------------------------
 
-type Props = CardProps & Pick<ICourseProps, "slug" | "title">;
-export function CourseCertificateDetailsInfo({ sx, slug, title, ...other }: Props) {
+type Props = CardProps & Pick<ICourseProps, "slug" | "name" | "chapters">;
+export function CourseCertificateDetailsInfo({ sx, slug, name, chapters, ...other }: Props) {
   const { t } = useTranslation("course");
   const { t: certificate } = useTranslation("certificate");
   return (
@@ -32,7 +32,7 @@ export function CourseCertificateDetailsInfo({ sx, slug, title, ...other }: Prop
         {t("certificate.title")}
       </Typography>
 
-      <Certificate course={title} student={certificate("name")} sx={{ height: 220 }} />
+      <Certificate course={name} student={certificate("name")} sx={{ height: 220 }} />
 
       <Typography variant="body2">{t("certificate.subtitle")}</Typography>
 
@@ -50,7 +50,7 @@ export function CourseCertificateDetailsInfo({ sx, slug, title, ...other }: Prop
         variant="contained"
         color="primary"
         size="large"
-        href={`${paths.register}?redirect=${paths.course}/${slug}`}
+        href={`${paths.register}?redirect=${paths.lesson}/${slug}/${chapters?.[0]?.slug}/${chapters?.[0]?.lessons?.[0]?.slug}`}
         sx={{ px: 2, borderRadius: "inherit", textAlign: "center" }}
       >
         {t("start")}

@@ -21,7 +21,7 @@ import {
   CarouselArrowFloatButtons,
 } from "src/components/carousel";
 
-import { PostTime } from "../../blog/post-time";
+import { PostTime } from "../../blog/post-header";
 
 // ----------------------------------------------------------------------
 

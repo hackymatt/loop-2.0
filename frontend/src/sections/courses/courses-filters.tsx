@@ -1,4 +1,9 @@
 import type { BoxProps } from "@mui/material/Box";
+import type {
+  ICourseLevelProp,
+  ICourseCategoryProp,
+  ICourseTechnologyProp,
+} from "src/types/course";
 
 import { useTranslation } from "react-i18next";
 import { useBoolean } from "minimal-shared/hooks";
@@ -22,9 +27,9 @@ type FiltersProps = {
   open: boolean;
   onClose: () => void;
   options: {
-    levels: string[];
-    technologies: string[];
-    categories: string[];
+    levels: ICourseLevelProp[];
+    technologies: ICourseTechnologyProp[];
+    categories: ICourseCategoryProp[];
     ratings: string[];
   };
 };
@@ -53,86 +58,92 @@ export function CoursesFilters({ open, onClose, options }: FiltersProps) {
 
     return (
       <>
-        <Block title={t("filter.level")}>
-          <Box sx={{ display: "flex", flexDirection: "column", pt: 1 }}>
-            {options.levels.map((option) => {
-              const isSelected = currentLevels.includes(option);
-              return (
-                <FormControlLabel
-                  key={option}
-                  control={
-                    <Checkbox
-                      size="small"
-                      value={option}
-                      checked={isSelected}
-                      onChange={() => {
-                        handleChange("levels", getSelected(currentLevels, option).join(","));
-                      }}
-                      inputProps={{ id: `${option}-checkbox` }}
-                    />
-                  }
-                  label={option}
-                />
-              );
-            })}
-          </Box>
-        </Block>
+        {options.levels?.length > 0 ? (
+          <Block title={t("filter.level")}>
+            <Box sx={{ display: "flex", flexDirection: "column", pt: 1 }}>
+              {options.levels.map((option) => {
+                const isSelected = currentLevels.includes(option.slug);
+                return (
+                  <FormControlLabel
+                    key={option.slug}
+                    control={
+                      <Checkbox
+                        size="small"
+                        value={option}
+                        checked={isSelected}
+                        onChange={() => {
+                          handleChange("levels", getSelected(currentLevels, option.slug).join(","));
+                        }}
+                        inputProps={{ id: `${option}-checkbox` }}
+                      />
+                    }
+                    label={option.name}
+                  />
+                );
+              })}
+            </Box>
+          </Block>
+        ) : null}
 
-        <Block title={t("filter.technology")}>
-          <Box sx={{ display: "flex", flexDirection: "column", pt: 1 }}>
-            {options.technologies.map((option) => {
-              const isSelected = currentTechnologies.includes(option);
-              return (
-                <FormControlLabel
-                  key={option}
-                  control={
-                    <Checkbox
-                      size="small"
-                      value={option}
-                      checked={isSelected}
-                      onChange={() => {
-                        handleChange(
-                          "technologies",
-                          getSelected(currentTechnologies, option).join(",")
-                        );
-                      }}
-                      inputProps={{ id: `${option}-checkbox` }}
-                    />
-                  }
-                  label={option}
-                />
-              );
-            })}
-          </Box>
-        </Block>
+        {options.technologies?.length > 0 ? (
+          <Block title={t("filter.technology")}>
+            <Box sx={{ display: "flex", flexDirection: "column", pt: 1 }}>
+              {options.technologies.map((option) => {
+                const isSelected = currentTechnologies.includes(option.slug);
+                return (
+                  <FormControlLabel
+                    key={option.slug}
+                    control={
+                      <Checkbox
+                        size="small"
+                        value={option}
+                        checked={isSelected}
+                        onChange={() => {
+                          handleChange(
+                            "technologies",
+                            getSelected(currentTechnologies, option.slug).join(",")
+                          );
+                        }}
+                        inputProps={{ id: `${option}-checkbox` }}
+                      />
+                    }
+                    label={option.name}
+                  />
+                );
+              })}
+            </Box>
+          </Block>
+        ) : null}
 
-        <Block title={t("filter.category")}>
-          <Box sx={{ display: "flex", flexDirection: "column", pt: 1 }}>
-            {options.categories.map((option) => {
-              const isSelected = currentCategories.includes(option);
-              return (
-                <FormControlLabel
-                  key={option}
-                  control={
-                    <Checkbox
-                      size="small"
-                      value={option}
-                      checked={isSelected}
-                      onChange={() => {
-                        handleChange(
-                          "categories",
-                          getSelected(currentCategories, option).join(",")
-                        );
-                      }}
-                      inputProps={{ id: `${option}-checkbox` }}
-                    />
-                  }
-                  label={option}
-                />
-              );
-            })}
-          </Box>
-        </Block>
+        {options.categories?.length > 0 ? (
+          <Block title={t("filter.category")}>
+            <Box sx={{ display: "flex", flexDirection: "column", pt: 1 }}>
+              {options.categories.map((option) => {
+                const isSelected = currentCategories.includes(option.slug);
+                return (
+                  <FormControlLabel
+                    key={option.slug}
+                    control={
+                      <Checkbox
+                        size="small"
+                        value={option}
+                        checked={isSelected}
+                        onChange={() => {
+                          handleChange(
+                            "categories",
+                            getSelected(currentCategories, option.slug).join(",")
+                          );
+                        }}
+                        inputProps={{ id: `${option}-checkbox` }}
+                      />
+                    }
+                    label={option.name}
+                  />
+                );
+              })}
+            </Box>
+          </Block>
+        ) : null}
 
         <Block title={t("filter.rating.title")}>
           <Box sx={{ display: "flex", flexDirection: "column" }}>

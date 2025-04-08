@@ -1,29 +1,19 @@
 import type { DatePickerFormat } from "src/utils/format-time";
 
+import type { IStudentProps } from "./user";
+
 // ----------------------------------------------------------------------
 
-type IReviewUsers = {
-  id: string;
-  name: string;
-  avatarUrl: string;
+export type IReviewSummaryProps = {
+  rating: number;
+  count: number;
 };
 
-type IReviewReplyComment = {
-  id: string;
-  userId: string;
-  message: string;
-  tagUser?: string;
-  createdAt: DatePickerFormat;
-};
+type IReviewUser = IStudentProps;
 
 export type IReviewItemProp = {
-  id: string;
-  name: string;
   rating: number;
-  message?: string;
-  helpful: number;
-  avatarUrl: string;
+  message: string | null;
+  student: IReviewUser;
   createdAt: DatePickerFormat;
-  users: IReviewUsers[];
-  replyComment: IReviewReplyComment[];
 };

@@ -18,7 +18,7 @@ import { fDate } from "src/utils/format-time";
 import { Image } from "src/components/image";
 import { Iconify } from "src/components/iconify";
 
-import { PostTime } from "../../blog/post-time";
+import { PostTime } from "../../blog/post-header";
 import { PostItemMobile } from "../../blog/post-item-mobile";
 
 // ----------------------------------------------------------------------

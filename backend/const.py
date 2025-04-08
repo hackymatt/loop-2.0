@@ -1,0 +1,68 @@
+from django.db.models import TextChoices
+
+
+class Language(TextChoices):
+    EN = "en"
+    PL = "pl"
+
+
+class Urls:
+    # ROOT
+    API = "api"
+    ADMIN = "admin"
+    # AUTH
+    REGISTER = "auth/register"
+    ACTIVATE = "auth/activate"
+    RESEND = "auth/resend"
+    LOGIN = "auth/login"
+    GOOGLE_LOGIN = "auth/google-login"
+    GITHUB_LOGIN = "auth/github-login"
+    FACEBOOK_LOGIN = "auth/facebook-login"
+    LOGOUT = "auth/logout"
+    PASSWORD_RESET = "auth/reset-password"
+    PASSWORD_RESET_CONFIRM = "auth/reset-password-confirm"
+    # COURSE
+    COURSE_LEVEL = "course-levels"
+    COURSE_TECHNOLOGY = "course-technologies"
+    COURSE_CATEGORY = "course-categories"
+    COURSE = "courses"
+    FEATURED_COURSE = "featured-courses"
+    FEATURED_TECHNOLOGIES = "featured-technologies"
+    FEATURED_REVIEWS = "featured-reviews"
+    SIMILAR_COURSES = "similar-courses/<slug:slug>"
+    # REVIEW
+    COURSE_REVIEW_SUMMARY = "reviews-summary/<slug:slug>"
+    COURSE_REVIEWS = "reviews/<slug:slug>"
+    # BLOG
+    POST_TOPIC = "post-topics"
+    POST_TAG = "post-tags"
+    POST = "posts"
+    RECENT_POST = "recent-posts"
+    FEATURED_POST = "featured-post"
+    # CONTACT
+    CONTACT = "contact"
+
+
+class UserType(TextChoices):
+    ADMIN = "admin"
+    INSTRUCTOR = "instructor"
+    STUDENT = "student"
+
+
+class JoinType(TextChoices):
+    EMAIL = "email"
+    GOOGLE = "google"
+    FACEBOOK = "facebook"
+    GITHUB = "github"
+
+
+class LessonType(TextChoices):
+    READING = "reading"
+    VIDEO = "video"
+    QUIZ = "quiz"
+    CODING = "coding"
+
+
+class QuizType(TextChoices):
+    SINGLE = "single"
+    MULTI = "multi"

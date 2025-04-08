@@ -1,5 +1,5 @@
-import type { IPostProps } from "src/types/blog";
 import type { BoxProps } from "@mui/material/Box";
+import type { IBlogFeaturedPost } from "src/types/blog";
 
 import Box from "@mui/material/Box";
 import Link from "@mui/material/Link";
@@ -13,14 +13,16 @@ import { RouterLink } from "src/routes/components";
 
 import { fDate } from "src/utils/format-time";
 
+import { DEFAULT_AVATAR_URL } from "src/consts/avatar";
+
 import { Image } from "src/components/image";
 
-import { PostTime } from "../blog/post-time";
+import { PostHeader } from "../blog/post-header";
 
 // ----------------------------------------------------------------------
 
 type Props = BoxProps & {
-  post: IPostProps;
+  post: IBlogFeaturedPost;
 };
 
 export function FeaturedPost({ post, sx, ...other }: Props) {
@@ -39,8 +41,8 @@ export function FeaturedPost({ post, sx, ...other }: Props) {
         <Container>
           <Box sx={{ display: "flex", flexDirection: { xs: "column", md: "row" } }}>
             <Image
-              src={post.coverUrl}
-              alt={post.title}
+              src={post.heroUrl}
+              alt={post.name}
               sx={{ flexGrow: 1, height: 560, borderRadius: 2 }}
             />
 
@@ -48,10 +50,14 @@ export function FeaturedPost({ post, sx, ...other }: Props) {
               spacing={1}
               sx={{ mx: "auto", pl: { md: 8 }, py: { xs: 3, md: 5 }, maxWidth: { md: 408 } }}
             >
-              <PostTime createdAt={fDate(post.createdAt)} duration={post.duration} />
+              <PostHeader
+                publishedAt={fDate(post.publishedAt)}
+                duration={post.duration}
+                category={post.category}
+              />
 
               <Typography color="inherit" variant="h3">
-                {post.title}
+                {post.name}
               </Typography>
 
               <Typography sx={{ color: "text.secondary", flexGrow: 1 }}>
@@ -67,7 +73,7 @@ export function FeaturedPost({ post, sx, ...other }: Props) {
                   typography: "body2",
                 }}
               >
-                <Avatar src={post.author.avatarUrl} />
+                <Avatar src={post.author.avatarUrl || DEFAULT_AVATAR_URL} />
                 {post.author.name}
               </Box>
             </Stack>

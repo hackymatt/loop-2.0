@@ -1,13 +1,5 @@
-import type { DatePickerFormat } from "src/utils/format-time";
+import type { IReviewItemProp } from "./review";
 
 // ----------------------------------------------------------------------
 
-export type ITestimonialProps = {
-  id: string;
-  name: string;
-  role: string;
-  content: string;
-  avatarUrl: string;
-  ratingNumber: number;
-  createdAt: DatePickerFormat;
-};
+export type ITestimonialProps = IReviewItemProp;

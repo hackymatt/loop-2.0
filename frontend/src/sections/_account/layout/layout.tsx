@@ -19,7 +19,6 @@ export function AccountLayout({ children, sx, ...other }: AccountLayoutProps) {
     <Container sx={sx} {...other}>
       <Box
         sx={{
-          mb: 10,
           display: "flex",
           mt: { xs: 5, md: 10 },
           alignItems: { md: "flex-start" },

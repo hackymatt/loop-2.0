@@ -20,11 +20,11 @@ import {
 
 const variants: Variants = varFade("inUp", { distance: 24 });
 
-type Props = BoxProps & {
+type TestimonialsProps = {
   testimonials: ITestimonialProps[];
-};
+} & BoxProps;
 
-export function HomeTestimonials({ testimonials, sx, ...other }: Props) {
+export function HomeTestimonials({ testimonials, sx, ...other }: TestimonialsProps) {
   const { t } = useTranslation("home");
 
   const carousel = useCarousel();
@@ -48,8 +48,8 @@ export function HomeTestimonials({ testimonials, sx, ...other }: Props) {
 
           <m.div variants={variants}>
             <Carousel carousel={carousel}>
-              {testimonials.map((testimonial) => (
-                <TestimonialItem key={testimonial.id} testimonial={testimonial} />
+              {testimonials.map((testimonial, index) => (
+                <TestimonialItem key={index} testimonial={testimonial} />
               ))}
             </Carousel>
           </m.div>
@@ -99,12 +99,12 @@ function TestimonialItem({ testimonial, sx, ...other }: TestimonialItemProps) {
       ]}
       {...other}
     >
-      <Rating value={testimonial.ratingNumber} readOnly />
+      <Rating value={testimonial.rating} readOnly />
       <Typography sx={{ my: 3, lineHeight: 1.75, fontSize: { md: 20 } }}>
-        {testimonial.content}
+        {testimonial.message}
       </Typography>
       <Typography variant="h6" sx={{ mb: 1 }}>
-        {testimonial.name}
+        {testimonial.student.name}
       </Typography>
     </Box>
   );

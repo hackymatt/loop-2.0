@@ -10,25 +10,28 @@ import { ReviewItem } from "./review-item";
 
 type Props = BoxProps & {
   reviews: IReviewItemProp[];
+  count: number;
+  page: number;
+  onPageChange: (selectedPage: number) => void;
 };
 
-export function ReviewList({ reviews, sx, ...other }: Props) {
+export function ReviewList({ reviews, count, page, onPageChange, sx, ...other }: Props) {
   return (
     <Box sx={[{ pt: 5 }, ...(Array.isArray(sx) ? sx : [sx])]} {...other}>
-      {reviews.map((review) => (
+      {reviews.map((review, index) => (
         <ReviewItem
-          key={review.id}
-          name={review.name}
-          avatarUrl={review.avatarUrl}
+          key={index}
+          student={review.student}
           createdAt={review.createdAt}
           message={review.message}
           rating={review.rating}
-          helpful={review.helpful}
         />
       ))}
 
       <Pagination
-        count={10}
+        count={count}
+        page={page}
+        onChange={(event, selectedPage: number) => onPageChange(selectedPage)}
         sx={{ mt: 5, mb: 10, [`& .${paginationClasses.ul}`]: { justifyContent: "center" } }}
       />
     </Box>

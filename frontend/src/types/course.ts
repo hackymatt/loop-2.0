@@ -1,64 +1,67 @@
-import type { DatePickerFormat } from "src/utils/format-time";
+import type { COURSE_TYPE } from "src/consts/course";
+
+import type { IInstructorProps } from "./user";
 
 // ----------------------------------------------------------------------
 
-export type ICourseTeacherProp = {
-  id: string;
+export type ICourseLevelProp = {
+  slug: string;
   name: string;
-  role: string;
-  avatarUrl: string;
 };
 
-export type ICourseLessonType = "video" | "article" | "exercise" | "quiz";
+export type ICourseTechnologyProp = {
+  slug: string;
+  name: string;
+};
+
+export type ICourseCategoryProp = {
+  slug: string;
+  name: string;
+};
+
+export type ICourseTeacherProp = IInstructorProps;
+
+export type ICourseLessonType = (typeof COURSE_TYPE)[keyof typeof COURSE_TYPE];
 
 export type ICourseLessonProp = {
-  id: string;
-  title: string;
   slug: string;
+  name: string;
   type: ICourseLessonType;
   totalPoints: number;
 };
 
 export type ICourseChapterProp = {
-  id: string;
-  title: string;
   slug: string;
+  name: string;
   description: string;
   lessons: ICourseLessonProp[];
 };
 
-export type ICourseByCategoryProps = {
-  id: string;
+type ICourseBaseProps = {
+  slug: string;
   name: string;
+  description: string;
+  level: ICourseLevelProp;
+  category: ICourseCategoryProp;
+  technology: ICourseTechnologyProp;
+  teachers: ICourseTeacherProp[];
+  totalHours: number;
+  // calculated
+  totalLessons: number;
+  ratingNumber: number | null;
+  totalReviews: number;
   totalStudents: number;
 };
 
-export type ICourseProps = {
-  id: string;
-  slug: string;
-  title: string;
-  level: string;
-  chatUrl: string;
-  category: string;
-  technology: string;
-  totalPoints: number;
-  totalHours: number;
-  description: string;
+export type ICourseListProps = ICourseBaseProps;
+
+export type ICourseProps = ICourseBaseProps & {
   overview: string;
-  ratingNumber: number;
+  chapters: ICourseChapterProp[];
+  totalPoints: number;
+  totalReading: number;
+  totalVideos: number;
   totalQuizzes: number;
   totalExercises: number;
-  totalVideos: number;
-  totalReviews: number;
-  createdAt: DatePickerFormat;
-  totalStudents: number;
-  chapters: ICourseChapterProp[];
-  teachers: ICourseTeacherProp[];
-};
-
-export type ICourseFiltersProps = {
-  levels: string[];
-  technologies: string[];
-  categories: string[];
-  rating: string | null;
+  chatUrl: string | null;
 };

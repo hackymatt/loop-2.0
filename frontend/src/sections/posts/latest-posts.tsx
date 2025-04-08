@@ -1,5 +1,5 @@
-import type { IPostProps } from "src/types/blog";
 import type { BoxProps } from "@mui/material/Box";
+import type { IBlogRecentProps, IBlogFeaturedPost } from "src/types/blog";
 
 import { useTranslation } from "react-i18next";
 
@@ -17,14 +17,14 @@ import { fDate } from "src/utils/format-time";
 import { Image } from "src/components/image";
 import { Iconify } from "src/components/iconify";
 
-import { PostTime } from "../blog/post-time";
+import { PostHeader } from "../blog/post-header";
 import { PostItemMobile } from "../blog/post-item-mobile";
 
 // ----------------------------------------------------------------------
 
 type Props = BoxProps & {
-  largePost: IPostProps;
-  smallPosts: IPostProps[];
+  largePost: IBlogFeaturedPost;
+  smallPosts: IBlogRecentProps[];
 };
 
 export function LatestPosts({ largePost, smallPosts, sx, ...other }: Props) {
@@ -42,7 +42,7 @@ export function LatestPosts({ largePost, smallPosts, sx, ...other }: Props) {
       <Box sx={{ columnGap: 4, columnCount: 2 }}>
         {smallPosts.map((post, index) => (
           <PostItem
-            key={post.id}
+            key={post.slug}
             post={post}
             order={index % 3}
             sx={{ breakInside: "avoid", mb: 4 }}
@@ -62,7 +62,7 @@ export function LatestPosts({ largePost, smallPosts, sx, ...other }: Props) {
         }}
       >
         {[largePost, ...smallPosts].map((post) => (
-          <PostItemMobile key={post.id} post={post} />
+          <PostItemMobile key={post.slug} post={post} />
         ))}
       </Box>
 
@@ -128,10 +128,10 @@ export function LatestPosts({ largePost, smallPosts, sx, ...other }: Props) {
 // ----------------------------------------------------------------------
 
 type PostItemProps = BoxProps & {
-  post: IPostProps;
+  post: IBlogFeaturedPost | IBlogRecentProps;
   order?: number;
   largePost?: boolean;
-};
+} & ({ largePost: true; post: IBlogFeaturedPost } | { largePost?: false; post: IBlogRecentProps });
 
 export function PostItem({ sx, post, order, largePost, ...other }: PostItemProps) {
   return (
@@ -158,8 +158,8 @@ export function PostItem({ sx, post, order, largePost, ...other }: PostItemProps
         {...other}
       >
         <Image
-          alt={post.title}
-          src={post.coverUrl}
+          alt={post.name}
+          src={post.heroUrl}
           ratio={(largePost && "3/4") || (order && "4/3") || "1/1"}
           slotProps={{
             overlay: {
@@ -188,9 +188,10 @@ export function PostItem({ sx, post, order, largePost, ...other }: PostItemProps
             }),
           }}
         >
-          <PostTime
-            createdAt={fDate(post.createdAt)}
+          <PostHeader
+            publishedAt={fDate(post.publishedAt)}
             duration={post.duration}
+            category={post.category}
             sx={{ ...(largePost && { opacity: 0.72, color: "inherit" }) }}
           />
 
@@ -199,7 +200,7 @@ export function PostItem({ sx, post, order, largePost, ...other }: PostItemProps
             variant={largePost ? "h4" : "h6"}
             sx={(theme) => ({ ...theme.mixins.maxLine({ line: 2 }) })}
           >
-            {post.title}
+            {post.name}
           </Typography>
 
           {largePost && (

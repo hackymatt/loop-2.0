@@ -14,8 +14,8 @@ import { Iconify } from "src/components/iconify";
 
 // ----------------------------------------------------------------------
 
-type Props = CardProps & Pick<ICourseProps, "slug">;
-export function CourseChatDetailsInfo({ sx, slug, ...other }: Props) {
+type Props = CardProps & Pick<ICourseProps, "slug" | "chatUrl">;
+export function CourseChatDetailsInfo({ sx, slug, chatUrl, ...other }: Props) {
   const { t } = useTranslation("course");
   return (
     <Card
@@ -45,7 +45,7 @@ export function CourseChatDetailsInfo({ sx, slug, ...other }: Props) {
         variant="contained"
         size="large"
         startIcon={<Iconify icon="logos:google-icon" />}
-        href={`${paths.register}?redirect=${paths.course}/${slug}`}
+        href={chatUrl ?? `${paths.register}?redirect=${paths.course}/${slug}`}
         sx={{ px: 2, borderRadius: "inherit", textAlign: "center" }}
       >
         {t("chat.button")}

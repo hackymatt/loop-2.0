@@ -19,11 +19,11 @@ import {
 
 // ----------------------------------------------------------------------
 
-type Props = BoxProps & {
+type TestimonialsProps = {
   testimonials: ITestimonialProps[];
-};
+} & BoxProps;
 
-export function Testimonial({ testimonials, sx, ...other }: Props) {
+export function Testimonial({ testimonials, sx, ...other }: TestimonialsProps) {
   const { t } = useTranslation("testimonial");
 
   const carousel = useCarousel({
@@ -51,8 +51,8 @@ export function Testimonial({ testimonials, sx, ...other }: Props) {
         </Box>
 
         <Carousel carousel={carousel}>
-          {testimonials.map((testimonial) => (
-            <TestimonialItem key={testimonial.id} testimonial={testimonial} />
+          {testimonials.map((testimonial, index) => (
+            <TestimonialItem key={index} testimonial={testimonial} />
           ))}
         </Carousel>
 
@@ -98,10 +98,10 @@ function TestimonialItem({ testimonial, sx, ...other }: TestimonialItemProps) {
       <Typography variant="caption" sx={{ color: "text.disabled" }}>
         {fDate(testimonial.createdAt)}
       </Typography>
-      <Typography variant="subtitle2">{testimonial.name}</Typography>
-      <Rating size="small" value={testimonial.ratingNumber} readOnly />
+      <Typography variant="subtitle2">{testimonial.student.name}</Typography>
+      <Rating size="small" value={testimonial.rating} readOnly />
       <Typography variant="body2" sx={{ color: "text.secondary" }}>
-        {testimonial.content}
+        {testimonial.message}
       </Typography>
     </Box>
   );

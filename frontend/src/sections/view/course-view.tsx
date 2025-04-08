@@ -1,14 +1,17 @@
 "use client";
 
-import { useMemo } from "react";
+import { useSetState } from "minimal-shared/hooks";
 
 import Grid from "@mui/material/Grid2";
 import Divider from "@mui/material/Divider";
 import Container from "@mui/material/Container";
 
-import { _courses, _reviews } from "src/_mock";
+import { useCourse } from "src/api/course/course";
+import { useReviews } from "src/api/review/reviews";
+import { useSimilarCourses } from "src/api/course/similar";
 
 import { ReviewList } from "../review/review-list";
+import { NotFoundView } from "../error/not-found-view";
 import { ReviewSummary } from "../review/review-summary";
 import { CourseDetailsHero } from "../courses/course-details-hero";
 import { CourseListSimilar } from "../courses/course-list-similar";
@@ -19,33 +22,47 @@ import { CourseCertificateDetailsInfo } from "../courses/course-certificate-deta
 
 // ----------------------------------------------------------------------
 
-const course = _courses[0];
-const relatedCourses = _courses.slice(0, 3);
-export function CourseView() {
-  const totalLessons = useMemo(
-    () => course.chapters.reduce((total, chapter) => total + chapter.lessons.length, 0),
-    []
-  );
+export function CourseView({ slug }: { slug: string }) {
+  const query = useSetState({
+    page: "1",
+  });
+
+  const { data: course, isError } = useCourse(slug);
+  const { data: reviews, count } = useReviews(slug);
+  const { data: similarCourses } = useSimilarCourses(slug);
 
   const renderReview = () => (
     <>
-      <ReviewSummary ratingNumber={4.1} reviewNumber={123456} />
+      <ReviewSummary
+        slug={slug}
+        ratingNumber={course?.ratingNumber || 0}
+        reviewNumber={course?.totalReviews || 0}
+      />
 
       <Container>
-        <ReviewList reviews={_reviews} />
+        <ReviewList
+          reviews={reviews || []}
+          count={count ?? 0}
+          page={Number(query.state.page) || 1}
+          onPageChange={(selectedPage: number) => query.setField("page", String(selectedPage))}
+        />
       </Container>
     </>
   );
 
+  if (isError) {
+    return <NotFoundView />;
+  }
+
   return (
     <>
       <CourseDetailsHero
-        slug={course?.slug || ""}
-        title={course?.title || ""}
-        level={course?.level || ""}
+        slug={slug}
+        title={course?.name || ""}
+        level={course?.level || { slug: "", name: "" }}
         teachers={course?.teachers || []}
-        category={course?.category || ""}
-        technology={course?.technology || ""}
+        category={course?.category || { slug: "", name: "" }}
+        technology={course?.technology || { slug: "", name: "" }}
         totalPoints={course?.totalPoints || 0}
         totalHours={course?.totalHours || 0}
         description={course?.description || ""}
@@ -54,26 +71,27 @@ export function CourseView() {
         totalExercises={course?.totalExercises || 0}
         totalVideos={course?.totalVideos || 0}
         totalQuizzes={course?.totalQuizzes || 0}
-        totalLessons={totalLessons}
+        totalLessons={course?.totalLessons || 0}
         totalStudents={course?.totalStudents || 0}
       />
 
       <Container sx={{ py: { xs: 5, md: 10 } }}>
         <Grid container spacing={{ xs: 5, md: 8 }}>
           <Grid size={{ xs: 12, md: 7, lg: 8 }}>
-            <CourseDetailsSummary course={course} />
+            {course && <CourseDetailsSummary course={course} />}
           </Grid>
 
           <Grid size={{ xs: 12, md: 5, lg: 4 }}>
             <CourseDetailsTeachers teachers={course?.teachers || []} sx={{ mb: 3 }} />
 
             <CourseCertificateDetailsInfo
-              slug={course?.slug || ""}
-              title={course?.title || ""}
+              slug={slug}
+              name={course?.name || ""}
+              chapters={course?.chapters || []}
               sx={{ mb: 3 }}
             />
 
-            <CourseChatDetailsInfo slug={course?.slug || ""} />
+            <CourseChatDetailsInfo slug={slug} chatUrl={course?.chatUrl || null} />
           </Grid>
         </Grid>
       </Container>
@@ -81,7 +99,7 @@ export function CourseView() {
 
       {renderReview()}
 
-      {!!relatedCourses?.length && <CourseListSimilar courses={relatedCourses} />}
+      {!!similarCourses?.length && <CourseListSimilar courses={similarCourses} />}
     </>
   );
 }

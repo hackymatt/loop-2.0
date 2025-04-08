@@ -6,6 +6,7 @@ import { useBoolean } from "minimal-shared/hooks";
 
 import Box from "@mui/material/Box";
 import Link from "@mui/material/Link";
+import { Typography } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
 import LoadingButton from "@mui/lab/LoadingButton";
 import InputAdornment from "@mui/material/InputAdornment";
@@ -34,7 +35,7 @@ export function SignInForm({
   const showPassword = useBoolean();
 
   const {
-    formState: { isSubmitting },
+    formState: { isSubmitting, errors },
   } = useFormContext();
 
   return (
@@ -48,7 +49,7 @@ export function SignInForm({
       <Field.Text
         name="email"
         label={t("email.label")}
-        placeholder="email@address.com"
+        placeholder="email@example.com"
         slotProps={{ inputLabel: { shrink: true } }}
       />
 
@@ -72,6 +73,12 @@ export function SignInForm({
           },
         }}
       />
+
+      {errors.root && (
+        <Typography variant="body2" color="error" sx={{ width: 1 }}>
+          {errors.root.message}
+        </Typography>
+      )}
 
       <Link
         component={RouterLink}

@@ -7,9 +7,15 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "@mui/material/Link";
 
 import { paths } from "src/routes/paths";
+import { useRouter } from "src/routes/hooks";
 import { RouterLink } from "src/routes/components";
 
+import { useFormErrorHandler } from "src/hooks/use-form-error-handler";
+
+import { useLogin } from "src/api/auth/login";
+
 import { Form } from "src/components/hook-form";
+import { useUserContext } from "src/components/user/context";
 
 import { FormHead } from "./components/form-head";
 import { useSignInSchema } from "./components/schema";
@@ -24,6 +30,11 @@ import type { SignInSchemaType } from "./components/schema";
 export function SignInView() {
   const { t } = useTranslation("sign-in");
 
+  const router = useRouter();
+  const user = useUserContext();
+
+  const { mutateAsync: login } = useLogin();
+
   const defaultValues: SignInSchemaType = { email: "", password: "" };
 
   const SignInSchema = useSignInSchema();
@@ -32,13 +43,34 @@ export function SignInView() {
 
   const { reset, handleSubmit } = methods;
 
+  const handleFormError = useFormErrorHandler(methods);
+
   const onSubmit = handleSubmit(async (data) => {
     try {
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      const { data: responseData, status } = await login(data);
+      if (status === 401) {
+        user.setState({
+          isRegistered: true,
+          isActive: false,
+          isLoggedIn: false,
+          email: data.email,
+        });
+        router.push(paths.activate);
+      } else {
+        const { email, access_token: accessToken, refresh_token: refreshToken } = responseData;
+        user.setState({
+          accessToken,
+          refreshToken,
+          isRegistered: true,
+          isActive: true,
+          isLoggedIn: true,
+          email,
+        });
+        router.push(paths.dashboard);
+      }
       reset();
-      console.info("DATA", data);
     } catch (error) {
-      console.error(error);
+      handleFormError(error);
     }
   });
 
@@ -62,7 +94,7 @@ export function SignInView() {
 
       <FormDivider label={t("or")} />
 
-      <FormSocials />
+      <FormSocials methods={methods} />
     </>
   );
 }

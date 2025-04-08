@@ -3,6 +3,8 @@ import "src/global.css";
 // ----------------------------------------------------------------------
 import type { Metadata, Viewport } from "next";
 
+import { GoogleOAuthProvider } from "@react-oauth/google";
+
 import InitColorSchemeScript from "@mui/material/InitColorSchemeScript";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v14-appRouter";
 
@@ -12,8 +14,12 @@ import { themeOverrides } from "src/theme/theme-overrides";
 import { TranslationProvider, LocalizationProvider } from "src/locales";
 
 import { ProgressBar } from "src/components/progress-bar";
+import { UserProvider } from "src/components/user/context";
+import { defaultUser } from "src/components/user/user-config";
 import { MotionLazy } from "src/components/animate/motion-lazy";
 import { SettingsDrawer, defaultSettings, SettingsProvider } from "src/components/settings";
+
+import { ReactQueryProvider } from "./react-query-provider";
 
 // ----------------------------------------------------------------------
 
@@ -45,26 +51,31 @@ export default async function RootLayout({ children }: Props) {
           modeStorageKey={themeConfig.modeStorageKey}
           attribute={themeConfig.cssVariables.colorSchemeSelector}
         />
-
-        <SettingsProvider defaultSettings={defaultSettings}>
-          <TranslationProvider>
-            <LocalizationProvider>
-              <AppRouterCacheProvider options={{ key: "css" }}>
-                <ThemeProvider
-                  themeOverrides={themeOverrides}
-                  defaultMode={themeConfig.defaultMode}
-                  modeStorageKey={themeConfig.modeStorageKey}
-                >
-                  <MotionLazy>
-                    <ProgressBar />
-                    <SettingsDrawer defaultSettings={defaultSettings} />
-                    {children}
-                  </MotionLazy>
-                </ThemeProvider>
-              </AppRouterCacheProvider>
-            </LocalizationProvider>
-          </TranslationProvider>
-        </SettingsProvider>
+        <GoogleOAuthProvider clientId={CONFIG.googleClientId}>
+          <ReactQueryProvider>
+            <UserProvider defaultUser={defaultUser}>
+              <SettingsProvider defaultSettings={defaultSettings}>
+                <TranslationProvider>
+                  <LocalizationProvider>
+                    <AppRouterCacheProvider options={{ key: "css" }}>
+                      <ThemeProvider
+                        themeOverrides={themeOverrides}
+                        defaultMode={themeConfig.defaultMode}
+                        modeStorageKey={themeConfig.modeStorageKey}
+                      >
+                        <MotionLazy>
+                          <ProgressBar />
+                          <SettingsDrawer defaultSettings={defaultSettings} />
+                          {children}
+                        </MotionLazy>
+                      </ThemeProvider>
+                    </AppRouterCacheProvider>
+                  </LocalizationProvider>
+                </TranslationProvider>
+              </SettingsProvider>
+            </UserProvider>
+          </ReactQueryProvider>
+        </GoogleOAuthProvider>
       </body>
     </html>
   );

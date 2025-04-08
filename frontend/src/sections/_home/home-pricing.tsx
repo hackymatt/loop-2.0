@@ -27,18 +27,9 @@ type IPackage = {
 
 // ----------------------------------------------------------------------
 
-type HomePricingProps = {
-  plans: {
-    license: string;
-    price: string;
-    commons: string[];
-    options: { title: string; disabled: boolean }[];
-  }[];
-};
-
 const variants: Variants = varFade("inUp", { distance: 24 });
 
-export function HomePricing({ plans, sx, ...other }: BoxProps & HomePricingProps) {
+export function HomePricing({ sx, ...other }: BoxProps) {
   const { t } = useTranslation("pricing");
   const { t: home } = useTranslation("home");
 

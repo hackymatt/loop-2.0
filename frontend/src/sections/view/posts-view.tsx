@@ -8,54 +8,52 @@ import Container from "@mui/material/Container";
 
 import { paths } from "src/routes/paths";
 
-import { useResponsive } from "src/hooks/use-responsive";
 import { useQueryParams } from "src/hooks/use-query-params";
 
-import { _tags, _mock, _coursePosts } from "src/_mock";
+import { _mock } from "src/_mock";
+import { usePosts } from "src/api/blog/posts";
+import { usePostTags } from "src/api/blog/tag/tags";
+import { useRecentPosts } from "src/api/blog/recent";
+import { useFeaturedPost } from "src/api/blog/featured";
+import { usePostTopics } from "src/api/blog/topic/topics";
 
 import { Posts } from "../posts/posts";
 import { Advertisement } from "../advertisement";
 import { PostSidebar } from "../blog/post-sidebar";
 import { FeaturedPost } from "../posts/featured-post";
-import { PostSearchMobile } from "../blog/post-search-mobile";
 
 // ----------------------------------------------------------------------
-
-const CATEGORIES = ["Marketing", "Community", "Tutorials", "Business", "Management"];
-
-// ----------------------------------------------------------------------
-
-const posts = _coursePosts.slice(0, 8);
-const featuredPost = _coursePosts[3];
-const recentPosts = _coursePosts.slice(-4);
 
 export function PostsView() {
   const { t } = useTranslation("advertisement");
 
-  const { query, handleChange } = useQueryParams();
+  const { handleChange, query } = useQueryParams();
 
-  const mdUp = useResponsive("up", "md");
+  const { data: postTopics } = usePostTopics();
+  const { data: postTags } = usePostTags();
+  const { data: featuredPost } = useFeaturedPost();
+  const { data: recentPosts } = useRecentPosts();
+  const { data: posts, pageSize } = usePosts(query);
 
   return (
     <>
-      {!mdUp && (
-        <PostSearchMobile
-          value={query?.search ?? ""}
-          onChange={(value) => handleChange("search", value)}
-        />
-      )}
-      <FeaturedPost post={featuredPost} />
+      {featuredPost && <FeaturedPost post={featuredPost} />}
       <Container sx={{ pt: 10 }}>
         <Grid container spacing={{ md: 8 }}>
           <Grid size={{ xs: 12, md: 8 }}>
-            <Posts posts={posts} />
+            <Posts
+              posts={posts || []}
+              count={pageSize || 0}
+              page={Number(query.page) || 1}
+              onPageChange={(selectedPage: number) => handleChange("page", String(selectedPage))}
+            />
           </Grid>
 
           <Grid size={{ xs: 12, md: 4 }}>
             <PostSidebar
-              tags={_tags}
-              categories={CATEGORIES}
-              recentPosts={recentPosts}
+              tags={postTags || []}
+              categories={postTopics || []}
+              recentPosts={recentPosts || []}
               slots={{
                 bottomNode: (
                   <Advertisement
@@ -67,6 +65,7 @@ export function PostsView() {
                         {t("button")}
                       </Button>
                     }
+                    sx={{ mb: 5 }}
                   />
                 ),
               }}

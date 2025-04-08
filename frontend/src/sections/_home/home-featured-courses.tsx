@@ -1,6 +1,6 @@
 import type { Variants } from "framer-motion";
 import type { BoxProps } from "@mui/material/Box";
-import type { ICourseProps } from "src/types/course";
+import type { ICourseListProps } from "src/types/course";
 
 import { m } from "framer-motion";
 import { useTranslation } from "react-i18next";
@@ -22,12 +22,13 @@ import { CourseItem } from "../courses/course-item";
 
 const variants: Variants = varFade("inUp", { distance: 24 });
 
-type Props = BoxProps & {
-  courses: ICourseProps[];
-};
+type CoursesProps = {
+  courses: ICourseListProps[];
+} & BoxProps;
 
-export function HomeFeaturedCourses({ courses, sx, ...other }: Props) {
+export function HomeFeaturedCourses({ courses, sx, ...other }: CoursesProps) {
   const { t } = useTranslation("home");
+
   return (
     <Box
       component="section"
@@ -68,11 +69,11 @@ export function HomeFeaturedCourses({ courses, sx, ...other }: Props) {
             },
           }}
         >
-          {courses.map((course) => (
-            <m.div key={course.id} variants={variants}>
-              <CourseItem key={course.id} course={course} />
-            </m.div>
-          ))}
+          <m.div variants={variants}>
+            {courses.map((course) => (
+              <CourseItem key={course.slug} course={course} />
+            ))}
+          </m.div>
         </Box>
 
         <m.div variants={variants}>

@@ -5,44 +5,110 @@ on:
     branches: [develop]
 
 jobs:
-  lint_frontend:
-    name: Lint frontend
-
+  lint:
+    name: Lint Codebase
     runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        project: [backend, frontend]
 
     defaults:
       run:
         shell: bash
-        working-directory: ${{ github.workspace }}/frontend
+        working-directory: ${{ github.workspace }}/${{ matrix.project }}
 
     steps:
       - name: Checkout repository code
         uses: actions/checkout@v4
-      - name: Pull nodejs
-        uses: actions/setup-node@v4
-      - name: Install dependencies
-        run: npm install
-      - name: Test code quality
-        run: npm run fm:check
-      - name: Test code formatting
-        run: npm run fm:check
 
-  test_frontend:
-    name: Test frontend
+      - name: Set up environment
+        run: |
+          if [ "${{ matrix.project }}" == "backend" ]; then
+            sudo apt-get install -y libjpeg-dev
+            python -m pip install --upgrade pip
+            pip install -r requirements-lint.txt
+            pip install -r requirements.txt
+          else
+            npm install --legacy-peer-deps
+          fi
 
+      - name: Run linters
+        run: |
+          if [ "${{ matrix.project }}" == "backend" ]; then
+            pylint core --recursive=true --fail-under=10
+            black . --check
+          else
+            npm run fm:check
+            npm run lint:check
+          fi
+
+  test:
+    name: Run Tests
     runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        project: [backend, frontend]
 
     defaults:
       run:
         shell: bash
-        working-directory: ${{ github.workspace }}/frontend
+        working-directory: ${{ github.workspace }}/${{ matrix.project }}
+
+    env:
+      LOCAL: ${{ secrets.LOCAL }}
+      DB_NAME: ${{ secrets.DB_NAME }}
+      DB_HOST: ${{ secrets.DB_HOST }}
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      REDIS_URL: ${{ secrets.REDIS_URL }}
+      CONTACT_EMAIL: ${{ secrets.CONTACT_EMAIL }}
+      NOREPLY_EMAIL: ${{ secrets.NOREPLY_EMAIL }}
+      GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
+      ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
+      ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
+      DUMMY_STUDENT_EMAIL: ${{ secrets.DUMMY_STUDENT_EMAIL }}
+      DUMMY_STUDENT_PASSWORD: ${{ secrets.DUMMY_STUDENT_PASSWORD }}
+
+    services:
+      redis:
+        image: redis:7.2.5-bookworm
+        ports:
+          - 6379:6379
+        options: --health-cmd "redis-cli ping" --health-interval 10s --health-timeout 5s --health-retries 5
+
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_DB: postgres
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
 
     steps:
       - name: Checkout repository code
         uses: actions/checkout@v4
-      - name: Pull nodejs
-        uses: actions/setup-node@v4
-      - name: Install dependencies
-        run: npm install
+
+      - name: Set up environment
+        run: |
+          if [ "${{ matrix.project }}" == "backend" ]; then
+            sudo apt-get install -y libjpeg-dev
+            python -m pip install --upgrade pip
+            pip install -r requirements-test.txt
+            pip install -r requirements.txt
+            pip install django-cors-headers
+          else
+            npm install --legacy-peer-deps
+          fi
+
       - name: Run tests
-        run: npm run test:coverage
+        run: |
+          if [ "${{ matrix.project }}" == "backend" ]; then
+            coverage run manage.py test
+            coverage report
+          else
+            npm run test:coverage
+          fi

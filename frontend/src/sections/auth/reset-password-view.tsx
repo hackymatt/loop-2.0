@@ -5,11 +5,15 @@ import { useTranslation } from "react-i18next";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import Box from "@mui/material/Box";
+import { Typography } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
 
 import { paths } from "src/routes/paths";
 
+import { useFormErrorHandler } from "src/hooks/use-form-error-handler";
+
 import { CONFIG } from "src/global-config";
+import { usePasswordReset } from "src/api/auth/password-reset";
 
 import { Form, Field } from "src/components/hook-form";
 
@@ -25,6 +29,8 @@ export function ResetPasswordView() {
   const { t } = useTranslation("reset-password");
   const { t: account } = useTranslation("account");
 
+  const { mutateAsync: resetPassword } = usePasswordReset();
+
   const defaultValues: ResetPasswordSchemaType = { email: "" };
 
   const ResetPasswordSchema = useResetPasswordSchema();
@@ -37,16 +43,17 @@ export function ResetPasswordView() {
   const {
     reset,
     handleSubmit,
-    formState: { isSubmitting },
+    formState: { isSubmitting, errors },
   } = methods;
+
+  const handleFormError = useFormErrorHandler(methods);
 
   const onSubmit = handleSubmit(async (data) => {
     try {
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      await resetPassword(data);
       reset();
-      console.info("DATA", data);
     } catch (error) {
-      console.error(error);
+      handleFormError(error);
     }
   });
 
@@ -55,9 +62,15 @@ export function ResetPasswordView() {
       <Field.Text
         name="email"
         label={account("email.label")}
-        placeholder="email@address.com"
+        placeholder="email@example.com"
         slotProps={{ inputLabel: { shrink: true } }}
       />
+
+      {errors.root && (
+        <Typography variant="body2" color="error" sx={{ width: 1 }}>
+          {errors.root.message}
+        </Typography>
+      )}
 
       <LoadingButton
         fullWidth

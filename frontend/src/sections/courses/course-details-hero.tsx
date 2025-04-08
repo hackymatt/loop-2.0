@@ -75,42 +75,37 @@ export function CourseDetailsHero({
       }}
     >
       <Box sx={{ gap: 0.5, display: "flex", alignItems: "center" }}>
-        <Iconify icon={getLevelIcon(level ?? "")} />
-        {level}
+        <Iconify icon={getLevelIcon(level?.slug ?? "")} />
+        {level?.name}
       </Box>
 
       <Divider orientation="vertical" sx={{ height: 20, my: "auto" }} />
 
       <Box sx={{ gap: 0.5, display: "flex", alignItems: "center" }}>
-        <Iconify icon={getTechnologyIcon(technology ?? "")} />
-        {technology}
+        <Iconify icon={getTechnologyIcon(technology?.slug ?? "")} />
+        {technology?.name}
       </Box>
 
       <Divider orientation="vertical" sx={{ height: 20, my: "auto" }} />
 
-      <Box sx={{ gap: 0.5, display: "flex", alignItems: "center" }}>
-        <Iconify icon="eva:star-fill" sx={{ color: "warning.main" }} />
-        {Number.isInteger(ratingNumber) ? `${ratingNumber}.0` : ratingNumber}
-      </Box>
-
-      <Divider orientation="vertical" sx={{ height: 20, my: "auto" }} />
-
-      {totalReviews && (
-        <Box>
-          {fShortenNumber(totalReviews, {}, { code: locale("code"), currency: locale("currency") })}{" "}
-          {languagePluralize(review, totalReviews)}
-        </Box>
-      )}
-
-      <Divider orientation="vertical" sx={{ height: 20, my: "auto" }} />
+      {totalReviews ? (
+        <>
+          <Box sx={{ gap: 0.5, display: "flex", alignItems: "center" }}>
+            <Iconify icon="eva:star-fill" sx={{ color: "warning.main" }} />
+            {Number.isInteger(ratingNumber) ? `${ratingNumber}.0` : ratingNumber}
+          </Box>
+          <Divider orientation="vertical" sx={{ height: 20, my: "auto" }} />
+          <Box>
+            {fShortenNumber(totalReviews, { code: locale("code"), currency: locale("currency") })}{" "}
+            {languagePluralize(review, totalReviews)}
+          </Box>
+          <Divider orientation="vertical" sx={{ height: 20, my: "auto" }} />
+        </>
+      ) : null}
 
       {totalStudents ? (
         <Box sx={{ display: "flex", alignItems: "center" }}>
-          {fShortenNumber(
-            totalStudents,
-            {},
-            { code: locale("code"), currency: locale("currency") }
-          )}
+          {fShortenNumber(totalStudents, { code: locale("code"), currency: locale("currency") })}
           <Box component="span" sx={{ ml: 0.5 }}>
             {languagePluralize(student, totalStudents)}
           </Box>
@@ -122,7 +117,7 @@ export function CourseDetailsHero({
   const renderTexts = () => (
     <Box sx={{ gap: 2, display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
       <Typography variant="overline" sx={{ color: "secondary.main" }}>
-        {category}
+        {category?.name}
       </Typography>
 
       <Typography variant="h3" component="h1">

@@ -1,6 +1,7 @@
 "use client";
 
 import { useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import { useBoolean } from "minimal-shared/hooks";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -10,33 +11,42 @@ import LoadingButton from "@mui/lab/LoadingButton";
 import InputAdornment from "@mui/material/InputAdornment";
 
 import { paths } from "src/routes/paths";
+import { useRouter } from "src/routes/hooks";
+
+import { useFormErrorHandler } from "src/hooks/use-form-error-handler";
 
 import { CONFIG } from "src/global-config";
+import { usePasswordUpdate } from "src/api/auth/password-update";
 
 import { Iconify } from "src/components/iconify";
 import { Form, Field } from "src/components/hook-form";
 
 import { FormHead } from "./components/form-head";
-import { ResetPasswordSchema } from "./components/schema";
+import { useUpdatePasswordSchema } from "./components/schema";
 import { FormReturnLink } from "./components/form-return-link";
-import { FormResendCode } from "./components/form-resend-code";
 
 import type { UpdatePasswordSchemaType } from "./components/schema";
 
 // ----------------------------------------------------------------------
 
-export function UpdatePasswordView() {
-  const password = useBoolean();
+export function UpdatePasswordView({ token }: { token: string }) {
+  const showPassword = useBoolean();
+
+  const router = useRouter();
+
+  const { t } = useTranslation("update-password");
+  const { t: account } = useTranslation("account");
+
+  const { mutateAsync: updatePassword } = usePasswordUpdate();
 
   const defaultValues: UpdatePasswordSchemaType = {
-    code: "",
-    email: "",
     password: "",
-    confirmPassword: "",
   };
 
+  const UpdatePasswordSchema = useUpdatePasswordSchema();
+
   const methods = useForm<UpdatePasswordSchemaType>({
-    resolver: zodResolver(ResetPasswordSchema),
+    resolver: zodResolver(UpdatePasswordSchema),
     defaultValues,
   });
 
@@ -46,50 +56,34 @@ export function UpdatePasswordView() {
     formState: { isSubmitting },
   } = methods;
 
+  const handleFormError = useFormErrorHandler(methods);
+
   const onSubmit = handleSubmit(async (data) => {
     try {
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      await updatePassword({ ...data, token });
+      router.push(paths.login);
       reset();
-      console.info("DATA", data);
     } catch (error) {
-      console.error(error);
+      handleFormError(error);
     }
   });
 
   const renderForm = () => (
     <Box sx={{ gap: 3, display: "flex", flexDirection: "column" }}>
-      <Field.Text name="email" label="Email address" placeholder="example@gmail.com" />
-
-      <Field.Code name="code" />
-
       <Field.Text
         name="password"
-        label="Password"
-        placeholder="6+ characters"
-        type={password.value ? "text" : "password"}
+        label={account("password.label")}
+        placeholder={account("password.placeholder")}
+        type={showPassword.value ? "text" : "password"}
         slotProps={{
+          inputLabel: { shrink: true },
           input: {
             endAdornment: (
               <InputAdornment position="end">
-                <IconButton onClick={password.onToggle} edge="end">
-                  <Iconify icon={password.value ? "solar:eye-bold" : "solar:eye-closed-bold"} />
-                </IconButton>
-              </InputAdornment>
-            ),
-          },
-        }}
-      />
-
-      <Field.Text
-        name="confirmPassword"
-        label="Confirm password"
-        type={password.value ? "text" : "password"}
-        slotProps={{
-          input: {
-            endAdornment: (
-              <InputAdornment position="end">
-                <IconButton onClick={password.onToggle} edge="end">
-                  <Iconify icon={password.value ? "solar:eye-bold" : "solar:eye-closed-bold"} />
+                <IconButton onClick={showPassword.onToggle} edge="end">
+                  <Iconify
+                    icon={showPassword.value ? "solar:eye-outline" : "solar:eye-closed-outline"}
+                  />
                 </IconButton>
               </InputAdornment>
             ),
@@ -103,9 +97,8 @@ export function UpdatePasswordView() {
         type="submit"
         variant="contained"
         loading={isSubmitting}
-        loadingIndicator="Update password..."
       >
-        Update password
+        {t("button")}
       </LoadingButton>
     </Box>
   );
@@ -121,17 +114,15 @@ export function UpdatePasswordView() {
             sx={{ width: 96, height: 96 }}
           />
         }
-        title="Update password"
-        description={`We've sent a 6-digit confirmation email to your email. Please enter the code in below box to verify your email.`}
+        title={t("title")}
+        description={t("subtitle")}
       />
 
       <Form methods={methods} onSubmit={onSubmit}>
         {renderForm()}
       </Form>
 
-      <FormResendCode onResendCode={() => {}} value={0} disabled={false} />
-
-      <FormReturnLink href={paths.centered.signIn} />
+      <FormReturnLink href={paths.login} label={t("link")} />
     </>
   );
 }

@@ -15,14 +15,6 @@
       "specialCharacter": "Password must contain at least one special character"
     }
   },
-  "confirmPassword": {
-    "label": "Confirm Password",
-    "placeholder": "Reenter password",
-    "errors": {
-      "required": "Confirm Password is required",
-      "match": "Passwords must match"
-    }
-  },
   "termsAcceptance": {
     "label": {
       "accept": "I accept",
