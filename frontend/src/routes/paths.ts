@@ -1,8 +1,10 @@
 export const paths = {
+  home: "/",
   login: "/auth/login",
   register: "/auth/register",
   activate: "/auth/activate",
   resetPassword: "/auth/reset-password",
+  updatePassword: "/auth/update-password",
   courses: "/courses",
   course: "/course",
   lesson: "/lesson",
@@ -14,6 +16,7 @@ export const paths = {
   dashboard: "/dashboard",
   privacyPolicy: "/privacy-policy",
   termsAndConditions: "/terms-and-conditions",
+  support: "/support",
   /**
    * Marketing
    */
@@ -105,7 +108,6 @@ export const paths = {
     signUp: "/illustration/sign-up",
   },
   verify: "/verify",
-  updatePassword: "/update-password",
   /**
    * Common
    */
@@ -114,7 +116,6 @@ export const paths = {
   pricingCards: "/pricing-cards",
   pricingColumns: "/pricing-columns",
   payment: "/payment",
-  support: "/support",
   page404: "/error/404",
   page500: "/error/500",
   /**

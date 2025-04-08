@@ -18,5 +18,8 @@
   "apps": "Pobierz aplikację",
   "allRightsReserved": "Wszelkie prawa zastrzeżone.",
   "privacyPolicy": "Polityka prywatności",
-  "termsAndConditions": "Regulamin"
+  "termsAndConditions": "Regulamin",
+  "accountSettings": "Ustawienia konta",
+  "logout": "Wyloguj",
+  "upgrade": "Zaktualizuj plan"
 }

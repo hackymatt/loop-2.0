@@ -6,6 +6,7 @@ import { mergeClasses } from "minimal-shared/utils";
 import Link from "@mui/material/Link";
 import { styled } from "@mui/material/styles";
 
+import { paths } from "src/routes/paths";
 import { RouterLink } from "src/routes/components";
 
 import { CONFIG } from "src/global-config";
@@ -21,7 +22,7 @@ export type LogoProps = LinkProps & {
 };
 
 export const Logo = forwardRef<HTMLAnchorElement, LogoProps>((props, ref) => {
-  const { className, href = "/", isSingle = false, disabled, sx, ...other } = props;
+  const { className, href = paths.home, isSingle = false, disabled, sx, ...other } = props;
 
   const logoPath = (name: string) => `${CONFIG.assetsDir}/assets/logo/${name}`;
 

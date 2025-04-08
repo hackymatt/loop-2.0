@@ -1,0 +1,172 @@
+"use client";
+
+import type { ButtonBaseProps } from "@mui/material/ButtonBase";
+import type { Theme, SxProps, Breakpoint } from "@mui/material/styles";
+
+import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
+import { usePopover } from "minimal-shared/hooks";
+import { isActiveLink } from "minimal-shared/utils";
+
+import Box from "@mui/material/Box";
+import Avatar from "@mui/material/Avatar";
+import Divider from "@mui/material/Divider";
+import Popover from "@mui/material/Popover";
+import IconButton from "@mui/material/IconButton";
+import ButtonBase, { buttonBaseClasses } from "@mui/material/ButtonBase";
+
+import { paths } from "src/routes/paths";
+import { usePathname } from "src/routes/hooks";
+import { RouterLink } from "src/routes/components";
+
+import { _mock } from "src/_mock";
+
+import { Iconify } from "src/components/iconify";
+
+// ----------------------------------------------------------------------
+
+export type NavItemsProps = {
+  layoutQuery?: Breakpoint;
+  sx?: SxProps<Theme>;
+};
+
+// ----------------------------------------------------------------------
+
+const useNavData = () => {
+  const { t } = useTranslation("navigation");
+  return [
+    {
+      title: t("accountSettings"),
+      path: paths.account.personal,
+      icon: <Iconify icon="solar:user-rounded-outline" />,
+    },
+    {
+      title: t("support"),
+      path: paths.support,
+      icon: <Iconify icon="solar:question-circle-outline" />,
+    },
+  ];
+};
+
+// ----------------------------------------------------------------------
+
+export function NavAccountPopover({ sx }: NavItemsProps) {
+  const { open, onClose, onOpen, anchorEl } = usePopover();
+
+  const { t } = useTranslation("navigation");
+
+  const pathname = usePathname();
+
+  const navData = useNavData();
+
+  useEffect(() => {
+    if (open) {
+      onClose();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pathname]);
+
+  const renderNav = () => (
+    <Box component="nav">
+      <Box
+        component="ul"
+        sx={{ gap: 0.5, display: "flex", flexDirection: "column", "& li": { display: "flex" } }}
+      >
+        {navData.map((item) => (
+          <li key={item.title}>
+            <NavItem title={item.title} path={item.path} icon={item.icon} />
+          </li>
+        ))}
+      </Box>
+    </Box>
+  );
+
+  const renderMenuActions = () => (
+    <Popover
+      open={open}
+      anchorEl={anchorEl}
+      onClose={onClose}
+      anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+      transformOrigin={{ vertical: "top", horizontal: "right" }}
+      disableScrollLock
+      slotProps={{
+        paper: {
+          sx: [
+            {
+              width: 220,
+              [`& .${buttonBaseClasses.root}`]: {
+                px: 1.5,
+                py: 0.75,
+                height: "auto",
+              },
+            },
+            ...(Array.isArray(sx) ? sx : [sx]),
+          ],
+        },
+      }}
+    >
+      {renderNav()}
+      <Divider sx={{ my: 0.5, borderStyle: "dashed" }} />
+      <NavItem title={t("logout")} icon={<Iconify icon="carbon:logout" />} onClick={onClose} />
+    </Popover>
+  );
+
+  return (
+    <>
+      <IconButton disableRipple color={open ? "primary" : "inherit"} onClick={onOpen}>
+        <Avatar src={_mock.image.avatar(0)} sx={{ width: 32, height: 32 }} />
+        <Iconify
+          width={16}
+          icon={open ? "solar:alt-arrow-up-outline" : "solar:alt-arrow-down-outline"}
+          sx={{ ml: 0.5 }}
+        />
+      </IconButton>
+      {renderMenuActions()}
+    </>
+  );
+}
+
+// ----------------------------------------------------------------------
+
+type NavItemProps = ButtonBaseProps & {
+  path?: string;
+  title: string;
+  icon: React.ReactNode;
+};
+
+export function NavItem({ title, path = "", icon, sx, ...other }: NavItemProps) {
+  const pathname = usePathname();
+
+  const isActive = path && isActiveLink(pathname, path);
+
+  const buttonProps = path
+    ? {
+        href: path,
+        component: RouterLink,
+      }
+    : {};
+
+  return (
+    <ButtonBase
+      disableRipple
+      key={title}
+      {...buttonProps}
+      sx={[
+        {
+          gap: 2,
+          width: 1,
+          height: 44,
+          borderRadius: 1,
+          typography: "body2",
+          justifyContent: "flex-start",
+          ...(isActive && { color: "primary.main", typography: "subtitle2" }),
+        },
+        ...(Array.isArray(sx) ? sx : [sx]),
+      ]}
+      {...other}
+    >
+      {icon}
+      {title}
+    </ButtonBase>
+  );
+}

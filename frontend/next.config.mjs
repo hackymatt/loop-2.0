@@ -4,7 +4,7 @@ import pkg from "./next-i18next.config.mjs";
 const { i18n } = pkg;
 
 export default {
-  trailingSlash: true,
+  trailingSlash: false,
   modularizeImports: {
     "@mui/icons-material": {
       transform: "@mui/icons-material/{{member}}",

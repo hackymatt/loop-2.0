@@ -9,6 +9,8 @@ import { useCourseLevels } from "src/api/course/level/levels";
 import { useCourseCategories } from "src/api/course/category/categories";
 import { useCourseTechnologies } from "src/api/course/technology/technologies";
 
+import { useUserContext } from "src/components/user";
+
 // ----------------------------------------------------------------------
 
 export const usePageLinks = () => {
@@ -83,12 +85,21 @@ const useCourseNav = () => {
 };
 export const useNavData = () => {
   const { t } = useTranslation("navigation");
+  const user = useUserContext();
+
   const coursesNav = useCourseNav();
-  return [
-    { title: t("courses"), path: paths.pages, ...coursesNav },
-    { title: t("pricing"), path: paths.pricing },
-    { title: t("blog"), path: paths.posts },
-    { title: t("about"), path: paths.about },
-    { title: t("contact"), path: paths.contact },
-  ];
+
+  return user.state.isLoggedIn
+    ? [
+        { title: t("courses"), path: paths.pages, ...coursesNav },
+        { title: t("blog"), path: paths.posts },
+        { title: t("contact"), path: paths.contact },
+      ]
+    : [
+        { title: t("courses"), path: paths.pages, ...coursesNav },
+        { title: t("pricing"), path: paths.pricing },
+        { title: t("blog"), path: paths.posts },
+        { title: t("about"), path: paths.about },
+        { title: t("contact"), path: paths.contact },
+      ];
 };

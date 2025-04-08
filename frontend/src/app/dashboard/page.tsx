@@ -3,7 +3,6 @@ import { paths } from "src/routes/paths";
 import { createMetadata } from "src/utils/create-metadata";
 
 import { DashboardView } from "src/sections/dashboard/view";
-
 // ----------------------------------------------------------------------
 
 export const metadata = createMetadata({
