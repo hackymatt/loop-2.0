@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.db.models import Sum, Count, Avg, Q
-from .models import Course, CourseTranslation
+from .models import Course
 from .level.serializers import LevelSerializer
 from .category.serializers import CategorySerializer
 from .technology.serializers import TechnologySerializer
@@ -134,21 +134,3 @@ class CourseRetrieveSerializer(BaseCourseSerializer):
         return ChapterSerializer(
             obj.chapters.all(), many=True, context=self.context
         ).data
-
-    def create(self, validated_data):
-        course, _ = Course.objects.get_or_create(slug=validated_data["slug"])
-        CourseTranslation.objects.update_or_create(
-            course=course,
-            language=validated_data["language"],
-            defaults={"name": validated_data["name"]},
-        )
-        return course
-
-    def update(self, instance, validated_data):
-        if "language" in validated_data and "name" in validated_data:
-            CourseTranslation.objects.update_or_create(
-                course=instance,
-                language=validated_data["language"],
-                defaults={"name": validated_data["name"]},
-            )
-        return instance

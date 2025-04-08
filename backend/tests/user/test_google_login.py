@@ -1,12 +1,13 @@
 from django.contrib.auth import get_user_model
-from rest_framework.test import APITestCase, APIClient
+from django.test import TestCase
+from rest_framework.test import APIClient
 from rest_framework import status
 from unittest.mock import patch
 from ..helpers import mock_auth_return_value
 from const import Urls
 
 
-class GoogleLoginViewTest(APITestCase):
+class GoogleLoginViewTest(TestCase):
     def setUp(self):
         self.client = APIClient()
         self.url = f"/{Urls.API}/{Urls.GOOGLE_LOGIN}"

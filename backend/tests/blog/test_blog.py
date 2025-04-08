@@ -13,18 +13,18 @@ class BlogViewSetTestCase(TestCase):
         self.url = f"/{Urls.API}/{Urls.POST}"
 
         # First blog post
-        self.blog1, self.blog1_data = create_blog()
+        self.blog1, self.blog1_translations = create_blog()
         self.blog1.published_at = self.blog1.published_at - timezone.timedelta(weeks=1)
         self.blog1.visits = 5
         self.blog1.save()
 
         # Second blog post
-        self.blog2, self.blog2_data = create_blog()
+        self.blog2, self.blog2_translations = create_blog()
         self.blog2.visits = 10
         self.blog2.save()
 
-        self.admin_user, self.admin_data = create_admin_user()
-        self.regular_user, self.regular_user_data = create_student_user()
+        self.admin_user, self.admin_user_password = create_admin_user()
+        self.regular_user, self.regular_user_password = create_student_user()
 
     def test_blog_list(self):
         # Test the list view of BlogViewSet
@@ -49,25 +49,23 @@ class BlogViewSetTestCase(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["slug"], self.blog1.slug)
         self.assertEqual(
-            response.data["translated_name"], self.blog1_data["en"]["name"]
+            response.data["translated_name"], self.blog1_translations["en"].name
         )
         self.assertEqual(
             response.data["translated_description"],
-            self.blog1_data["en"]["description"],
+            self.blog1_translations["en"].description,
         )
 
     def test_blog_filter_by_category(self):
         # Test filtering blogs by category (topic)
-        response = self.client.get(
-            f"{self.url}?category={self.blog1_data['topic'].slug}"
-        )
+        response = self.client.get(f"{self.url}?category={self.blog1.topic.slug}")
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data["results"]), 1)
 
     def test_blog_filter_by_tags(self):
         # Test filtering blogs by tags
-        response = self.client.get(f"{self.url}?tags={self.blog1_data['tags'][0].slug}")
+        response = self.client.get(f"{self.url}?tags={self.blog1.tags.all()[0].slug}")
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data["results"]), 1)
@@ -106,23 +104,23 @@ class RecentBlogsViewTestCase(TestCase):
         self.url = f"/{Urls.API}/{Urls.RECENT_POST}"  # adjust to your actual RecentBlogsView URL
 
         # First blog post
-        self.blog1, self.blog1_data = create_blog()
+        self.blog1, self.blog1_translations = create_blog()
         self.blog1.published_at = self.blog1.published_at - timezone.timedelta(weeks=1)
         self.blog1.visits = 20
         self.blog1.save()
 
         # Second blog post
-        self.blog2, self.blog2_data = create_blog()
+        self.blog2, self.blog2_translations = create_blog()
         self.blog2.visits = 5
         self.blog2.save()
 
         # Third blog post
-        self.blog3, self.blog3_data = create_blog()
+        self.blog3, self.blog3_translations = create_blog()
         self.blog3.visits = 7
         self.blog3.save()
 
-        self.admin_user, self.admin_data = create_admin_user()
-        self.regular_user, self.regular_user_data = create_student_user()
+        self.admin_user, self.admin_user_password = create_admin_user()
+        self.regular_user, self.regular_user_password = create_student_user()
 
     def test_recent_blogs_excludes_most_visited(self):
         response = self.client.get(self.url)
@@ -159,25 +157,25 @@ class FeaturedBlogViewTestCase(TestCase):
         self.url = f"/{Urls.API}/{Urls.FEATURED_POST}"  # replace with your actual featured blog endpoint
 
         # First blog post
-        self.blog1, self.blog1_data = create_blog()
+        self.blog1, self.blog1_translations = create_blog()
         self.blog1.published_at = self.blog1.published_at - timezone.timedelta(weeks=1)
         self.blog1.visits = 5
         self.blog1.save()
 
         # Second blog post
-        self.blog2, self.blog2_data = create_blog()
+        self.blog2, self.blog2_translations = create_blog()
         self.blog2.visits = 10
         self.blog2.save()
 
-        self.admin_user, self.admin_data = create_admin_user()
-        self.regular_user, self.regular_user_data = create_student_user()
+        self.admin_user, self.admin_user_password = create_admin_user()
+        self.regular_user, self.regular_user_password = create_student_user()
 
     def test_featured_blog_is_most_visited(self):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["slug"], self.blog2.slug)
         self.assertEqual(
-            response.data["translated_name"], self.blog2_data["en"]["name"]
+            response.data["translated_name"], self.blog2_translations["en"].name
         )
 
     def test_featured_blog_when_no_blogs(self):

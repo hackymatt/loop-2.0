@@ -1,17 +1,19 @@
+from django.test import TestCase
 from rest_framework import status
-from rest_framework.test import APITestCase
+from rest_framework.test import APIClient
 from review.models import Review
 from const import Language, Urls
 from ..factory import create_student, create_course
 
 
-class ReviewSummaryViewSetTest(APITestCase):
+class ReviewSummaryViewSetTest(TestCase):
     def setUp(self):
+        self.client = APIClient()
         self.url = f"/{Urls.API}/{Urls.COURSE_REVIEW_SUMMARY}"
         # Set up test data
         self.student_1, _ = create_student()
         self.student_2, _ = create_student()
-        self.course, _= create_course()
+        self.course, _ = create_course()
 
         self.review_1 = Review.objects.create(
             student=self.student_1,
@@ -40,13 +42,13 @@ class ReviewSummaryViewSetTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
 
-class ReviewViewSetTest(APITestCase):
+class ReviewViewSetTest(TestCase):
     def setUp(self):
         self.url = f"/{Urls.API}/{Urls.COURSE_REVIEWS}"
         # Set up test data
         self.student_1, _ = create_student()
         self.student_2, _ = create_student()
-        self.course, _= create_course()
+        self.course, _ = create_course()
         self.review_1 = Review.objects.create(
             student=self.student_1,
             course=self.course,
@@ -72,13 +74,13 @@ class ReviewViewSetTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
 
-class FeaturedReviewsViewTest(APITestCase):
+class FeaturedReviewsViewTest(TestCase):
     def setUp(self):
         self.url = f"/{Urls.API}/{Urls.FEATURED_REVIEWS}"
         # Set up test data
         self.student_1, _ = create_student()
         self.student_2, _ = create_student()
-        self.course, _= create_course()
+        self.course, _ = create_course()
         self.review_1 = Review.objects.create(
             student=self.student_1,
             course=self.course,

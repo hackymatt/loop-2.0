@@ -1,6 +1,6 @@
+from django.test import TestCase
 from rest_framework import status
 from rest_framework.test import APIClient
-from rest_framework.test import APITestCase
 from unittest.mock import patch
 from const import Urls
 from utils.google.gmail import GmailApi
@@ -8,7 +8,7 @@ from ..helpers import mock_send_message, generate_valid_token
 from ..factory import create_user
 
 
-class ResendActivationLinkViewTest(APITestCase):
+class ResendActivationLinkViewTest(TestCase):
     def setUp(self):
         self.client = APIClient()
         self.url = f"/{Urls.API}/{Urls.RESEND}"

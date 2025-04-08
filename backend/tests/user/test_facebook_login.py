@@ -1,13 +1,15 @@
 from unittest.mock import patch
-from rest_framework.test import APITestCase
+from django.test import TestCase
+from rest_framework.test import APIClient
 from rest_framework import status
 from django.contrib.auth import get_user_model
 from ..helpers import mock_auth_return_value
 from const import Urls
 
 
-class FacebookLoginViewTest(APITestCase):
+class FacebookLoginViewTest(TestCase):
     def setUp(self):
+        self.client = APIClient()
         self.url = f"/{Urls.API}/{Urls.FACEBOOK_LOGIN}"
         self.valid_access_token = "valid_facebook_access_token"
         self.invalid_access_token = "invalid_facebook_access_token"

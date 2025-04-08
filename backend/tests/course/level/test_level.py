@@ -1,4 +1,4 @@
-from rest_framework.test import APITestCase
+from django.test import TestCase
 from rest_framework import status
 from course.level.models import Level, LevelTranslation
 from rest_framework.test import APIClient
@@ -7,21 +7,21 @@ from ...helpers import login
 from ...factory import create_admin_user, create_student_user, create_level
 
 
-class LevelViewTest(APITestCase):
+class LevelViewTest(TestCase):
     def setUp(self):
         self.client = APIClient()
         self.url = f"/{Urls.API}/{Urls.COURSE_LEVEL}"
 
         # Create admin and regular user
-        self.admin_user, self.admin_data = create_admin_user()
-        self.regular_user, self.regular_user_data = create_student_user()
+        self.admin_user, self.admin_user_password = create_admin_user()
+        self.regular_user, self.regular_user_password = create_student_user()
 
         # Create a course level and translations
-        self.level, self.level_data = create_level()
+        self.level, self.level_translations = create_level()
 
     # CREATE (Only Admin)
     def test_create_level_admin(self):
-        login(self, self.admin_data["email"], self.admin_data["password"])
+        login(self, self.admin_user.email, self.admin_user_password)
         data = {"slug": "intermediate", "language": "en", "name": "Intermediate"}
         response = self.client.post(self.url, data, format="json")
 
@@ -33,7 +33,7 @@ class LevelViewTest(APITestCase):
         )
 
     def test_create_level_regular_user(self):
-        login(self, self.regular_user_data["email"], self.regular_user_data["password"])
+        login(self, self.regular_user.email, self.regular_user_password)
         data = {"slug": "intermediate", "language": "en", "name": "Intermediate"}
         response = self.client.post(self.url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
@@ -41,7 +41,7 @@ class LevelViewTest(APITestCase):
     # READ (Allowed for Everyone)
     def test_get_levels_regular_user(self):
         """Ensure users can fetch course levels in their preferred language."""
-        login(self, self.regular_user_data["email"], self.regular_user_data["password"])
+        login(self, self.regular_user.email, self.regular_user_password)
         self.client.credentials(HTTP_ACCEPT_LANGUAGE="pl")
         response = self.client.get(self.url, format="json")
 
@@ -49,7 +49,7 @@ class LevelViewTest(APITestCase):
         self.assertEqual(len(response.data["results"]), 1)
         self.assertEqual(
             response.data["results"][0]["translated_name"],
-            self.level_data["pl"]["name"],
+            self.level_translations["pl"].name,
         )
 
     def test_get_levels_anonymous(self):
@@ -58,13 +58,13 @@ class LevelViewTest(APITestCase):
         self.assertEqual(len(response.data["results"]), 1)
         self.assertEqual(
             response.data["results"][0]["translated_name"],
-            self.level_data["en"]["name"],
+            self.level_translations["en"].name,
         )
 
     # UPDATE TRANSLATION (Only Admin)
     def test_update_level_translation_admin(self):
         """Ensure admins can update translations for existing course levels."""
-        login(self, self.admin_data["email"], self.admin_data["password"])
+        login(self, self.admin_user.email, self.admin_user_password)
         data = {"slug": "beginner", "language": "pl", "name": "Nowa Nazwa"}
         url = f"{self.url}/{self.level.id}"
 
@@ -76,7 +76,7 @@ class LevelViewTest(APITestCase):
         )
 
     def test_update_level_translation_regular_user(self):
-        login(self, self.regular_user_data["email"], self.regular_user_data["password"])
+        login(self, self.regular_user.email, self.regular_user_password)
         data = {"language": "pl", "name": "Nowa Nazwa"}
         url = f"{self.url}/{self.level.id}"
 
@@ -85,7 +85,7 @@ class LevelViewTest(APITestCase):
 
     # DELETE (Only Admin)
     def test_delete_level_admin(self):
-        login(self, self.admin_data["email"], self.admin_data["password"])
+        login(self, self.admin_user.email, self.admin_user_password)
         url = f"{self.url}/{self.level.id}"
 
         response = self.client.delete(url, format="json")
@@ -93,7 +93,7 @@ class LevelViewTest(APITestCase):
         self.assertFalse(Level.objects.filter(slug="beginner").exists())
 
     def test_delete_level_regular_user(self):
-        login(self, self.regular_user_data["email"], self.regular_user_data["password"])
+        login(self, self.regular_user.email, self.regular_user_password)
         url = f"{self.url}/{self.level.id}"
 
         response = self.client.delete(url, format="json")

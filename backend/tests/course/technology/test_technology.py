@@ -1,4 +1,4 @@
-from rest_framework.test import APITestCase
+from django.test import TestCase
 from rest_framework import status
 from course.technology.models import Technology
 from course.enrollment.models import CourseEnrollment
@@ -15,21 +15,21 @@ from ...factory import (
 )
 
 
-class TechnologyViewTest(APITestCase):
+class TechnologyViewTest(TestCase):
     def setUp(self):
         self.client = APIClient()
         self.url = f"/{Urls.API}/{Urls.COURSE_TECHNOLOGY}"
 
         # Create admin and regular user
-        self.admin_user, self.admin_data = create_admin_user()
-        self.regular_user, self.regular_user_data = create_student_user()
+        self.admin_user, self.admin_user_password = create_admin_user()
+        self.regular_user, self.regular_user_password = create_student_user()
 
         # Create a course technology
-        self.course_technology, self.course_technology_data = create_technology()
+        self.course_technology = create_technology()
 
     # CREATE (Only Admin)
     def test_create_course_technology_admin(self):
-        login(self, self.admin_data["email"], self.admin_data["password"])
+        login(self, self.admin_user.email, self.admin_user_password)
         data = {"slug": "javascript", "name": "JavaScript"}
         response = self.client.post(self.url, data, format="json")
 
@@ -37,7 +37,7 @@ class TechnologyViewTest(APITestCase):
         self.assertEqual(Technology.objects.count(), 2)
 
     def test_create_course_technology_regular_user(self):
-        login(self, self.regular_user_data["email"], self.regular_user_data["password"])
+        login(self, self.regular_user.email, self.regular_user_password)
         data = {"slug": "javascript", "name": "JavaScript"}
         response = self.client.post(self.url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
@@ -48,12 +48,12 @@ class TechnologyViewTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data["results"]), 1)
         self.assertEqual(
-            response.data["results"][0]["name"], self.course_technology_data["name"]
+            response.data["results"][0]["name"], self.course_technology.name
         )
 
     # UPDATE (Only Admin)
     def test_update_course_technology_admin(self):
-        login(self, self.admin_data["email"], self.admin_data["password"])
+        login(self, self.admin_user.email, self.admin_user_password)
         data = {"slug": "typescript", "name": "TS"}
         url = f"{self.url}/{self.course_technology.id}"
         response = self.client.put(url, data, format="json")
@@ -62,7 +62,7 @@ class TechnologyViewTest(APITestCase):
         self.assertEqual(self.course_technology.name, "TS")
 
     def test_update_course_technology_regular_user(self):
-        login(self, self.regular_user_data["email"], self.regular_user_data["password"])
+        login(self, self.regular_user.email, self.regular_user_password)
         data = {"name": "TS"}
         url = f"{self.url}/{self.course_technology.id}"
         response = self.client.put(url, data, format="json")
@@ -70,20 +70,20 @@ class TechnologyViewTest(APITestCase):
 
     # DELETE (Only Admin)
     def test_delete_course_technology_admin(self):
-        login(self, self.admin_data["email"], self.admin_data["password"])
+        login(self, self.admin_user.email, self.admin_user_password)
         url = f"{self.url}/{self.course_technology.id}"
         response = self.client.delete(url, format="json")
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertFalse(Technology.objects.filter(slug="typescript").exists())
 
     def test_delete_course_technology_regular_user(self):
-        login(self, self.regular_user_data["email"], self.regular_user_data["password"])
+        login(self, self.regular_user.email, self.regular_user_password)
         url = f"{self.url}/{self.course_technology.id}"
         response = self.client.delete(url, format="json")
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
 
-class FeaturedTechnologiesViewTest(APITestCase):
+class FeaturedTechnologiesViewTest(TestCase):
     def setUp(self):
         self.url = f"/{Urls.API}/{Urls.FEATURED_TECHNOLOGIES}"
         # Create courses for Python

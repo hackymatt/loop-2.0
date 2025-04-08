@@ -1,12 +1,14 @@
-from rest_framework.test import APITestCase
+from django.test import TestCase
+from rest_framework.test import APIClient
 from rest_framework import status
 from rest_framework_simplejwt.tokens import RefreshToken
 from const import Urls
 from ..factory import create_user
 
 
-class LogoutViewTest(APITestCase):
+class LogoutViewTest(TestCase):
     def setUp(self):
+        self.client = APIClient()
         self.url = f"/{Urls.API}/{Urls.LOGOUT}"
         """Set up a user and generate JWT tokens for testing."""
         self.user, _ = create_user()

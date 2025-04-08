@@ -34,7 +34,7 @@ def generate_expired_token(user_id):
     return jwt.encode(payload, CONFIG["secret"], algorithm="HS256")
 
 
-def get_jwt_token_from_login(self, email, password):
+def _get_jwt_token_from_login(self, email, password):
     """Helper method to get JWT token from custom login API."""
     # Assuming you have a login endpoint like /api/login/
     response = self.client.post(
@@ -46,5 +46,5 @@ def get_jwt_token_from_login(self, email, password):
 
 
 def login(self, email, password):
-    token = get_jwt_token_from_login(self, email, password)
+    token = _get_jwt_token_from_login(self, email, password)
     self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {token}")

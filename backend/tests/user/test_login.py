@@ -1,17 +1,19 @@
-from rest_framework.test import APITestCase
+from django.test import TestCase
+from rest_framework.test import APIClient
 from rest_framework import status
 from const import Urls
 from ..factory import create_user
 
 
-class LoginViewTest(APITestCase):
+class LoginViewTest(TestCase):
     def setUp(self):
+        self.client = APIClient()
         self.url = f"/{Urls.API}/{Urls.LOGIN}"
         # Create an active user
-        self.user, self.user_data = create_user()
+        self.user, self.user_password = create_user()
 
         # Create an inactive user
-        self.inactive_user, self.inactive_user_data = create_user()
+        self.inactive_user, self.inactive_user_password = create_user()
         self.inactive_user.is_active = False
         self.inactive_user.save()
 
@@ -19,7 +21,7 @@ class LoginViewTest(APITestCase):
         """Test login with valid credentials returns 200 and JWT tokens."""
         response = self.client.post(
             self.url,
-            {"email": self.user_data["email"], "password": self.user_data["password"]},
+            {"email": self.user.email, "password": self.user_password},
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn("access_token", response.data)
@@ -29,7 +31,7 @@ class LoginViewTest(APITestCase):
         """Test login with incorrect credentials returns 400."""
         response = self.client.post(
             self.url,
-            {"email": self.user_data["email"], "password": "wrongpassword"},
+            {"email": self.user.email, "password": "wrongpassword"},
         )
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
@@ -40,8 +42,8 @@ class LoginViewTest(APITestCase):
         response = self.client.post(
             self.url,
             {
-                "email": self.inactive_user_data["email"],
-                "password": self.inactive_user_data["password"],
+                "email": self.inactive_user.email,
+                "password": self.inactive_user_password,
             },
         )
 
@@ -51,10 +53,10 @@ class LoginViewTest(APITestCase):
 
     def test_missing_email_or_password(self):
         """Test login fails when email or password is missing."""
-        response = self.client.post(self.url, {"email": self.user_data["email"]})
+        response = self.client.post(self.url, {"email": self.user.email})
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
-        response = self.client.post(self.url, {"password": self.user_data["password"]})
+        response = self.client.post(self.url, {"password": self.user_password})
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
         response = self.client.post(self.url, {})

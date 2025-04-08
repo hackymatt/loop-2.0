@@ -1,12 +1,14 @@
 from rest_framework import status
-from rest_framework.test import APITestCase
+from django.test import TestCase
+from rest_framework.test import APIClient
 from const import Urls
 from ..factory import create_user
 from ..helpers import generate_valid_token, generate_expired_token
 
 
-class PasswordResetConfirmTests(APITestCase):
+class PasswordResetConfirmTests(TestCase):
     def setUp(self):
+        self.client = APIClient()
         self.url = f"/{Urls.API}/{Urls.PASSWORD_RESET_CONFIRM}"
         """Create a test user."""
         self.user, _ = create_user()

@@ -31,10 +31,8 @@ class LessonSerializer(serializers.ModelSerializer):
             translation = QuizLessonTranslation.objects.filter(
                 lesson=obj.quiz, language=lang
             ).first()
-        elif obj.type == LessonType.CODING:
+        else:
             translation = CodingLessonTranslation.objects.filter(
                 lesson=obj.coding, language=lang
             ).first()
-        else:
-            translation = None
-        return translation.name if translation else obj.slug
+        return translation.name

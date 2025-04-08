@@ -1,12 +1,13 @@
 from django.contrib.auth import get_user_model
-from rest_framework.test import APITestCase, APIClient
+from django.test import TestCase
+from rest_framework.test import APIClient
 from rest_framework import status
 from unittest.mock import patch
 from ..helpers import mock_auth_return_value, mock_auth_side_effect
 from const import Urls
 
 
-class GithubLoginViewTest(APITestCase):
+class GithubLoginViewTest(TestCase):
     def setUp(self):
         """Set up the test client, API URL, and test data."""
         self.client = APIClient()

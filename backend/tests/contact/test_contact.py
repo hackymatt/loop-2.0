@@ -1,4 +1,5 @@
-from rest_framework.test import APITestCase
+from django.test import TestCase
+from rest_framework.test import APIClient
 from rest_framework import status
 from unittest.mock import patch
 from const import Urls
@@ -6,8 +7,9 @@ from utils.google.gmail import GmailApi
 from ..helpers import mock_send_message
 
 
-class ContactAPIViewTest(APITestCase):
+class ContactAPIViewTest(TestCase):
     def setUp(self):
+        self.client = APIClient()
         self.url = f"/{Urls.API}/{Urls.CONTACT}"
 
     @patch.object(GmailApi, "_send_message")

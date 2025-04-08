@@ -14,7 +14,8 @@ class BlogViewSet(viewsets.ModelViewSet):
     http_method_names = ["get"]
     queryset = (
         Blog.objects.filter(active=True)
-        .prefetch_related("topic", "tags", "author", "translations")
+        .select_related("topic", "author")
+        .prefetch_related("tags", "translations")
         .order_by("slug")
     )
     serializer_class = BlogRetrieveSerializer

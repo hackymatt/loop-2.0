@@ -19,7 +19,7 @@ class RegisterViewTestCase(TestCase):
             "password": "Password123!",
         }
         # Create a user in the database for testing the existing email scenario
-        _, self.existing_user_data = create_user()
+        self.existing_user, self.existing_user_password = create_user()
 
     @patch.object(GmailApi, "_send_message")
     def test_register_user_valid_data(self, send_message_mock):
@@ -55,7 +55,14 @@ class RegisterViewTestCase(TestCase):
     def test_register_user_existing_email(self, send_message_mock):
         mock_send_message(mock=send_message_mock)
         """Test user registration with an already existing email"""
-        response = self.client.post(self.url, self.existing_user_data, format="json")
+        response = self.client.post(
+            self.url,
+            {
+                "email": self.existing_user.email,
+                "password": self.existing_user_password,
+            },
+            format="json",
+        )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn("email", response.data)
         self.assertEqual(
