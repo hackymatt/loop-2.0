@@ -5,7 +5,7 @@ import { DashboardView } from "src/sections/view/dashboard-view";
 // ----------------------------------------------------------------------
 
 export const metadata = createMetadata({
-  title: "Twój postęp w nauce",
+  title: "Dashboard",
 });
 
 export default function Page() {

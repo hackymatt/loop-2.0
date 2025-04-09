@@ -55,7 +55,6 @@ type ICourseBaseProps = {
 };
 
 export type ICourseListProps = ICourseBaseProps;
-export type ICourseListUserProps = ICourseListProps;
 
 export type ICourseProps = ICourseBaseProps & {
   overview: string;

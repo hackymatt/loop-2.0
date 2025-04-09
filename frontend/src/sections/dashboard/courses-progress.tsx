@@ -15,6 +15,7 @@ import { CourseProgressItem } from "../courses/course-progress-item";
 
 export function CoursesProgress() {
   const courses = _courses.slice(0, 4);
+  // const courses: ICourseListProps = [];
 
   const renderList = () => (
     <Box
@@ -31,17 +32,42 @@ export function CoursesProgress() {
     </Box>
   );
 
-  const renderInfo = () => <Typography variant="body1">No courses yet</Typography>;
+  const renderInfo = () => (
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        p: 5,
+        gap: 2,
+      }}
+    >
+      <Typography variant="body1" sx={{ color: "text.disabled" }}>
+        You have not started any course yet. Start today and take the first step on your programming
+        journey!
+      </Typography>
+
+      <Button
+        component={RouterLink}
+        href={paths.courses}
+        color="inherit"
+        size="large"
+        variant="text"
+        endIcon={<Iconify icon="solar:alt-arrow-right-outline" />}
+      >
+        Start new course
+      </Button>
+    </Box>
+  );
 
   return (
     <Box
       sx={(theme) => ({
         borderRadius: 2,
-        [theme.breakpoints.up("md")]: {
-          p: 2,
-          gridTemplateColumns: "repeat(2, 1fr)",
-          border: `dashed 1px ${theme.vars.palette.divider}`,
-        },
+        p: 2,
+        gridTemplateColumns: "repeat(2, 1fr)",
+        border: `dashed 1px ${theme.vars.palette.divider}`,
       })}
     >
       <Box
