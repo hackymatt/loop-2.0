@@ -26,7 +26,7 @@ export function CourseCertificateDetailsInfo({ sx, slug, name, chapters, ...othe
   const { isLoggedIn } = user.state;
 
   const next = { chapter: "abc", lesson: "def" };
-  const redirect = `${paths.lesson}/${slug}/${next.chapter}/${next.lesson}`;
+  const redirect = `${paths.learn}/${slug}/${next.chapter}/${next.lesson}`;
 
   return (
     <Card

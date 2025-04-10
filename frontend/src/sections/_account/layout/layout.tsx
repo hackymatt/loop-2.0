@@ -21,6 +21,7 @@ export function AccountLayout({ children, sx, ...other }: AccountLayoutProps) {
         sx={{
           display: "flex",
           mt: { xs: 5, md: 10 },
+          mb: { xs: 5, md: 10 },
           alignItems: { md: "flex-start" },
           flexDirection: { xs: "column", md: "row" },
         }}

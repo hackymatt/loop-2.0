@@ -66,7 +66,7 @@ export function NavAccountDesktop({ data, sx }: NavItemsProps) {
     <Box sx={{ py: 1.5, px: 3 }}>
       <NavItem
         title="Logout"
-        icon={<Iconify icon="carbon:logout" />}
+        icon={<Iconify icon="solar:logout-2-outline" />}
         onClick={() => console.info("Logout")}
       />
     </Box>

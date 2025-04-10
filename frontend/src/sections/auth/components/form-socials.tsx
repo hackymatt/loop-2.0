@@ -69,7 +69,7 @@ function GoogleSignIn({ methods }: { methods: UseFormReturn<any> }) {
         isLoggedIn: true,
         email,
       });
-      router.push(paths.dashboard);
+      router.push(paths.account.dashboard);
     } catch (error) {
       handleFormError(error);
     }
@@ -107,7 +107,7 @@ function GithubSignIn({ methods }: { methods: UseFormReturn<any> }) {
         isLoggedIn: true,
         email,
       });
-      router.push(paths.dashboard);
+      router.push(paths.account.dashboard);
     } catch (error) {
       handleFormError(error);
     }
@@ -147,7 +147,7 @@ function FacebookSignIn({ methods }: { methods: UseFormReturn<any> }) {
         isLoggedIn: true,
         email,
       });
-      router.push(paths.dashboard);
+      router.push(paths.account.dashboard);
     } catch (error) {
       handleFormError(error);
     }

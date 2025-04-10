@@ -36,6 +36,11 @@ const useNavData = () => {
   const { t } = useTranslation("navigation");
   return [
     {
+      title: "Dashboard2",
+      path: paths.account.dashboard,
+      icon: <Iconify icon="solar:home-2-outline" />,
+    },
+    {
       title: t("accountSettings"),
       path: paths.account.personal,
       icon: <Iconify icon="solar:user-rounded-outline" />,
@@ -107,7 +112,11 @@ export function NavAccountPopover({ sx }: NavItemsProps) {
     >
       {renderNav()}
       <Divider sx={{ my: 0.5, borderStyle: "dashed" }} />
-      <NavItem title={t("logout")} icon={<Iconify icon="carbon:logout" />} onClick={onClose} />
+      <NavItem
+        title={t("logout")}
+        icon={<Iconify icon="solar:logout-2-outline" />}
+        onClick={onClose}
+      />
     </Popover>
   );
 

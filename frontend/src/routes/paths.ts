@@ -1,24 +1,52 @@
 export const paths = {
   home: "/",
+  /**
+   * Auth
+   */
   login: "/auth/login",
   register: "/auth/register",
   activate: "/auth/activate",
   resetPassword: "/auth/reset-password",
   updatePassword: "/auth/update-password",
+  /**
+   * Courses
+   */
   courses: "/courses",
   course: "/course",
+  /**
+   * Certificates
+   */
   certificates: "/certificates",
   certificate: "/certificate",
-  lesson: "/lesson",
-  pricing: "/pricing",
+  /**
+   * Blog
+   */
   posts: "/posts",
   post: "/post",
+  /**
+   * Learn
+   */
+  learn: "/learn",
+  /**
+   * Other
+   */
+  pricing: "/pricing",
   about: "/about",
   contact: "/contact",
-  dashboard: "/dashboard",
   privacyPolicy: "/privacy-policy",
   termsAndConditions: "/terms-and-conditions",
   support: "/support",
+
+  /**
+   * Account
+   */
+  account: {
+    dashboard: "/account/dashboard",
+    personal: "/account/personal",
+    manage: "/account/manage",
+    subscription: "/account/subscription",
+  },
+
   /**
    * Marketing
    */
@@ -86,14 +114,7 @@ export const paths = {
   /**
    * Account
    */
-  account: {
-    root: "/account",
-    personal: "/account/personal",
-    wishlist: "/account/wishlist",
-    vouchers: "/account/vouchers",
-    orders: "/account/orders",
-    payment: "/account/payment",
-  },
+
   /**
    * Auth
    */

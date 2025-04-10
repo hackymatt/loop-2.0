@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 
 import { paths } from "./routes/paths";
 
-const AUTHORIZED_PATHS = [paths.certificates, paths.lesson, paths.dashboard];
+const AUTHORIZED_PATHS = [paths.certificates, paths.learn, paths.account.dashboard];
 const UNAUTHORIZED_PATHS = [
   paths.home,
   paths.login,
@@ -43,7 +43,7 @@ export const config = {
   matcher: [
     "/certificates",
     "/lesson",
-    "/dashboard",
+    "/account",
     "/",
     "/auth/login",
     "/auth/register",

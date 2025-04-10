@@ -69,7 +69,7 @@ export function CourseDetailsHero({
 
   const started = (progress || 0) > 0;
   const next = { chapter: "abc", lesson: "def" };
-  const redirect = `${paths.lesson}/${slug}/${next.chapter}/${next.lesson}`;
+  const redirect = `${paths.learn}/${slug}/${next.chapter}/${next.lesson}`;
 
   const languagePluralize = usePluralize();
 

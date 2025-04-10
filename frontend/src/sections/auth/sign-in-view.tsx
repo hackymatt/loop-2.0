@@ -64,7 +64,7 @@ export function SignInView() {
           isLoggedIn: true,
           email,
         });
-        router.push(paths.dashboard);
+        router.push(paths.account.dashboard);
       }
       reset();
     } catch (error) {

@@ -40,7 +40,7 @@ export function CourseDetailsChapterItem({
 
   const started = (chapter.progress || 0) > 0;
   const next = { chapter: chapter.slug, lesson: chapter.lessons[0].slug };
-  const redirect = `${paths.lesson}/${course.slug}/${next.chapter}/${next.lesson}`;
+  const redirect = `${paths.learn}/${course.slug}/${next.chapter}/${next.lesson}`;
 
   const renderButton = () => (
     <Button

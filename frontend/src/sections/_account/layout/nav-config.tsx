@@ -11,23 +11,13 @@ export const navData = [
     icon: <Iconify icon="solar:user-rounded-outline" />,
   },
   {
-    title: "Wishlist",
-    path: paths.account.wishlist,
-    icon: <Iconify icon="solar:heart-outline" />,
+    title: "Manage",
+    path: paths.account.manage,
+    icon: <Iconify icon="solar:settings-outline" />,
   },
   {
-    title: "Vouchers",
-    path: paths.account.vouchers,
-    icon: <Iconify icon="carbon:cut-out" />,
-  },
-  {
-    title: "Orders",
-    path: paths.account.orders,
-    icon: <Iconify icon="solar:cart-3-outline" />,
-  },
-  {
-    title: "Payment",
-    path: paths.account.payment,
+    title: "Subscription",
+    path: paths.account.subscription,
     icon: <Iconify icon="solar:card-outline" />,
   },
 ];
