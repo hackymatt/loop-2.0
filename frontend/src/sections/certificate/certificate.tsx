@@ -40,7 +40,7 @@ export function Certificate({ course, student, sx, ...other }: Props) {
       ]}
       {...other}
     >
-      <Logo isSingle sx={{ width: "7%", height: "auto", mb: 2 }} />
+      <Logo isSingle isLink={false} sx={{ width: 24, height: "auto", mb: 2 }} />
 
       <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
         <Typography sx={{ fontSize: "0.7em", fontWeight: "bold", wordBreak: "break-word" }}>
