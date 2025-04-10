@@ -13,6 +13,7 @@ import { themeConfig, ThemeProvider } from "src/theme";
 import { themeOverrides } from "src/theme/theme-overrides";
 import { TranslationProvider, LocalizationProvider } from "src/locales";
 
+import { detectUser } from "src/components/user/server";
 import { ProgressBar } from "src/components/progress-bar";
 import { UserProvider } from "src/components/user/context";
 import { defaultUser } from "src/components/user/user-config";
@@ -53,7 +54,7 @@ export default async function RootLayout({ children }: Props) {
         />
         <GoogleOAuthProvider clientId={CONFIG.googleClientId}>
           <ReactQueryProvider>
-            <UserProvider defaultUser={defaultUser}>
+            <UserProvider defaultUser={defaultUser} cookieUser={await detectUser()}>
               <SettingsProvider defaultSettings={defaultSettings}>
                 <TranslationProvider>
                   <LocalizationProvider>

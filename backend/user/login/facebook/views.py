@@ -5,7 +5,7 @@ from django.contrib.auth import get_user_model
 from django.utils.translation import gettext as _
 from rest_framework_simplejwt.tokens import RefreshToken
 import requests
-from ...utils import get_unique_username
+from ...utils import get_unique_username, set_cookies
 from const import JoinType
 
 
@@ -52,11 +52,11 @@ class FacebookLoginView(APIView):
         refresh_token = RefreshToken.for_user(user)
         access_token = refresh_token.access_token
 
-        return Response(
+        response = Response(
             {
                 "email": user.email,
-                "access_token": str(access_token),
-                "refresh_token": str(refresh_token),
             },
             status=status.HTTP_200_OK,
         )
+
+        return set_cookies(response, access_token, refresh_token)

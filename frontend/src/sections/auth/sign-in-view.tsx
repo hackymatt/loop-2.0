@@ -57,10 +57,8 @@ export function SignInView() {
         });
         router.push(paths.activate);
       } else {
-        const { email, access_token: accessToken, refresh_token: refreshToken } = responseData;
+        const { email } = responseData;
         user.setState({
-          accessToken,
-          refreshToken,
           isRegistered: true,
           isActive: true,
           isLoggedIn: true,

@@ -62,10 +62,8 @@ function GoogleSignIn({ methods }: { methods: UseFormReturn<any> }) {
 
     try {
       const { data: responseData } = await googleLogin({ token });
-      const { email, access_token: accessToken, refresh_token: refreshToken } = responseData;
+      const { email } = responseData;
       user.setState({
-        accessToken,
-        refreshToken,
         isRegistered: true,
         isActive: true,
         isLoggedIn: true,
@@ -102,10 +100,8 @@ function GithubSignIn({ methods }: { methods: UseFormReturn<any> }) {
 
     try {
       const { data: responseData } = await githubLogin({ code });
-      const { email, access_token: accessToken, refresh_token: refreshToken } = responseData;
+      const { email } = responseData;
       user.setState({
-        accessToken,
-        refreshToken,
         isRegistered: true,
         isActive: true,
         isLoggedIn: true,
@@ -144,10 +140,8 @@ function FacebookSignIn({ methods }: { methods: UseFormReturn<any> }) {
 
     try {
       const { data: responseData } = await facebookLogin({ access_token });
-      const { email, access_token: accessToken, refresh_token: refreshToken } = responseData;
+      const { email } = responseData;
       user.setState({
-        accessToken,
-        refreshToken,
         isRegistered: true,
         isActive: true,
         isLoggedIn: true,

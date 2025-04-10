@@ -17,6 +17,12 @@ class Course(BaseModel):
     instructors = models.ManyToManyField(Instructor, related_name="courses")
     duration = models.PositiveIntegerField()
     chat_url = models.URLField()
+    prerequisites = models.ManyToManyField(
+        "self", 
+        related_name="dependent_courses", 
+        blank=True, 
+        symmetrical=False
+    )
     active = models.BooleanField(default=False)
 
     class Meta:
