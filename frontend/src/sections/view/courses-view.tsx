@@ -11,7 +11,7 @@ import Typography from "@mui/material/Typography";
 
 import { useQueryParams } from "src/hooks/use-query-params";
 
-import { useCourses } from "src/api/course/courses";
+import { _courses } from "src/_mock";
 import { useCourseLevels } from "src/api/course/level/levels";
 import { useCourseCategories } from "src/api/course/category/categories";
 import { useCourseTechnologies } from "src/api/course/technology/technologies";
@@ -37,7 +37,9 @@ export function CoursesView() {
   const { data: courseLevels } = useCourseLevels({ sort_by: "order", page_size: "-1" });
   const { data: courseTechnologies } = useCourseTechnologies({ page_size: "-1" });
   const { data: courseCategories } = useCourseCategories({ page_size: "-1" });
-  const { data: courses, pageSize } = useCourses(query);
+  // const { data: courses, pageSize } = useCourses(query);
+  const courses = _courses;
+  const pageSize = 10;
 
   const openMobile = useBoolean();
 

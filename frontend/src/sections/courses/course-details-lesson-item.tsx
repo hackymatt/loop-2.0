@@ -17,6 +17,8 @@ type LessonItemProps = {
 };
 
 export function CourseDetailsLessonItem({ course, chapter, lesson }: LessonItemProps) {
+  const completed = true;
+  const gainedPoints = Math.floor(lesson.totalPoints * 0.5);
   return (
     <Button
       variant="text"
@@ -32,10 +34,14 @@ export function CourseDetailsLessonItem({ course, chapter, lesson }: LessonItemP
       }}
     >
       <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-        <Iconify icon={getLessonTypeIcon(lesson.type)} />
+        <Iconify icon={getLessonTypeIcon(lesson.type, completed)} />
         {lesson.name}
       </Box>
-      <Typography variant="body2">{lesson.totalPoints} XP</Typography>
+
+      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+        {completed && <Iconify icon="carbon:checkmark-filled" sx={{ color: "success.main" }} />}
+        <Typography variant="body2">{completed ? gainedPoints : lesson.totalPoints} XP</Typography>
+      </Box>
     </Button>
   );
 }

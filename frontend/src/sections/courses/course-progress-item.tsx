@@ -110,6 +110,7 @@ export function CourseProgressItem({ course }: Props) {
         minWidth: 0,
         display: "flex",
         flexDirection: "column",
+        flexGrow: 1,
       }}
     >
       <Box

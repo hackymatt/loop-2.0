@@ -86,10 +86,11 @@ const useCourseNav = () => {
 export const useNavData = () => {
   const { t } = useTranslation("navigation");
   const user = useUserContext();
+  const { isLoggedIn } = user.state;
 
   const coursesNav = useCourseNav();
 
-  return user.state.isLoggedIn
+  return isLoggedIn
     ? [
         { title: t("courses"), path: paths.courses, ...coursesNav },
         { title: t("certificates"), path: paths.certificates, disabled: true },

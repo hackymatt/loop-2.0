@@ -20,6 +20,7 @@ import { fShortenNumber } from "src/utils/format-number";
 import { getTechnologyIcon } from "src/utils/technology-icon";
 
 import { Iconify } from "src/components/iconify";
+import { useUserContext } from "src/components/user";
 import { AnimateBorder } from "src/components/animate";
 import { CustomBreadcrumbs } from "src/components/custom-breadcrumbs";
 
@@ -48,11 +49,15 @@ export function CourseDetailsHero({
   totalVideos,
   totalLessons,
   totalStudents,
+  progress,
   ...other
 }: Props) {
   const { t: navigation } = useTranslation("navigation");
   const { t: locale } = useTranslation("locale");
   const { t } = useTranslation("course");
+
+  const user = useUserContext();
+  const { isLoggedIn } = user.state;
 
   const student = t("student", { returnObjects: true }) as string[];
   const review = t("review", { returnObjects: true }) as string[];
@@ -61,6 +66,10 @@ export function CourseDetailsHero({
   const video = t("video", { returnObjects: true }) as string[];
   const exercise = t("exercise", { returnObjects: true }) as string[];
   const quiz = t("quiz", { returnObjects: true }) as string[];
+
+  const started = (progress || 0) > 0;
+  const next = { chapter: "abc", lesson: "def" };
+  const redirect = `${paths.lesson}/${slug}/${next.chapter}/${next.lesson}`;
 
   const languagePluralize = usePluralize();
 
@@ -193,7 +202,7 @@ export function CourseDetailsHero({
     >
       {totalPoints ? (
         <div>
-          <Iconify icon="solar:medal-ribbon-star-outline" /> {`${totalPoints} XP`}
+          <Iconify icon="solar:medal-star-outline" /> {`${totalPoints} XP`}
         </div>
       ) : null}
 
@@ -237,10 +246,10 @@ export function CourseDetailsHero({
       <Button
         variant="text"
         size="large"
-        href={`${paths.register}?redirect=${paths.course}/${slug}`}
+        href={isLoggedIn ? redirect : `${paths.register}?redirect=${redirect}`}
         sx={{ px: 2, borderRadius: "inherit", textAlign: "center" }}
       >
-        {t("start")}
+        {isLoggedIn && started ? t("continue") : t("start")}
       </Button>
     </AnimateBorder>
   );
@@ -289,22 +298,24 @@ export function CourseDetailsHero({
         <Grid
           container
           spacing={{ xs: 5, md: 10 }}
-          direction={{ xs: "column-reverse", md: "row-reverse" }}
+          direction={{ xs: "column", md: "row" }}
           alignItems="center"
         >
-          <Grid
-            size={{ xs: 12, md: 5 }}
-            sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}
-          >
-            {renderForm()}
-          </Grid>
-
           <Grid size={{ xs: 12, md: 7 }} sx={{ gap: 3, display: "flex", flexDirection: "column" }}>
             {renderTexts()}
             {renderButton()}
             {renderContent()}
             {renderSummary()}
           </Grid>
+
+          {!isLoggedIn ? (
+            <Grid
+              size={{ xs: 12, md: 5 }}
+              sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}
+            >
+              {renderForm()}
+            </Grid>
+          ) : null}
         </Grid>
       </Container>
     </Box>

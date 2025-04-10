@@ -56,6 +56,7 @@ export function MainLayout({
   layoutQuery = "md",
 }: MainLayoutProps) {
   const user = useUserContext();
+  const { isLoggedIn } = user.state;
 
   const navData = useNavData();
 
@@ -90,7 +91,7 @@ export function MainLayout({
               ),
               bottomArea: (
                 <Box sx={{ py: 3, px: 2.5, display: "flex", flexDirection: "column", gap: 2 }}>
-                  {user.state.isLoggedIn ? (
+                  {isLoggedIn ? (
                     <>
                       {/* @slot Upgrade button */}
                       <UpgradeButton
@@ -177,7 +178,7 @@ export function MainLayout({
           {/** @slot Settings button */}
           {CONFIG.isLocal && <SettingsButton />}
 
-          {user.state.isLoggedIn ? (
+          {isLoggedIn ? (
             <>
               {/* @slot Upgrade button */}
               <UpgradeButton sx={{ display: { xs: "none", [layoutQuery]: "inline-flex" } }} />

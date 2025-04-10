@@ -11,6 +11,7 @@ import Typography from "@mui/material/Typography";
 import { paths } from "src/routes/paths";
 
 import { Iconify } from "src/components/iconify";
+import { useUserContext } from "src/components/user";
 
 import { Certificate } from "../certificate";
 
@@ -20,6 +21,13 @@ type Props = CardProps & Pick<ICourseProps, "slug" | "name" | "chapters">;
 export function CourseCertificateDetailsInfo({ sx, slug, name, chapters, ...other }: Props) {
   const { t } = useTranslation("course");
   const { t: certificate } = useTranslation("certificate");
+
+  const user = useUserContext();
+  const { isLoggedIn } = user.state;
+
+  const next = { chapter: "abc", lesson: "def" };
+  const redirect = `${paths.lesson}/${slug}/${next.chapter}/${next.lesson}`;
+
   return (
     <Card
       sx={[
@@ -46,15 +54,17 @@ export function CourseCertificateDetailsInfo({ sx, slug, name, chapters, ...othe
         </Typography>
       </Box>
 
-      <Button
-        variant="contained"
-        color="primary"
-        size="large"
-        href={`${paths.register}?redirect=${paths.lesson}/${slug}/${chapters?.[0]?.slug}/${chapters?.[0]?.lessons?.[0]?.slug}`}
-        sx={{ px: 2, borderRadius: "inherit", textAlign: "center" }}
-      >
-        {t("start")}
-      </Button>
+      {!isLoggedIn ? (
+        <Button
+          variant="contained"
+          color="primary"
+          size="large"
+          href={`${paths.register}?redirect=${redirect}`}
+          sx={{ px: 2, borderRadius: "inherit", textAlign: "center" }}
+        >
+          {t("start")}
+        </Button>
+      ) : null}
     </Card>
   );
 }

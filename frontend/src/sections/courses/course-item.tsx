@@ -53,11 +53,11 @@ export function CourseItem({ course, isVertical }: Props) {
           <LinearProgress
             color="primary"
             variant="determinate"
-            value={75}
+            value={course.progress}
             sx={{ flex: "1 1 auto" }}
           />
           <Typography variant="body2" sx={{ color: "text.secondary" }}>
-            75%
+            {Math.round(course.progress)}%
           </Typography>
         </>
       ) : null}
@@ -196,6 +196,7 @@ export function CourseItem({ course, isVertical }: Props) {
         minWidth: 0,
         display: "flex",
         flexDirection: "column",
+        flexGrow: 1,
       }}
     >
       <Box

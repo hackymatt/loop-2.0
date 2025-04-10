@@ -25,6 +25,7 @@
   "quiz": ["quiz"],
   "sign-up": { "header": "Create your free account", "button": "Start learning for free" },
   "start": "Start course for free",
+  "continue": "Continue course",
   "access": "Lifetime access",
   "certificate": {
     "title": "Certificate of accomplishment",
@@ -35,6 +36,10 @@
     "subtitle": "Join our course chat to get support and exchange experiences with other participants.",
     "button": "Join the chat"
   },
+  "prerequisites": {
+    "title": "Recommended Knowledge",
+    "none": "There are no prerequisites for this course."
+  },
   "instructors": "Instructors",
   "reviews": "Reviews",
   "included": { "start": "Included with", "plans": "Basic and Premium" },
@@ -43,7 +48,8 @@
   "viewAll": "View all",
   "chapters": {
     "title": "Chapters",
-    "button": "Start",
+    "start": "Start",
+    "continue": "Continue",
     "show": "Show",
     "hide": "Hide",
     "lesson": "lessons"

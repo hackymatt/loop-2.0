@@ -40,6 +40,7 @@ export type ICourseChapterProp = {
   name: string;
   description: string;
   lessons: ICourseLessonProp[];
+  progress: number | null;
 };
 
 type ICourseBaseProps = {
@@ -58,6 +59,8 @@ type ICourseBaseProps = {
   totalStudents: number;
   progress: number | null;
 };
+
+export type ICoursePrerequisite = Pick<ICourseBaseProps, "slug" | "name">;
 
 export type ICourseListProps = ICourseBaseProps;
 

@@ -35,6 +35,7 @@ export function Footer({ layoutQuery = "md", sx, ...other }: FooterProps) {
   const { t } = useTranslation("navigation");
 
   const user = useUserContext();
+  const { isLoggedIn } = user.state;
 
   const currentYear = new Date().getFullYear();
 
@@ -55,7 +56,7 @@ export function Footer({ layoutQuery = "md", sx, ...other }: FooterProps) {
         {t("courses")}
       </Link>
 
-      {!user.state.isLoggedIn && (
+      {!isLoggedIn && (
         <Link
           component={RouterLink}
           href={paths.pricing}
@@ -75,7 +76,7 @@ export function Footer({ layoutQuery = "md", sx, ...other }: FooterProps) {
         {t("blog")}
       </Link>
 
-      {!user.state.isLoggedIn && (
+      {!isLoggedIn && (
         <Link
           component={RouterLink}
           href={paths.about}

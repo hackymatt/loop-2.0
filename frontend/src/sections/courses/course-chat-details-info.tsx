@@ -11,12 +11,17 @@ import Typography from "@mui/material/Typography";
 import { paths } from "src/routes/paths";
 
 import { Iconify } from "src/components/iconify";
+import { useUserContext } from "src/components/user";
 
 // ----------------------------------------------------------------------
 
 type Props = CardProps & Pick<ICourseProps, "slug" | "chatUrl">;
 export function CourseChatDetailsInfo({ sx, slug, chatUrl, ...other }: Props) {
   const { t } = useTranslation("course");
+
+  const user = useUserContext();
+  const { isLoggedIn } = user.state;
+
   return (
     <Card
       sx={[
@@ -41,15 +46,27 @@ export function CourseChatDetailsInfo({ sx, slug, chatUrl, ...other }: Props) {
         </Typography>
       </Box>
 
-      <Button
-        variant="contained"
-        size="large"
-        startIcon={<Iconify icon="logos:google-icon" />}
-        href={chatUrl ?? `${paths.register}?redirect=${paths.course}/${slug}`}
-        sx={{ px: 2, borderRadius: "inherit", textAlign: "center" }}
-      >
-        {t("chat.button")}
-      </Button>
+      {!isLoggedIn ? (
+        <Button
+          variant="contained"
+          size="large"
+          startIcon={<Iconify icon="logos:google-icon" />}
+          href={`${paths.register}?redirect=${paths.course}/${slug}`}
+          sx={{ px: 2, borderRadius: "inherit", textAlign: "center" }}
+        >
+          {t("chat.button")}
+        </Button>
+      ) : chatUrl ? (
+        <Button
+          variant="contained"
+          size="large"
+          startIcon={<Iconify icon="logos:google-icon" />}
+          href={chatUrl}
+          sx={{ px: 2, borderRadius: "inherit", textAlign: "center" }}
+        >
+          {t("chat.button")}
+        </Button>
+      ) : null}
     </Card>
   );
 }
