@@ -95,6 +95,7 @@ export function CourseView({ slug }: { slug: string }) {
           </Grid>
         </Grid>
       </Container>
+
       <Divider />
 
       {renderReview()}

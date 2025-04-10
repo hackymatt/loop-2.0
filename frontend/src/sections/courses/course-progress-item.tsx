@@ -33,11 +33,11 @@ export function CourseProgressItem({ course }: Props) {
           <LinearProgress
             color="primary"
             variant="determinate"
-            value={75}
+            value={course.progress}
             sx={{ flex: "1 1 auto" }}
           />
           <Typography variant="body2" sx={{ color: "text.secondary" }}>
-            75%
+            {Math.round(course.progress)}%
           </Typography>
         </>
       ) : null}
@@ -46,7 +46,13 @@ export function CourseProgressItem({ course }: Props) {
 
   const renderTexts = () => (
     <Box sx={{ minWidth: 0 }}>
-      <Typography color="inherit" variant="h6" noWrap>
+      <Typography
+        color="inherit"
+        variant="h6"
+        sx={(theme) => ({
+          ...theme.mixins.maxLine({ line: 1 }),
+        })}
+      >
         {course.name}
       </Typography>
 
@@ -68,9 +74,10 @@ export function CourseProgressItem({ course }: Props) {
       sx={{
         gap: 1.5,
         display: "flex",
-        flexWrap: "wrap",
+        flexWrap: "nowrap",
         alignItems: "center",
         typography: "body2",
+        minWidth: 0,
       }}
     >
       <Box sx={{ gap: 0.5, display: "flex", alignItems: "center" }}>
@@ -80,9 +87,17 @@ export function CourseProgressItem({ course }: Props) {
 
       <Divider orientation="vertical" sx={{ height: 20, my: "auto" }} />
 
-      <Box sx={{ gap: 0.5, display: "flex", alignItems: "center" }}>
+      <Box sx={{ gap: 0.5, display: "flex", alignItems: "center", minWidth: 0 }}>
         <Iconify icon={getTechnologyIcon(course.technology.slug)} />
-        {course.technology.name}
+        <Box
+          sx={{
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+          }}
+        >
+          {course.technology.name}
+        </Box>
       </Box>
     </Box>
   );

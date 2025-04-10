@@ -4,7 +4,15 @@
     "level": "Skill levels",
     "technology": "Technology",
     "category": "Category",
-    "rating": { "title": "Rating", "more": "& Up" }
+    "rating": { "title": "Rating", "more": "& Up" },
+    "status": {
+      "title": "Status",
+      "options": [
+        { "slug": "not-started", "name": "Not started" },
+        { "slug": "in-progress", "name": "In progress" },
+        { "slug": "completed", "name": "Completed" }
+      ]
+    }
   },
   "instructor": ["instructor"],
   "student": ["student"],

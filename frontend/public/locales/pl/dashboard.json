@@ -1,0 +1,21 @@
+{
+  "courses": {
+    "title": "Kursy",
+    "button": "Zobacz wszystkie kursy",
+    "lack": "Nie rozpocząłeś żadnego kursu. Zacznij już dziś i zrób pierwszy krok na swojej drodze do programowania!",
+    "start": "Rozpocznij nowy kurs"
+  },
+  "certificates": {
+    "title": "Certyfikaty",
+    "button": "Zobacz wszystkie certyfikaty",
+    "lack": "Nie masz jeszcze żadnych certyfikatów. Zakończ kurs, aby zdobyć swój pierwszy certyfikat!",
+    "start": "Zobacz wszystkie kursy",
+    "blocked": "Popraw swoje szanse na zatrudnienie dzięki certyfikatom uznawanym w branży. Odblokuj swoją historię nauki i certyfikaty teraz."
+  },
+  "profile": {
+    "greeting": "Cześć",
+    "points": "Punkty XP",
+    "streak": "Seria",
+    "days": "dni"
+  }
+}

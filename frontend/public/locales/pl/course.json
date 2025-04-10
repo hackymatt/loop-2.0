@@ -4,7 +4,15 @@
     "level": "Poziom umiejętności",
     "technology": "Technologia",
     "category": "Kategoria",
-    "rating": { "title": "Ocena", "more": "i wyżej" }
+    "rating": { "title": "Ocena", "more": "i wyżej" },
+    "status": {
+      "title": "Status",
+      "options": [
+        { "slug": "not-started", "name": "Nie rozpoczęte" },
+        { "slug": "in-progress", "name": "W trakcie" },
+        { "slug": "completed", "name": "Zakończone" }
+      ]
+    }
   },
   "instructor": ["instruktor", "instruktorów", "instruktorów"],
   "student": ["uczeń", "uczniów", "uczniów"],

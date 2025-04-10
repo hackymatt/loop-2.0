@@ -89,7 +89,13 @@ export function CourseItem({ course, isVertical }: Props) {
 
   const renderTexts = () => (
     <Box sx={{ minWidth: 0 }}>
-      <Typography color="inherit" variant="h6" noWrap>
+      <Typography
+        color="inherit"
+        variant="h6"
+        sx={(theme) => ({
+          ...theme.mixins.maxLine({ line: 1 }),
+        })}
+      >
         {course.name}
       </Typography>
 

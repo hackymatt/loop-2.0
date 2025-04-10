@@ -19,6 +19,11 @@ export type ICourseCategoryProp = {
   name: string;
 };
 
+export type ICourseStatusProp = {
+  slug: string;
+  name: string;
+};
+
 export type ICourseTeacherProp = IInstructorProps;
 
 export type ICourseLessonType = (typeof COURSE_TYPE)[keyof typeof COURSE_TYPE];

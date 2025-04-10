@@ -1,5 +1,7 @@
 "use client";
 
+import type { ICourseStatusProp } from "src/types/course";
+
 import { useTranslation } from "react-i18next";
 import { useBoolean } from "minimal-shared/hooks";
 
@@ -27,6 +29,8 @@ const RATING_OPTIONS = ["4", "3", "2"];
 
 export function CoursesView() {
   const { t } = useTranslation("course");
+
+  const statusOptions = t("filter.status.options", { returnObjects: true }) as ICourseStatusProp[];
 
   const { handleChange, query } = useQueryParams();
 
@@ -73,6 +77,7 @@ export function CoursesView() {
           technologies: courseTechnologies ?? [],
           categories: courseCategories ?? [],
           ratings: RATING_OPTIONS,
+          statuses: statusOptions,
         }}
       />
     </Box>

@@ -2,6 +2,9 @@
 
 import type { ICourseListProps } from "src/types/course";
 
+import { useTranslation } from "react-i18next";
+
+import Grid from "@mui/material/Grid2";
 import { Box, Card, Link, Button, Typography } from "@mui/material";
 
 import { paths } from "src/routes/paths";
@@ -17,6 +20,8 @@ import { Certificate } from "../certificate";
 // ----------------------------------------------------------------------
 
 export function CertificatesProgress({ disabled }: { disabled?: boolean }) {
+  const { t } = useTranslation("dashboard");
+
   const studentName = "John Doe";
   const courses = _courses.slice(0, 4).map((x) => ({ ...x, certificateId: "abc" }));
   // const courses = undefined;
@@ -27,7 +32,7 @@ export function CertificatesProgress({ disabled }: { disabled?: boolean }) {
         mt: 3,
         gap: 3,
         display: "grid",
-        gridTemplateColumns: { xs: "repeat(1, 1fr)", md: "repeat(3, 1fr)" },
+        gridTemplateColumns: { xs: "repeat(1, 1fr)", md: "repeat(2, 1fr)" },
       }}
     >
       {courses.map((course) => (
@@ -45,10 +50,11 @@ export function CertificatesProgress({ disabled }: { disabled?: boolean }) {
         justifyContent: "center",
         p: 5,
         gap: 2,
+        textAlign: "center",
       }}
     >
       <Typography variant="body1" sx={{ color: "text.disabled" }}>
-        You do not have any certificates yet. Complete the course to earn your first one!
+        {t("certificates.lack")}
       </Typography>
 
       <Button
@@ -59,7 +65,7 @@ export function CertificatesProgress({ disabled }: { disabled?: boolean }) {
         variant="text"
         endIcon={<Iconify icon="solar:alt-arrow-right-outline" />}
       >
-        See all courses
+        {t("certificates.start")}
       </Button>
     </Box>
   );
@@ -73,32 +79,24 @@ export function CertificatesProgress({ disabled }: { disabled?: boolean }) {
         justifyContent: "center",
         p: 5,
         gap: 2,
+        textAlign: "center",
       }}
     >
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: { xs: "column", md: "row" },
-          alignItems: "center",
-          justifyContent: "center",
-          p: 5,
-          gap: 2,
-        }}
-      >
-        <Certificate
-          course="Introduction to Python Programming"
-          student={studentName}
-          sx={(theme) => ({
-            [theme.breakpoints.down("md")]: {
-              width: 300,
-            },
-          })}
-        />
+      <Box sx={{ p: { xs: 0, md: 5 } }}>
+        <Grid container spacing={2} sx={{ alignItems: "center", justifyContent: "center" }}>
+          <Grid size={{ xs: 12, md: 8 }}>
+            <Certificate course="Introduction to Python Programming" student={studentName} />
+          </Grid>
 
-        <Typography variant="body1" sx={{ color: "text.disabled" }}>
-          Improve your chances of getting hired with industry-recognized certifications. Unlock your
-          learning history and certificates now.
-        </Typography>
+          <Grid
+            size={{ xs: 12, md: 4 }}
+            sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}
+          >
+            <Typography variant="body1" sx={{ color: "text.disabled" }}>
+              {t("certificates.blocked")}
+            </Typography>
+          </Grid>
+        </Grid>
       </Box>
 
       <UpgradeButton
@@ -111,7 +109,7 @@ export function CertificatesProgress({ disabled }: { disabled?: boolean }) {
 
   const renderContent = () => {
     if (disabled) return renderBlocked();
-    if (!!courses?.length) return renderList();
+    if (courses?.length) return renderList();
     return renderInfo();
   };
 
@@ -147,7 +145,7 @@ export function CertificatesProgress({ disabled }: { disabled?: boolean }) {
               ...(disabled && { color: "text.disabled" }),
             }}
           >
-            Certificates
+            {t("certificates.title")}
           </Typography>
         </Box>
 
@@ -159,7 +157,7 @@ export function CertificatesProgress({ disabled }: { disabled?: boolean }) {
           sx={{ display: "inline-flex" }}
           disabled={disabled}
         >
-          See all certificates
+          {t("certificates.button")}
         </Button>
       </Box>
 

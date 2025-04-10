@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslation } from "react-i18next";
+
 import { Box, Button, Typography } from "@mui/material";
 
 import { paths } from "src/routes/paths";
@@ -14,6 +16,8 @@ import { CourseProgressItem } from "../courses/course-progress-item";
 // ----------------------------------------------------------------------
 
 export function CoursesProgress() {
+  const { t } = useTranslation("dashboard");
+
   const courses = _courses.slice(0, 4);
   // const courses: ICourseListProps = [];
 
@@ -23,11 +27,16 @@ export function CoursesProgress() {
         mt: 3,
         gap: 3,
         display: "grid",
-        gridTemplateColumns: { xs: "repeat(1, 1fr)", md: "repeat(2, 1fr)" },
+        gridTemplateColumns: {
+          xs: "repeat(1, minmax(0, 1fr))",
+          md: "repeat(2, minmax(0, 1fr))",
+        },
       }}
     >
       {(courses || []).map((course) => (
-        <CourseProgressItem key={course.slug} course={course} />
+        <Box key={course.slug} sx={{ width: "100%" }}>
+          <CourseProgressItem course={course} />
+        </Box>
       ))}
     </Box>
   );
@@ -41,11 +50,11 @@ export function CoursesProgress() {
         justifyContent: "center",
         p: 5,
         gap: 2,
+        textAlign: "center",
       }}
     >
       <Typography variant="body1" sx={{ color: "text.disabled" }}>
-        You have not started any course yet. Start today and take the first step on your programming
-        journey!
+        {t("courses.lack")}
       </Typography>
 
       <Button
@@ -56,7 +65,7 @@ export function CoursesProgress() {
         variant="text"
         endIcon={<Iconify icon="solar:alt-arrow-right-outline" />}
       >
-        Start new course
+        {t("courses.start")}
       </Button>
     </Box>
   );
@@ -79,7 +88,7 @@ export function CoursesProgress() {
           justifyContent: "space-between",
         }}
       >
-        <Typography variant="h5">Courses</Typography>
+        <Typography variant="h5">{t("courses.title")}</Typography>
 
         <Button
           component={RouterLink}
@@ -88,11 +97,11 @@ export function CoursesProgress() {
           endIcon={<Iconify icon="solar:alt-arrow-right-outline" />}
           sx={{ display: "inline-flex" }}
         >
-          See all courses
+          {t("courses.button")}
         </Button>
       </Box>
 
-      {!!courses?.length ? renderList() : renderInfo()}
+      {courses?.length ? renderList() : renderInfo()}
     </Box>
   );
 }
