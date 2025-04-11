@@ -16,6 +16,7 @@ export type UserContextValue = {
   state: UserState;
   setState: (updateValue: Partial<UserState>) => void;
   setField: (name: keyof UserState, updateValue: UserState[keyof UserState]) => void;
+  resetState: () => void;
 };
 
 export type UserProviderProps = {

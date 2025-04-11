@@ -16,12 +16,14 @@ import IconButton from "@mui/material/IconButton";
 import ButtonBase, { buttonBaseClasses } from "@mui/material/ButtonBase";
 
 import { paths } from "src/routes/paths";
-import { usePathname } from "src/routes/hooks";
 import { RouterLink } from "src/routes/components";
+import { useRouter, usePathname } from "src/routes/hooks";
 
 import { _mock } from "src/_mock";
+import { useLogout } from "src/api/auth/logout";
 
 import { Iconify } from "src/components/iconify";
+import { useUserContext } from "src/components/user";
 
 // ----------------------------------------------------------------------
 
@@ -60,6 +62,12 @@ export function NavAccountPopover({ sx }: NavItemsProps) {
 
   const { t } = useTranslation("navigation");
 
+  const user = useUserContext();
+
+  const { mutateAsync: logout } = useLogout();
+
+  const router = useRouter();
+
   const pathname = usePathname();
 
   const navData = useNavData();
@@ -85,6 +93,19 @@ export function NavAccountPopover({ sx }: NavItemsProps) {
       </Box>
     </Box>
   );
+
+  const handleLogout = async () => {
+    try {
+      const { status } = await logout({});
+      if (status === 205) {
+        user.resetState();
+        router.push(paths.home);
+        onClose();
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const renderMenuActions = () => (
     <Popover
@@ -115,7 +136,7 @@ export function NavAccountPopover({ sx }: NavItemsProps) {
       <NavItem
         title={t("logout")}
         icon={<Iconify icon="solar:logout-2-outline" />}
-        onClick={onClose}
+        onClick={handleLogout}
       />
     </Popover>
   );

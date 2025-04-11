@@ -10,6 +10,9 @@ export async function detectUser(storageKey: string = USER_STORAGE_KEY): Promise
   const cookieStore = cookies();
 
   const userStore = cookieStore.get(storageKey);
+  const accessToken = cookies().get("access_token");
 
-  return userStore ? JSON.parse(userStore?.value) : defaultUser;
+  return userStore
+    ? { ...JSON.parse(userStore?.value), isLoggedIn: !!accessToken?.value }
+    : defaultUser;
 }

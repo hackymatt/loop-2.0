@@ -40,6 +40,7 @@ class GoogleLoginView(APIView):
                 "last_name": last_name,
                 "image": picture,
                 "join_type": JoinType.GOOGLE,
+                "is_active": True
             },
         )
 

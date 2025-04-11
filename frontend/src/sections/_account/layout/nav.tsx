@@ -19,9 +19,11 @@ import Typography from "@mui/material/Typography";
 import { Tab, Tabs, Input, Button } from "@mui/material";
 import ButtonBase, { buttonBaseClasses } from "@mui/material/ButtonBase";
 
-import { usePathname } from "src/routes/hooks";
+import { paths } from "src/routes/paths";
 import { RouterLink } from "src/routes/components";
+import { useRouter, usePathname } from "src/routes/hooks";
 
+import { useLogout } from "src/api/auth/logout";
 import { DEFAULT_AVATAR_URL } from "src/consts/avatar";
 
 import { Iconify } from "src/components/iconify";
@@ -45,8 +47,24 @@ export function NavAccountDesktop({ data, sx }: NavItemsProps) {
 
   const currentTab = data.find((item) => item.path === pathname)?.title;
 
+  const router = useRouter();
+
   const user = useUserContext();
   const { email, firstName } = user.state;
+
+  const { mutateAsync: logout } = useLogout();
+
+  const handleLogout = async () => {
+    try {
+      const { status } = await logout({});
+      if (status === 205) {
+        user.resetState();
+        router.push(paths.home);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const renderUserInfo = () => (
     <Box sx={{ p: 3, pb: 2 }}>
@@ -86,7 +104,7 @@ export function NavAccountDesktop({ data, sx }: NavItemsProps) {
       <NavItem
         title={t("logout.title")}
         icon={<Iconify icon="solar:logout-2-outline" />}
-        onClick={() => console.info("Logout")}
+        onClick={handleLogout}
       />
     </Box>
   );
