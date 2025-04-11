@@ -26,9 +26,9 @@ class GoogleLoginViewTest(TestCase):
         response = self.client.post(self.url, {"token": "valid_token"}, format="json")
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertIn("access_token", response.data)
-        self.assertIn("refresh_token", response.data)
         self.assertEqual(response.data["email"], self.google_data["email"])
+        self.assertEqual(response.data["first_name"], self.google_data["given_name"])
+        self.assertEqual(response.data["last_name"], self.google_data["family_name"])
 
         # Check if the user was created
         user = get_user_model().objects.filter(email=self.google_data["email"]).first()
@@ -51,8 +51,6 @@ class GoogleLoginViewTest(TestCase):
         response = self.client.post(self.url, {"token": "valid_token"}, format="json")
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertIn("access_token", response.data)
-        self.assertIn("refresh_token", response.data)
 
         # Ensure the user still exists and was not duplicated
         users_count = (

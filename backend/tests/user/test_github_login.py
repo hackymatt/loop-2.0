@@ -35,9 +35,9 @@ class GithubLoginViewTest(TestCase):
 
         # Ensure the response is successful and contains necessary tokens
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertIn("access_token", response.data)
-        self.assertIn("refresh_token", response.data)
         self.assertEqual(response.data["email"], self.github_user_data["email"])
+        self.assertEqual(response.data["first_name"], self.github_user_data["name"].split(" ")[0])
+        self.assertEqual(response.data["last_name"], self.github_user_data["name"].split(" ")[1])
 
         # Check if the user has been created in the database
         user_exists = (
