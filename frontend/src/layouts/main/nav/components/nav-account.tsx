@@ -36,7 +36,7 @@ const useNavData = () => {
   const { t } = useTranslation("navigation");
   return [
     {
-      title: "Dashboard2",
+      title: t("dashboard"),
       path: paths.account.dashboard,
       icon: <Iconify icon="solar:home-2-outline" />,
     },

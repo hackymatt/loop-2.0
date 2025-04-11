@@ -104,7 +104,7 @@ export const _courses = Array.from({ length: 12 }, (_, index) => ({
   overview: _mock.description(index),
   ratingNumber: _mock.number.rating(index),
   progress: Math.floor(Math.random() * 100) + 1,
-  prerequisites: Array.from({ length: 2 }, (_, i) => ({
+  prerequisites: Array.from({ length: 2 }, (_x, i) => ({
     name: _mock.courseNames(i),
     slug: slugify(_mock.courseNames(i)),
   })),

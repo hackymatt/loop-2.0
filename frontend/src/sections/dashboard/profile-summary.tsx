@@ -12,6 +12,7 @@ import { fNumber } from "src/utils/format-number";
 import { _mock } from "src/_mock";
 
 import { Iconify } from "src/components/iconify";
+import { useUserContext } from "src/components/user";
 
 // --------------------------------------------
 
@@ -58,7 +59,9 @@ export function ProfileSummary() {
   const { t: locale } = useTranslation("locale");
   const { t } = useTranslation("dashboard");
 
-  const userFirstName = "Jayvion";
+  const user = useUserContext();
+  const { firstName, email } = user.state;
+
   const totalPoints = 4250;
   const totalStreak = 12;
 
@@ -81,7 +84,7 @@ export function ProfileSummary() {
 
         <Box display="flex" gap={0.5} alignItems="center">
           <Typography variant="subtitle1" noWrap>
-            {t("profile.greeting")}, {userFirstName}!
+            {t("profile.greeting")}, {firstName || email}!
           </Typography>
 
           <Iconify icon="solar:alt-arrow-right-outline" />

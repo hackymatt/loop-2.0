@@ -2,6 +2,7 @@
 
 import { z as zod } from "zod";
 import { useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import { varAlpha } from "minimal-shared/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -9,32 +10,43 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import LoadingButton from "@mui/lab/LoadingButton";
 
+import { useUserContext } from "src/components/user";
 import { Form, Field } from "src/components/hook-form";
 
 import { UserPhoto } from "src/sections/_account/layout";
 
 // ----------------------------------------------------------------------
 
-export type AccountPersonalSchemaType = zod.infer<typeof AccountPersonalSchema>;
+const useAccountPersonalSchema = () => {
+  const { t } = useTranslation("account");
 
-export const AccountPersonalSchema = zod.object({
-  firstName: zod.string().min(1, { message: "First name is required!" }),
-  lastName: zod.string().min(1, { message: "Last name is required!" }),
-  email: zod
-    .string()
-    .min(1, { message: "Email is required!" })
-    .email({ message: "Email must be a valid email address!" }),
-});
+  return zod.object({
+    email: zod
+      .string()
+      .min(1, { message: t("email.errors.required") })
+      .email({ message: t("email.errors.invalid") }),
+    firstName: zod.string(),
+    lastName: zod.string(),
+  });
+};
+
+type AccountPersonalSchemaType = zod.infer<ReturnType<typeof useAccountPersonalSchema>>;
 
 // ----------------------------------------------------------------------
 
 export function AccountPersonalView() {
+  const { t } = useTranslation("account");
+
+  const user = useUserContext();
+  const { email, firstName, lastName } = user.state;
+
+  const AccountPersonalSchema = useAccountPersonalSchema();
   const personalMethods = useForm<AccountPersonalSchemaType>({
     resolver: zodResolver(AccountPersonalSchema),
     defaultValues: {
-      firstName: "Jayvion",
-      lastName: "Simon",
-      email: "nannie.abernathy70@yahoo.com",
+      firstName,
+      lastName,
+      email,
     },
   });
 
@@ -50,16 +62,16 @@ export function AccountPersonalView() {
 
   const renderPersonalForm = () => (
     <>
-      <Field.Text name="firstName" label="First name" />
-      <Field.Text name="lastName" label="Last name" />
-      <Field.Text name="email" label="Email address" disabled />
+      <Field.Text name="email" label={t("email.label")} disabled />
+      <Field.Text name="firstName" label={t("firstName.label")} />
+      <Field.Text name="lastName" label={t("lastName.label")} />
     </>
   );
 
   return (
     <div>
       <Typography component="h6" variant="h5">
-        Personal
+        {t("personal.title")}
       </Typography>
 
       <UserPhoto
@@ -79,7 +91,7 @@ export function AccountPersonalView() {
             rowGap: 2.5,
             columnGap: 2,
             display: "grid",
-            gridTemplateColumns: { xs: "repeat(1, 1fr)", md: "repeat(2, 1fr)" },
+            gridTemplateColumns: "repeat(1, 1fr)",
           }}
         >
           {renderPersonalForm()}
@@ -92,7 +104,7 @@ export function AccountPersonalView() {
             variant="contained"
             loading={personalMethods.formState.isSubmitting}
           >
-            Save changes
+            {t("personal.button")}
           </LoadingButton>
         </Box>
       </Form>

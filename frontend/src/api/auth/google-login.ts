@@ -14,7 +14,7 @@ type ILogin = {
 };
 
 type ILoginReturn = {
-  data: { email: string; refresh_token: string; access_token: string };
+  data: { email: string; first_name: string; last_name: string };
   status: number;
 };
 
@@ -24,7 +24,6 @@ export const useLoginGoogle = () => {
 
   return useMutation<ILoginReturn, AxiosError, ILogin>(async (variables) => {
     const result = await Api.post(endpoint, variables, {
-      withCredentials: true,
       headers: {
         "Accept-Language": language,
       },

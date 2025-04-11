@@ -5,8 +5,8 @@ import type { ContainerProps } from "@mui/material/Container";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 
-import { navData } from "./nav-config";
 import { NavAccountDesktop } from "./nav";
+import { useNavData } from "./nav-config";
 
 // ----------------------------------------------------------------------
 
@@ -15,6 +15,7 @@ type AccountLayoutProps = ContainerProps & {
 };
 
 export function AccountLayout({ children, sx, ...other }: AccountLayoutProps) {
+  const navData = useNavData();
   return (
     <Container sx={sx} {...other}>
       <Box

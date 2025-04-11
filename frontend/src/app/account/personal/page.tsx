@@ -1,10 +1,12 @@
-import { CONFIG } from "src/global-config";
+import { createMetadata } from "src/utils/create-metadata";
 
 import { AccountPersonalView } from "src/sections/_account/view/account-personal-view";
 
 // ----------------------------------------------------------------------
 
-export const metadata = { title: `Personal | Account - ${CONFIG.appName}` };
+export const metadata = createMetadata({
+  title: "Dane osobowe",
+});
 
 export default function Page() {
   return <AccountPersonalView />;

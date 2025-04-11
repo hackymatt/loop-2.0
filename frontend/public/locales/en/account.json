@@ -3,6 +3,12 @@
     "label": "Email",
     "errors": { "required": "Email is required", "invalid": "Email is invalid" }
   },
+  "firstName": {
+    "label": "First name"
+  },
+  "lastName": {
+    "label": "Last name"
+  },
   "password": {
     "label": "Password",
     "placeholder": "Enter password",
@@ -13,6 +19,44 @@
       "smallLetter": "Password must contain at least one lowercase letter",
       "number": "Password must contain at least one number",
       "specialCharacter": "Password must contain at least one special character"
+    }
+  },
+  "oldPassword": {
+    "label": "Old password",
+    "placeholder": "Enter password",
+    "errors": {
+      "required": "Password is required",
+      "minLength": "Password must be at least 6 characters",
+      "bigLetter": "Password must contain at least one uppercase letter",
+      "smallLetter": "Password must contain at least one lowercase letter",
+      "number": "Password must contain at least one number",
+      "specialCharacter": "Password must contain at least one special character"
+    }
+  },
+  "newPassword": {
+    "label": "New password",
+    "placeholder": "Enter password",
+    "errors": {
+      "required": "Password is required",
+      "minLength": "Password must be at least 6 characters",
+      "bigLetter": "Password must contain at least one uppercase letter",
+      "smallLetter": "Password must contain at least one lowercase letter",
+      "number": "Password must contain at least one number",
+      "specialCharacter": "Password must contain at least one special character",
+      "same": "New password must be different than old password"
+    }
+  },
+  "confirmNewPassword": {
+    "label": "Confirm new password",
+    "placeholder": "Enter password",
+    "errors": {
+      "required": "Password is required",
+      "minLength": "Password must be at least 6 characters",
+      "bigLetter": "Password must contain at least one uppercase letter",
+      "smallLetter": "Password must contain at least one lowercase letter",
+      "number": "Password must contain at least one number",
+      "specialCharacter": "Password must contain at least one special character",
+      "same": "Passwords do not match!"
     }
   },
   "termsAcceptance": {
@@ -27,5 +71,10 @@
   "dataProcessingConsent": {
     "label": "I consent to the processing of my personal data provided in the form for the purpose and to the extent necessary to provide the service, and only for this purpose.",
     "errors": { "required": "This field is required" }
-  }
+  },
+  "personal": { "title": "Personal data", "button": "Save" },
+  "manage": { "title": "Manage account", "button": "Save" },
+  "subscription": { "title": "Subscription" },
+  "logout": { "title": "Logout" },
+  "photo": { "change": "Change photo" }
 }

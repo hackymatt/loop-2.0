@@ -31,7 +31,7 @@ export async function middleware(req: NextRequest) {
   if (accessToken) {
     if (UNAUTHORIZED_PATHS.includes(req.nextUrl.pathname)) {
       console.log(`Redirecting to dashboard from ${req.nextUrl.pathname}`);
-      return NextResponse.redirect(new URL(paths.dashboard, req.url));
+      return NextResponse.redirect(new URL(paths.account.dashboard, req.url));
     }
   }
 

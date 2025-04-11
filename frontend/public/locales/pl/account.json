@@ -3,6 +3,12 @@
     "label": "Email",
     "errors": { "required": "Email jest wymagany", "invalid": "Email jest nieprawidłowy" }
   },
+  "firstName": {
+    "label": "Imię"
+  },
+  "lastName": {
+    "label": "Nazwisko"
+  },
   "password": {
     "label": "Hasło",
     "placeholder": "Wpisz hasło",
@@ -13,6 +19,44 @@
       "smallLetter": "Hasło musi zawierać co najmniej jedną małą literę",
       "number": "Hasło musi zawierać co najmniej jedną cyfrę",
       "specialCharacter": "Hasło musi zawierać co najmniej jeden znak specjalny"
+    }
+  },
+  "oldPassword": {
+    "label": "Obecne hasło",
+    "placeholder": "Wpisz hasło",
+    "errors": {
+      "required": "Hasło jest wymagane",
+      "minLength": "Hasło musi mieć co najmniej 8 znaków",
+      "bigLetter": "Hasło musi zawierać co najmniej jedną wielką literę",
+      "smallLetter": "Hasło musi zawierać co najmniej jedną małą literę",
+      "number": "Hasło musi zawierać co najmniej jedną cyfrę",
+      "specialCharacter": "Hasło musi zawierać co najmniej jeden znak specjalny"
+    }
+  },
+  "newPassword": {
+    "label": "Nowe hasło",
+    "placeholder": "Wpisz hasło",
+    "errors": {
+      "required": "Hasło jest wymagane",
+      "minLength": "Hasło musi mieć co najmniej 8 znaków",
+      "bigLetter": "Hasło musi zawierać co najmniej jedną wielką literę",
+      "smallLetter": "Hasło musi zawierać co najmniej jedną małą literę",
+      "number": "Hasło musi zawierać co najmniej jedną cyfrę",
+      "specialCharacter": "Hasło musi zawierać co najmniej jeden znak specjalny",
+      "same": "Nowe hasło musi się różnić od starego hasła"
+    }
+  },
+  "confirmNewPassword": {
+    "label": "Potwierdź nowe hasło",
+    "placeholder": "Wpisz hasło",
+    "errors": {
+      "required": "Hasło jest wymagane",
+      "minLength": "Hasło musi mieć co najmniej 8 znaków",
+      "bigLetter": "Hasło musi zawierać co najmniej jedną wielką literę",
+      "smallLetter": "Hasło musi zawierać co najmniej jedną małą literę",
+      "number": "Hasło musi zawierać co najmniej jedną cyfrę",
+      "specialCharacter": "Hasło musi zawierać co najmniej jeden znak specjalny",
+      "same": "Hasła nie są takie same!"
     }
   },
   "termsAcceptance": {
@@ -27,5 +71,10 @@
   "dataProcessingConsent": {
     "label": "Wyrażam zgodę na przetwarzanie moich danych osobowych zawartych w formularzu w celu i zakresie niezbędnym do realizacji usługi i tylko w takim celu.",
     "errors": { "required": "To pole jest wymagane" }
-  }
+  },
+  "personal": { "title": "Dane osobowe", "button": "Zapisz" },
+  "manage": { "title": "Zarządzaj kontem", "button": "Zapisz" },
+  "subscription": { "title": "Subskrypcja" },
+  "logout": { "title": "Wyloguj się" },
+  "photo": { "change": "Zmień zdjęcie" }
 }

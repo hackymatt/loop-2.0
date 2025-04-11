@@ -2,6 +2,7 @@
 
 import { z as zod } from "zod";
 import { useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import { useBoolean } from "minimal-shared/hooks";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -16,30 +17,62 @@ import { Form, Field } from "src/components/hook-form";
 
 // ----------------------------------------------------------------------
 
-export type AccountPasswordSchemaType = zod.infer<typeof AccountPasswordSchema>;
+const useAccountPasswordSchema = () => {
+  const { t } = useTranslation("account");
 
-export const AccountPasswordSchema = zod
-  .object({
-    oldPassword: zod
-      .string()
-      .min(1, { message: "Password is required!" })
-      .min(6, { message: "Password must be at least 6 characters!" }),
-    newPassword: zod.string().min(1, { message: "New password is required!" }),
-    confirmNewPassword: zod.string().min(1, { message: "Confirm password is required!" }),
-  })
-  .refine((data) => data.oldPassword !== data.newPassword, {
-    message: "New password must be different than old password",
-    path: ["newPassword"],
-  })
-  .refine((data) => data.newPassword === data.confirmNewPassword, {
-    message: "Passwords do not match!",
-    path: ["confirmNewPassword"],
-  });
+  return zod
+    .object({
+      oldPassword: zod
+        .string()
+        .min(1, { message: t("oldPassword.errors.required") })
+        .min(6, { message: t("oldPassword.errors.minLength") })
+        .regex(/[A-Z]/, { message: t("oldPassword.errors.bigLetter") })
+        .regex(/[a-z]/, { message: t("oldPassword.errors.smallLetter") })
+        .regex(/[0-9]/, { message: t("oldPassword.errors.number") })
+        .regex(/[!@#$%^&]/, {
+          message: t("oldPassword.errors.specialCharacter"),
+        }),
+      newPassword: zod
+        .string()
+        .min(1, { message: t("newPassword.errors.required") })
+        .min(6, { message: t("newPassword.errors.minLength") })
+        .regex(/[A-Z]/, { message: t("newPassword.errors.bigLetter") })
+        .regex(/[a-z]/, { message: t("newPassword.errors.smallLetter") })
+        .regex(/[0-9]/, { message: t("newPassword.errors.number") })
+        .regex(/[!@#$%^&]/, {
+          message: t("newPassword.errors.specialCharacter"),
+        }),
+      confirmNewPassword: zod
+        .string()
+        .min(1, { message: t("confirmNewPassword.errors.required") })
+        .min(6, { message: t("confirmNewPassword.errors.minLength") })
+        .regex(/[A-Z]/, { message: t("confirmNewPassword.errors.bigLetter") })
+        .regex(/[a-z]/, { message: t("confirmNewPassword.errors.smallLetter") })
+        .regex(/[0-9]/, { message: t("confirmNewPassword.errors.number") })
+        .regex(/[!@#$%^&]/, {
+          message: t("confirmNewPassword.errors.specialCharacter"),
+        }),
+    })
+    .refine((data) => data.oldPassword !== data.newPassword, {
+      message: t("newPassword.errors.same"),
+      path: ["newPassword"],
+    })
+    .refine((data) => data.newPassword === data.confirmNewPassword, {
+      message: t("confirmNewPassword.errors.same"),
+      path: ["confirmNewPassword"],
+    });
+};
+
+type AccountPasswordSchemaType = zod.infer<ReturnType<typeof useAccountPasswordSchema>>;
 
 // ----------------------------------------------------------------------
 
 export function AccountManageView() {
+  const { t } = useTranslation("account");
+
   const passwordShow = useBoolean();
+
+  const AccountPasswordSchema = useAccountPasswordSchema();
 
   const passwordMethods = useForm<AccountPasswordSchemaType>({
     resolver: zodResolver(AccountPasswordSchema),
@@ -60,9 +93,11 @@ export function AccountManageView() {
     <>
       <Field.Text
         name="oldPassword"
-        label="Old password"
+        label={t("oldPassword.label")}
+        placeholder={t("oldPassword.placeholder")}
         type={passwordShow.value ? "text" : "password"}
         slotProps={{
+          inputLabel: { shrink: true },
           input: {
             endAdornment: (
               <InputAdornment position="end">
@@ -78,9 +113,11 @@ export function AccountManageView() {
       />
       <Field.Text
         name="newPassword"
-        label="New password"
+        label={t("newPassword.label")}
+        placeholder={t("newPassword.placeholder")}
         type={passwordShow.value ? "text" : "password"}
         slotProps={{
+          inputLabel: { shrink: true },
           input: {
             endAdornment: (
               <InputAdornment position="end">
@@ -96,9 +133,11 @@ export function AccountManageView() {
       />
       <Field.Text
         name="confirmNewPassword"
-        label="Confirm password"
+        label={t("confirmNewPassword.label")}
+        placeholder={t("confirmNewPassword.placeholder")}
         type={passwordShow.value ? "text" : "password"}
         slotProps={{
+          inputLabel: { shrink: true },
           input: {
             endAdornment: (
               <InputAdornment position="end">
@@ -118,7 +157,7 @@ export function AccountManageView() {
   return (
     <div>
       <Typography component="h6" variant="h5">
-        Change password
+        {t("manage.title")}
       </Typography>
 
       <Form methods={passwordMethods} onSubmit={onSubmitPassword}>
@@ -133,7 +172,7 @@ export function AccountManageView() {
             variant="contained"
             loading={passwordMethods.formState.isSubmitting}
           >
-            Save changes
+            {t("manage.button")}
           </LoadingButton>
         </Box>
       </Form>
