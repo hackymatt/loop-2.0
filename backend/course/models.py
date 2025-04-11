@@ -18,10 +18,7 @@ class Course(BaseModel):
     duration = models.PositiveIntegerField()
     chat_url = models.URLField()
     prerequisites = models.ManyToManyField(
-        "self", 
-        related_name="dependent_courses", 
-        blank=True, 
-        symmetrical=False
+        "self", related_name="dependent_courses", blank=True, symmetrical=False
     )
     active = models.BooleanField(default=False)
 

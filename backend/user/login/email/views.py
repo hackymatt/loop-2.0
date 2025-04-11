@@ -5,6 +5,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from .serializers import LoginSerializer
 from ...utils import set_cookies
 
+
 class LoginView(APIView):
     def post(self, request, *args, **kwargs):
         serializer = LoginSerializer(data=request.data)
@@ -26,6 +27,5 @@ class LoginView(APIView):
             )
 
             return set_cookies(response, access_token, refresh_token)
-
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

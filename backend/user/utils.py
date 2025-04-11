@@ -158,22 +158,22 @@ def get_unique_username(base_username):
 def set_cookies(response, access_token, refresh_token):
     # Set the access token cookie (HTTP-only)
     response.set_cookie(
-        'access_token', 
-        str(access_token), 
-        httponly=True, 
+        "access_token",
+        str(access_token),
+        httponly=True,
         secure=True,
-        max_age=60*60,  # 1 hour expiration for access token
-        samesite='Strict'
+        max_age=60 * 60,  # 1 hour expiration for access token
+        samesite="Strict",
     )
 
     # Set the refresh token cookie (HTTP-only)
     response.set_cookie(
-        'refresh_token', 
-        str(refresh_token), 
-        httponly=True, 
+        "refresh_token",
+        str(refresh_token),
+        httponly=True,
         secure=True,  # Use `secure=True` in production (ensure HTTPS)
-        max_age=24*60*60,  # 1 day expiration for refresh token
-        samesite='Strict'
+        max_age=24 * 60 * 60,  # 1 day expiration for refresh token
+        samesite="Strict",
     )
 
     # Return the response with no tokens in the body
