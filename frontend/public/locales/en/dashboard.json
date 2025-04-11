@@ -1,0 +1,16 @@
+{
+  "courses": {
+    "title": "Courses",
+    "button": "See all courses",
+    "lack": "You have not started any course yet. Start today and take the first step on your programming journey!",
+    "start": "Start new course"
+  },
+  "certificates": {
+    "title": "Certificates",
+    "button": "See all certificates",
+    "lack": "You do not have any certificates yet. Complete the course to earn your first one!",
+    "start": "See all courses",
+    "blocked": "Improve your chances of getting hired with industry-recognized certifications. Unlock your learning history and certificates now."
+  },
+  "profile": { "greeting": "Hey", "points": "Total XP", "streak": "Daily Streak", "days": "days" }
+}

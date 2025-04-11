@@ -18,5 +18,10 @@
   "apps": "Download app",
   "allRightsReserved": "All rights reserved.",
   "privacyPolicy": "Privacy policy",
-  "termsAndConditions": "Terms and Conditions"
+  "termsAndConditions": "Terms and Conditions",
+  "dashboard": "Dashboard",
+  "accountSettings": "Account settings",
+  "logout": "Logout",
+  "upgrade": "Upgrade plan",
+  "certificates": "Certificates"
 }

@@ -29,9 +29,13 @@ class FacebookLoginViewTest(TestCase):
         )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertIn("access_token", response.data)
-        self.assertIn("refresh_token", response.data)
         self.assertEqual(response.data["email"], self.facebook_user_data["email"])
+        self.assertEqual(
+            response.data["first_name"], self.facebook_user_data["first_name"]
+        )
+        self.assertEqual(
+            response.data["last_name"], self.facebook_user_data["last_name"]
+        )
 
         # Check if the user was created or fetched
         user_exists = (

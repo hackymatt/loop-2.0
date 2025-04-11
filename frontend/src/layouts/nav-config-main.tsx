@@ -9,6 +9,8 @@ import { useCourseLevels } from "src/api/course/level/levels";
 import { useCourseCategories } from "src/api/course/category/categories";
 import { useCourseTechnologies } from "src/api/course/technology/technologies";
 
+import { useUserContext } from "src/components/user";
+
 // ----------------------------------------------------------------------
 
 export const usePageLinks = () => {
@@ -22,7 +24,7 @@ export const usePageLinks = () => {
         subheader: t("levels"),
         items: courseLevels.map(({ slug, name }: ICourseLevelProp) => ({
           title: name,
-          path: `${paths.courses}/?levels=${slug}`,
+          path: `${paths.courses}?levels=${slug}`,
         })),
       }
     : null;
@@ -32,7 +34,7 @@ export const usePageLinks = () => {
         subheader: t("technologies"),
         items: courseTechnologies.map(({ slug, name }: ICourseTechnologyProp) => ({
           title: name,
-          path: `${paths.courses}/?technologies=${slug}`,
+          path: `${paths.courses}?technologies=${slug}`,
         })),
       }
     : null;
@@ -42,7 +44,7 @@ export const usePageLinks = () => {
         subheader: t("categories"),
         items: courseCategories.map(({ slug, name }: ICourseTechnologyProp) => ({
           title: name,
-          path: `${paths.courses}/?categories=${slug}`,
+          path: `${paths.courses}?categories=${slug}`,
         })),
       }
     : null;
@@ -76,19 +78,30 @@ const useCourseNav = () => {
     },
     tags: (featuredCourses || []).map((course) => ({
       title: course.name,
-      path: `${paths.course}/${course.slug}/`,
+      path: `${paths.course}/${course.slug}`,
     })),
     children,
   };
 };
 export const useNavData = () => {
   const { t } = useTranslation("navigation");
+  const user = useUserContext();
+  const { isLoggedIn } = user.state;
+
   const coursesNav = useCourseNav();
-  return [
-    { title: t("courses"), path: paths.pages, ...coursesNav },
-    { title: t("pricing"), path: paths.pricing },
-    { title: t("blog"), path: paths.posts },
-    { title: t("about"), path: paths.about },
-    { title: t("contact"), path: paths.contact },
-  ];
+
+  return isLoggedIn
+    ? [
+        { title: t("courses"), path: paths.courses, ...coursesNav },
+        { title: t("certificates"), path: paths.certificates, disabled: true },
+        { title: t("blog"), path: paths.posts },
+        { title: t("contact"), path: paths.contact },
+      ]
+    : [
+        { title: t("courses"), path: paths.courses, ...coursesNav },
+        { title: t("pricing"), path: paths.pricing },
+        { title: t("blog"), path: paths.posts },
+        { title: t("about"), path: paths.about },
+        { title: t("contact"), path: paths.contact },
+      ];
 };

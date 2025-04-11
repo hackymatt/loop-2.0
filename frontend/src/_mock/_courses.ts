@@ -38,17 +38,18 @@ const LESSONS = Array.from({ length: 9 }, (_, index) => ({
   id: _mock.id(index),
   totalPoints: 60 - index,
   slug: slugify(`Lesson ${index + 1}`),
-  title: `Lesson ${index + 1}`,
+  name: `Lesson ${index + 1}`,
   description: _mock.sentence(index),
   type: getType(index),
 }));
 
 const CHAPTERS = Array.from({ length: 9 }, (_, index) => ({
   id: _mock.id(index),
-  title: `Chapter ${index + 1}`,
+  name: `Chapter ${index + 1}`,
   slug: slugify(`Chapter ${index + 1}`),
   description: _mock.sentence(index),
   lessons: LESSONS,
+  progress: Math.floor(Math.random() * 100) + 1,
 }));
 
 const getTeachers = (index: number) => {
@@ -84,6 +85,8 @@ export const _courses = Array.from({ length: 12 }, (_, index) => ({
   totalHours: 100,
   totalPoints: 3459,
   chapters: CHAPTERS,
+  totalLessons: LESSONS.length,
+  totalReading: 1,
   totalQuizzes: 4,
   totalExercises: 10,
   totalVideos: 6,
@@ -100,6 +103,11 @@ export const _courses = Array.from({ length: 12 }, (_, index) => ({
   description: _mock.description(index),
   overview: _mock.description(index),
   ratingNumber: _mock.number.rating(index),
+  progress: Math.floor(Math.random() * 100) + 1,
+  prerequisites: Array.from({ length: 2 }, (_x, i) => ({
+    name: _mock.courseNames(i),
+    slug: slugify(_mock.courseNames(i)),
+  })),
 }));
 
 export const _coursesByCategories = Array.from({ length: 9 }, (_, index) => ({

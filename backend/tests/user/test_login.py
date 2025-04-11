@@ -24,8 +24,9 @@ class LoginViewTest(TestCase):
             {"email": self.user.email, "password": self.user_password},
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertIn("access_token", response.data)
-        self.assertIn("refresh_token", response.data)
+        self.assertEqual(response.data["email"], self.user.email)
+        self.assertEqual(response.data["first_name"], self.user.first_name)
+        self.assertEqual(response.data["last_name"], self.user.last_name)
 
     def test_invalid_credentials(self):
         """Test login with incorrect credentials returns 400."""

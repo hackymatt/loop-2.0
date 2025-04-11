@@ -45,7 +45,7 @@ const CARD_OPTIONS = [
 
 // ----------------------------------------------------------------------
 
-export function AccountPaymentView() {
+export function AccountSubscriptionView() {
   return (
     <>
       <Typography variant="h5">Payment method</Typography>

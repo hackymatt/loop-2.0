@@ -57,16 +57,16 @@ export function SignInView() {
         });
         router.push(paths.activate);
       } else {
-        const { email, access_token: accessToken, refresh_token: refreshToken } = responseData;
+        const { email, first_name, last_name } = responseData;
         user.setState({
-          accessToken,
-          refreshToken,
           isRegistered: true,
           isActive: true,
           isLoggedIn: true,
           email,
+          firstName: first_name,
+          lastName: last_name,
         });
-        router.push(paths.dashboard);
+        router.push(paths.account.dashboard);
       }
       reset();
     } catch (error) {

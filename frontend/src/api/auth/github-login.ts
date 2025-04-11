@@ -14,7 +14,7 @@ type ILogin = {
 };
 
 type ILoginReturn = {
-  data: { email: string; refresh_token: string; access_token: string };
+  data: { email: string; first_name: string; last_name: string };
   status: number;
 };
 

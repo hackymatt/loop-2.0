@@ -8,9 +8,9 @@ export const USER_STORAGE_KEY: string = "user";
 
 export const defaultUser: UserState = {
   email: "",
+  firstName: "",
+  lastName: "",
   userType: USER_TYPE.STUDENT,
-  accessToken: "",
-  refreshToken: "",
   isRegistered: false,
   isActive: false,
   isLoggedIn: false,

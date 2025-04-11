@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.conf import settings
-from ...utils import get_unique_username
+from ...utils import get_unique_username, set_cookies
 from const import JoinType
 
 github_provider = settings.SOCIALACCOUNT_PROVIDERS.get("github", {})
@@ -102,11 +102,13 @@ class GithubLoginView(APIView):
         refresh_token = RefreshToken.for_user(user)
         access_token = refresh_token.access_token
 
-        return Response(
+        response = Response(
             {
                 "email": user.email,
-                "access_token": str(access_token),
-                "refresh_token": str(refresh_token),
+                "first_name": user.first_name,
+                "last_name": user.last_name,
             },
             status=status.HTTP_200_OK,
         )
+
+        return set_cookies(response, access_token, refresh_token)

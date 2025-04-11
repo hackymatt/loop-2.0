@@ -1,33 +1,31 @@
+"use client";
+
+import { useTranslation } from "react-i18next";
+
 import { paths } from "src/routes/paths";
 
 import { Iconify } from "src/components/iconify";
 
 // ----------------------------------------------------------------------
 
-export const navData = [
-  {
-    title: "Personal",
-    path: paths.account.personal,
-    icon: <Iconify icon="solar:user-rounded-outline" />,
-  },
-  {
-    title: "Wishlist",
-    path: paths.account.wishlist,
-    icon: <Iconify icon="solar:heart-outline" />,
-  },
-  {
-    title: "Vouchers",
-    path: paths.account.vouchers,
-    icon: <Iconify icon="carbon:cut-out" />,
-  },
-  {
-    title: "Orders",
-    path: paths.account.orders,
-    icon: <Iconify icon="solar:cart-3-outline" />,
-  },
-  {
-    title: "Payment",
-    path: paths.account.payment,
-    icon: <Iconify icon="solar:card-outline" />,
-  },
-];
+export const useNavData = () => {
+  const { t } = useTranslation("account");
+
+  return [
+    {
+      title: t("personal.title"),
+      path: paths.account.personal,
+      icon: <Iconify icon="solar:user-rounded-outline" />,
+    },
+    {
+      title: t("manage.title"),
+      path: paths.account.manage,
+      icon: <Iconify icon="solar:settings-outline" />,
+    },
+    {
+      title: t("subscription.title"),
+      path: paths.account.subscription,
+      icon: <Iconify icon="solar:card-outline" />,
+    },
+  ];
+};

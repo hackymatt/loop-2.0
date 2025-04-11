@@ -1,6 +1,7 @@
 from django.db import models
 from core.base_model import BaseModel
 from django.core.exceptions import ValidationError
+from ..technology.models import Technology
 from const import LessonType, QuizType, Language
 
 
@@ -156,6 +157,7 @@ class CodingLesson(BaseModel):
     lesson = models.OneToOneField(
         Lesson, on_delete=models.CASCADE, related_name="coding"
     )
+    technology = models.ForeignKey(Technology, on_delete=models.PROTECT)
     starter_code = models.TextField()
     solution_code = models.TextField()
     penalty_points = models.PositiveIntegerField(default=0)

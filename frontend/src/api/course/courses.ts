@@ -47,6 +47,7 @@ type ICourse = {
   average_rating: number | null;
   ratings_count: number;
   students_count: number;
+  progress?: number;
 };
 
 export const coursesQuery = (query?: QueryType, language?: Language) => {
@@ -73,6 +74,7 @@ export const coursesQuery = (query?: QueryType, language?: Language) => {
         average_rating,
         ratings_count,
         students_count,
+        progress,
         ...rest
       }: ICourse) => ({
         ...rest,
@@ -100,6 +102,7 @@ export const coursesQuery = (query?: QueryType, language?: Language) => {
         ratingNumber: average_rating,
         totalReviews: ratings_count,
         totalStudents: students_count,
+        progress: progress ?? null,
       })
     );
     return { results: modifiedResults, count: records_count, pagesCount: pages_count };

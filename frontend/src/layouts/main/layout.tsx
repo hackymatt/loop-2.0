@@ -3,11 +3,12 @@
 import type { Breakpoint } from "@mui/material/styles";
 
 import Box from "@mui/material/Box";
-import { Container } from "@mui/material";
+import { Toolbar, Container } from "@mui/material";
 
 import { CONFIG } from "src/global-config";
 
 import { Logo } from "src/components/logo";
+import { useUserContext } from "src/components/user";
 import { MegaMenuMobile, MegaMenuHorizontal } from "src/components/mega-menu";
 
 import { Footer } from "./footer";
@@ -19,9 +20,11 @@ import { MenuButton } from "../components/menu-button";
 import { LayoutSection } from "../core/layout-section";
 import { HeaderSection } from "../core/header-section";
 import { LoginButton } from "../components/login-button";
+import { UpgradeButton } from "../components/upgrade-button";
 import { RegisterButton } from "../components/register-button";
 import { SettingsButton } from "../components/settings-button";
 import { LanguagePopover } from "../components/language-popover";
+import { NavAccountPopover } from "./nav/components/nav-account";
 
 import type { FooterProps } from "./footer";
 import type { NavMainProps } from "./nav/types";
@@ -52,6 +55,9 @@ export function MainLayout({
   slotProps,
   layoutQuery = "md",
 }: MainLayoutProps) {
+  const user = useUserContext();
+  const { isLoggedIn } = user.state;
+
   const navData = useNavData();
 
   const renderHeader = () => {
@@ -85,24 +91,43 @@ export function MainLayout({
               ),
               bottomArea: (
                 <Box sx={{ py: 3, px: 2.5, display: "flex", flexDirection: "column", gap: 2 }}>
-                  <LoginButton
-                    sx={{ width: 1 }}
-                    slotProps={{
-                      button: {
-                        fullWidth: true,
-                        size: "medium",
-                      },
-                    }}
-                  />
-                  <RegisterButton
-                    sx={{ width: 1 }}
-                    slotProps={{
-                      button: {
-                        fullWidth: true,
-                        size: "large",
-                      },
-                    }}
-                  />
+                  {isLoggedIn ? (
+                    <>
+                      {/* @slot Upgrade button */}
+                      <UpgradeButton
+                        sx={{ width: 1 }}
+                        slotProps={{
+                          button: {
+                            fullWidth: true,
+                            size: "large",
+                          },
+                        }}
+                      />
+                    </>
+                  ) : (
+                    <>
+                      {/* @slot Login button */}
+                      <LoginButton
+                        sx={{ width: 1 }}
+                        slotProps={{
+                          button: {
+                            fullWidth: true,
+                            size: "medium",
+                          },
+                        }}
+                      />
+                      {/* @slot Register button */}
+                      <RegisterButton
+                        sx={{ width: 1 }}
+                        slotProps={{
+                          button: {
+                            fullWidth: true,
+                            size: "large",
+                          },
+                        }}
+                      />
+                    </>
+                  )}
                 </Box>
               ),
             }}
@@ -113,23 +138,34 @@ export function MainLayout({
         </>
       ),
       centerArea: (
-        <Box component="section">
-          <Container
-            sx={{ height: 64, display: "flex", alignItems: "center", position: "relative" }}
-          >
-            <MegaMenuHorizontal
-              data={navData}
-              slotProps={{
-                dropdown: { display: "flex", justifyContent: "center" },
-                masonry: { columns: 3, defaultColumns: 3 },
-              }}
-              sx={(theme) => ({
-                display: "none",
-                [theme.breakpoints.up(layoutQuery)]: { display: "flex" },
-              })}
-            />
-          </Container>
-        </Box>
+        <Toolbar
+          component={Container}
+          sx={{ display: "flex", justifyContent: "center", width: "100%" }}
+        >
+          <MegaMenuHorizontal
+            data={navData}
+            slotProps={{
+              rootItem: {
+                sx: {},
+                icon: {},
+                title: {},
+                info: {},
+                arrow: {},
+              },
+              subItem: {},
+              dropdown: {},
+              subheader: {},
+              tags: {},
+              moreLink: {},
+              carousel: { sx: {}, options: {} },
+              masonry: { sx: {}, columns: 3, defaultColumns: 3 },
+            }}
+            sx={(theme) => ({
+              display: "none",
+              [theme.breakpoints.up(layoutQuery)]: { display: "flex" },
+            })}
+          />
+        </Toolbar>
       ),
       rightArea: (
         <Box sx={{ gap: 1, display: "flex", alignItems: "center" }}>
@@ -142,11 +178,22 @@ export function MainLayout({
           {/** @slot Settings button */}
           {CONFIG.isLocal && <SettingsButton />}
 
-          {/** @slot Login button */}
-          <LoginButton sx={{ display: { xs: "none", [layoutQuery]: "inline-flex" } }} />
+          {isLoggedIn ? (
+            <>
+              {/* @slot Upgrade button */}
+              <UpgradeButton sx={{ display: { xs: "none", [layoutQuery]: "inline-flex" } }} />
+              {/* @slot Account button */}
+              <NavAccountPopover />
+            </>
+          ) : (
+            <>
+              {/* @slot Login button */}
+              <LoginButton sx={{ display: { xs: "none", [layoutQuery]: "inline-flex" } }} />
 
-          {/** @slot Purchase button */}
-          <RegisterButton sx={{ display: { xs: "none", [layoutQuery]: "inline-flex" } }} />
+              {/* @slot Register button */}
+              <RegisterButton sx={{ display: { xs: "none", [layoutQuery]: "inline-flex" } }} />
+            </>
+          )}
         </Box>
       ),
     };

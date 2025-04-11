@@ -137,7 +137,7 @@ export function PostItem({ sx, post, order, largePost, ...other }: PostItemProps
   return (
     <Link
       component={RouterLink}
-      href={`${paths.post}/${post.slug}/`}
+      href={`${paths.post}/${post.slug}`}
       color="inherit"
       underline="none"
     >

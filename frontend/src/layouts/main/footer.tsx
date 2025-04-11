@@ -20,6 +20,7 @@ import { socials } from "src/consts/socials";
 import { FacebookIcon, LinkedinIcon, InstagramIcon } from "src/assets/icons";
 
 import { Logo } from "src/components/logo";
+import { useUserContext } from "src/components/user";
 import { AppStoreButton } from "src/components/app-store";
 
 import { usePageLinks } from "../nav-config-main";
@@ -33,6 +34,9 @@ export type FooterProps = BoxProps & {
 export function Footer({ layoutQuery = "md", sx, ...other }: FooterProps) {
   const { t } = useTranslation("navigation");
 
+  const user = useUserContext();
+  const { isLoggedIn } = user.state;
+
   const currentYear = new Date().getFullYear();
 
   const listItems = usePageLinks();
@@ -41,7 +45,7 @@ export function Footer({ layoutQuery = "md", sx, ...other }: FooterProps) {
 
   const renderInfo = () => <Logo />;
 
-  const renderCommunity = () => (
+  const renderRoutes = () => (
     <>
       <Link
         component={RouterLink}
@@ -52,14 +56,16 @@ export function Footer({ layoutQuery = "md", sx, ...other }: FooterProps) {
         {t("courses")}
       </Link>
 
-      <Link
-        component={RouterLink}
-        href={paths.pricing}
-        variant="body2"
-        sx={{ color: "text.primary" }}
-      >
-        {t("pricing")}
-      </Link>
+      {!isLoggedIn && (
+        <Link
+          component={RouterLink}
+          href={paths.pricing}
+          variant="body2"
+          sx={{ color: "text.primary" }}
+        >
+          {t("pricing")}
+        </Link>
+      )}
 
       <Link
         component={RouterLink}
@@ -70,14 +76,16 @@ export function Footer({ layoutQuery = "md", sx, ...other }: FooterProps) {
         {t("blog")}
       </Link>
 
-      <Link
-        component={RouterLink}
-        href={paths.about}
-        variant="body2"
-        sx={{ color: "text.primary" }}
-      >
-        {t("about")}
-      </Link>
+      {!isLoggedIn && (
+        <Link
+          component={RouterLink}
+          href={paths.about}
+          variant="body2"
+          sx={{ color: "text.primary" }}
+        >
+          {t("about")}
+        </Link>
+      )}
 
       <Link
         component={RouterLink}
@@ -207,7 +215,7 @@ export function Footer({ layoutQuery = "md", sx, ...other }: FooterProps) {
           </Box>
 
           <Box sx={[(theme) => ({ ...blockStyles(theme, layoutQuery) }), { gap: 1 }]}>
-            {renderCommunity()}
+            {renderRoutes()}
           </Box>
 
           <Box sx={[(theme) => ({ ...blockStyles(theme, layoutQuery) })]}>{renderSocials()}</Box>

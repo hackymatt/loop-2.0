@@ -6,7 +6,7 @@ import Grid from "@mui/material/Grid2";
 import Divider from "@mui/material/Divider";
 import Container from "@mui/material/Container";
 
-import { useCourse } from "src/api/course/course";
+import { _courses } from "src/_mock";
 import { useReviews } from "src/api/review/reviews";
 import { useSimilarCourses } from "src/api/course/similar";
 
@@ -18,6 +18,7 @@ import { CourseListSimilar } from "../courses/course-list-similar";
 import { CourseDetailsSummary } from "../courses/course-details-summary";
 import { CourseChatDetailsInfo } from "../courses/course-chat-details-info";
 import { CourseDetailsTeachers } from "../courses/course-details-teachers-info";
+import { CourseDetailsPrerequisites } from "../courses/course-prerequisites-info";
 import { CourseCertificateDetailsInfo } from "../courses/course-certificate-details-info";
 
 // ----------------------------------------------------------------------
@@ -27,7 +28,9 @@ export function CourseView({ slug }: { slug: string }) {
     page: "1",
   });
 
-  const { data: course, isError } = useCourse(slug);
+  // const { data: course, isError } = useCourse(slug);
+  const course = _courses[0];
+  const isError = false;
   const { data: reviews, count } = useReviews(slug);
   const { data: similarCourses } = useSimilarCourses(slug);
 
@@ -73,6 +76,7 @@ export function CourseView({ slug }: { slug: string }) {
         totalQuizzes={course?.totalQuizzes || 0}
         totalLessons={course?.totalLessons || 0}
         totalStudents={course?.totalStudents || 0}
+        progress={course?.progress || 0}
       />
 
       <Container sx={{ py: { xs: 5, md: 10 } }}>
@@ -82,6 +86,8 @@ export function CourseView({ slug }: { slug: string }) {
           </Grid>
 
           <Grid size={{ xs: 12, md: 5, lg: 4 }}>
+            <CourseDetailsPrerequisites courses={course?.prerequisites || []} sx={{ mb: 3 }} />
+
             <CourseDetailsTeachers teachers={course?.teachers || []} sx={{ mb: 3 }} />
 
             <CourseCertificateDetailsInfo
@@ -95,6 +101,7 @@ export function CourseView({ slug }: { slug: string }) {
           </Grid>
         </Grid>
       </Container>
+
       <Divider />
 
       {renderReview()}

@@ -34,12 +34,13 @@ export function Certificate({ course, student, sx, ...other }: Props) {
           alignItems: "center",
           overflow: "hidden",
           gap: 1,
+          textAlign: "center",
         }),
         ...(Array.isArray(sx) ? sx : [sx]),
       ]}
       {...other}
     >
-      <Logo isSingle sx={{ width: "7%", height: "auto", mb: 2 }} />
+      <Logo isSingle isLink={false} sx={{ width: 24, height: "auto", mb: 2 }} />
 
       <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
         <Typography sx={{ fontSize: "0.7em", fontWeight: "bold", wordBreak: "break-word" }}>
@@ -58,11 +59,23 @@ export function Certificate({ course, student, sx, ...other }: Props) {
       </Box>
 
       {/* Course name */}
-      <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
+      >
         <Typography color="primary" sx={{ fontSize: "0.7em", wordBreak: "break-word" }}>
           {t("completion")}
         </Typography>
-        <Typography sx={{ fontSize: "0.8em", fontWeight: "bold", wordBreak: "break-word" }}>
+        <Typography
+          sx={{
+            fontSize: "0.8em",
+            fontWeight: "bold",
+            wordBreak: "break-word",
+          }}
+        >
           {course}
         </Typography>
       </Box>

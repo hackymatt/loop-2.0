@@ -36,7 +36,7 @@ export function PostTags({ tags, sx, ...other }: PostTagsProps) {
             variant="outlined"
             size="small"
             component="a"
-            href={`${paths.posts}/?tags=${tag.slug}`}
+            href={`${paths.posts}?tags=${tag.slug}`}
             clickable
           />
         ))}

@@ -7,6 +7,7 @@ import Card from "@mui/material/Card";
 import Link from "@mui/material/Link";
 import Avatar from "@mui/material/Avatar";
 import Divider from "@mui/material/Divider";
+import { LinearProgress } from "@mui/material";
 import Typography from "@mui/material/Typography";
 
 import { paths } from "src/routes/paths";
@@ -46,6 +47,20 @@ export function CourseItem({ course, isVertical }: Props) {
       <Typography variant="overline" sx={{ color: "primary.main", flexGrow: 1 }}>
         {course.category.name}
       </Typography>
+
+      {course.progress ? (
+        <>
+          <LinearProgress
+            color="primary"
+            variant="determinate"
+            value={course.progress}
+            sx={{ flex: "1 1 auto" }}
+          />
+          <Typography variant="body2" sx={{ color: "text.secondary" }}>
+            {Math.round(course.progress)}%
+          </Typography>
+        </>
+      ) : null}
     </Box>
   );
 
@@ -74,7 +89,13 @@ export function CourseItem({ course, isVertical }: Props) {
 
   const renderTexts = () => (
     <Box sx={{ minWidth: 0 }}>
-      <Typography color="inherit" variant="h6" noWrap>
+      <Typography
+        color="inherit"
+        variant="h6"
+        sx={(theme) => ({
+          ...theme.mixins.maxLine({ line: 1 }),
+        })}
+      >
         {course.name}
       </Typography>
 
@@ -175,6 +196,7 @@ export function CourseItem({ course, isVertical }: Props) {
         minWidth: 0,
         display: "flex",
         flexDirection: "column",
+        flexGrow: 1,
       }}
     >
       <Box
@@ -205,7 +227,7 @@ export function CourseItem({ course, isVertical }: Props) {
   return (
     <Link
       component={RouterLink}
-      href={`${paths.course}/${course.slug}/`}
+      href={`${paths.course}/${course.slug}`}
       color="inherit"
       underline="none"
     >

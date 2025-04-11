@@ -42,7 +42,12 @@ def _get_jwt_token_from_login(self, email, password):
         {"email": email, "password": password},
         format="json",
     )
-    return response.data["access_token"]
+    access_token = response.cookies.get("access_token")
+
+    if access_token:
+        return access_token.value  # Return the token value from the cookie
+    else:
+        raise Exception("No access token found in the cookies")
 
 
 def login(self, email, password):

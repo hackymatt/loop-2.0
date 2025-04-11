@@ -19,6 +19,11 @@ export type ICourseCategoryProp = {
   name: string;
 };
 
+export type ICourseStatusProp = {
+  slug: string;
+  name: string;
+};
+
 export type ICourseTeacherProp = IInstructorProps;
 
 export type ICourseLessonType = (typeof COURSE_TYPE)[keyof typeof COURSE_TYPE];
@@ -35,6 +40,7 @@ export type ICourseChapterProp = {
   name: string;
   description: string;
   lessons: ICourseLessonProp[];
+  progress: number | null;
 };
 
 type ICourseBaseProps = {
@@ -51,7 +57,10 @@ type ICourseBaseProps = {
   ratingNumber: number | null;
   totalReviews: number;
   totalStudents: number;
+  progress: number | null;
 };
+
+export type ICoursePrerequisite = Pick<ICourseBaseProps, "slug" | "name">;
 
 export type ICourseListProps = ICourseBaseProps;
 

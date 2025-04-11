@@ -74,7 +74,7 @@ describe("createMetadata", () => {
     const customPath = "/test-path";
     const result = createMetadata({ path: customPath });
 
-    expect(result.alternates.canonical).toBe(`https://loop.edu.pl${customPath}/`);
+    expect(result.alternates.canonical).toBe(`https://loop.edu.pl${customPath}`);
   });
 
   // Function correctly constructs OpenGraph URL with provided path
@@ -89,7 +89,7 @@ describe("createMetadata", () => {
     const customPath = "/test-path";
     const result = createMetadata({ path: customPath });
 
-    expect(result.openGraph.url).toBe(`https://loop.edu.pl${customPath}/`);
+    expect(result.openGraph.url).toBe(`https://loop.edu.pl${customPath}`);
   });
 
   // Function handles empty path parameter by using root path "/"

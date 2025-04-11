@@ -228,8 +228,10 @@ def create_lesson():
         starter_code = _generate_random_string(50)
         solution_code = _generate_random_string(50)
         penalty_points = _generate_random_number()
+        technology = create_technology()
         specific_lesson = CodingLesson.objects.create(
             lesson=lesson,
+            technology=technology,
             starter_code=starter_code,
             solution_code=solution_code,
             penalty_points=penalty_points,

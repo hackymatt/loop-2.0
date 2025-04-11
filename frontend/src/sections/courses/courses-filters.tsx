@@ -1,6 +1,7 @@
 import type { BoxProps } from "@mui/material/Box";
 import type {
   ICourseLevelProp,
+  ICourseStatusProp,
   ICourseCategoryProp,
   ICourseTechnologyProp,
 } from "src/types/course";
@@ -31,6 +32,7 @@ type FiltersProps = {
     technologies: ICourseTechnologyProp[];
     categories: ICourseCategoryProp[];
     ratings: string[];
+    statuses: ICourseStatusProp[];
   };
 };
 
@@ -55,6 +57,8 @@ export function CoursesFilters({ open, onClose, options }: FiltersProps) {
     const currentCategories = categories ? categories.split(",") : [];
 
     const currentRating = query?.rating ?? "";
+
+    const currentStatus = query?.status ?? "";
 
     return (
       <>
@@ -186,6 +190,33 @@ export function CoursesFilters({ open, onClose, options }: FiltersProps) {
                 />
               </Box>
             ))}
+          </Box>
+        </Block>
+
+        <Block title={t("filter.status.title")}>
+          <Box sx={{ display: "flex", flexDirection: "column", pt: 1 }}>
+            {options.statuses.map((option) => {
+              const isSelected = currentStatus.includes(option.slug);
+              return (
+                <FormControlLabel
+                  key={option.slug}
+                  control={
+                    <Checkbox
+                      size="small"
+                      value={option}
+                      checked={isSelected}
+                      onChange={() =>
+                        currentStatus !== option.slug
+                          ? handleChange("status", option.slug)
+                          : handleChange("status", "")
+                      }
+                      inputProps={{ id: `${option}-checkbox` }}
+                    />
+                  }
+                  label={option.name}
+                />
+              );
+            })}
           </Box>
         </Block>
       </>

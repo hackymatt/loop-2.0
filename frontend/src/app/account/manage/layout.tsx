@@ -1,7 +1,6 @@
 import { MainLayout } from "src/layouts/main";
 
 import { AccountLayout } from "src/sections/_account/layout";
-import { EcommerceLayout } from "src/sections/_ecommerce/layout";
 
 // ----------------------------------------------------------------------
 
@@ -12,9 +11,7 @@ type Props = {
 export default function Layout({ children }: Props) {
   return (
     <MainLayout>
-      <EcommerceLayout>
-        <AccountLayout>{children}</AccountLayout>
-      </EcommerceLayout>
+      <AccountLayout>{children}</AccountLayout>
     </MainLayout>
   );
 }

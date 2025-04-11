@@ -99,6 +99,7 @@ export const featuredCoursesQuery = (language?: Language) => {
         ratingNumber: average_rating,
         totalReviews: ratings_count,
         totalStudents: students_count,
+        progress: null,
       })
     );
     return { results: modifiedResults };

@@ -7,11 +7,12 @@ import Accordion from "@mui/material/Accordion";
 import Typography from "@mui/material/Typography";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import AccordionSummary from "@mui/material/AccordionSummary";
-import { Link, Badge, Stack, Button, Divider } from "@mui/material";
+import { Link, Badge, Stack, Button, Divider, LinearProgress } from "@mui/material";
 
 import { paths } from "src/routes/paths";
 
 import { Iconify } from "src/components/iconify";
+import { useUserContext } from "src/components/user";
 
 import { CourseDetailsLessonList } from "./course-details-lesson-list";
 
@@ -34,15 +35,22 @@ export function CourseDetailsChapterItem({
 }: ChapterItemProps) {
   const { t } = useTranslation("course");
 
+  const user = useUserContext();
+  const { isLoggedIn } = user.state;
+
+  const started = (chapter.progress || 0) > 0;
+  const next = { chapter: chapter.slug, lesson: chapter.lessons[0].slug };
+  const redirect = `${paths.learn}/${course.slug}/${next.chapter}/${next.lesson}`;
+
   const renderButton = () => (
     <Button
       variant="contained"
       size="medium"
       color="primary"
-      href={`${paths.register}?redirect=${paths.lesson}/${course.slug}/${chapter.slug}/${chapter.lessons[0].slug}`}
+      href={isLoggedIn ? redirect : `${paths.register}?redirect=${redirect}`}
       sx={{ px: 2, textAlign: "center" }}
     >
-      {t("chapters.button")}
+      {isLoggedIn && started ? t("chapters.continue") : t("chapters.start")}
     </Button>
   );
 
@@ -73,6 +81,22 @@ export function CourseDetailsChapterItem({
           <Typography variant="subtitle1" sx={{ flexGrow: 1, ml: 2 }}>
             {chapter.name}
           </Typography>
+
+          {chapter.progress ? (
+            <>
+              <LinearProgress
+                color="primary"
+                variant="determinate"
+                value={chapter.progress}
+                sx={{ flex: "1 1 auto", mr: 1 }}
+              />
+              <Typography variant="body2" sx={{ color: "text.secondary" }}>
+                {Math.round(chapter.progress)}%
+              </Typography>
+            </>
+          ) : null}
+
+          <Box sx={{ flexGrow: 1 }} />
 
           {renderButton()}
         </Box>

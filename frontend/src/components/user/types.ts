@@ -4,9 +4,9 @@ import type { UserType } from "src/types/user";
 
 export type UserState = {
   email: string;
+  firstName: string;
+  lastName: string;
   userType: UserType;
-  accessToken: string;
-  refreshToken: string;
   isRegistered: boolean;
   isActive: boolean;
   isLoggedIn: boolean;

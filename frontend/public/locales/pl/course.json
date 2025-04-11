@@ -4,7 +4,15 @@
     "level": "Poziom umiejętności",
     "technology": "Technologia",
     "category": "Kategoria",
-    "rating": { "title": "Ocena", "more": "i wyżej" }
+    "rating": { "title": "Ocena", "more": "i wyżej" },
+    "status": {
+      "title": "Status",
+      "options": [
+        { "slug": "not-started", "name": "Nie rozpoczęte" },
+        { "slug": "in-progress", "name": "W trakcie" },
+        { "slug": "completed", "name": "Zakończone" }
+      ]
+    }
   },
   "instructor": ["instruktor", "instruktorów", "instruktorów"],
   "student": ["uczeń", "uczniów", "uczniów"],
@@ -17,6 +25,7 @@
   "quiz": ["test", "testy", "testów"],
   "sign-up": { "header": "Utwórz darmowe konto", "button": "Zacznij naukę za darmo" },
   "start": "Rozpocznij kurs za darmo",
+  "continue": "Kontynuuj kurs",
   "access": "Dożywotni dostęp",
   "certificate": {
     "title": "Certyfikat ukończenia",
@@ -27,6 +36,10 @@
     "subtitle": "Dołącz do naszego czatu kursowego, aby uzyskać wsparcie i wymieniać się doświadczeniami z innymi uczestnikami.",
     "button": "Dołącz do czatu"
   },
+  "prerequisites": {
+    "title": "Zalecana wiedza",
+    "none": "Brak wymagań wstępnych."
+  },
   "instructors": "Instruktorzy",
   "reviews": "Recenzje",
   "included": { "start": "Dostępne w planie", "plans": "Podstawowym oraz Premium" },
@@ -35,7 +48,8 @@
   "viewAll": "Zobacz wszystkie",
   "chapters": {
     "title": "Rozdziały",
-    "button": "Rozpocznij",
+    "start": "Rozpocznij",
+    "continue": "Kontynuuj",
     "show": "Pokaż",
     "hide": "Ukryj",
     "lesson": "lekcje"

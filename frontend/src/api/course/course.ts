@@ -46,6 +46,7 @@ type IChapter = {
   translated_name: string;
   translated_description: string;
   lessons: ILesson[];
+  progress?: number;
 };
 
 type ICourse = {
@@ -69,6 +70,7 @@ type ICourse = {
   ratings_count: number;
   students_count: number;
   chapters: IChapter[];
+  progress?: number;
 };
 
 export const courseQuery = (slug: string, language?: Language) => {
@@ -101,6 +103,7 @@ export const courseQuery = (slug: string, language?: Language) => {
       ratings_count,
       students_count,
       chapters,
+      progress,
       ...rest
     }: ICourse = data;
 
@@ -142,6 +145,7 @@ export const courseQuery = (slug: string, language?: Language) => {
           translated_name: chapterName,
           translated_description: chapterDescription,
           lessons,
+          progress: chapterProgress,
           ...restChapter
         }) => ({
           ...restChapter,
@@ -154,8 +158,10 @@ export const courseQuery = (slug: string, language?: Language) => {
               totalPoints: lessonPoints,
             })
           ),
+          progress: chapterProgress ?? null,
         })
       ),
+      progress: progress ?? null,
     };
     return { results: modifiedResults };
   };

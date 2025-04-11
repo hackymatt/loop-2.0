@@ -1,19 +1,52 @@
 export const paths = {
+  home: "/",
+  /**
+   * Auth
+   */
   login: "/auth/login",
   register: "/auth/register",
   activate: "/auth/activate",
   resetPassword: "/auth/reset-password",
+  updatePassword: "/auth/update-password",
+  /**
+   * Courses
+   */
   courses: "/courses",
   course: "/course",
-  lesson: "/lesson",
-  pricing: "/pricing",
+  /**
+   * Certificates
+   */
+  certificates: "/certificates",
+  certificate: "/certificate",
+  /**
+   * Blog
+   */
   posts: "/posts",
   post: "/post",
+  /**
+   * Learn
+   */
+  learn: "/learn",
+  /**
+   * Other
+   */
+  pricing: "/pricing",
   about: "/about",
   contact: "/contact",
-  dashboard: "/dashboard",
   privacyPolicy: "/privacy-policy",
   termsAndConditions: "/terms-and-conditions",
+  support: "/support",
+
+  /**
+   * Account
+   */
+  account: {
+    dashboard: "/account/dashboard",
+    personal: "/account/personal",
+    manage: "/account/manage",
+    subscription: "/account/subscription",
+  },
+
   /**
    * Marketing
    */
@@ -81,14 +114,7 @@ export const paths = {
   /**
    * Account
    */
-  account: {
-    root: "/account",
-    personal: "/account/personal",
-    wishlist: "/account/wishlist",
-    vouchers: "/account/vouchers",
-    orders: "/account/orders",
-    payment: "/account/payment",
-  },
+
   /**
    * Auth
    */
@@ -105,7 +131,6 @@ export const paths = {
     signUp: "/illustration/sign-up",
   },
   verify: "/verify",
-  updatePassword: "/update-password",
   /**
    * Common
    */
@@ -114,7 +139,6 @@ export const paths = {
   pricingCards: "/pricing-cards",
   pricingColumns: "/pricing-columns",
   payment: "/payment",
-  support: "/support",
   page404: "/error/404",
   page500: "/error/500",
   /**
