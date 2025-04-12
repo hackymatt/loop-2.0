@@ -44,16 +44,13 @@ class BaseCourseSerializer(serializers.ModelSerializer):
             "students_count",
         ]
 
-    def _get_translation(self, obj, field):
-        lang = self.context.get("request").LANGUAGE_CODE
-        translation = obj.translations.filter(language=lang).first()
-        return getattr(translation, field, None) if translation else None
-
     def get_translated_name(self, obj):
-        return self._get_translation(obj, "name")
+        lang = self.context.get("request").LANGUAGE_CODE
+        return obj.get_translation(lang).name
 
     def get_translated_description(self, obj):
-        return self._get_translation(obj, "description")
+        lang = self.context.get("request").LANGUAGE_CODE
+        return obj.get_translation(lang).name
 
     def get_lessons_count(self, obj):
         return (
@@ -100,7 +97,8 @@ class CourseRetrieveSerializer(BaseCourseSerializer):
         ]
 
     def get_translated_overview(self, obj):
-        return self._get_translation(obj, "overview")
+        lang = self.context.get("request").LANGUAGE_CODE
+        return obj.get_translation(lang).overview
 
     def get_chat_url(self, obj):
         return None

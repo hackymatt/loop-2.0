@@ -173,9 +173,9 @@ class FeaturedBlogViewTestCase(TestCase):
     def test_featured_blog_is_most_visited(self):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data["slug"], self.blog2.slug)
+        self.assertEqual(response.data[0]["slug"], self.blog2.slug)
         self.assertEqual(
-            response.data["translated_name"], self.blog2_translations["en"].name
+            response.data[0]["translated_name"], self.blog2_translations["en"].name
         )
 
     def test_featured_blog_when_no_blogs(self):
@@ -186,5 +186,5 @@ class FeaturedBlogViewTestCase(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(
             response.data,
-            {"slug": "", "name": "", "language": "", "published_at": None},
+            [],
         )

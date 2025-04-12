@@ -25,7 +25,12 @@ export function LoginButton({ slotProps, sx }: LoginButtonProps) {
       href={paths.login}
       {...slotProps?.button}
       sx={[
-        { px: 2, borderRadius: 1, textAlign: "center" },
+        {
+          px: 2,
+          borderRadius: 1,
+          textAlign: "center",
+          whiteSpace: "nowrap",
+        },
         ...(Array.isArray(slotProps?.button?.sx)
           ? (slotProps?.button?.sx ?? [])
           : [slotProps?.button?.sx]),

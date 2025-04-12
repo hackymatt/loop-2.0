@@ -9,7 +9,7 @@ import Fab from "@mui/material/Fab";
 import SvgIcon from "@mui/material/SvgIcon";
 
 import { useRecentPosts } from "src/api/blog/recent";
-import { useFeaturedPost } from "src/api/blog/featured";
+import { useFeaturedPosts } from "src/api/blog/featured";
 import { useFeaturedCourses } from "src/api/course/featured";
 import { useFeaturedReviews } from "src/api/review/featured";
 import { useFeaturedTechnologies } from "src/api/course/technology/featured";
@@ -38,7 +38,7 @@ export function HomeView() {
   const { data: featuredCourses } = useFeaturedCourses();
   const { data: featuredTechnologies } = useFeaturedTechnologies();
   const { data: featuredReviews } = useFeaturedReviews();
-  const { data: featuredPost } = useFeaturedPost();
+  const { data: featuredPosts } = useFeaturedPosts();
   const { data: recentPosts } = useRecentPosts();
 
   return (
@@ -69,8 +69,8 @@ export function HomeView() {
 
       {!!featuredReviews?.length && <HomeTestimonials testimonials={featuredReviews} />}
 
-      {featuredPost && !!recentPosts?.length && (
-        <HomeLatestPosts featuredPost={featuredPost} recentPosts={recentPosts} />
+      {!!featuredPosts?.length && !!recentPosts?.length && (
+        <HomeLatestPosts featuredPost={featuredPosts[0]} recentPosts={recentPosts} />
       )}
 
       <HomeAdvertisement />

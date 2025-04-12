@@ -5,7 +5,7 @@ import type { IBlogFeaturedPost } from "src/types/blog";
 import { compact } from "lodash-es";
 import { useQuery } from "@tanstack/react-query";
 
-import { getData } from "src/api/utils";
+import { getSimpleListData } from "src/api/utils";
 
 import { useSettingsContext } from "src/components/settings";
 
@@ -35,41 +35,49 @@ type IBlog = {
   duration: number;
 };
 
-export const featuredPostQuery = (language?: Language) => {
+export const featuredPostsQuery = (language?: Language) => {
   const url = endpoint;
   const queryUrl = url;
 
-  const queryFn = async (): Promise<GetQueryResponse<IBlogFeaturedPost>> => {
-    const { data } = await getData<IBlog>(queryUrl, {
+  const queryFn = async (): Promise<GetQueryResponse<IBlogFeaturedPost[]>> => {
+    const results = await getSimpleListData<IBlog>(queryUrl, {
       headers: {
         "Accept-Language": language,
       },
     });
 
-    const { translated_name, translated_description, topic, author, image, published_at, ...rest } =
-      data;
-    const modifiedResult: IBlogFeaturedPost = {
-      ...rest,
-      name: translated_name,
-      description: translated_description,
-      category: {
-        slug: topic.slug,
-        name: topic.translated_name,
-      },
-      author: { ...author, name: author.full_name, avatarUrl: author.image },
-      heroUrl: image,
-      publishedAt: published_at,
-    };
-    return { results: modifiedResult };
+    const modifiedResults: IBlogFeaturedPost[] = results.map(
+      ({
+        translated_name,
+        translated_description,
+        topic,
+        author,
+        image,
+        published_at,
+        ...rest
+      }: IBlog) => ({
+        ...rest,
+        name: translated_name,
+        description: translated_description,
+        category: {
+          slug: topic.slug,
+          name: topic.translated_name,
+        },
+        author: { ...author, name: author.full_name, avatarUrl: author.image },
+        heroUrl: image,
+        publishedAt: published_at,
+      })
+    );
+    return { results: modifiedResults };
   };
 
   return { url, queryFn, queryKey: compact([url, language]) };
 };
 
-export const useFeaturedPost = (enabled: boolean = true) => {
+export const useFeaturedPosts = (enabled: boolean = true) => {
   const settings = useSettingsContext();
   const { language } = settings.state;
-  const { queryKey, queryFn } = featuredPostQuery(language);
+  const { queryKey, queryFn } = featuredPostsQuery(language);
   const { data, ...rest } = useQuery({ queryKey, queryFn, enabled });
   return {
     data: data?.results,

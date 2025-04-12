@@ -21,13 +21,9 @@ class BlogNavSerializer(serializers.ModelSerializer):
             "image",
         ]
 
-    def _get_translation(self, obj, field):
-        lang = self.context.get("request").LANGUAGE_CODE
-        translation = obj.translations.filter(language=lang).first()
-        return getattr(translation, field, None) if translation else None
-
     def get_translated_name(self, obj):
-        return self._get_translation(obj, "name")
+        lang = self.context.get("request").LANGUAGE_CODE
+        return obj.get_translation(lang).name
 
 
 class BaseBlogSerializer(serializers.ModelSerializer):
@@ -51,16 +47,13 @@ class BaseBlogSerializer(serializers.ModelSerializer):
             "duration",
         ]
 
-    def _get_translation(self, obj, field):
-        lang = self.context.get("request").LANGUAGE_CODE
-        translation = obj.translations.filter(language=lang).first()
-        return getattr(translation, field, None) if translation else None
-
     def get_translated_name(self, obj):
-        return self._get_translation(obj, "name")
+        lang = self.context.get("request").LANGUAGE_CODE
+        return obj.get_translation(lang).name
 
     def get_duration(self, obj):
-        content = self._get_translation(obj, "content")
+        lang = self.context.get("request").LANGUAGE_CODE
+        content = obj.get_translation(lang).content
         html = markdown.markdown(content)
 
         # Strip HTML tags
@@ -87,7 +80,8 @@ class BlogListSerializer(BaseBlogSerializer):
         ]
 
     def get_translated_description(self, obj):
-        return self._get_translation(obj, "description")
+        lang = self.context.get("request").LANGUAGE_CODE
+        return obj.get_translation(lang).description
 
 
 class BlogRetrieveSerializer(BaseBlogSerializer):
@@ -109,10 +103,12 @@ class BlogRetrieveSerializer(BaseBlogSerializer):
         ]
 
     def get_translated_description(self, obj):
-        return self._get_translation(obj, "description")
+        lang = self.context.get("request").LANGUAGE_CODE
+        return obj.get_translation(lang).description
 
     def get_translated_content(self, obj):
-        return self._get_translation(obj, "content")
+        lang = self.context.get("request").LANGUAGE_CODE
+        return obj.get_translation(lang).content
 
     def _blog_nav_data(self, blog):
         if not blog:

@@ -9,7 +9,7 @@ import { RouterLink } from "src/routes/components";
 
 import { fNumber } from "src/utils/format-number";
 
-import { _mock } from "src/_mock";
+import { DEFAULT_AVATAR_URL } from "src/consts/avatar";
 
 import { Iconify } from "src/components/iconify";
 import { useUserContext } from "src/components/user";
@@ -80,7 +80,7 @@ export function ProfileSummary() {
           "&:hover": { boxShadow: theme.vars.customShadows.z24 },
         })}
       >
-        <Avatar src={_mock.image.avatar(0)} sx={{ width: 64, height: 64 }} />
+        <Avatar src={DEFAULT_AVATAR_URL} sx={{ width: 64, height: 64 }} />
 
         <Box display="flex" gap={0.5} alignItems="center">
           <Typography variant="subtitle1" noWrap>

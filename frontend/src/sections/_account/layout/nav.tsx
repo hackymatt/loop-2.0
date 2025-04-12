@@ -19,11 +19,9 @@ import Typography from "@mui/material/Typography";
 import { Tab, Tabs, Input, Button } from "@mui/material";
 import ButtonBase, { buttonBaseClasses } from "@mui/material/ButtonBase";
 
-import { paths } from "src/routes/paths";
+import { usePathname } from "src/routes/hooks";
 import { RouterLink } from "src/routes/components";
-import { useRouter, usePathname } from "src/routes/hooks";
 
-import { useLogout } from "src/api/auth/logout";
 import { DEFAULT_AVATAR_URL } from "src/consts/avatar";
 
 import { Iconify } from "src/components/iconify";
@@ -41,30 +39,12 @@ export type NavItemsProps = {
 };
 
 export function NavAccountDesktop({ data, sx }: NavItemsProps) {
-  const { t } = useTranslation("account");
-
   const pathname = usePathname();
 
   const currentTab = data.find((item) => item.path === pathname)?.title;
 
-  const router = useRouter();
-
   const user = useUserContext();
   const { email, firstName } = user.state;
-
-  const { mutateAsync: logout } = useLogout();
-
-  const handleLogout = async () => {
-    try {
-      const { status } = await logout({});
-      if (status === 205) {
-        user.resetState();
-        router.push(paths.home);
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
 
   const renderUserInfo = () => (
     <Box sx={{ p: 3, pb: 2 }}>
@@ -99,16 +79,6 @@ export function NavAccountDesktop({ data, sx }: NavItemsProps) {
     </Box>
   );
 
-  const renderLogoutButton = () => (
-    <Box sx={{ py: 1.5, px: 3 }}>
-      <NavItem
-        title={t("logout.title")}
-        icon={<Iconify icon="solar:logout-2-outline" />}
-        onClick={handleLogout}
-      />
-    </Box>
-  );
-
   return (
     <>
       <Stack
@@ -126,7 +96,6 @@ export function NavAccountDesktop({ data, sx }: NavItemsProps) {
       >
         {renderUserInfo()}
         {renderNav()}
-        {renderLogoutButton()}
       </Stack>
 
       <Tabs

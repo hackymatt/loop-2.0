@@ -17,7 +17,7 @@ import { fDate } from "src/utils/format-time";
 import { usePost } from "src/api/blog/post";
 import { useRecentPosts } from "src/api/blog/recent";
 import { DEFAULT_AVATAR_URL } from "src/consts/avatar";
-import { useFeaturedPost } from "src/api/blog/featured";
+import { useFeaturedPosts } from "src/api/blog/featured";
 
 import { Image } from "src/components/image";
 import { Iconify } from "src/components/iconify";
@@ -35,7 +35,7 @@ export function PostView({ slug }: { slug: string }) {
   const { t } = useTranslation("navigation");
 
   const { data: post, isError } = usePost(slug);
-  const { data: featuredPost } = useFeaturedPost();
+  const { data: featuredPosts } = useFeaturedPosts();
   const { data: recentPosts } = useRecentPosts();
 
   const renderHead = () => (
@@ -199,9 +199,9 @@ export function PostView({ slug }: { slug: string }) {
 
       <Divider />
 
-      {featuredPost && !!recentPosts?.length && (
+      {!!featuredPosts?.length && !!recentPosts?.length && (
         <LatestPosts
-          largePost={featuredPost}
+          largePost={featuredPosts[0]}
           smallPosts={recentPosts}
           sx={{ bgcolor: "background.neutral" }}
         />

@@ -95,7 +95,7 @@ class GithubLoginView(APIView):
                 "last_name": last_name,
                 "image": picture,
                 "join_type": JoinType.GITHUB,
-                "is_active": True
+                "is_active": True,
             },
         )
 

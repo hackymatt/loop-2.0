@@ -11,6 +11,9 @@ class Level(BaseModel):
         db_table = "course_level"
         verbose_name_plural = "Levels"
 
+    def get_translation(self, lang_code):
+        return self.translations.filter(language=lang_code).first()
+
     def __str__(self):
         return self.slug  # pragma: no cover
 

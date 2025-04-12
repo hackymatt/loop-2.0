@@ -45,7 +45,7 @@ class FacebookLoginView(APIView):
                 "last_name": last_name,
                 "image": picture,
                 "join_type": JoinType.FACEBOOK,
-                "is_active": True
+                "is_active": True,
             },
         )
 

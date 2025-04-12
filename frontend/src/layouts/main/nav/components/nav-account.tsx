@@ -19,8 +19,8 @@ import { paths } from "src/routes/paths";
 import { RouterLink } from "src/routes/components";
 import { useRouter, usePathname } from "src/routes/hooks";
 
-import { _mock } from "src/_mock";
 import { useLogout } from "src/api/auth/logout";
+import { DEFAULT_AVATAR_URL } from "src/consts/avatar";
 
 import { Iconify } from "src/components/iconify";
 import { useUserContext } from "src/components/user";
@@ -144,7 +144,7 @@ export function NavAccountPopover({ sx }: NavItemsProps) {
   return (
     <>
       <IconButton disableRipple color={open ? "primary" : "inherit"} onClick={onOpen}>
-        <Avatar src={_mock.image.avatar(0)} sx={{ width: 32, height: 32 }} />
+        <Avatar src={DEFAULT_AVATAR_URL} sx={{ width: 32, height: 32 }} />
         <Iconify
           width={16}
           icon={open ? "solar:alt-arrow-up-outline" : "solar:alt-arrow-down-outline"}

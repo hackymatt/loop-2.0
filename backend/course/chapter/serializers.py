@@ -15,16 +15,12 @@ class ChapterSerializer(serializers.ModelSerializer):
         fields = ["slug", "translated_name", "translated_description", "lessons"]
 
     def get_translated_name(self, obj):
-        """Retrieve the translated name based on request language"""
         lang = self.context.get("request").LANGUAGE_CODE
-        translation = obj.translations.filter(language=lang).first()
-        return translation.name if translation else ""
+        return obj.get_translation(lang).name
 
     def get_translated_description(self, obj):
-        """Retrieve the translated description based on request language"""
         lang = self.context.get("request").LANGUAGE_CODE
-        translation = obj.translations.filter(language=lang).first()
-        return translation.description if translation else ""
+        return obj.get_translation(lang).description
 
     def get_lessons(self, obj):
         return LessonSerializer(obj.lessons.all(), many=True, context=self.context).data
