@@ -46,8 +46,10 @@ class LessonSerializer(serializers.ModelSerializer):
             return data
 
         progress = self.get_progress(instance, user)
-        data["progress"] =  progress
-        data["earned_points"] = self.get_points(instance, user) if progress == 100 else None
+        data["progress"] = progress
+        data["earned_points"] = (
+            self.get_points(instance, user) if progress == 100 else None
+        )
 
         return data
 
@@ -59,6 +61,10 @@ class LessonSerializer(serializers.ModelSerializer):
         return 100 if is_completed else 0
 
     def get_points(self, obj, user):
-        return CourseProgress.objects.filter(
-            student__user=user, lesson=obj, completed_at__isnull=False
-        ).first().points
+        return (
+            CourseProgress.objects.filter(
+                student__user=user, lesson=obj, completed_at__isnull=False
+            )
+            .first()
+            .points
+        )

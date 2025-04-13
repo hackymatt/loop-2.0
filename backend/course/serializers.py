@@ -72,7 +72,7 @@ class BaseCourseSerializer(serializers.ModelSerializer):
             return data
 
         data["progress"] = self.get_progress(instance, user)
-        
+
         return data
 
     def get_progress(self, obj, user):
