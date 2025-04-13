@@ -8,6 +8,8 @@ import Link from "@mui/material/Link";
 import Button from "@mui/material/Button";
 import Collapse, { collapseClasses } from "@mui/material/Collapse";
 
+import { paths } from "src/routes/paths";
+
 import { Iconify } from "src/components/iconify";
 
 import type { PricingCardProps } from "./types";
@@ -91,6 +93,7 @@ export function PricingColumnContentMobile({ plan, sx, ...other }: PricingColumn
         size="large"
         variant="contained"
         color={plan.popular ? "primary" : "inherit"}
+        href={paths.register}
         sx={{ mt: 5 }}
       >
         {`${t("choose")} ${plan.license}`}
@@ -137,7 +140,12 @@ export function PricingColumnContentDesktop({ plan, sx, ...other }: PricingColum
           }),
         }}
       >
-        <Button size="large" variant="contained" color={plan.popular ? "primary" : "inherit"}>
+        <Button
+          size="large"
+          variant="contained"
+          color={plan.popular ? "primary" : "inherit"}
+          href={paths.register}
+        >
           {`${t("choose")} ${plan.license}`}
         </Button>
       </Box>

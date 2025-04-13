@@ -21,6 +21,7 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import { useQueryParams } from "src/hooks/use-query-params";
 
 import { Iconify } from "src/components/iconify";
+import { useUserContext } from "src/components/user";
 
 // ----------------------------------------------------------------------
 
@@ -40,6 +41,9 @@ export function CoursesFilters({ open, onClose, options }: FiltersProps) {
   const { t } = useTranslation("course");
 
   const { handleChange, query } = useQueryParams();
+
+  const user = useUserContext();
+  const { isLoggedIn } = user.state;
 
   const getSelected = (selectedItems: string[], item: string) =>
     selectedItems.includes(item)
@@ -193,32 +197,34 @@ export function CoursesFilters({ open, onClose, options }: FiltersProps) {
           </Box>
         </Block>
 
-        <Block title={t("filter.status.title")}>
-          <Box sx={{ display: "flex", flexDirection: "column", pt: 1 }}>
-            {options.statuses.map((option) => {
-              const isSelected = currentStatus.includes(option.slug);
-              return (
-                <FormControlLabel
-                  key={option.slug}
-                  control={
-                    <Checkbox
-                      size="small"
-                      value={option}
-                      checked={isSelected}
-                      onChange={() =>
-                        currentStatus !== option.slug
-                          ? handleChange("status", option.slug)
-                          : handleChange("status", "")
-                      }
-                      inputProps={{ id: `${option}-checkbox` }}
-                    />
-                  }
-                  label={option.name}
-                />
-              );
-            })}
-          </Box>
-        </Block>
+        {isLoggedIn ? (
+          <Block title={t("filter.status.title")}>
+            <Box sx={{ display: "flex", flexDirection: "column", pt: 1 }}>
+              {options.statuses.map((option) => {
+                const isSelected = currentStatus.includes(option.slug);
+                return (
+                  <FormControlLabel
+                    key={option.slug}
+                    control={
+                      <Checkbox
+                        size="small"
+                        value={option}
+                        checked={isSelected}
+                        onChange={() =>
+                          currentStatus !== option.slug
+                            ? handleChange("status", option.slug)
+                            : handleChange("status", "")
+                        }
+                        inputProps={{ id: `${option}-checkbox` }}
+                      />
+                    }
+                    label={option.name}
+                  />
+                );
+              })}
+            </Box>
+          </Block>
+        ) : null}
       </>
     );
   };

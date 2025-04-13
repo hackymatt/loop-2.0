@@ -10,12 +10,21 @@ import { CourseItem } from "./course-item";
 
 type Props = BoxProps & {
   courses: ICourseListProps[];
-  count: number;
+  recordsCount: number;
+  pagesCount: number;
   page: number;
   onPageChange: (selectedPage: number) => void;
 };
 
-export function CourseList({ courses, count, page, onPageChange, sx, ...other }: Props) {
+export function CourseList({
+  courses,
+  recordsCount,
+  pagesCount,
+  page,
+  onPageChange,
+  sx,
+  ...other
+}: Props) {
   return (
     <>
       <Box
@@ -30,12 +39,14 @@ export function CourseList({ courses, count, page, onPageChange, sx, ...other }:
         ))}
       </Box>
 
-      <Pagination
-        count={count}
-        page={page}
-        onChange={(event, selectedPage: number) => onPageChange(selectedPage)}
-        sx={{ my: 10, [`& .${paginationClasses.ul}`]: { justifyContent: "center" } }}
-      />
+      {recordsCount ? (
+        <Pagination
+          count={pagesCount}
+          page={page}
+          onChange={(event, selectedPage: number) => onPageChange(selectedPage)}
+          sx={{ my: 10, [`& .${paginationClasses.ul}`]: { justifyContent: "center" } }}
+        />
+      ) : null}
     </>
   );
 }

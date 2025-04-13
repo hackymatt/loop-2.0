@@ -10,6 +10,20 @@ from user.type.instructor_user.serializers import InstructorSerializer
 from review.models import Review
 from const import LessonType
 
+class PrerequisiteSerializer(serializers.ModelSerializer):
+    name = serializers.CharField(write_only=True)
+    translated_name = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Course
+        fields = [
+            "slug",
+            "translated_name",
+        ]
+
+    def get_translated_name(self, obj):
+        lang = self.context.get("request").LANGUAGE_CODE
+        return obj.get_translation(lang).name
 
 class BaseCourseSerializer(serializers.ModelSerializer):
     name = serializers.CharField(write_only=True)
@@ -50,7 +64,7 @@ class BaseCourseSerializer(serializers.ModelSerializer):
 
     def get_translated_description(self, obj):
         lang = self.context.get("request").LANGUAGE_CODE
-        return obj.get_translation(lang).name
+        return obj.get_translation(lang).description
 
     def get_lessons_count(self, obj):
         return (
@@ -83,6 +97,7 @@ class CourseRetrieveSerializer(BaseCourseSerializer):
     quiz_count = serializers.SerializerMethodField()
     coding_count = serializers.SerializerMethodField()
     chapters = serializers.SerializerMethodField()
+    prerequisites = serializers.SerializerMethodField()
 
     class Meta(BaseCourseSerializer.Meta):
         fields = BaseCourseSerializer.Meta.fields + [
@@ -94,6 +109,7 @@ class CourseRetrieveSerializer(BaseCourseSerializer):
             "quiz_count",
             "coding_count",
             "chapters",
+            "prerequisites",
         ]
 
     def get_translated_overview(self, obj):
@@ -131,4 +147,9 @@ class CourseRetrieveSerializer(BaseCourseSerializer):
     def get_chapters(self, obj):
         return ChapterSerializer(
             obj.chapters.all(), many=True, context=self.context
+        ).data
+    
+    def get_prerequisites(self, obj):
+        return PrerequisiteSerializer(
+            obj.prerequisites.all(), many=True, context=self.context
         ).data

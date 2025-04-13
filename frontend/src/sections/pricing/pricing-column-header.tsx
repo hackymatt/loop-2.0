@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 
+import { getPlanIcon } from "src/utils/plan-icon";
 import { fCurrency } from "src/utils/format-number";
 
 import { CONFIG } from "src/global-config";
@@ -29,7 +30,7 @@ export function PricingColumnHeader({ plan, sx, ...other }: PricingColumnHeaderP
     <Box
       component="img"
       alt={plan.license}
-      src={iconPath(plan.icon)}
+      src={iconPath(getPlanIcon(plan.slug))}
       sx={{ width: 80, height: 80 }}
     />
   );

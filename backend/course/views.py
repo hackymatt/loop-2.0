@@ -11,7 +11,7 @@ from django.shortcuts import get_object_or_404
 class CourseViewSet(viewsets.ModelViewSet):
     http_method_names = ["get"]
     queryset = Course.objects.prefetch_related(
-        "instructors", "chapters", "translations"
+        "instructors", "chapters", "prerequisites", "translations"
     ).order_by("slug")
     serializer_class = CourseRetrieveSerializer
     filterset_class = CourseFilter

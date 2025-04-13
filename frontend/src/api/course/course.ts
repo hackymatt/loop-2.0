@@ -1,6 +1,6 @@
 import type { Language } from "src/locales/types";
-import type { ICourseProps } from "src/types/course";
 import type { GetQueryResponse } from "src/api/types";
+import type { LevelType, ICourseProps } from "src/types/course";
 
 import { compact } from "lodash-es";
 import { useQuery } from "@tanstack/react-query";
@@ -49,6 +49,11 @@ type IChapter = {
   progress?: number;
 };
 
+type IPrerequisite = {
+  slug: string;
+  translated_name: string;
+};
+
 type ICourse = {
   slug: string;
   translated_name: string;
@@ -70,6 +75,7 @@ type ICourse = {
   ratings_count: number;
   students_count: number;
   chapters: IChapter[];
+  prerequisites: IPrerequisite[];
   progress?: number;
 };
 
@@ -103,6 +109,7 @@ export const courseQuery = (slug: string, language?: Language) => {
       ratings_count,
       students_count,
       chapters,
+      prerequisites,
       progress,
       ...rest
     }: ICourse = data;
@@ -113,7 +120,7 @@ export const courseQuery = (slug: string, language?: Language) => {
       description: translated_description,
       overview: translated_overview,
       level: {
-        slug: level.slug,
+        slug: level.slug as LevelType,
         name: level.translated_name,
       },
       category: {
@@ -159,6 +166,12 @@ export const courseQuery = (slug: string, language?: Language) => {
             })
           ),
           progress: chapterProgress ?? null,
+        })
+      ),
+      prerequisites: prerequisites.map(
+        ({ translated_name: prerequisiteName, ...restPrerequisite }) => ({
+          ...restPrerequisite,
+          name: prerequisiteName,
         })
       ),
       progress: progress ?? null,

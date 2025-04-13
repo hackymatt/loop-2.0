@@ -11,7 +11,7 @@ import Typography from "@mui/material/Typography";
 
 import { useQueryParams } from "src/hooks/use-query-params";
 
-import { _courses } from "src/_mock";
+import { useCourses } from "src/api/course/courses";
 import { useCourseLevels } from "src/api/course/level/levels";
 import { useCourseCategories } from "src/api/course/category/categories";
 import { useCourseTechnologies } from "src/api/course/technology/technologies";
@@ -37,9 +37,7 @@ export function CoursesView() {
   const { data: courseLevels } = useCourseLevels({ sort_by: "order", page_size: "-1" });
   const { data: courseTechnologies } = useCourseTechnologies({ page_size: "-1" });
   const { data: courseCategories } = useCourseCategories({ page_size: "-1" });
-  // const { data: courses, pageSize } = useCourses(query);
-  const courses = _courses;
-  const pageSize = 10;
+  const { data: courses, count, pageSize } = useCourses(query);
 
   const openMobile = useBoolean();
 
@@ -62,7 +60,8 @@ export function CoursesView() {
     <Box sx={{ gap: 4, display: "flex", flexDirection: "column" }}>
       <CourseList
         courses={courses ?? []}
-        count={pageSize || 0}
+        recordsCount={count || 0}
+        pagesCount={pageSize || 0}
         page={Number(query.page) || 1}
         onPageChange={(selectedPage: number) => handleChange("page", String(selectedPage))}
       />

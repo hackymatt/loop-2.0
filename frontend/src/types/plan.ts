@@ -4,19 +4,21 @@ import type { PLAN_TYPE } from "src/consts/plan";
 
 export type PlanType = (typeof PLAN_TYPE)[keyof typeof PLAN_TYPE];
 
-export type PlanPriceProp = {
+export type IPlanPriceProp = {
   monthly: number;
   yearly: number;
 };
 
-export type PlanProps = {
-  slug: string;
+type IPlanOptionProp = {
+  title: string;
+  disabled: boolean;
+};
+
+export type IPlanProps = {
+  slug: PlanType;
   license: string;
   popular: boolean;
   premium: boolean;
-  price: PlanPriceProp;
-  options: {
-    title: string;
-    disabled: boolean;
-  }[];
+  price: IPlanPriceProp;
+  options: IPlanOptionProp[];
 };

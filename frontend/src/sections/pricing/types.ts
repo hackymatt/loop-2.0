@@ -1,6 +1,5 @@
-import type { PlanProps } from "src/types/plan";
+import type { IPlanProps } from "src/types/plan";
 
-export type PricingCardProps = Omit<PlanProps, "price"> & {
-  icon: string;
+export type PricingCardProps = Omit<IPlanProps, "price"> & {
   price: number;
 };

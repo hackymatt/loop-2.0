@@ -70,6 +70,7 @@ export type ICourseListProps = ICourseBaseProps;
 export type ICourseProps = ICourseBaseProps & {
   overview: string;
   chapters: ICourseChapterProp[];
+  prerequisites: ICoursePrerequisite[];
   totalPoints: number;
   totalReading: number;
   totalVideos: number;

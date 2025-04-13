@@ -1,14 +1,18 @@
 "use client";
 
+import type { LevelType } from "src/types/course";
+
 import { useSetState } from "minimal-shared/hooks";
 
 import Grid from "@mui/material/Grid2";
 import Divider from "@mui/material/Divider";
 import Container from "@mui/material/Container";
 
-import { _courses } from "src/_mock";
+import { useCourse } from "src/api/course/course";
 import { useReviews } from "src/api/review/reviews";
 import { useSimilarCourses } from "src/api/course/similar";
+
+import { SplashScreen } from "src/components/loading-screen";
 
 import { ReviewList } from "../review/review-list";
 import { NotFoundView } from "../error/not-found-view";
@@ -28,24 +32,23 @@ export function CourseView({ slug }: { slug: string }) {
     page: "1",
   });
 
-  // const { data: course, isError } = useCourse(slug);
-  const course = _courses[0];
-  const isError = false;
-  const { data: reviews, count } = useReviews(slug);
+  const { data: course, isError, isLoading } = useCourse(slug);
+  const { data: reviews, count, pageSize } = useReviews(slug);
   const { data: similarCourses } = useSimilarCourses(slug);
 
   const renderReview = () => (
     <>
       <ReviewSummary
         slug={slug}
-        ratingNumber={course.ratingNumber}
-        reviewNumber={course.totalReviews}
+        ratingNumber={course?.ratingNumber || 0}
+        reviewNumber={course?.totalReviews || 0}
       />
 
       <Container>
         <ReviewList
           reviews={reviews || []}
-          count={count ?? 0}
+          recordsCount={count || 0}
+          pagesCount={pageSize || 0}
           page={Number(query.state.page) || 1}
           onPageChange={(selectedPage: number) => query.setField("page", String(selectedPage))}
         />
@@ -57,26 +60,30 @@ export function CourseView({ slug }: { slug: string }) {
     return <NotFoundView />;
   }
 
+  if (isLoading) {
+    return <SplashScreen />;
+  }
+
   return (
     <>
       <CourseDetailsHero
         slug={slug}
-        name={course.name}
-        level={course.level}
-        teachers={course.teachers}
-        category={course.category}
-        technology={course.technology}
-        totalPoints={course.totalPoints}
-        totalHours={course.totalHours}
-        description={course.description}
-        ratingNumber={course.ratingNumber}
-        totalReviews={course.totalReviews}
-        totalExercises={course.totalExercises}
-        totalVideos={course.totalVideos}
-        totalQuizzes={course.totalQuizzes}
-        totalLessons={course.totalLessons}
-        totalStudents={course.totalStudents}
-        progress={course.progress}
+        name={course?.name || ""}
+        level={course?.level || { slug: "" as unknown as LevelType, name: "" }}
+        teachers={course?.teachers || []}
+        category={course?.category || { slug: "", name: "" }}
+        technology={course?.technology || { slug: "", name: "" }}
+        totalPoints={course?.totalPoints || 0}
+        totalHours={course?.totalHours || 0}
+        description={course?.description || ""}
+        ratingNumber={course?.ratingNumber || 0}
+        totalReviews={course?.totalReviews || 0}
+        totalExercises={course?.totalExercises || 0}
+        totalVideos={course?.totalVideos || 0}
+        totalQuizzes={course?.totalQuizzes || 0}
+        totalLessons={course?.totalLessons || 0}
+        totalStudents={course?.totalStudents || 0}
+        progress={course?.progress || 0}
       />
 
       <Container sx={{ py: { xs: 5, md: 10 } }}>
@@ -86,18 +93,18 @@ export function CourseView({ slug }: { slug: string }) {
           </Grid>
 
           <Grid size={{ xs: 12, md: 5, lg: 4 }}>
-            <CourseDetailsPrerequisites courses={course.prerequisites} sx={{ mb: 3 }} />
+            <CourseDetailsPrerequisites courses={course?.prerequisites || []} sx={{ mb: 3 }} />
 
-            <CourseDetailsTeachers teachers={course.teachers} sx={{ mb: 3 }} />
+            <CourseDetailsTeachers teachers={course?.teachers || []} sx={{ mb: 3 }} />
 
             <CourseCertificateDetailsInfo
               slug={slug}
-              name={course.name}
-              chapters={course.chapters}
+              name={course?.name || ""}
+              chapters={course?.chapters || []}
               sx={{ mb: 3 }}
             />
 
-            <CourseChatDetailsInfo slug={slug} chatUrl={course.chatUrl} />
+            <CourseChatDetailsInfo slug={slug} chatUrl={course?.chatUrl || null} />
           </Grid>
         </Grid>
       </Container>

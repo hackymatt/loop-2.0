@@ -152,10 +152,9 @@ export function CourseItem({ course, isVertical }: Props) {
         {course.technology.name}
       </Box>
 
-      <Divider orientation="vertical" sx={{ height: 20, my: "auto" }} />
-
       {course.totalReviews ? (
         <>
+          <Divider orientation="vertical" sx={{ height: 20, my: "auto" }} />
           <Box sx={{ gap: 0.5, display: "flex", alignItems: "center" }}>
             <Iconify icon="eva:star-fill" sx={{ color: "warning.main" }} />
             {Number.isInteger(course.ratingNumber)
@@ -170,20 +169,22 @@ export function CourseItem({ course, isVertical }: Props) {
             })}{" "}
             {languagePluralize(review, course.totalReviews)}
           </Box>
-          <Divider orientation="vertical" sx={{ height: 20, my: "auto" }} />
         </>
       ) : null}
 
       {course.totalStudents ? (
-        <Box sx={{ display: "flex", alignItems: "center" }}>
-          {fShortenNumber(course.totalStudents, {
-            code: locale("code"),
-            currency: locale("currency"),
-          })}
-          <Box component="span" sx={{ ml: 0.5 }}>
-            {languagePluralize(student, course.totalStudents)}
+        <>
+          <Divider orientation="vertical" sx={{ height: 20, my: "auto" }} />
+          <Box sx={{ display: "flex", alignItems: "center" }}>
+            {fShortenNumber(course.totalStudents, {
+              code: locale("code"),
+              currency: locale("currency"),
+            })}
+            <Box component="span" sx={{ ml: 0.5 }}>
+              {languagePluralize(student, course.totalStudents)}
+            </Box>
           </Box>
-        </Box>
+        </>
       ) : null}
     </Box>
   );

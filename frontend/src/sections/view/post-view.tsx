@@ -22,6 +22,7 @@ import { useFeaturedPosts } from "src/api/blog/featured";
 import { Image } from "src/components/image";
 import { Iconify } from "src/components/iconify";
 import { Markdown } from "src/components/markdown";
+import { SplashScreen } from "src/components/loading-screen";
 import { CustomBreadcrumbs } from "src/components/custom-breadcrumbs";
 
 import { PostTags } from "../blog/post-tags";
@@ -34,7 +35,7 @@ import { PrevNextButton } from "../blog/post-prev-and-next";
 export function PostView({ slug }: { slug: string }) {
   const { t } = useTranslation("navigation");
 
-  const { data: post, isError } = usePost(slug);
+  const { data: post, isError, isLoading } = usePost(slug);
   const { data: featuredPosts } = useFeaturedPosts();
   const { data: recentPosts } = useRecentPosts();
 
@@ -164,6 +165,10 @@ export function PostView({ slug }: { slug: string }) {
 
   if (isError) {
     return <NotFoundView />;
+  }
+
+  if (isLoading) {
+    return <SplashScreen />;
   }
 
   return (

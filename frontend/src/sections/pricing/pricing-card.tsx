@@ -8,6 +8,9 @@ import { Button } from "@mui/material";
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
 
+import { paths } from "src/routes/paths";
+
+import { getPlanIcon } from "src/utils/plan-icon";
 import { fCurrency } from "src/utils/format-number";
 
 import { CONFIG } from "src/global-config";
@@ -33,7 +36,7 @@ export function PricingCard({ plan, sx, ...other }: Props) {
     <Box
       component="img"
       alt={plan.license}
-      src={iconPath(plan.icon)}
+      src={iconPath(getPlanIcon(plan.slug))}
       sx={{ width: 80, height: 80 }}
     />
   );
@@ -137,6 +140,7 @@ export function PricingCard({ plan, sx, ...other }: Props) {
         size="large"
         variant="contained"
         color={plan.popular ? "primary" : "inherit"}
+        href={paths.register}
       >
         {`${t("choose")} ${plan.license}`}
       </Button>

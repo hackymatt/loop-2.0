@@ -33,7 +33,7 @@ export function PostsView() {
   const { data: postTags } = usePostTags();
   const { data: featuredPosts } = useFeaturedPosts();
   const { data: recentPosts } = useRecentPosts();
-  const { data: posts, pageSize } = usePosts(query);
+  const { data: posts, count, pageSize } = usePosts(query);
 
   return (
     <>
@@ -43,7 +43,8 @@ export function PostsView() {
           <Grid size={{ xs: 12, md: 8 }}>
             <Posts
               posts={posts || []}
-              count={pageSize || 0}
+              recordsCount={count || 0}
+              pagesCount={pageSize || 0}
               page={Number(query.page) || 1}
               onPageChange={(selectedPage: number) => handleChange("page", String(selectedPage))}
             />
