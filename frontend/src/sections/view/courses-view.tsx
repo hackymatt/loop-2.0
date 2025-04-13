@@ -17,10 +17,10 @@ import { useCourseCategories } from "src/api/course/category/categories";
 import { useCourseTechnologies } from "src/api/course/technology/technologies";
 
 import { Iconify } from "src/components/iconify";
+import { SplashScreen } from "src/components/loading-screen";
 
 import { CourseList } from "../courses/course-list";
 import { CoursesFilters } from "../courses/courses-filters";
-import { SplashScreen } from "src/components/loading-screen";
 
 // ----------------------------------------------------------------------
 
