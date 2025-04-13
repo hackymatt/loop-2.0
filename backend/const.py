@@ -39,6 +39,8 @@ class Urls:
     POST = "posts"
     RECENT_POST = "recent-posts"
     FEATURED_POST = "featured-post"
+    # PLAN
+    PLAN = "plans"
     # CONTACT
     CONTACT = "contact"
 

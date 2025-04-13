@@ -5,7 +5,7 @@ from unittest.mock import patch
 from const import Urls
 from utils.google.gmail import GmailApi
 from ..helpers import mock_send_message, generate_valid_token
-from ..factory import create_user
+from ..factory import create_student
 
 
 class ResendActivationLinkViewTest(TestCase):
@@ -13,12 +13,12 @@ class ResendActivationLinkViewTest(TestCase):
         self.client = APIClient()
         self.url = f"/{Urls.API}/{Urls.RESEND}"
         # Create a test user (inactive)
-        self.user, _ = create_user()
-        self.user.is_active = False
-        self.user.save()
+        self.student, _ = create_student()
+        self.student.user.is_active = False
+        self.student.user.save()
 
         # Generate a token for the user
-        self.token = generate_valid_token(self.user.id)
+        self.token = generate_valid_token(self.student.user.id)
 
     @patch.object(GmailApi, "_send_message")  # Mocking send_activation_email
     def test_resend_activation_link_missing_token_and_email(self, send_message_mock):
@@ -65,13 +65,13 @@ class ResendActivationLinkViewTest(TestCase):
     def test_resend_activation_link_active_user(self, send_message_mock):
         mock_send_message(mock=send_message_mock)
         """Test when the user is already active, no email is sent."""
-        self.user.is_active = True
-        self.user.save()
+        self.student.user.is_active = True
+        self.student.user.save()
 
         data = {"token": self.token}
         response = self.client.post(self.url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data["email"], self.user.email)
+        self.assertEqual(response.data["email"], self.student.user.email)
         send_message_mock.assert_not_called()
 
     @patch.object(GmailApi, "_send_message")
@@ -81,15 +81,15 @@ class ResendActivationLinkViewTest(TestCase):
         data = {"token": self.token}
         response = self.client.post(self.url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(response.data["email"], self.user.email)
+        self.assertEqual(response.data["email"], self.student.user.email)
         send_message_mock.assert_called_once()
 
     @patch.object(GmailApi, "_send_message")
     def test_resend_activation_link_by_email(self, send_message_mock):
         mock_send_message(mock=send_message_mock)
         """Test when activation email is resent by email instead of token."""
-        data = {"email": self.user.email}
+        data = {"email": self.student.user.email}
         response = self.client.post(self.url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(response.data["email"], self.user.email)
+        self.assertEqual(response.data["email"], self.student.user.email)
         send_message_mock.assert_called_once()

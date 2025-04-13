@@ -7,6 +7,7 @@ from .models import Blog
 from .topic.serializers import TopicSerializer
 from .tag.serializers import TagSerializer
 from user.type.instructor_user.serializers import InstructorSerializer
+from global_config import CONFIG
 
 
 class BlogNavSerializer(serializers.ModelSerializer):
@@ -62,7 +63,9 @@ class BaseBlogSerializer(serializers.ModelSerializer):
 
         # Count words
         words = re.findall(r"\w+", plain_text)
-        return math.ceil(len(words) / 200)  # Assuming 200 words per minute
+        return math.ceil(
+            len(words) / CONFIG["words_per_minute"]
+        )  # Assuming 200 words per minute
 
 
 class BlogRecentSerializer(BaseBlogSerializer):

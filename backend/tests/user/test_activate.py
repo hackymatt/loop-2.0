@@ -4,7 +4,7 @@ from rest_framework import status
 from rest_framework.test import APIClient
 import jwt
 from const import Urls
-from ..factory import create_user
+from ..factory import create_student
 from ..helpers import generate_valid_token, generate_expired_token
 
 
@@ -13,38 +13,38 @@ class ActivateAccountViewTest(TestCase):
         self.client = APIClient()
         self.url = f"/{Urls.API}/{Urls.ACTIVATE}"
 
-        self.user, _ = create_user()
+        self.student, _ = create_student()
 
         # Generate a valid JWT token
-        self.valid_token = generate_valid_token(self.user.id)
+        self.valid_token = generate_valid_token(self.student.user.id)
 
     def test_activate_account_success(self):
         """
         Test account activation with a valid token and inactive user.
         """
-        self.user.is_active = False
-        self.user.save()
+        self.student.user.is_active = False
+        self.student.user.save()
 
         data = {"token": self.valid_token}
         response = self.client.post(self.url, data, format="json")
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data["email"], self.user.email)
-        self.user.refresh_from_db()
-        self.assertTrue(self.user.is_active)
+        self.assertEqual(response.data["email"], self.student.user.email)
+        self.student.user.refresh_from_db()
+        self.assertTrue(self.student.user.is_active)
 
     def test_activate_account_already_active(self):
         """
         Test account activation with a valid token but the user is already active.
         """
-        self.user.is_active = True
-        self.user.save()
+        self.student.user.is_active = True
+        self.student.user.save()
 
         data = {"token": self.valid_token}
         response = self.client.post(self.url, data, format="json")
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data["email"], self.user.email)
+        self.assertEqual(response.data["email"], self.student.user.email)
 
     @patch("user.activate.views.jwt.decode")
     def test_activate_account_invalid_token(self, mock_jwt_decode):
@@ -64,7 +64,7 @@ class ActivateAccountViewTest(TestCase):
         """
         Test account activation with an expired token.
         """
-        expired_token = generate_expired_token(self.user.id)
+        expired_token = generate_expired_token(self.student.user.id)
         data = {"token": expired_token}
 
         response = self.client.post(self.url, data, format="json")

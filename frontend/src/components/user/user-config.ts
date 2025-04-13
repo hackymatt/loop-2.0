@@ -14,4 +14,5 @@ export const defaultUser: UserState = {
   isRegistered: false,
   isActive: false,
   isLoggedIn: false,
+  plan: null,
 };

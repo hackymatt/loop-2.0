@@ -2,7 +2,7 @@ from rest_framework import status
 from django.test import TestCase
 from rest_framework.test import APIClient
 from const import Urls
-from ..factory import create_user
+from ..factory import create_student
 from ..helpers import generate_valid_token, generate_expired_token
 
 
@@ -11,13 +11,13 @@ class PasswordResetConfirmTests(TestCase):
         self.client = APIClient()
         self.url = f"/{Urls.API}/{Urls.PASSWORD_RESET_CONFIRM}"
         """Create a test user."""
-        self.user, _ = create_user()
+        self.student, _ = create_student()
 
         # Generate a valid JWT token for the user
-        self.valid_token = generate_valid_token(self.user.id)
+        self.valid_token = generate_valid_token(self.student.user.id)
 
         # Generate an expired JWT token
-        self.expired_token = generate_expired_token(self.user.id)
+        self.expired_token = generate_expired_token(self.student.user.id)
 
         # Invalid token (corrupted string)
         self.invalid_token = "invalid.token.string"
@@ -33,11 +33,11 @@ class PasswordResetConfirmTests(TestCase):
             format="json",
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data["email"], self.user.email)
+        self.assertEqual(response.data["email"], self.student.user.email)
 
         # Ensure the password has actually changed
-        self.user.refresh_from_db()
-        self.assertTrue(self.user.check_password("NewSecurePass123!"))
+        self.student.user.refresh_from_db()
+        self.assertTrue(self.student.user.check_password("NewSecurePass123!"))
 
     def test_expired_token(self):
         """Ensure an expired token returns a 400 error."""

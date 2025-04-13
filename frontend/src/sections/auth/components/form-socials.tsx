@@ -62,14 +62,15 @@ function GoogleSignIn({ methods }: { methods: UseFormReturn<any> }) {
 
     try {
       const { data: responseData } = await googleLogin({ token });
-      const { email, first_name, last_name } = responseData;
+      const { email, first_name, last_name, user_type, is_active } = responseData;
       user.setState({
         isRegistered: true,
-        isActive: true,
+        isActive: is_active,
         isLoggedIn: true,
         email,
         firstName: first_name,
         lastName: last_name,
+        userType: user_type,
       });
       router.push(paths.account.dashboard);
     } catch (error) {
@@ -102,14 +103,15 @@ function GithubSignIn({ methods }: { methods: UseFormReturn<any> }) {
 
     try {
       const { data: responseData } = await githubLogin({ code });
-      const { email, first_name, last_name } = responseData;
+      const { email, first_name, last_name, user_type, is_active } = responseData;
       user.setState({
         isRegistered: true,
-        isActive: true,
+        isActive: is_active,
         isLoggedIn: true,
         email,
         firstName: first_name,
         lastName: last_name,
+        userType: user_type,
       });
       router.push(paths.account.dashboard);
     } catch (error) {
@@ -144,14 +146,15 @@ function FacebookSignIn({ methods }: { methods: UseFormReturn<any> }) {
 
     try {
       const { data: responseData } = await facebookLogin({ access_token });
-      const { email, first_name, last_name } = responseData;
+      const { email, first_name, last_name, user_type, is_active } = responseData;
       user.setState({
         isRegistered: true,
-        isActive: true,
+        isActive: is_active,
         isLoggedIn: true,
         email,
         firstName: first_name,
         lastName: last_name,
+        userType: user_type,
       });
       router.push(paths.account.dashboard);
     } catch (error) {

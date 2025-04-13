@@ -1,11 +1,14 @@
+import type { LEVEL_TYPE } from "src/consts/level";
 import type { COURSE_TYPE } from "src/consts/course";
 
 import type { IInstructorProps } from "./user";
 
 // ----------------------------------------------------------------------
 
+export type LevelType = (typeof LEVEL_TYPE)[keyof typeof LEVEL_TYPE];
+
 export type ICourseLevelProp = {
-  slug: string;
+  slug: LevelType;
   name: string;
 };
 

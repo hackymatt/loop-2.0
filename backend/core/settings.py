@@ -105,6 +105,8 @@ INSTALLED_APPS = [
     "blog.topic",
     "blog.tag",
     "blog",
+    "plan",
+    "plan.subscription",
 ]
 
 DEBUG_TOOLBAR_PANELS = [

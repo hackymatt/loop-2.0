@@ -31,4 +31,6 @@ export const URLS = {
   FEATURED_COURSES: "/featured-courses",
   FEATURED_REVIEWS: "/featured-reviews",
   FEATURED_POST: "/featured-post",
+  // PLAN
+  PLANS: "/plans",
 } as const;

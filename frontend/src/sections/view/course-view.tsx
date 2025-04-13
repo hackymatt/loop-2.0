@@ -38,8 +38,8 @@ export function CourseView({ slug }: { slug: string }) {
     <>
       <ReviewSummary
         slug={slug}
-        ratingNumber={course?.ratingNumber || 0}
-        reviewNumber={course?.totalReviews || 0}
+        ratingNumber={course.ratingNumber}
+        reviewNumber={course.totalReviews}
       />
 
       <Container>
@@ -61,22 +61,22 @@ export function CourseView({ slug }: { slug: string }) {
     <>
       <CourseDetailsHero
         slug={slug}
-        title={course?.name || ""}
-        level={course?.level || { slug: "", name: "" }}
-        teachers={course?.teachers || []}
-        category={course?.category || { slug: "", name: "" }}
-        technology={course?.technology || { slug: "", name: "" }}
-        totalPoints={course?.totalPoints || 0}
-        totalHours={course?.totalHours || 0}
-        description={course?.description || ""}
-        ratingNumber={course?.ratingNumber || 0}
-        totalReviews={course?.totalReviews || 0}
-        totalExercises={course?.totalExercises || 0}
-        totalVideos={course?.totalVideos || 0}
-        totalQuizzes={course?.totalQuizzes || 0}
-        totalLessons={course?.totalLessons || 0}
-        totalStudents={course?.totalStudents || 0}
-        progress={course?.progress || 0}
+        name={course.name}
+        level={course.level}
+        teachers={course.teachers}
+        category={course.category}
+        technology={course.technology}
+        totalPoints={course.totalPoints}
+        totalHours={course.totalHours}
+        description={course.description}
+        ratingNumber={course.ratingNumber}
+        totalReviews={course.totalReviews}
+        totalExercises={course.totalExercises}
+        totalVideos={course.totalVideos}
+        totalQuizzes={course.totalQuizzes}
+        totalLessons={course.totalLessons}
+        totalStudents={course.totalStudents}
+        progress={course.progress}
       />
 
       <Container sx={{ py: { xs: 5, md: 10 } }}>
@@ -86,18 +86,18 @@ export function CourseView({ slug }: { slug: string }) {
           </Grid>
 
           <Grid size={{ xs: 12, md: 5, lg: 4 }}>
-            <CourseDetailsPrerequisites courses={course?.prerequisites || []} sx={{ mb: 3 }} />
+            <CourseDetailsPrerequisites courses={course.prerequisites} sx={{ mb: 3 }} />
 
-            <CourseDetailsTeachers teachers={course?.teachers || []} sx={{ mb: 3 }} />
+            <CourseDetailsTeachers teachers={course.teachers} sx={{ mb: 3 }} />
 
             <CourseCertificateDetailsInfo
               slug={slug}
-              name={course?.name || ""}
-              chapters={course?.chapters || []}
+              name={course.name}
+              chapters={course.chapters}
               sx={{ mb: 3 }}
             />
 
-            <CourseChatDetailsInfo slug={slug} chatUrl={course?.chatUrl || null} />
+            <CourseChatDetailsInfo slug={slug} chatUrl={course.chatUrl} />
           </Grid>
         </Grid>
       </Container>

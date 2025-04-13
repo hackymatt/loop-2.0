@@ -14,7 +14,13 @@ type ILogin = {
 };
 
 type ILoginReturn = {
-  data: { email: string; first_name: string; last_name: string };
+  data: {
+    email: string;
+    first_name: string;
+    last_name: string;
+    user_type: "admin" | "instructor" | "student";
+    is_active: boolean;
+  };
   status: number;
 };
 

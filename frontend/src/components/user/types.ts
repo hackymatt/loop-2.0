@@ -1,4 +1,5 @@
 import type { UserType } from "src/types/user";
+import type { PlanType } from "src/types/plan";
 
 // ----------------------------------------------------------------------
 
@@ -10,6 +11,7 @@ export type UserState = {
   isRegistered: boolean;
   isActive: boolean;
   isLoggedIn: boolean;
+  plan: PlanType | null;
 };
 
 export type UserContextValue = {

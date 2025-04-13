@@ -17,8 +17,8 @@ class CourseViewSetTest(TestCase):
         self.student_1, _ = create_student()
         self.student_2, _ = create_student()
 
-        self.course_1, self.course_1_translations = create_course()
-        self.course_2, self.course_2_translations = create_course()
+        self.course_1 = create_course()
+        self.course_2 = create_course()
 
         self.review_1 = Review.objects.create(
             student=self.student_1,
@@ -48,7 +48,7 @@ class CourseViewSetTest(TestCase):
         self.assertEqual(len(response.data["results"]), 2)
         self.assertEqual(
             response.data["results"][0]["translated_name"],
-            self.course_1_translations["en"].name,
+            self.course_1.get_translation("en").name,
         )
 
     def test_retrieve_course_by_slug(self):
@@ -57,7 +57,7 @@ class CourseViewSetTest(TestCase):
         self.assertEqual(response.data["slug"], self.course_1.slug)
         self.assertEqual(
             response.data["translated_overview"],
-            self.course_1_translations["en"].overview,
+            self.course_1.get_translation("en").overview,
         )
 
     def test_filter_courses_by_technology(self):
@@ -87,7 +87,7 @@ class FeaturedCoursesViewTest(TestCase):
         # Create 7 courses with varying ratings, enrollments, and created_at
         self.courses = []
         for i in range(7):
-            course, _ = create_course()
+            course = create_course()
             self.courses.append(course)
 
         # Ratings
@@ -158,23 +158,23 @@ class SimilarCoursesViewTest(TestCase):
         self.url = f"/{Urls.API}/{Urls.SIMILAR_COURSES}"
 
         # Create a base course
-        self.base_course, _ = create_course()
+        self.base_course = create_course()
 
         # Create similar courses (matching at least one attribute)
-        self.similar_1, _ = create_course()
+        self.similar_1 = create_course()
         self.similar_1.category = self.base_course.category
         self.similar_1.save()
 
-        self.similar_2, _ = create_course()
+        self.similar_2 = create_course()
         self.similar_2.technology = self.base_course.technology
         self.similar_2.save()
 
-        self.similar_3, _ = create_course()
+        self.similar_3 = create_course()
         self.similar_3.level = self.base_course.level
         self.similar_3.save()
 
         # Course that should not be returned
-        self.unrelated, _ = create_course()
+        self.unrelated = create_course()
 
     def test_view_returns_success(self):
         response = self.client.get(
@@ -215,7 +215,7 @@ class SimilarCoursesViewTest(TestCase):
 
     def test_returns_empty_if_no_similar(self):
         # Create a course with a unique category, tech, and level
-        unique_course, _ = create_course()
+        unique_course = create_course()
         response = self.client.get(self.url.replace("<slug:slug>", unique_course.slug))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), 0)

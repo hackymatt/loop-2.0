@@ -6,7 +6,7 @@ from django.contrib.auth import get_user_model
 from const import Urls
 from utils.google.gmail import GmailApi
 from ..helpers import mock_send_message
-from ..factory import create_user
+from ..factory import create_student
 
 
 class RegisterViewTestCase(TestCase):
@@ -19,7 +19,7 @@ class RegisterViewTestCase(TestCase):
             "password": "Password123!",
         }
         # Create a user in the database for testing the existing email scenario
-        self.existing_user, self.existing_user_password = create_user()
+        self.existing_student, self.existing_student_password = create_student()
 
     @patch.object(GmailApi, "_send_message")
     def test_register_user_valid_data(self, send_message_mock):
@@ -58,8 +58,8 @@ class RegisterViewTestCase(TestCase):
         response = self.client.post(
             self.url,
             {
-                "email": self.existing_user.email,
-                "password": self.existing_user_password,
+                "email": self.existing_student.user.email,
+                "password": self.existing_student_password,
             },
             format="json",
         )

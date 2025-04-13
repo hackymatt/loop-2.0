@@ -6,8 +6,11 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.conf import settings
+from plan.subscription.utils import get_active_user_plan
 from ...utils import get_unique_username, set_cookies
-from const import JoinType
+from plan.subscription.utils import subscribe
+from user.type.student_user.models import Student
+from const import JoinType, UserType
 
 github_provider = settings.SOCIALACCOUNT_PROVIDERS.get("github", {})
 
@@ -87,7 +90,7 @@ class GithubLoginView(APIView):
         picture = github_response.get("avatar_url", "")
 
         # Create user or get existing one
-        user, created = get_user_model().objects.get_or_create(
+        user, user_created = get_user_model().objects.get_or_create(
             email=email,
             defaults={
                 "username": username,
@@ -98,6 +101,8 @@ class GithubLoginView(APIView):
                 "is_active": True,
             },
         )
+        student, student_created = Student.objects.get_or_create(user=user)
+        subscribe(student)
 
         # Create JWT tokens
         refresh_token = RefreshToken.for_user(user)
@@ -108,6 +113,11 @@ class GithubLoginView(APIView):
                 "email": user.email,
                 "first_name": user.first_name,
                 "last_name": user.last_name,
+                "user_type": user.user_type,
+                "is_active": user.is_active,
+                "plan": get_active_user_plan(user).slug
+                if user.user_type == UserType.STUDENT
+                else None,
             },
             status=status.HTTP_200_OK,
         )

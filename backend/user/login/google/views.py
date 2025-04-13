@@ -5,8 +5,11 @@ from django.contrib.auth import get_user_model
 from django.utils.translation import gettext as _
 from rest_framework_simplejwt.tokens import RefreshToken
 import requests
+from plan.subscription.utils import get_active_user_plan
 from ...utils import get_unique_username, set_cookies
-from const import JoinType
+from plan.subscription.utils import subscribe
+from user.type.student_user.models import Student
+from const import JoinType, UserType
 
 
 class GoogleLoginView(APIView):
@@ -32,7 +35,7 @@ class GoogleLoginView(APIView):
         picture = google_response.get("picture", "")
 
         # Create user or get
-        user, created = get_user_model().objects.get_or_create(
+        user, user_created = get_user_model().objects.get_or_create(
             email=email,
             defaults={
                 "username": email,
@@ -43,6 +46,8 @@ class GoogleLoginView(APIView):
                 "is_active": True,
             },
         )
+        student, student_created = Student.objects.get_or_create(user=user)
+        subscribe(student)
 
         # Create JWT token for the user
         refresh_token = RefreshToken.for_user(user)
@@ -53,6 +58,11 @@ class GoogleLoginView(APIView):
                 "email": user.email,
                 "first_name": user.first_name,
                 "last_name": user.last_name,
+                "user_type": user.user_type,
+                "is_active": user.is_active,
+                "plan": get_active_user_plan(user).slug
+                if user.user_type == UserType.STUDENT
+                else None,
             },
             status=status.HTTP_200_OK,
         )

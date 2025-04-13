@@ -3,7 +3,9 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from .serializers import LoginSerializer
+from plan.subscription.utils import get_active_user_plan
 from ...utils import set_cookies
+from const import UserType
 
 
 class LoginView(APIView):
@@ -22,6 +24,11 @@ class LoginView(APIView):
                     "email": user.email,
                     "first_name": user.first_name,
                     "last_name": user.last_name,
+                    "user_type": user.user_type,
+                    "is_active": user.is_active,
+                    "plan": get_active_user_plan(user).slug
+                    if user.user_type == UserType.STUDENT
+                    else None,
                 },
                 status=status.HTTP_200_OK,
             )

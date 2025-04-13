@@ -41,9 +41,6 @@ class ReadingLesson(BaseModel):
                 f"Reading can only be created for {LessonType.READING} lesson."
             )  # pragma: no cover
 
-    def get_translation(self, lang_code):
-        return self.translations.filter(language=lang_code).first()
-
     def save(self, *args, **kwargs):
         self.clean()
         super().save(*args, **kwargs)
@@ -88,9 +85,6 @@ class VideoLesson(BaseModel):
                 f"Video can only be created for {LessonType.VIDEO} lesson."
             )  # pragma: no cover
 
-    def get_translation(self, lang_code):
-        return self.translations.filter(language=lang_code).first()
-
     def save(self, *args, **kwargs):
         self.clean()
         super().save(*args, **kwargs)
@@ -134,9 +128,6 @@ class QuizLesson(BaseModel):
             raise ValidationError(
                 f"Quiz can only be created for {LessonType.QUIZ} lesson."
             )  # pragma: no cover
-
-    def get_translation(self, lang_code):
-        return self.translations.filter(language=lang_code).first()
 
     def save(self, *args, **kwargs):
         self.clean()
@@ -184,9 +175,6 @@ class CodingLesson(BaseModel):
             raise ValidationError(
                 f"Coding can only be created for {LessonType.CODING} lesson."
             )  # pragma: no cover
-
-    def get_translation(self, lang_code):
-        return self.translations.filter(language=lang_code).first()
 
     def save(self, *args, **kwargs):
         self.clean()
