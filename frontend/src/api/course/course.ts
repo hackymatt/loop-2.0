@@ -39,6 +39,8 @@ type ILesson = {
   translated_name: string;
   points: number;
   type: "reading" | "video" | "quiz" | "coding";
+  progress?: number;
+  earned_points?: number | null;
 };
 
 type IChapter = {
@@ -159,10 +161,18 @@ export const courseQuery = (slug: string, language?: Language) => {
           name: chapterName,
           description: chapterDescription,
           lessons: lessons.map(
-            ({ translated_name: lessonName, points: lessonPoints, ...restLesson }) => ({
+            ({
+              translated_name: lessonName,
+              points: lessonPoints,
+              progress: lessonProgress,
+              earned_points,
+              ...restLesson
+            }) => ({
               ...restLesson,
               name: lessonName,
               totalPoints: lessonPoints,
+              progress: lessonProgress ?? null,
+              earnedPoints: earned_points ?? null,
             })
           ),
           progress: chapterProgress ?? null,

@@ -14,6 +14,7 @@ import { paths } from "src/routes/paths";
 import { Iconify } from "src/components/iconify";
 import { useUserContext } from "src/components/user";
 
+import { findNextLesson } from "./find-next-lesson";
 import { CourseDetailsLessonList } from "./course-details-lesson-list";
 
 // ----------------------------------------------------------------------
@@ -39,8 +40,9 @@ export function CourseDetailsChapterItem({
   const { isLoggedIn } = user.state;
 
   const started = (chapter.progress || 0) > 0;
-  const next = { chapter: chapter.slug, lesson: chapter.lessons[0].slug };
-  const redirect = `${paths.learn}/${course.slug}/${next.chapter}/${next.lesson}`;
+  const completed = (chapter.progress || 0) === 100;
+  const next = (findNextLesson([chapter]) || chapter.lessons[0]).slug;
+  const redirect = `${paths.learn}/${course.slug}/${next}`;
 
   const renderButton = () => (
     <Button
@@ -98,7 +100,7 @@ export function CourseDetailsChapterItem({
 
           <Box sx={{ flexGrow: 1 }} />
 
-          {renderButton()}
+          {!completed && renderButton()}
         </Box>
 
         <Box sx={{ display: "flex", alignItems: "center", width: 1, gap: 1 }}>

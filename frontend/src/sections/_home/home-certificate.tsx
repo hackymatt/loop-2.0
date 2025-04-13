@@ -14,6 +14,7 @@ import Typography from "@mui/material/Typography";
 import { paths } from "src/routes/paths";
 
 import { Iconify } from "src/components/iconify";
+import { useUserContext } from "src/components/user";
 import { varFade, MotionViewport } from "src/components/animate";
 
 import { Certificate } from "../certificate";
@@ -24,6 +25,10 @@ const variants: Variants = varFade("inDown", { distance: 24 });
 
 export function HomeCertificate({ sx, ...other }: BoxProps) {
   const { t } = useTranslation("home");
+
+  const user = useUserContext();
+  const { isLoggedIn, firstName, lastName } = user.state;
+
   const renderContent = () => (
     <Box sx={{ p: { md: 10 }, textAlign: { xs: "center", md: "left" } }}>
       <m.div variants={variants}>
@@ -65,7 +70,7 @@ export function HomeCertificate({ sx, ...other }: BoxProps) {
     <m.div variants={varFade("in")}>
       <Certificate
         course={t("certificate.course")}
-        student={t("certificate.student")}
+        student={isLoggedIn ? `${firstName} ${lastName}` : t("certificate.student")}
         sx={(theme) => ({
           height: 260,
           borderRadius: 2,

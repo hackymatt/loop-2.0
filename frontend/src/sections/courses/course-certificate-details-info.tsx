@@ -14,19 +14,29 @@ import { Iconify } from "src/components/iconify";
 import { useUserContext } from "src/components/user";
 
 import { Certificate } from "../certificate";
+import { findNextLesson } from "./find-next-lesson";
 
 // ----------------------------------------------------------------------
 
-type Props = CardProps & Pick<ICourseProps, "slug" | "name" | "chapters">;
-export function CourseCertificateDetailsInfo({ sx, slug, name, chapters, ...other }: Props) {
+type Props = CardProps & Pick<ICourseProps, "slug" | "name" | "chapters" | "progress">;
+export function CourseCertificateDetailsInfo({
+  sx,
+  slug,
+  name,
+  chapters,
+  progress,
+  ...other
+}: Props) {
   const { t } = useTranslation("course");
   const { t: certificate } = useTranslation("certificate");
 
   const user = useUserContext();
-  const { isLoggedIn } = user.state;
+  const { isLoggedIn, firstName, lastName } = user.state;
 
-  const next = { chapter: "abc", lesson: "def" };
-  const redirect = `${paths.learn}/${slug}/${next.chapter}/${next.lesson}`;
+  const started = (progress || 0) > 0;
+  const completed = (progress || 0) === 100;
+  const next = (findNextLesson(chapters) || chapters[0].lessons[0]).slug;
+  const redirect = `${paths.learn}/${slug}/${next}`;
 
   return (
     <Card
@@ -40,7 +50,11 @@ export function CourseCertificateDetailsInfo({ sx, slug, name, chapters, ...othe
         {t("certificate.title")}
       </Typography>
 
-      <Certificate course={name} student={certificate("name")} sx={{ height: 220 }} />
+      <Certificate
+        course={name}
+        student={isLoggedIn ? `${firstName} ${lastName}` : certificate("name")}
+        sx={{ height: 220 }}
+      />
 
       <Typography variant="body2">{t("certificate.subtitle")}</Typography>
 
@@ -54,15 +68,15 @@ export function CourseCertificateDetailsInfo({ sx, slug, name, chapters, ...othe
         </Typography>
       </Box>
 
-      {!isLoggedIn ? (
+      {!completed ? (
         <Button
           variant="contained"
           color="primary"
           size="large"
-          href={`${paths.register}?redirect=${redirect}`}
+          href={isLoggedIn ? redirect : `${paths.register}?redirect=${redirect}`}
           sx={{ px: 2, borderRadius: "inherit", textAlign: "center" }}
         >
-          {t("start")}
+          {isLoggedIn && started ? t("continue") : t("start")}
         </Button>
       ) : null}
     </Card>

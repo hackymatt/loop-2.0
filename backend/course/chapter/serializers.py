@@ -29,17 +29,27 @@ class ChapterSerializer(serializers.ModelSerializer):
         data = super().to_representation(instance)
 
         user = self.context["request"].user
-        if user.user_type == UserType.STUDENT:
-            progress = self.get_progress(instance, user)
-            data["progress"] = progress
+        if not user.is_authenticated or user.user_type != UserType.STUDENT:
+            return data
+
+        data["progress"] = self.get_progress(instance, user)
 
         return data
 
     def get_progress(self, obj, user):
-        lessons = obj.lessons.all()
-        total = lessons.count()
-        completed = CourseProgress.objects.filter(
-            student__user=user, lesson__in=lessons
-        ).count()
+        lesson_ids = obj.lessons.values_list("id", flat=True)
+        total = len(lesson_ids)
 
-        return int((completed / total) * 100) if total != 0 else 0
+        if total == 0:
+            return 0
+
+        completed = (
+            CourseProgress.objects.filter(
+                student__user=user, lesson_id__in=lesson_ids, completed_at__isnull=False
+            )
+            .values("lesson_id")
+            .distinct()
+            .count()
+        )
+
+        return int((completed / total) * 100)

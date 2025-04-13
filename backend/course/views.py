@@ -1,27 +1,67 @@
 from rest_framework import viewsets, views
 from rest_framework.response import Response
 from .models import Course
+from .chapter.models import Chapter
 from .serializers import CourseListSerializer, CourseRetrieveSerializer
 from .filters import CourseFilter
 from rest_framework.permissions import AllowAny
-from django.db.models import Avg, Count, Q
+from django.db.models import Count, Avg, Sum, Q, Prefetch
 from django.shortcuts import get_object_or_404
+from const import LessonType
 
 
 class CourseViewSet(viewsets.ModelViewSet):
     http_method_names = ["get"]
-    queryset = Course.objects.prefetch_related(
-        "instructors", "chapters", "prerequisites", "translations"
-    ).order_by("slug")
-    serializer_class = CourseRetrieveSerializer
     filterset_class = CourseFilter
     lookup_field = "slug"
 
+    def get_queryset(self):
+        return (
+            Course.objects.prefetch_related(
+                "instructors",
+                "translations",
+                Prefetch(
+                    "chapters", queryset=Chapter.objects.prefetch_related("lessons")
+                ),
+                Prefetch(
+                    "prerequisites",
+                    queryset=Course.objects.prefetch_related("translations"),
+                ),
+            )
+            .annotate(
+                lessons_count=Count("chapters__lessons", distinct=True),
+                average_rating=Avg("reviews__rating"),
+                ratings_count=Count("reviews", distinct=True),
+                students_count=Count("enrollments", distinct=True),
+                points=Sum("chapters__lessons__points"),
+                reading_count=Count(
+                    "chapters__lessons",
+                    filter=Q(chapters__lessons__type=LessonType.READING),
+                    distinct=True,
+                ),
+                video_count=Count(
+                    "chapters__lessons",
+                    filter=Q(chapters__lessons__type=LessonType.VIDEO),
+                    distinct=True,
+                ),
+                quiz_count=Count(
+                    "chapters__lessons",
+                    filter=Q(chapters__lessons__type=LessonType.QUIZ),
+                    distinct=True,
+                ),
+                coding_count=Count(
+                    "chapters__lessons",
+                    filter=Q(chapters__lessons__type=LessonType.CODING),
+                    distinct=True,
+                ),
+            )
+            .order_by("slug")
+        )
+
     def get_serializer_class(self):
-        # Return different serializer depending on the action
-        if self.action == "list":
-            return CourseListSerializer  # Use list serializer for listing
-        return CourseRetrieveSerializer  # Use retrieve serializer for single course retrieval
+        return (
+            CourseListSerializer if self.action == "list" else CourseRetrieveSerializer
+        )
 
 
 class FeaturedCoursesView(views.APIView):

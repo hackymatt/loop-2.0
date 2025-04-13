@@ -36,6 +36,8 @@ export type ICourseLessonProp = {
   name: string;
   type: ICourseLessonType;
   totalPoints: number;
+  progress: number | null;
+  earnedPoints: number | null;
 };
 
 export type ICourseChapterProp = {

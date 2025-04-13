@@ -20,7 +20,7 @@ class CourseFilter(django_filters.FilterSet):
     rating = filters.NumberFilter(
         method="filter_by_min_rating"
     )  # Filter by minimum average rating
-    status = filters.CharFilter(method="filter_by_status") # Filter by progress status
+    status = filters.CharFilter(method="filter_by_status")  # Filter by progress status
 
     class Meta:
         model = Course
@@ -43,17 +43,20 @@ class CourseFilter(django_filters.FilterSet):
         )
 
         # subquery, który liczy ukończone lekcje w danym kursie
-        completed_lessons_subquery = CourseProgress.objects.filter(
-            student__user=user,
-            lesson__chapters__courses__id=OuterRef("pk")
-        ).values("lesson__chapters__courses__id") \
-        .annotate(count=Count("lesson", distinct=True)) \
-        .values("count")[:1]
+        completed_lessons_subquery = (
+            CourseProgress.objects.filter(
+                student__user=user,
+                lesson__chapters__courses__id=OuterRef("pk"),
+                completed_at__isnull=False,
+            )
+            .values("lesson__chapters__courses__id")
+            .annotate(count=Count("lesson", distinct=True))
+            .values("count")[:1]
+        )
 
         queryset = queryset.annotate(
             completed_lessons=Coalesce(
-                Subquery(completed_lessons_subquery, output_field=IntegerField()),
-                0
+                Subquery(completed_lessons_subquery, output_field=IntegerField()), 0
             )
         )
 
@@ -61,7 +64,7 @@ class CourseFilter(django_filters.FilterSet):
             user_progress=Coalesce(
                 100 * F("completed_lessons") / NullIf(F("total_lessons"), 0),
                 0,
-                output_field=IntegerField()
+                output_field=IntegerField(),
             )
         )
 

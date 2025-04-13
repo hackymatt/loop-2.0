@@ -25,6 +25,7 @@ import { AnimateBorder } from "src/components/animate";
 import { CustomBreadcrumbs } from "src/components/custom-breadcrumbs";
 
 import { SignUpView } from "../auth/sign-up-view";
+import { findNextLesson } from "./find-next-lesson";
 import { FormHead } from "../auth/components/form-head";
 
 // ----------------------------------------------------------------------
@@ -48,6 +49,7 @@ type Props = BoxProps &
     | "totalVideos"
     | "totalLessons"
     | "totalStudents"
+    | "chapters"
     | "progress"
   >;
 
@@ -69,6 +71,7 @@ export function CourseDetailsHero({
   totalVideos,
   totalLessons,
   totalStudents,
+  chapters,
   progress,
   ...other
 }: Props) {
@@ -88,8 +91,9 @@ export function CourseDetailsHero({
   const quiz = t("quiz", { returnObjects: true }) as string[];
 
   const started = (progress || 0) > 0;
-  const next = { chapter: "abc", lesson: "def" };
-  const redirect = `${paths.learn}/${slug}/${next.chapter}/${next.lesson}`;
+  const completed = (progress || 0) === 100;
+  const next = (findNextLesson(chapters) || chapters[0].lessons[0]).slug;
+  const redirect = `${paths.learn}/${slug}/${next}`;
 
   const languagePluralize = usePluralize();
 
@@ -323,7 +327,7 @@ export function CourseDetailsHero({
         >
           <Grid size={{ xs: 12, md: 7 }} sx={{ gap: 3, display: "flex", flexDirection: "column" }}>
             {renderTexts()}
-            {renderButton()}
+            {!completed && renderButton()}
             {renderContent()}
             {renderSummary()}
           </Grid>

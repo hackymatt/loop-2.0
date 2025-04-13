@@ -83,6 +83,7 @@ export function CourseView({ slug }: { slug: string }) {
         totalQuizzes={course?.totalQuizzes || 0}
         totalLessons={course?.totalLessons || 0}
         totalStudents={course?.totalStudents || 0}
+        chapters={course?.chapters || []}
         progress={course?.progress || 0}
       />
 
@@ -101,6 +102,7 @@ export function CourseView({ slug }: { slug: string }) {
               slug={slug}
               name={course?.name || ""}
               chapters={course?.chapters || []}
+              progress={course?.progress || 0}
               sx={{ mb: 3 }}
             />
 

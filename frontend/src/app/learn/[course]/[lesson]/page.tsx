@@ -8,18 +8,14 @@ import { LearnView } from "src/sections/view/learn-view";
 
 // ----------------------------------------------------------------------
 
-export default function Page({
-  params,
-}: {
-  params: { course: string; chapter: string; lesson: string };
-}) {
-  return <LearnView course={params.course} chapter={params.chapter} lesson={params.lesson} />;
+export default function Page({ params }: { params: { course: string; lesson: string } }) {
+  return <LearnView course={params.course} lesson={params.lesson} />;
 }
 
 export async function generateMetadata({
   params,
 }: {
-  params: { course: string; chapter: string; lesson: string };
+  params: { course: string; lesson: string };
 }): Promise<Metadata> {
   try {
     // const { queryFn } = courseQuery(params.slug, LANGUAGE.PL);
@@ -30,7 +26,7 @@ export async function generateMetadata({
 
     return createMetadata({
       title,
-      path: `${paths.learn}/${params.course}/${params.chapter}/${params.lesson}`,
+      path: `${paths.learn}/${params.course}/${params.lesson}`,
     });
   } catch {
     return createMetadata({
