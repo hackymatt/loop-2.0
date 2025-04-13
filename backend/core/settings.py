@@ -100,6 +100,7 @@ INSTALLED_APPS = [
     "course.lesson",
     "course.chapter",
     "course.enrollment",
+    "course.progress",
     "course",
     "review",
     "blog.topic",

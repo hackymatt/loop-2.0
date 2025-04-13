@@ -68,3 +68,8 @@ class LessonType(TextChoices):
 class QuizType(TextChoices):
     SINGLE = "single"
     MULTI = "multi"
+
+class CourseStatus:
+    NOT_STARTED = "not-started"
+    IN_PROGRESS = "in-progress"
+    COMPLETED = "completed"

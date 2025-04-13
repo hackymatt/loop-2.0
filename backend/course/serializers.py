@@ -5,10 +5,13 @@ from .level.serializers import LevelSerializer
 from .category.serializers import CategorySerializer
 from .technology.serializers import TechnologySerializer
 from .enrollment.models import CourseEnrollment
+from .lesson.models import Lesson
 from .chapter.serializers import ChapterSerializer
+from .progress.models import CourseProgress
 from user.type.instructor_user.serializers import InstructorSerializer
 from review.models import Review
-from const import LessonType
+from const import LessonType, UserType
+
 
 class PrerequisiteSerializer(serializers.ModelSerializer):
     name = serializers.CharField(write_only=True)
@@ -24,6 +27,7 @@ class PrerequisiteSerializer(serializers.ModelSerializer):
     def get_translated_name(self, obj):
         lang = self.context.get("request").LANGUAGE_CODE
         return obj.get_translation(lang).name
+
 
 class BaseCourseSerializer(serializers.ModelSerializer):
     name = serializers.CharField(write_only=True)
@@ -82,6 +86,25 @@ class BaseCourseSerializer(serializers.ModelSerializer):
 
     def get_students_count(self, obj):
         return CourseEnrollment.objects.filter(course=obj).count()
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+
+        user = self.context["request"].user
+        if user.user_type == UserType.STUDENT:
+            progress = self.get_progress(instance, user)
+            data["progress"] = progress
+
+        return data
+
+    def get_progress(self, obj, user):
+        lessons = Lesson.objects.filter(chapters__in=obj.chapters.all()).distinct()
+        total = lessons.count()
+        completed = CourseProgress.objects.filter(
+            student__user=user, lesson__in=lessons
+        ).count()
+
+        return int((completed / total) * 100) if total != 0 else 0
 
 
 class CourseListSerializer(BaseCourseSerializer):
@@ -148,7 +171,7 @@ class CourseRetrieveSerializer(BaseCourseSerializer):
         return ChapterSerializer(
             obj.chapters.all(), many=True, context=self.context
         ).data
-    
+
     def get_prerequisites(self, obj):
         return PrerequisiteSerializer(
             obj.prerequisites.all(), many=True, context=self.context

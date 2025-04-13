@@ -20,6 +20,7 @@ import { Iconify } from "src/components/iconify";
 
 import { CourseList } from "../courses/course-list";
 import { CoursesFilters } from "../courses/courses-filters";
+import { SplashScreen } from "src/components/loading-screen";
 
 // ----------------------------------------------------------------------
 
@@ -34,10 +35,17 @@ export function CoursesView() {
 
   const { handleChange, query } = useQueryParams();
 
-  const { data: courseLevels } = useCourseLevels({ sort_by: "order", page_size: "-1" });
-  const { data: courseTechnologies } = useCourseTechnologies({ page_size: "-1" });
-  const { data: courseCategories } = useCourseCategories({ page_size: "-1" });
-  const { data: courses, count, pageSize } = useCourses(query);
+  const { data: courseLevels, isLoading: isLoadingLevels } = useCourseLevels({
+    sort_by: "order",
+    page_size: "-1",
+  });
+  const { data: courseTechnologies, isLoading: isLoadingTechnologies } = useCourseTechnologies({
+    page_size: "-1",
+  });
+  const { data: courseCategories, isLoading: isLoadingCategories } = useCourseCategories({
+    page_size: "-1",
+  });
+  const { data: courses, count, pageSize, isLoading: isLoadingCourse } = useCourses(query);
 
   const openMobile = useBoolean();
 
@@ -83,6 +91,10 @@ export function CoursesView() {
       />
     </Box>
   );
+
+  if (isLoadingLevels || isLoadingTechnologies || isLoadingCategories || isLoadingCourse) {
+    return <SplashScreen />;
+  }
 
   return (
     <Container>

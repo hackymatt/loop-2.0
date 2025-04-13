@@ -21,6 +21,7 @@ type ILoginReturn = {
     last_name: string;
     user_type: "admin" | "instructor" | "student";
     is_active: boolean;
+    plan: "free" | "basic" | "premium";
   };
   status: number;
 };

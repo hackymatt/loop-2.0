@@ -3,6 +3,10 @@
 import Grid from "@mui/material/Grid2";
 import { Box, Container } from "@mui/material";
 
+import { PLAN_TYPE } from "src/consts/plan";
+
+import { useUserContext } from "src/components/user";
+
 import { ProfileSummary } from "../dashboard/profile-summary";
 import { CoursesProgress } from "../dashboard/courses-progress";
 import { CertificatesProgress } from "../dashboard/certificates-progress";
@@ -10,6 +14,9 @@ import { CertificatesProgress } from "../dashboard/certificates-progress";
 // ----------------------------------------------------------------------
 
 export function DashboardView() {
+  const user = useUserContext();
+  const { plan } = user.state;
+
   const renderContent = () => (
     <Box
       sx={{
@@ -30,7 +37,7 @@ export function DashboardView() {
       >
         <CoursesProgress />
 
-        <CertificatesProgress />
+        <CertificatesProgress disabled={plan === PLAN_TYPE.FREE} />
       </Box>
     </Box>
   );
