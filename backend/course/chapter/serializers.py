@@ -52,4 +52,4 @@ class ChapterSerializer(serializers.ModelSerializer):
             .count()
         )
 
-        return int((completed / total) * 100)
+        return float((completed / total) * 100)

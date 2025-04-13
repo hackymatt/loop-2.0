@@ -1,6 +1,17 @@
 import django_filters
-from django.db.models import Avg, Count, IntegerField, F, OuterRef, Subquery
-from django.db.models.functions import Coalesce, NullIf
+from django.db.models import (
+    Avg,
+    Count,
+    IntegerField,
+    FloatField,
+    F,
+    OuterRef,
+    Subquery,
+    Case,
+    When,
+    Value,
+)
+from django.db.models.functions import Coalesce, Cast
 from .models import Course
 from .progress.models import CourseProgress
 from django_filters import rest_framework as filters
@@ -60,11 +71,21 @@ class CourseFilter(django_filters.FilterSet):
             )
         )
 
+        # oblicz progres użytkownika, bez dzielenia przez 0
         queryset = queryset.annotate(
             user_progress=Coalesce(
-                100 * F("completed_lessons") / NullIf(F("total_lessons"), 0),
-                0,
-                output_field=IntegerField(),
+                Case(
+                    When(total_lessons=0, then=Value(0.0)),
+                    default=Cast(
+                        100.0
+                        * F("completed_lessons")
+                        / Cast(F("total_lessons"), FloatField()),
+                        FloatField(),
+                    ),
+                    output_field=FloatField(),
+                ),
+                0.0,
+                output_field=FloatField(),
             )
         )
 

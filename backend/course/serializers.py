@@ -89,7 +89,7 @@ class BaseCourseSerializer(serializers.ModelSerializer):
             student__user=user, lesson_id__in=lesson_ids, completed_at__isnull=False
         ).count()
 
-        return int((completed / total) * 100)
+        return float((completed / total) * 100)
 
 
 class CourseListSerializer(BaseCourseSerializer):

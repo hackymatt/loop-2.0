@@ -1,12 +1,15 @@
 from django.test import TestCase
 from django.db.models import Avg, Count
+from django.utils import timezone
 from rest_framework.test import APIClient
 from rest_framework import status
 from review.models import Review
 from course.models import Course
 from course.enrollment.models import CourseEnrollment
-from ..factory import create_student, create_course
-from const import Urls, Language
+from course.progress.models import CourseProgress
+from ..factory import create_student, create_course, create_chapter
+from ..helpers import login
+from const import Urls, Language, CourseStatus
 
 
 class CourseViewSetTest(TestCase):
@@ -14,11 +17,30 @@ class CourseViewSetTest(TestCase):
         self.client = APIClient()
         self.url = f"/{Urls.API}/{Urls.COURSE}"
 
-        self.student_1, _ = create_student()
+        self.student_1, self.student_1_password = create_student()
         self.student_2, _ = create_student()
 
         self.course_1 = create_course()
+        prerequisites = [create_course() for _ in range(3)]
+        self.course_1.prerequisites.add(*prerequisites)
+
         self.course_2 = create_course()
+        self.course_2.chapters.clear()
+        self.course_2.save()
+
+        self.course_3 = create_course()
+        self.course_3.chapters.clear()
+        chapter = create_chapter()
+        chapter.lessons.clear()
+        chapter.save()
+        self.course_3.chapters.add(chapter)
+        self.course_3.save()
+
+        CourseProgress.objects.create(
+            student=self.student_1,
+            completed_at=timezone.now(),
+            lesson=self.course_1.chapters.all()[0].lessons.all()[0],
+        )
 
         self.review_1 = Review.objects.create(
             student=self.student_1,
@@ -42,22 +64,79 @@ class CourseViewSetTest(TestCase):
             comment="Good course!",
         )
 
-    def test_list_courses(self):
+    def test_list_courses_unauthorized(self):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data["results"]), 2)
+        self.assertEqual(len(response.data["results"]), 6)
         self.assertEqual(
             response.data["results"][0]["translated_name"],
             self.course_1.get_translation("en").name,
         )
 
+    def test_list_courses_authorized(self):
+        login(self, self.student_1.user.email, self.student_1_password)
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data["results"]), 6)
+        self.assertEqual(
+            response.data["results"][0]["translated_name"],
+            self.course_1.get_translation("en").name,
+        )
+        self.assertEqual(
+            response.data["results"][0]["progress"],
+            float(
+                (
+                    1
+                    / self.course_1.chapters.aggregate(total_lessons=Count("lessons"))[
+                        "total_lessons"
+                    ]
+                    or 0
+                )
+                * 100
+            ),
+        )
+
     def test_retrieve_course_by_slug(self):
+        login(self, self.student_1.user.email, self.student_1_password)
+        response = self.client.get(f"{self.url}/{self.course_3.slug}")
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["slug"], self.course_3.slug)
+        self.assertEqual(
+            response.data["translated_overview"],
+            self.course_3.get_translation("en").overview,
+        )
+
+    def test_retrieve_course_by_slug_unauthorized(self):
         response = self.client.get(f"{self.url}/{self.course_1.slug}")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["slug"], self.course_1.slug)
         self.assertEqual(
             response.data["translated_overview"],
             self.course_1.get_translation("en").overview,
+        )
+
+    def test_retrieve_course_by_slug_authorized(self):
+        login(self, self.student_1.user.email, self.student_1_password)
+        response = self.client.get(f"{self.url}/{self.course_1.slug}")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["slug"], self.course_1.slug)
+        self.assertEqual(
+            response.data["translated_overview"],
+            self.course_1.get_translation("en").overview,
+        )
+        self.assertEqual(
+            response.data["progress"],
+            float(
+                (
+                    1
+                    / self.course_1.chapters.aggregate(total_lessons=Count("lessons"))[
+                        "total_lessons"
+                    ]
+                    or 0
+                )
+                * 100
+            ),
         )
 
     def test_filter_courses_by_technology(self):
@@ -74,6 +153,34 @@ class CourseViewSetTest(TestCase):
         returned_slugs = [course["slug"] for course in response.data["results"]]
         self.assertIn(self.course_1.slug, returned_slugs)
         self.assertNotIn(self.course_2.slug, returned_slugs)
+
+    def test_filter_courses_by_status_unauthorized(self):
+        response = self.client.get(f"{self.url}?status={CourseStatus.NOT_STARTED}")
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data["results"]), 6)
+
+    def test_filter_courses_by_status_authorized(self):
+        login(self, self.student_1.user.email, self.student_1_password)
+        response = self.client.get(f"{self.url}?status={CourseStatus.NOT_STARTED}")
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data["results"]), 5)
+
+        response = self.client.get(f"{self.url}?status={CourseStatus.IN_PROGRESS}")
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data["results"]), 1)
+
+        response = self.client.get(f"{self.url}?status={CourseStatus.COMPLETED}")
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data["results"]), 0)
+
+        response = self.client.get(f"{self.url}?status=invalid")
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data["results"]), 6)
 
 
 class FeaturedCoursesViewTest(TestCase):
