@@ -1,7 +1,7 @@
 from django.test import TestCase
 from rest_framework import status
 from rest_framework.test import APIClient
-from const import Urls
+from const import Urls, JoinType
 from ..factory import create_student
 from ..helpers import login
 
@@ -34,6 +34,18 @@ class ChangePasswordTestCase(TestCase):
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn("old_password", response.data)
+
+    def test_change_password_social_join_type(self):
+        self.student.user.join_type = JoinType.GITHUB
+        self.student.user.save()
+        data = {
+            "old_password": self.student_password,
+            "new_password": "Newpassword123!",
+        }
+
+        response = self.client.post(self.url, data, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_change_password_missing_fields(self):
         data = {}

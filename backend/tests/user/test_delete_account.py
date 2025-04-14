@@ -32,5 +32,10 @@ class DeleteAccountTestCase(TestCase):
     def test_delete_account_missing_refresh_token(self):
         self.client.cookies.clear()
         response = self.client.delete(self.url)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_delete_account_incorrect_refresh_token(self):
+        self.client.cookies["refresh_token"] = "invalid"
+        response = self.client.delete(self.url)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(response.data["root"][0], "Refresh token is required")
