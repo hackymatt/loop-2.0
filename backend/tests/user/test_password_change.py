@@ -17,43 +17,37 @@ class ChangePasswordTestCase(TestCase):
 
     def test_change_password_success(self):
         data = {
-            'old_password': self.student_password,
-            'new_password': 'Newpassword123!'
+            "old_password": self.student_password,
+            "new_password": "Newpassword123!",
         }
 
-        response = self.client.post(self.url, data, format='json')
+        response = self.client.post(self.url, data, format="json")
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.student.user.refresh_from_db()
-        self.assertTrue(self.student.user.check_password('Newpassword123!'))
+        self.assertTrue(self.student.user.check_password("Newpassword123!"))
 
     def test_change_password_invalid_old_password(self):
-        data = {
-            'old_password': 'wrongpassword',
-            'new_password': 'Newpassword123!'
-        }
+        data = {"old_password": "wrongpassword", "new_password": "Newpassword123!"}
 
-        response = self.client.post(self.url, data, format='json')
+        response = self.client.post(self.url, data, format="json")
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertIn('old_password', response.data)
+        self.assertIn("old_password", response.data)
 
     def test_change_password_missing_fields(self):
         data = {}
 
-        response = self.client.post(self.url, data, format='json')
+        response = self.client.post(self.url, data, format="json")
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertIn('old_password', response.data)
-        self.assertIn('new_password', response.data)
+        self.assertIn("old_password", response.data)
+        self.assertIn("new_password", response.data)
 
     def test_change_password_weak_new_password(self):
-        data = {
-            'old_password': self.student_password,
-            'new_password': '123'
-        }
+        data = {"old_password": self.student_password, "new_password": "123"}
 
-        response = self.client.post(self.url, data, format='json')
+        response = self.client.post(self.url, data, format="json")
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertIn('new_password', response.data)
+        self.assertIn("new_password", response.data)

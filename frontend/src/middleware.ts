@@ -4,7 +4,14 @@ import { NextResponse } from "next/server";
 
 import { paths } from "./routes/paths";
 
-const AUTHORIZED_PATHS = [paths.certificates, paths.learn, paths.account.dashboard];
+const AUTHORIZED_PATHS = [
+  paths.certificates,
+  paths.learn,
+  paths.account.dashboard,
+  paths.account.personal,
+  paths.account.manage,
+  paths.account.subscription,
+];
 const UNAUTHORIZED_PATHS = [
   paths.home,
   paths.login,

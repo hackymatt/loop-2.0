@@ -36,4 +36,5 @@ export const URLS = {
   // USER
   DATA: "me/data",
   PASSWORD_CHANGE: "me/password",
+  DELETE_ACCOUNT: "me/delete",
 } as const;

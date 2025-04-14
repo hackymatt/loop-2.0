@@ -66,6 +66,8 @@
   "photo": { "change": "Zmień zdjęcie" },
   "delete": {
     "text": "Wszystkie Twoje dane profilowe oraz związane z nauką zostaną trwale usunięte. Jeśli chcesz anulować subskrypcję, sprawdź",
-    "button": "Usuń konto"
+    "button": "Usuń konto",
+    "cancel": "Anuluj",
+    "description": "Czy na pewno chcesz usunąć swoje konto? Ta akcja jest nieodwracalna."
   }
 }

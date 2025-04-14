@@ -13,7 +13,7 @@ def get_dummy_student():
 
 class PlanSubscription(models.Model):
     student = models.ForeignKey(
-        Student, on_delete=models.SET(get_dummy_student), related_name="subscriptions"
+        Student, on_delete=models.CASCADE, related_name="subscriptions"
     )
     plan = models.ForeignKey(Plan, on_delete=models.PROTECT)
     start_date = models.DateTimeField(auto_now_add=True)

@@ -66,6 +66,8 @@
   "photo": { "change": "Change photo" },
   "delete": {
     "text": "All your profile and learning data will be permanently deleted. If you are looking to cancel your subscription, please have a look at",
-    "button": "Delete account"
+    "button": "Delete account",
+    "cancel": "Cancel",
+    "description": "Are you sure you want to delete your account? This action cannot be undone."
   }
 }

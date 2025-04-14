@@ -17,12 +17,14 @@ import { paths } from "src/routes/paths";
 
 import { useFormErrorHandler } from "src/hooks/use-form-error-handler";
 
-import { JOIN_TYPE } from "src/consts/user";
+import { JOIN_TYPE, USER_TYPE } from "src/consts/user";
 import { useChangePassword } from "src/api/user/password";
 
 import { Iconify } from "src/components/iconify";
 import { useUserContext } from "src/components/user";
 import { Form, Field } from "src/components/hook-form";
+
+import { DeleteAccountForm } from "./delete-account-form";
 
 // ----------------------------------------------------------------------
 
@@ -66,11 +68,12 @@ export function AccountManageView() {
   const { t } = useTranslation("account");
 
   const user = useUserContext();
-  const { joinType } = user.state;
+  const { userType, joinType } = user.state;
 
   const { mutateAsync: changePassword } = useChangePassword();
 
   const passwordShow = useBoolean();
+  const deleteAccountFormOpen = useBoolean();
 
   const AccountPasswordSchema = useAccountPasswordSchema();
 
@@ -175,9 +178,20 @@ export function AccountManageView() {
         {t("delete.text")} <Link href={paths.account.subscription}>{t("subscription.title")}</Link>.
       </Typography>
 
-      <Button color="error" type="submit" variant="contained">
+      <Button
+        color="error"
+        type="submit"
+        variant="contained"
+        onClick={deleteAccountFormOpen.onToggle}
+        disabled={userType === USER_TYPE.ADMIN}
+      >
         {t("delete.button")}
       </Button>
+
+      <DeleteAccountForm
+        open={deleteAccountFormOpen.value}
+        onClose={deleteAccountFormOpen.onFalse}
+      />
     </>
   );
 
