@@ -18,8 +18,9 @@ class GoogleLoginViewTest(TestCase):
             "picture": "https://example.com/avatar.jpg",
         }
 
+    @patch("user.login.google.views.download_and_assign_image")
     @patch("requests.get")
-    def test_google_login_success(self, get_mock):
+    def test_google_login_success(self, get_mock, download_image_mock):
         """Test successful login using Google OAuth"""
         mock_auth_return_value(get_mock, self.google_data)
 
@@ -30,13 +31,16 @@ class GoogleLoginViewTest(TestCase):
         self.assertEqual(response.data["first_name"], self.google_data["given_name"])
         self.assertEqual(response.data["last_name"], self.google_data["family_name"])
 
+        download_image_mock.assert_called_once()
+
         # Check if the user was created
         user = get_user_model().objects.filter(email=self.google_data["email"]).first()
         self.assertIsNotNone(user)
         self.assertEqual(user.first_name, self.google_data["given_name"])
 
+    @patch("user.login.google.views.download_and_assign_image")
     @patch("requests.get")
-    def test_google_login_existing_user(self, get_mock):
+    def test_google_login_existing_user(self, get_mock, download_image_mock):
         """Test login for an existing user"""
         mock_auth_return_value(get_mock, self.google_data)
 
@@ -51,6 +55,8 @@ class GoogleLoginViewTest(TestCase):
         response = self.client.post(self.url, {"token": "valid_token"}, format="json")
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        download_image_mock.not_called()
 
         # Ensure the user still exists and was not duplicated
         users_count = (

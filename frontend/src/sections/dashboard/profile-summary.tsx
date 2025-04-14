@@ -60,7 +60,7 @@ export function ProfileSummary() {
   const { t } = useTranslation("dashboard");
 
   const user = useUserContext();
-  const { firstName, email } = user.state;
+  const { firstName, email, avatarUrl } = user.state;
 
   const totalPoints = 4250;
   const totalStreak = 12;
@@ -80,7 +80,7 @@ export function ProfileSummary() {
           "&:hover": { boxShadow: theme.vars.customShadows.z24 },
         })}
       >
-        <Avatar src={DEFAULT_AVATAR_URL} sx={{ width: 64, height: 64 }} />
+        <Avatar src={avatarUrl || DEFAULT_AVATAR_URL} sx={{ width: 64, height: 64 }} />
 
         <Box display="flex" gap={0.5} alignItems="center">
           <Typography variant="subtitle1" noWrap>

@@ -7,9 +7,10 @@ import type { UserState } from "./types";
 export const USER_STORAGE_KEY: string = "user";
 
 export const defaultUser: UserState = {
-  email: "",
-  firstName: "",
-  lastName: "",
+  email: null,
+  firstName: null,
+  lastName: null,
+  avatarUrl: null,
   userType: USER_TYPE.STUDENT,
   joinType: JOIN_TYPE.EMAIL,
   isRegistered: false,

@@ -18,13 +18,14 @@ class GithubLoginViewTest(TestCase):
             "login": "testuser",
             "id": 123456,
             "avatar_url": "https://avatars.githubusercontent.com/u/123456?v=4",
-            "email": "test@example.com",
+            "email": "testuser@example.com",
             "name": "Test User",
         }
 
+    @patch("user.login.github.views.download_and_assign_image")
     @patch("requests.post")
     @patch("requests.get")
-    def test_github_login_success(self, get_mock, post_mock):
+    def test_github_login_success(self, get_mock, post_mock, download_image_mock):
         """Test successful GitHub login."""
         # Mock the response for exchanging code for access token
         mock_auth_return_value(post_mock, {"access_token": self.access_token})
@@ -43,6 +44,8 @@ class GithubLoginViewTest(TestCase):
             response.data["last_name"], self.github_user_data["name"].split(" ")[1]
         )
 
+        download_image_mock.assert_called_once()
+
         # Check if the user has been created in the database
         user_exists = (
             get_user_model()
@@ -51,9 +54,40 @@ class GithubLoginViewTest(TestCase):
         )
         self.assertTrue(user_exists)
 
+    @patch("user.login.github.views.download_and_assign_image")
     @patch("requests.post")
     @patch("requests.get")
-    def test_github_login_no_email(self, get_mock, post_mock):
+    def test_github_login_existing_user(self, get_mock, post_mock, download_image_mock):
+        """Test login for an existing user"""
+        # Mock the response for exchanging code for access token
+        mock_auth_return_value(post_mock, {"access_token": self.access_token})
+        # Mock the response for retrieving user data
+        mock_auth_return_value(get_mock, self.github_user_data)
+
+        get_user_model().objects.create_user(
+            email="testuser@example.com",
+            username="testuser",
+            first_name="Test",
+            last_name="User",
+            image="https://example.com/avatar.jpg",
+        )
+
+        response = self.client.post(self.url, {"code": self.valid_code}, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        download_image_mock.not_called()
+
+        # Ensure the user still exists and was not duplicated
+        users_count = (
+            get_user_model().objects.filter(email="testuser@example.com").count()
+        )
+        self.assertEqual(users_count, 1)
+
+    @patch("user.login.github.views.download_and_assign_image")
+    @patch("requests.post")
+    @patch("requests.get")
+    def test_github_login_no_email(self, get_mock, post_mock, download_image_mock):
         """Test GitHub login when API does not return an email."""
         mock_auth_return_value(post_mock, {"access_token": self.access_token})
         mock_auth_return_value(get_mock, self.github_user_data)
@@ -86,6 +120,8 @@ class GithubLoginViewTest(TestCase):
         )
 
         response = self.client.post(self.url, {"code": self.valid_code}, format="json")
+
+        download_image_mock.assert_called_once()
 
         # Ensure the response is successful and email is retrieved
         self.assertEqual(response.status_code, status.HTTP_200_OK)

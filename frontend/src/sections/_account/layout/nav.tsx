@@ -22,6 +22,7 @@ import ButtonBase, { buttonBaseClasses } from "@mui/material/ButtonBase";
 import { usePathname } from "src/routes/hooks";
 import { RouterLink } from "src/routes/components";
 
+import { useUpdateData } from "src/api/user/data";
 import { DEFAULT_AVATAR_URL } from "src/consts/avatar";
 
 import { Iconify } from "src/components/iconify";
@@ -240,16 +241,28 @@ export function NavItem({ title, path = "", icon, sx, ...other }: NavItemProps) 
 export function UserPhoto({ sx, ...other }: BoxProps) {
   const { t } = useTranslation("account");
 
-  const [image, setImage] = useState<string>(DEFAULT_AVATAR_URL);
+  const user = useUserContext();
+  const { avatarUrl } = user.state;
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const { mutateAsync: updateData } = useUpdateData();
+
+  const [image, setImage] = useState<string>(avatarUrl || DEFAULT_AVATAR_URL);
+
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImage(reader.result as string);
-      };
-      reader.readAsDataURL(file);
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setImage(reader.result as string);
+    };
+    reader.readAsDataURL(file);
+
+    try {
+      const { data } = await updateData({ image: file });
+      user.setField("avatarUrl", data.image);
+    } catch (error) {
+      console.log(error);
     }
   };
 

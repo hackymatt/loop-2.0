@@ -62,7 +62,8 @@ function GoogleSignIn({ methods }: { methods: UseFormReturn<any> }) {
 
     try {
       const { data: responseData } = await googleLogin({ token });
-      const { email, first_name, last_name, user_type, join_type, is_active, plan } = responseData;
+      const { email, first_name, last_name, image, user_type, join_type, is_active, plan } =
+        responseData;
       user.setState({
         isRegistered: true,
         isActive: is_active,
@@ -70,6 +71,7 @@ function GoogleSignIn({ methods }: { methods: UseFormReturn<any> }) {
         email,
         firstName: first_name,
         lastName: last_name,
+        avatarUrl: image,
         userType: user_type,
         joinType: join_type,
         plan,
@@ -105,7 +107,8 @@ function GithubSignIn({ methods }: { methods: UseFormReturn<any> }) {
 
     try {
       const { data: responseData } = await githubLogin({ code });
-      const { email, first_name, last_name, user_type, join_type, is_active, plan } = responseData;
+      const { email, first_name, last_name, image, user_type, join_type, is_active, plan } =
+        responseData;
       user.setState({
         isRegistered: true,
         isActive: is_active,
@@ -113,6 +116,7 @@ function GithubSignIn({ methods }: { methods: UseFormReturn<any> }) {
         email,
         firstName: first_name,
         lastName: last_name,
+        avatarUrl: image,
         userType: user_type,
         joinType: join_type,
         plan,
@@ -150,7 +154,8 @@ function FacebookSignIn({ methods }: { methods: UseFormReturn<any> }) {
 
     try {
       const { data: responseData } = await facebookLogin({ access_token });
-      const { email, first_name, last_name, user_type, join_type, is_active, plan } = responseData;
+      const { email, first_name, last_name, image, user_type, join_type, is_active, plan } =
+        responseData;
       user.setState({
         isRegistered: true,
         isActive: is_active,
@@ -158,6 +163,7 @@ function FacebookSignIn({ methods }: { methods: UseFormReturn<any> }) {
         email,
         firstName: first_name,
         lastName: last_name,
+        avatarUrl: image,
         userType: user_type,
         joinType: join_type,
         plan,

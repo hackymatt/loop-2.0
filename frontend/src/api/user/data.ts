@@ -9,10 +9,10 @@ import { Api } from "../service";
 
 const endpoint = URLS.DATA;
 
-type IData = { first_name: string | null; last_name: string | null };
+type IData = { first_name?: string | null; last_name?: string | null; image?: File | null };
 
 type IDataReturn = {
-  data: IData;
+  data: Omit<IData, "image"> & { image: string | null };
   status: number;
 };
 
@@ -24,6 +24,7 @@ export const useUpdateData = () => {
     const result = await Api.patch(endpoint, variables, {
       headers: {
         "Accept-Language": language,
+        "Content-Type": "multipart/form-data",
       },
     });
     return {

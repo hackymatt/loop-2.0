@@ -24,6 +24,9 @@ class LoginView(APIView):
                     "email": user.email,
                     "first_name": user.first_name,
                     "last_name": user.last_name,
+                    "image": request.build_absolute_uri(user.image.url)
+                    if user.image and user.image.url
+                    else None,
                     "user_type": user.user_type,
                     "is_active": user.is_active,
                     "join_type": user.join_type,

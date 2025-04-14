@@ -7,7 +7,7 @@ from ..utils import check_password
 class UpdateUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = get_user_model()
-        fields = ["first_name", "last_name"]
+        fields = ["first_name", "last_name", "image"]
 
 
 class ChangePasswordSerializer(serializers.Serializer):

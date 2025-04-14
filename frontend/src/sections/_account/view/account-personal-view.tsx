@@ -29,8 +29,8 @@ const useAccountPersonalSchema = () => {
       .string()
       .min(1, { message: t("email.errors.required") })
       .email({ message: t("email.errors.invalid") }),
-    firstName: zod.string(),
-    lastName: zod.string(),
+    firstName: zod.string().nullable(),
+    lastName: zod.string().nullable(),
   });
 };
 
@@ -52,7 +52,7 @@ export function AccountPersonalView() {
     defaultValues: {
       firstName,
       lastName,
-      email,
+      email: email || "",
     },
   });
 

@@ -63,6 +63,7 @@ export function NavAccountPopover({ sx }: NavItemsProps) {
   const { t } = useTranslation("navigation");
 
   const user = useUserContext();
+  const { avatarUrl } = user.state;
 
   const { mutateAsync: logout } = useLogout();
 
@@ -144,7 +145,7 @@ export function NavAccountPopover({ sx }: NavItemsProps) {
   return (
     <>
       <IconButton disableRipple color={open ? "primary" : "inherit"} onClick={onOpen}>
-        <Avatar src={DEFAULT_AVATAR_URL} sx={{ width: 32, height: 32 }} />
+        <Avatar src={avatarUrl || DEFAULT_AVATAR_URL} sx={{ width: 32, height: 32 }} />
         <Iconify
           width={16}
           icon={open ? "solar:alt-arrow-up-outline" : "solar:alt-arrow-down-outline"}

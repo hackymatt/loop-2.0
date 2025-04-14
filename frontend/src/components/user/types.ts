@@ -4,9 +4,10 @@ import type { JoinType, UserType } from "src/types/user";
 // ----------------------------------------------------------------------
 
 export type UserState = {
-  email: string;
-  firstName: string;
-  lastName: string;
+  email: string | null;
+  firstName: string | null;
+  lastName: string | null;
+  avatarUrl: string | null;
   userType: UserType;
   joinType: JoinType;
   isRegistered: boolean;

@@ -57,7 +57,7 @@ export function SignInView() {
         });
         router.push(paths.activate);
       } else {
-        const { email, first_name, last_name, user_type, join_type, is_active, plan } =
+        const { email, first_name, last_name, image, user_type, join_type, is_active, plan } =
           responseData;
         user.setState({
           isRegistered: true,
@@ -66,6 +66,7 @@ export function SignInView() {
           email,
           firstName: first_name,
           lastName: last_name,
+          avatarUrl: image,
           userType: user_type,
           joinType: join_type,
           plan,

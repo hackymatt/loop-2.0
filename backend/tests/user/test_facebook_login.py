@@ -20,8 +20,9 @@ class FacebookLoginViewTest(TestCase):
             "picture": {"data": {"url": "https://example.com/pic.jpg"}},
         }
 
+    @patch("user.login.facebook.views.download_and_assign_image")
     @patch("requests.get")
-    def test_facebook_login_success(self, get_mock):
+    def test_facebook_login_success(self, get_mock, download_image_mock):
         mock_auth_return_value(get_mock, self.facebook_user_data)
         """Test successful login with Facebook"""
         response = self.client.post(
@@ -37,6 +38,8 @@ class FacebookLoginViewTest(TestCase):
             response.data["last_name"], self.facebook_user_data["last_name"]
         )
 
+        download_image_mock.assert_called_once()
+
         # Check if the user was created or fetched
         user_exists = (
             get_user_model()
@@ -44,6 +47,34 @@ class FacebookLoginViewTest(TestCase):
             .exists()
         )
         self.assertTrue(user_exists)
+
+    @patch("user.login.facebook.views.download_and_assign_image")
+    @patch("requests.get")
+    def test_facebook_login_existing_user(self, get_mock, download_image_mock):
+        """Test login for an existing user"""
+        mock_auth_return_value(get_mock, self.facebook_user_data)
+
+        get_user_model().objects.create_user(
+            email="testuser@example.com",
+            username="testuser",
+            first_name="Test",
+            last_name="User",
+            image="https://example.com/avatar.jpg",
+        )
+
+        response = self.client.post(
+            self.url, {"access_token": self.valid_access_token}, format="json"
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        download_image_mock.not_called()
+
+        # Ensure the user still exists and was not duplicated
+        users_count = (
+            get_user_model().objects.filter(email="testuser@example.com").count()
+        )
+        self.assertEqual(users_count, 1)
 
     @patch("requests.get")
     def test_facebook_login_invalid_token(self, get_mock):
