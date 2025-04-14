@@ -1,4 +1,4 @@
-import type { ICourseLessonType, LevelType } from "src/types/course";
+import type { LevelType, ICourseLessonType } from "src/types/course";
 
 import dayjs from "dayjs";
 
