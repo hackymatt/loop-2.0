@@ -1,4 +1,4 @@
-import { USER_TYPE } from "src/consts/user";
+import { JOIN_TYPE, USER_TYPE } from "src/consts/user";
 
 import type { UserState } from "./types";
 
@@ -11,6 +11,7 @@ export const defaultUser: UserState = {
   firstName: "",
   lastName: "",
   userType: USER_TYPE.STUDENT,
+  joinType: JOIN_TYPE.EMAIL,
   isRegistered: false,
   isActive: false,
   isLoggedIn: false,

@@ -68,7 +68,7 @@ export function ContactForm({ sx, ...other }: BoxProps) {
     formState: { isSubmitting },
   } = methods;
 
-  const handleFormError = useFormErrorHandler(methods);
+  const handleFormError = useFormErrorHandler(methods, { full_name: "fullName" });
 
   const onSubmit = handleSubmit(async (data) => {
     const { fullName, subject, email, message } = data;

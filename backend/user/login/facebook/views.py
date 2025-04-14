@@ -66,6 +66,7 @@ class FacebookLoginView(APIView):
                 "last_name": user.last_name,
                 "user_type": user.user_type,
                 "is_active": user.is_active,
+                "join_type": user.join_type,
                 "plan": get_active_user_plan(user).slug
                 if user.user_type == UserType.STUDENT
                 else None,

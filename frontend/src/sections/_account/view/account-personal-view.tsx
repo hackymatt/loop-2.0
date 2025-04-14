@@ -47,7 +47,7 @@ export function AccountPersonalView() {
   const { mutateAsync: updateData } = useUpdateData();
 
   const AccountPersonalSchema = useAccountPersonalSchema();
-  const personalMethods = useForm<AccountPersonalSchemaType>({
+  const methods = useForm<AccountPersonalSchemaType>({
     resolver: zodResolver(AccountPersonalSchema),
     defaultValues: {
       firstName,
@@ -56,11 +56,19 @@ export function AccountPersonalView() {
     },
   });
 
-  const handleFormError = useFormErrorHandler(personalMethods);
+  const {
+    handleSubmit,
+    formState: { isSubmitting },
+  } = methods;
 
-  const onSubmitPersonal = personalMethods.handleSubmit(async (data) => {
+  const handleFormError = useFormErrorHandler(methods, {
+    first_name: "firstName",
+    last_name: "lastName",
+  });
+
+  const onSubmitPersonal = handleSubmit(async (data) => {
+    const { firstName: first_name, lastName: last_name } = data;
     try {
-      const { firstName: first_name, lastName: last_name } = data;
       await updateData({ first_name, last_name });
       user.setState({ firstName: first_name, lastName: last_name });
     } catch (error) {
@@ -92,7 +100,7 @@ export function AccountPersonalView() {
         })}
       />
 
-      <Form methods={personalMethods} onSubmit={onSubmitPersonal}>
+      <Form methods={methods} onSubmit={onSubmitPersonal}>
         <Box
           sx={{
             my: 3,
@@ -106,12 +114,7 @@ export function AccountPersonalView() {
         </Box>
 
         <Box sx={{ textAlign: "right" }}>
-          <LoadingButton
-            color="inherit"
-            type="submit"
-            variant="contained"
-            loading={personalMethods.formState.isSubmitting}
-          >
+          <LoadingButton color="inherit" type="submit" variant="contained" loading={isSubmitting}>
             {t("personal.button")}
           </LoadingButton>
         </Box>

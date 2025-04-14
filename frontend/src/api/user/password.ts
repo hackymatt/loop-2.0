@@ -7,31 +7,20 @@ import { useSettingsContext } from "src/components/settings";
 import { URLS } from "../urls";
 import { Api } from "../service";
 
-const endpoint = URLS.LOGIN;
+const endpoint = URLS.PASSWORD_CHANGE;
 
-type ILogin = {
-  email: string;
-  password: string;
-};
+type IPassword = { old_password: string; new_password: string };
 
-type ILoginReturn = {
-  data: {
-    email: string;
-    first_name: string;
-    last_name: string;
-    user_type: "admin" | "instructor" | "student";
-    join_type: "email" | "google" | "facebook" | "github";
-    is_active: boolean;
-    plan: "free" | "basic" | "premium";
-  };
+type IPasswordReturn = {
+  data: {};
   status: number;
 };
 
-export const useLogin = () => {
+export const useChangePassword = () => {
   const settings = useSettingsContext();
   const { language } = settings.state;
 
-  return useMutation<ILoginReturn, AxiosError, ILogin>(async (variables) => {
+  return useMutation<IPasswordReturn, AxiosError, IPassword>(async (variables) => {
     const result = await Api.post(endpoint, variables, {
       headers: {
         "Accept-Language": language,

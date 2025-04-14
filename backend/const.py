@@ -45,6 +45,7 @@ class Urls:
     CONTACT = "contact"
     # USER
     DATA = "me/data"
+    PASSWORD_CHANGE = "me/password"
 
 
 class UserType(TextChoices):

@@ -35,4 +35,5 @@ export const URLS = {
   PLANS: "/plans",
   // USER
   DATA: "me/data",
+  PASSWORD_CHANGE: "me/password",
 } as const;

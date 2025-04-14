@@ -57,7 +57,8 @@ export function SignInView() {
         });
         router.push(paths.activate);
       } else {
-        const { email, first_name, last_name, user_type, is_active, plan } = responseData;
+        const { email, first_name, last_name, user_type, join_type, is_active, plan } =
+          responseData;
         user.setState({
           isRegistered: true,
           isActive: is_active,
@@ -66,6 +67,7 @@ export function SignInView() {
           firstName: first_name,
           lastName: last_name,
           userType: user_type,
+          joinType: join_type,
           plan,
         });
         router.push(paths.account.dashboard);

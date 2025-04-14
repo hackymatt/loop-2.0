@@ -1,5 +1,5 @@
-import type { UserType } from "src/types/user";
 import type { PlanType } from "src/types/plan";
+import type { JoinType, UserType } from "src/types/user";
 
 // ----------------------------------------------------------------------
 
@@ -8,6 +8,7 @@ export type UserState = {
   firstName: string;
   lastName: string;
   userType: UserType;
+  joinType: JoinType;
   isRegistered: boolean;
   isActive: boolean;
   isLoggedIn: boolean;

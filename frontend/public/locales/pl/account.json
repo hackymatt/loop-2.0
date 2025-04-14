@@ -46,19 +46,6 @@
       "same": "Nowe hasło musi się różnić od starego hasła"
     }
   },
-  "confirmNewPassword": {
-    "label": "Potwierdź nowe hasło",
-    "placeholder": "Wpisz hasło",
-    "errors": {
-      "required": "Hasło jest wymagane",
-      "minLength": "Hasło musi mieć co najmniej 8 znaków",
-      "bigLetter": "Hasło musi zawierać co najmniej jedną wielką literę",
-      "smallLetter": "Hasło musi zawierać co najmniej jedną małą literę",
-      "number": "Hasło musi zawierać co najmniej jedną cyfrę",
-      "specialCharacter": "Hasło musi zawierać co najmniej jeden znak specjalny",
-      "same": "Hasła nie są takie same!"
-    }
-  },
   "termsAcceptance": {
     "label": {
       "accept": "Akceptuję",
@@ -76,5 +63,9 @@
   "manage": { "title": "Zarządzaj kontem", "button": "Zapisz" },
   "subscription": { "title": "Subskrypcja" },
   "logout": { "title": "Wyloguj się" },
-  "photo": { "change": "Zmień zdjęcie" }
+  "photo": { "change": "Zmień zdjęcie" },
+  "delete": {
+    "text": "Wszystkie Twoje dane profilowe oraz związane z nauką zostaną trwale usunięte. Jeśli chcesz anulować subskrypcję, sprawdź",
+    "button": "Usuń konto"
+  }
 }

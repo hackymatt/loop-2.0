@@ -19,6 +19,7 @@ type ILoginReturn = {
     first_name: string;
     last_name: string;
     user_type: "admin" | "instructor" | "student";
+    join_type: "email" | "google" | "facebook" | "github";
     is_active: boolean;
     plan: "free" | "basic" | "premium";
   };

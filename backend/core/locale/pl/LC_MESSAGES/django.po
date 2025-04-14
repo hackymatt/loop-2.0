@@ -77,3 +77,9 @@ msgstr "Nie znaleziono adresu e-mail na koncie GitHub"
 
 msgid "Access token is required"
 msgstr "Token dostępu jest wymagany"
+
+msgid "Password change is only available for accounts created with an email address."
+msgstr "Zmiana hasła jest dostępna tylko dla kont założonych za pomocą adresu e-mail."
+
+msgid "Incorrect password."
+msgstr "Nieprawidłowe hasło."
