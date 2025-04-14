@@ -22,7 +22,6 @@ export const useLogout = () => {
 
   return useMutation<ILogoutReturn, AxiosError, ILogout>(async (variables) => {
     const result = await Api.post(endpoint, variables, {
-      withCredentials: true,
       headers: {
         "Accept-Language": language,
       },

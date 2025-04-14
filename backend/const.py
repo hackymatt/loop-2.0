@@ -43,6 +43,8 @@ class Urls:
     PLAN = "plans"
     # CONTACT
     CONTACT = "contact"
+    # USER
+    DATA = "me/data"
 
 
 class UserType(TextChoices):

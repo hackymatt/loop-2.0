@@ -33,4 +33,6 @@ export const URLS = {
   FEATURED_POST: "/featured-post",
   // PLAN
   PLANS: "/plans",
+  // USER
+  DATA: "me/data",
 } as const;

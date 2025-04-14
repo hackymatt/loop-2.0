@@ -8,6 +8,7 @@ from .login.github.views import GithubLoginView
 from .login.facebook.views import FacebookLoginView
 from .logout.views import LogoutView
 from .reset_password.views import PasswordResetView, PasswordResetConfirmView
+from .data.views import UpdateUserView
 
 
 from const import Urls
@@ -32,4 +33,6 @@ urlpatterns = [
         PasswordResetConfirmView.as_view(),
         name="password_reset_confirm",
     ),
+    # User routes
+    path(Urls.DATA, UpdateUserView.as_view(), name="data"),
 ]

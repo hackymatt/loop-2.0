@@ -10,6 +10,10 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import LoadingButton from "@mui/lab/LoadingButton";
 
+import { useFormErrorHandler } from "src/hooks/use-form-error-handler";
+
+import { useUpdateData } from "src/api/user/data";
+
 import { useUserContext } from "src/components/user";
 import { Form, Field } from "src/components/hook-form";
 
@@ -40,6 +44,8 @@ export function AccountPersonalView() {
   const user = useUserContext();
   const { email, firstName, lastName } = user.state;
 
+  const { mutateAsync: updateData } = useUpdateData();
+
   const AccountPersonalSchema = useAccountPersonalSchema();
   const personalMethods = useForm<AccountPersonalSchemaType>({
     resolver: zodResolver(AccountPersonalSchema),
@@ -50,13 +56,15 @@ export function AccountPersonalView() {
     },
   });
 
+  const handleFormError = useFormErrorHandler(personalMethods);
+
   const onSubmitPersonal = personalMethods.handleSubmit(async (data) => {
     try {
-      await new Promise((resolve) => setTimeout(resolve, 500));
-      personalMethods.reset();
-      console.info("DATA", data);
+      const { firstName: first_name, lastName: last_name } = data;
+      await updateData({ first_name, last_name });
+      user.setState({ firstName: first_name, lastName: last_name });
     } catch (error) {
-      console.error(error);
+      handleFormError(error);
     }
   });
 
