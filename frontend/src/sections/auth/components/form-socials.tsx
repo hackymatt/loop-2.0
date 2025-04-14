@@ -65,7 +65,6 @@ function GoogleSignIn({ methods }: { methods: UseFormReturn<any> }) {
       const { email, first_name, last_name, image, user_type, join_type, is_active, plan } =
         responseData;
       user.setState({
-        isRegistered: true,
         isActive: is_active,
         isLoggedIn: true,
         email,
@@ -110,7 +109,6 @@ function GithubSignIn({ methods }: { methods: UseFormReturn<any> }) {
       const { email, first_name, last_name, image, user_type, join_type, is_active, plan } =
         responseData;
       user.setState({
-        isRegistered: true,
         isActive: is_active,
         isLoggedIn: true,
         email,
@@ -157,7 +155,6 @@ function FacebookSignIn({ methods }: { methods: UseFormReturn<any> }) {
       const { email, first_name, last_name, image, user_type, join_type, is_active, plan } =
         responseData;
       user.setState({
-        isRegistered: true,
         isActive: is_active,
         isLoggedIn: true,
         email,

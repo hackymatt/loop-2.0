@@ -3,9 +3,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from .serializers import LoginSerializer
-from plan.subscription.utils import get_active_user_plan
+from ..serializers import LoginResponseSerializer
 from ...utils import set_cookies
-from const import UserType
 
 
 class LoginView(APIView):
@@ -20,20 +19,7 @@ class LoginView(APIView):
             access_token = refresh_token.access_token
 
             response = Response(
-                {
-                    "email": user.email,
-                    "first_name": user.first_name,
-                    "last_name": user.last_name,
-                    "image": request.build_absolute_uri(user.image.url)
-                    if user.image and user.image.url
-                    else None,
-                    "user_type": user.user_type,
-                    "is_active": user.is_active,
-                    "join_type": user.join_type,
-                    "plan": get_active_user_plan(user).slug
-                    if user.user_type == UserType.STUDENT
-                    else None,
-                },
+                LoginResponseSerializer(user, context={"request": request}).data,
                 status=status.HTTP_200_OK,
             )
 

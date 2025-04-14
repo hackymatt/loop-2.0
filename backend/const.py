@@ -21,6 +21,8 @@ class Urls:
     LOGOUT = "auth/logout"
     PASSWORD_RESET = "auth/reset-password"
     PASSWORD_RESET_CONFIRM = "auth/reset-password-confirm"
+    REFRESH_TOKEN = "auth/refresh-token"
+    AUTH_CHECK = "auth/check"
     # COURSE
     COURSE_LEVEL = "course-levels"
     COURSE_TECHNOLOGY = "course-technologies"

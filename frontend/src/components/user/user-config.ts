@@ -13,7 +13,6 @@ export const defaultUser: UserState = {
   avatarUrl: null,
   userType: USER_TYPE.STUDENT,
   joinType: JOIN_TYPE.EMAIL,
-  isRegistered: false,
   isActive: false,
   isLoggedIn: false,
   plan: null,

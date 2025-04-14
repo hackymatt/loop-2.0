@@ -10,6 +10,8 @@ export const URLS = {
   LOGOUT: "/auth/logout",
   PASSWORD_RESET: "/auth/reset-password",
   PASSWORD_UPDATE: "/auth/reset-password-confirm",
+  REFRESH_TOKEN: "/auth/refresh-token",
+  AUTH_CHECK: "/auth/check",
   // CONTACT
   CONTACT: "/contact",
   // COURSE

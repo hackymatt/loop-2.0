@@ -59,7 +59,7 @@ export function SignUpView({ header, buttonText = "Utwórz konto" }: Props) {
     try {
       const { email, password } = data;
       await register({ email, password });
-      user.setState({ email, isRegistered: true });
+      user.setState({ email });
       router.push(paths.activate);
       reset();
     } catch (error) {

@@ -6,9 +6,9 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.conf import settings
-from plan.subscription.utils import get_active_user_plan
 from ...utils import get_unique_username, set_cookies, download_and_assign_image
 from plan.subscription.utils import subscribe
+from ..serializers import LoginResponseSerializer
 from user.type.student_user.models import Student
 from const import JoinType, UserType
 
@@ -96,6 +96,7 @@ class GithubLoginView(APIView):
                 "username": username,
                 "first_name": first_name,
                 "last_name": last_name,
+                "user_type": UserType.STUDENT,
                 "join_type": JoinType.GITHUB,
                 "is_active": True,
             },
@@ -111,20 +112,7 @@ class GithubLoginView(APIView):
         access_token = refresh_token.access_token
 
         response = Response(
-            {
-                "email": user.email,
-                "first_name": user.first_name,
-                "last_name": user.last_name,
-                "image": request.build_absolute_uri(user.image.url)
-                if user.image and user.image.url
-                else None,
-                "user_type": user.user_type,
-                "is_active": user.is_active,
-                "join_type": user.join_type,
-                "plan": get_active_user_plan(user).slug
-                if user.user_type == UserType.STUDENT
-                else None,
-            },
+            LoginResponseSerializer(user, context={"request": request}).data,
             status=status.HTTP_200_OK,
         )
 

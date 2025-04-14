@@ -50,7 +50,8 @@ export const config = {
   matcher: [
     "/certificates",
     "/lesson",
-    "/account",
+    "/account/:path*",
+    "/learn/:path*",
     "/",
     "/auth/login",
     "/auth/register",

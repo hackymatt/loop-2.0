@@ -50,7 +50,6 @@ export function SignInView() {
       const { data: responseData, status } = await login(data);
       if (status === 401) {
         user.setState({
-          isRegistered: true,
           isActive: false,
           isLoggedIn: false,
           email: data.email,
@@ -60,7 +59,6 @@ export function SignInView() {
         const { email, first_name, last_name, image, user_type, join_type, is_active, plan } =
           responseData;
         user.setState({
-          isRegistered: true,
           isActive: is_active,
           isLoggedIn: true,
           email,

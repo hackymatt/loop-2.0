@@ -185,6 +185,12 @@ def set_cookies(response, access_token, refresh_token):
     return response
 
 
+def clear_cookies(response):
+    response.delete_cookie("access_token")
+    response.delete_cookie("refresh_token")
+    return response
+
+
 def download_and_assign_image(instance, image_url):
     if not image_url:
         return

@@ -10,7 +10,6 @@ export type UserState = {
   avatarUrl: string | null;
   userType: UserType;
   joinType: JoinType;
-  isRegistered: boolean;
   isActive: boolean;
   isLoggedIn: boolean;
   plan: PlanType | null;

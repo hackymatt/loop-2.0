@@ -24,7 +24,9 @@ export function CertificatesProgress({ disabled }: { disabled?: boolean }) {
 
   const studentName = "John Doe";
   const courses = _courses.slice(0, 4).map((x) => ({ ...x, certificateId: "abc" }));
-  // const courses = undefined;
+  // const courses = [];
+
+  const blocked = disabled && courses?.length === 0;
 
   const renderList = () => (
     <Box
@@ -108,7 +110,7 @@ export function CertificatesProgress({ disabled }: { disabled?: boolean }) {
   );
 
   const renderContent = () => {
-    if (disabled) return renderBlocked();
+    if (blocked) return renderBlocked();
     if (courses?.length) return renderList();
     return renderInfo();
   };
@@ -138,11 +140,11 @@ export function CertificatesProgress({ disabled }: { disabled?: boolean }) {
             gap: 1,
           }}
         >
-          {disabled && <Iconify icon="solar:lock-bold" sx={{ color: "text.disabled" }} />}
+          {blocked && <Iconify icon="solar:lock-bold" sx={{ color: "text.disabled" }} />}
           <Typography
             variant="h5"
             sx={{
-              ...(disabled && { color: "text.disabled" }),
+              ...(blocked && { color: "text.disabled" }),
             }}
           >
             {t("certificates.title")}
@@ -155,7 +157,7 @@ export function CertificatesProgress({ disabled }: { disabled?: boolean }) {
           color="inherit"
           endIcon={<Iconify icon="solar:alt-arrow-right-outline" />}
           sx={{ display: "inline-flex" }}
-          disabled={disabled}
+          disabled={blocked}
         >
           {t("certificates.button")}
         </Button>
