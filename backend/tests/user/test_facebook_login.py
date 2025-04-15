@@ -68,7 +68,7 @@ class FacebookLoginViewTest(TestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        download_image_mock.not_called()
+        download_image_mock.assert_not_called()
 
         # Ensure the user still exists and was not duplicated
         users_count = (

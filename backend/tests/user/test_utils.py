@@ -45,7 +45,7 @@ class DownloadImageTest(TestCase):
         download_and_assign_image(mock_instance, image_url)
 
         # Assert
-        mock_image_field.save.not_called()
+        mock_image_field.save.assert_not_called()
 
     def test_download_and_assign_image_with_empty_url(self):
         mock_instance = MagicMock()
