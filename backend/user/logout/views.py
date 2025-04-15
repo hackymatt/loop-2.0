@@ -10,12 +10,7 @@ class LogoutView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
-        refresh_token = request.data.get("refresh_token")
-
-        if not refresh_token:
-            return Response(
-                {"root": [_("Invalid token")]}, status=status.HTTP_400_BAD_REQUEST
-            )
+        refresh_token = request.COOKIES.get("refresh_token")
 
         # Blacklist the refresh token
         try:
@@ -27,4 +22,8 @@ class LogoutView(APIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        return Response({}, status=status.HTTP_205_RESET_CONTENT)
+        response = Response({}, status=status.HTTP_205_RESET_CONTENT)
+        response.delete_cookie("access_token")
+        response.delete_cookie("refresh_token")
+
+        return response

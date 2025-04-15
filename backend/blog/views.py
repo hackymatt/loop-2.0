@@ -72,6 +72,8 @@ class FeaturedBlogView(views.APIView):
     permission_classes = [AllowAny]
 
     def get(self, request):
-        most_visited = Blog.objects.filter(active=True).order_by("-visits").first()
-        serializer = BlogListSerializer(most_visited, context={"request": request})
+        most_visited = Blog.objects.filter(active=True).order_by("-visits")[:5]
+        serializer = BlogListSerializer(
+            most_visited, many=True, context={"request": request}
+        )
         return Response(serializer.data)

@@ -13,8 +13,7 @@ class LevelSerializer(serializers.ModelSerializer):
 
     def get_translated_name(self, obj):
         lang = self.context.get("request").LANGUAGE_CODE
-        translation = obj.translations.filter(language=lang).first()
-        return translation.name if translation else None
+        return obj.get_translation(lang).name
 
     def create(self, validated_data):
         slug = validated_data["slug"]

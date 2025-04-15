@@ -14,6 +14,7 @@ import { CONFIG } from "src/global-config";
 
 import { Image } from "../image";
 import { logoClasses } from "./classes";
+import { useSettingsContext } from "../settings";
 
 // ----------------------------------------------------------------------
 
@@ -34,11 +35,26 @@ export const Logo = forwardRef<HTMLAnchorElement, LogoProps>((props, ref) => {
     ...other
   } = props;
 
+  const settings = useSettingsContext();
+  const { colorScheme } = settings.state;
+
   const logoPath = (name: string) => `${CONFIG.assetsDir}/assets/logo/${name}`;
 
-  const singleLogo = <Image alt="logo-loop-single" src={logoPath("logo-mark.svg")} ratio="1/1" />;
+  const singleLogo = (
+    <Image
+      alt="logo-loop-single"
+      src={logoPath(colorScheme === "light" ? "logo-mark.svg" : "logo-mark-dark.svg")}
+      ratio="1/1"
+    />
+  );
 
-  const fullLogo = <Image alt="logo-loop-full" src={logoPath("logo.svg")} ratio="1/1" />;
+  const fullLogo = (
+    <Image
+      alt="logo-loop-full"
+      src={logoPath(colorScheme === "light" ? "logo.svg" : "logo-dark.svg")}
+      ratio="1/1"
+    />
+  );
 
   return isLink ? (
     <LogoRoot

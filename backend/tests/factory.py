@@ -29,7 +29,13 @@ from course.lesson.models import (
     CodingLessonTranslation,
 )
 from course.models import Course, CourseTranslation
+
 from review.models import Review
+
+from plan.models import Plan, PlanTranslation, Option, OptionTranslation
+from plan.subscription.utils import subscribe
+
+from certificate.models import Certificate
 
 languages = [choice.value for choice in Language]
 
@@ -41,6 +47,10 @@ def _generate_random_string(length=10):
 
 def _generate_random_number(min_val=1, max_val=100):
     return random.randint(min_val, max_val)
+
+
+def _generate_random_bool():
+    return random.choice([True, False])
 
 
 def _generate_random_slug():
@@ -76,13 +86,21 @@ def _create_translations(model, obj, languages, translation_fields, related_fiel
 
 
 def create_user():
+    first_name = _generate_random_string(12)
+    last_name = _generate_random_string(12)
     email = _generate_random_email()
     username = get_unique_username(email.split("@")[0])
     password = _generate_random_string(12)
 
     user = get_user_model().objects.create_user(
-        email=email, password=password, username=username, is_active=True
+        email=email,
+        first_name=first_name,
+        last_name=last_name,
+        password=password,
+        username=username,
+        is_active=True,
     )
+
     return user, password
 
 
@@ -114,6 +132,7 @@ def create_admin():
 def create_student():
     user, password = create_user_with_type(UserType.STUDENT)
     student = Student.objects.create(user=user)
+    subscribe(student)
     return student, password
 
 
@@ -127,23 +146,21 @@ def create_instructor():
 def create_tag():
     slug = _generate_random_slug()
     tag = Tag.objects.create(slug=slug)
-    translations = _create_translations(TagTranslation, tag, languages, ["name"], "tag")
-    return tag, translations
+    _create_translations(TagTranslation, tag, languages, ["name"], "tag")
+    return tag
 
 
 def create_topic():
     slug = _generate_random_slug()
     topic = Topic.objects.create(slug=slug)
-    translations = _create_translations(
-        TopicTranslation, topic, languages, ["name"], "topic"
-    )
-    return topic, translations
+    _create_translations(TopicTranslation, topic, languages, ["name"], "topic")
+    return topic
 
 
 def create_blog():
     slug = _generate_random_slug()
-    topic, _ = create_topic()
-    tags = [create_tag()[0] for _ in range(_generate_random_number())]
+    topic = create_topic()
+    tags = [create_tag() for _ in range(_generate_random_number())]
     instructor, _ = create_instructor()
     published_at = timezone.now()
 
@@ -156,28 +173,24 @@ def create_blog():
     )
     blog.tags.add(*tags)
 
-    translations = _create_translations(
+    _create_translations(
         BlogTranslation, blog, languages, ["name", "description", "content"], "blog"
     )
-    return blog, translations
+    return blog
 
 
 def create_category():
     slug = _generate_random_slug()
     category = Category.objects.create(slug=slug)
-    translations = _create_translations(
-        CategoryTranslation, category, languages, ["name"], "category"
-    )
-    return category, translations
+    _create_translations(CategoryTranslation, category, languages, ["name"], "category")
+    return category
 
 
 def create_level():
     slug = _generate_random_slug()
     level = Level.objects.create(slug=slug)
-    translations = _create_translations(
-        LevelTranslation, level, languages, ["name"], "level"
-    )
-    return level, translations
+    _create_translations(LevelTranslation, level, languages, ["name"], "level")
+    return level
 
 
 def create_technology():
@@ -201,7 +214,7 @@ def create_lesson():
 
     if lesson_type == LessonType.READING:
         specific_lesson = ReadingLesson.objects.create(lesson=lesson)
-        translations = _create_translations(
+        _create_translations(
             ReadingLessonTranslation,
             specific_lesson,
             languages,
@@ -211,13 +224,13 @@ def create_lesson():
     elif lesson_type == LessonType.VIDEO:
         video_url = _generate_random_url()
         specific_lesson = VideoLesson.objects.create(lesson=lesson, video_url=video_url)
-        translations = _create_translations(
+        _create_translations(
             VideoLessonTranslation, specific_lesson, languages, ["name"], "lesson"
         )
     elif lesson_type == LessonType.QUIZ:
         quiz_type = random.choice([QuizType.SINGLE, QuizType.MULTI])
         specific_lesson = QuizLesson.objects.create(lesson=lesson, quiz_type=quiz_type)
-        translations = _create_translations(
+        _create_translations(
             QuizLessonTranslation,
             specific_lesson,
             languages,
@@ -236,7 +249,7 @@ def create_lesson():
             solution_code=solution_code,
             penalty_points=penalty_points,
         )
-        translations = _create_translations(
+        _create_translations(
             CodingLessonTranslation,
             specific_lesson,
             languages,
@@ -244,7 +257,7 @@ def create_lesson():
             "lesson",
         )
 
-    return lesson, specific_lesson, translations
+    return lesson, specific_lesson
 
 
 def create_chapter():
@@ -253,20 +266,20 @@ def create_chapter():
     chapter = Chapter.objects.create(slug=slug, active=True)
     chapter.lessons.add(*lessons)
 
-    translations = _create_translations(
+    _create_translations(
         ChapterTranslation, chapter, languages, ["name", "description"], "chapter"
     )
-    return chapter, translations
+    return chapter
 
 
 def create_course():
     slug = _generate_random_slug()
     technology = create_technology()
-    level, _ = create_level()
-    category, _ = create_category()
+    level = create_level()
+    category = create_category()
     duration = _generate_random_number()
     chat_url = _generate_random_url()
-    chapters = [create_chapter()[0] for _ in range(_generate_random_number(5, 10))]
+    chapters = [create_chapter() for _ in range(_generate_random_number(5, 10))]
     instructors = [create_instructor()[0] for _ in range(_generate_random_number(1, 3))]
 
     course = Course.objects.create(
@@ -281,19 +294,19 @@ def create_course():
     course.instructors.add(*instructors)
     course.chapters.add(*chapters)
 
-    translations = _create_translations(
+    _create_translations(
         CourseTranslation,
         course,
         languages,
         ["name", "description", "overview"],
         "course",
     )
-    return course, translations
+    return course
 
 
 def create_review():
     student, _ = create_student()
-    course, _ = create_course()
+    course = create_course()
     rating = _generate_random_number(1, 5)
     language = random.choice(languages)
     comment = _generate_random_string(50)
@@ -306,3 +319,52 @@ def create_review():
         comment=comment,
     )
     return review
+
+
+def create_plan():
+    slug = _generate_random_slug()
+    popular = _generate_random_bool()
+    premium = _generate_random_bool()
+    monthly_price = _generate_random_number(10, 20)
+    yearly_price = _generate_random_number(100, 200)
+
+    plan = Plan.objects.create(
+        slug=slug,
+        popular=popular,
+        premium=premium,
+        monthly_price=monthly_price,
+        yearly_price=yearly_price,
+    )
+
+    _create_translations(
+        PlanTranslation,
+        plan,
+        languages,
+        ["license"],
+        "plan",
+    )
+
+    return plan
+
+
+def create_plan_option():
+    slug = _generate_random_slug()
+
+    plan_option = Option.objects.create(slug=slug)
+
+    _create_translations(
+        OptionTranslation,
+        plan_option,
+        languages,
+        ["title"],
+        "option",
+    )
+
+    return plan_option
+
+
+def create_certificate():
+    course = create_course()
+    student, _ = create_student()
+
+    return Certificate.objects.create(student=student, course=course)

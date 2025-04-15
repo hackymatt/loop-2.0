@@ -2,7 +2,7 @@
 
 import { _faqs } from "src/_mock";
 import { useRecentPosts } from "src/api/blog/recent";
-import { useFeaturedPost } from "src/api/blog/featured";
+import { useFeaturedPosts } from "src/api/blog/featured";
 import { useFeaturedReviews } from "src/api/review/featured";
 
 import { Faqs } from "../faqs";
@@ -16,7 +16,7 @@ import { AboutOurMission } from "../about/about-our-mission";
 
 export function AboutView() {
   const { data: featuredReviews } = useFeaturedReviews();
-  const { data: featuredPost } = useFeaturedPost();
+  const { data: featuredPosts } = useFeaturedPosts();
   const { data: recentPosts } = useRecentPosts();
 
   return (
@@ -31,9 +31,9 @@ export function AboutView() {
 
       <Faqs data={_faqs} />
 
-      {featuredPost && !!recentPosts?.length && (
+      {!!featuredPosts?.length && !!recentPosts?.length && (
         <LatestPosts
-          largePost={featuredPost}
+          largePost={featuredPosts[0]}
           smallPosts={recentPosts}
           sx={{ bgcolor: "background.neutral" }}
         />

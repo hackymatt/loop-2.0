@@ -1,4 +1,4 @@
-import type { ICourseLessonType } from "src/types/course";
+import type { LevelType, ICourseLessonType } from "src/types/course";
 
 import dayjs from "dayjs";
 
@@ -60,9 +60,9 @@ const getTeachers = (index: number) => {
 };
 
 const getLevel = (index: number) => {
-  if (index % 2) return { slug: "intermediate", name: "Intermediate" };
-  if (index % 4) return { slug: "advanced", name: "Advanced" };
-  return { slug: "beginner", name: "Beginner" };
+  if (index % 2) return { slug: "intermediate" as LevelType, name: "Intermediate" };
+  if (index % 4) return { slug: "advanced" as LevelType, name: "Advanced" };
+  return { slug: "beginner" as LevelType, name: "Beginner" };
 };
 
 const getTechnology = (index: number) => {

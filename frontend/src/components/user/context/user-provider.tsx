@@ -20,15 +20,16 @@ export function UserProvider({
   const useStorage = isCookieEnabled ? useCookies : useLocalStorage;
   const initialUser = isCookieEnabled ? cookieUser : defaultUser;
 
-  const { state, setState, setField } = useStorage<UserState>(storageKey, initialUser);
+  const { state, setState, setField, resetState } = useStorage<UserState>(storageKey, initialUser);
 
   const memoizedValue = useMemo(
     () => ({
       state,
       setState,
+      resetState: () => resetState(initialUser),
       setField,
     }),
-    [state, setState, setField]
+    [state, setState, setField, resetState, initialUser]
   );
 
   return <UserContext.Provider value={memoizedValue}>{children}</UserContext.Provider>;

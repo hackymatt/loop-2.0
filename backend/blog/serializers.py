@@ -7,6 +7,7 @@ from .models import Blog
 from .topic.serializers import TopicSerializer
 from .tag.serializers import TagSerializer
 from user.type.instructor_user.serializers import InstructorSerializer
+from global_config import CONFIG
 
 
 class BlogNavSerializer(serializers.ModelSerializer):
@@ -21,13 +22,9 @@ class BlogNavSerializer(serializers.ModelSerializer):
             "image",
         ]
 
-    def _get_translation(self, obj, field):
-        lang = self.context.get("request").LANGUAGE_CODE
-        translation = obj.translations.filter(language=lang).first()
-        return getattr(translation, field, None) if translation else None
-
     def get_translated_name(self, obj):
-        return self._get_translation(obj, "name")
+        lang = self.context.get("request").LANGUAGE_CODE
+        return obj.get_translation(lang).name
 
 
 class BaseBlogSerializer(serializers.ModelSerializer):
@@ -51,16 +48,13 @@ class BaseBlogSerializer(serializers.ModelSerializer):
             "duration",
         ]
 
-    def _get_translation(self, obj, field):
-        lang = self.context.get("request").LANGUAGE_CODE
-        translation = obj.translations.filter(language=lang).first()
-        return getattr(translation, field, None) if translation else None
-
     def get_translated_name(self, obj):
-        return self._get_translation(obj, "name")
+        lang = self.context.get("request").LANGUAGE_CODE
+        return obj.get_translation(lang).name
 
     def get_duration(self, obj):
-        content = self._get_translation(obj, "content")
+        lang = self.context.get("request").LANGUAGE_CODE
+        content = obj.get_translation(lang).content
         html = markdown.markdown(content)
 
         # Strip HTML tags
@@ -69,7 +63,9 @@ class BaseBlogSerializer(serializers.ModelSerializer):
 
         # Count words
         words = re.findall(r"\w+", plain_text)
-        return math.ceil(len(words) / 200)  # Assuming 200 words per minute
+        return math.ceil(
+            len(words) / CONFIG["words_per_minute"]
+        )  # Assuming 200 words per minute
 
 
 class BlogRecentSerializer(BaseBlogSerializer):
@@ -87,7 +83,8 @@ class BlogListSerializer(BaseBlogSerializer):
         ]
 
     def get_translated_description(self, obj):
-        return self._get_translation(obj, "description")
+        lang = self.context.get("request").LANGUAGE_CODE
+        return obj.get_translation(lang).description
 
 
 class BlogRetrieveSerializer(BaseBlogSerializer):
@@ -109,10 +106,12 @@ class BlogRetrieveSerializer(BaseBlogSerializer):
         ]
 
     def get_translated_description(self, obj):
-        return self._get_translation(obj, "description")
+        lang = self.context.get("request").LANGUAGE_CODE
+        return obj.get_translation(lang).description
 
     def get_translated_content(self, obj):
-        return self._get_translation(obj, "content")
+        lang = self.context.get("request").LANGUAGE_CODE
+        return obj.get_translation(lang).content
 
     def _blog_nav_data(self, blog):
         if not blog:

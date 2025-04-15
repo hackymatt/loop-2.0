@@ -25,16 +25,38 @@ import { AnimateBorder } from "src/components/animate";
 import { CustomBreadcrumbs } from "src/components/custom-breadcrumbs";
 
 import { SignUpView } from "../auth/sign-up-view";
+import { findNextLesson } from "./find-next-lesson";
 import { FormHead } from "../auth/components/form-head";
 
 // ----------------------------------------------------------------------
 
-type Props = BoxProps & Partial<ICourseProps> & { totalLessons: number };
+type Props = BoxProps &
+  Pick<
+    ICourseProps,
+    | "slug"
+    | "name"
+    | "level"
+    | "teachers"
+    | "category"
+    | "technology"
+    | "totalPoints"
+    | "totalHours"
+    | "description"
+    | "ratingNumber"
+    | "totalReviews"
+    | "totalQuizzes"
+    | "totalExercises"
+    | "totalVideos"
+    | "totalLessons"
+    | "totalStudents"
+    | "chapters"
+    | "progress"
+  >;
 
 export function CourseDetailsHero({
   sx,
   slug,
-  title,
+  name,
   level,
   teachers,
   category,
@@ -49,6 +71,7 @@ export function CourseDetailsHero({
   totalVideos,
   totalLessons,
   totalStudents,
+  chapters,
   progress,
   ...other
 }: Props) {
@@ -68,8 +91,9 @@ export function CourseDetailsHero({
   const quiz = t("quiz", { returnObjects: true }) as string[];
 
   const started = (progress || 0) > 0;
-  const next = { chapter: "abc", lesson: "def" };
-  const redirect = `${paths.learn}/${slug}/${next.chapter}/${next.lesson}`;
+  const completed = (progress || 0) === 100;
+  const next = (findNextLesson(chapters) || chapters[0].lessons[0]).slug;
+  const redirect = `${paths.learn}/${slug}/${next}`;
 
   const languagePluralize = usePluralize();
 
@@ -84,14 +108,14 @@ export function CourseDetailsHero({
       }}
     >
       <Box sx={{ gap: 0.5, display: "flex", alignItems: "center" }}>
-        <Iconify icon={getLevelIcon(level?.slug ?? "")} />
+        <Iconify icon={getLevelIcon(level.slug)} />
         {level?.name}
       </Box>
 
       <Divider orientation="vertical" sx={{ height: 20, my: "auto" }} />
 
       <Box sx={{ gap: 0.5, display: "flex", alignItems: "center" }}>
-        <Iconify icon={getTechnologyIcon(technology?.slug ?? "")} />
+        <Iconify icon={getTechnologyIcon(technology.slug)} />
         {technology?.name}
       </Box>
 
@@ -130,7 +154,7 @@ export function CourseDetailsHero({
       </Typography>
 
       <Typography variant="h3" component="h1">
-        {title}
+        {name}
       </Typography>
 
       {renderInfo()}
@@ -290,7 +314,7 @@ export function CourseDetailsHero({
           links={[
             { name: navigation("home"), href: "/" },
             { name: navigation("courses"), href: paths.courses },
-            { name: title },
+            { name },
           ]}
           sx={{ mb: { xs: 5, md: 10 } }}
         />
@@ -303,7 +327,7 @@ export function CourseDetailsHero({
         >
           <Grid size={{ xs: 12, md: 7 }} sx={{ gap: 3, display: "flex", flexDirection: "column" }}>
             {renderTexts()}
-            {renderButton()}
+            {!completed && renderButton()}
             {renderContent()}
             {renderSummary()}
           </Grid>

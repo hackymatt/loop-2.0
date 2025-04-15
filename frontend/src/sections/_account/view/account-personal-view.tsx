@@ -10,6 +10,10 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import LoadingButton from "@mui/lab/LoadingButton";
 
+import { useFormErrorHandler } from "src/hooks/use-form-error-handler";
+
+import { useUpdateData } from "src/api/me/data";
+
 import { useUserContext } from "src/components/user";
 import { Form, Field } from "src/components/hook-form";
 
@@ -25,8 +29,8 @@ const useAccountPersonalSchema = () => {
       .string()
       .min(1, { message: t("email.errors.required") })
       .email({ message: t("email.errors.invalid") }),
-    firstName: zod.string(),
-    lastName: zod.string(),
+    firstName: zod.string().nullable(),
+    lastName: zod.string().nullable(),
   });
 };
 
@@ -40,23 +44,35 @@ export function AccountPersonalView() {
   const user = useUserContext();
   const { email, firstName, lastName } = user.state;
 
+  const { mutateAsync: updateData } = useUpdateData();
+
   const AccountPersonalSchema = useAccountPersonalSchema();
-  const personalMethods = useForm<AccountPersonalSchemaType>({
+  const methods = useForm<AccountPersonalSchemaType>({
     resolver: zodResolver(AccountPersonalSchema),
     defaultValues: {
       firstName,
       lastName,
-      email,
+      email: email || "",
     },
   });
 
-  const onSubmitPersonal = personalMethods.handleSubmit(async (data) => {
+  const {
+    handleSubmit,
+    formState: { isSubmitting },
+  } = methods;
+
+  const handleFormError = useFormErrorHandler(methods, {
+    first_name: "firstName",
+    last_name: "lastName",
+  });
+
+  const onSubmitPersonal = handleSubmit(async (data) => {
+    const { firstName: first_name, lastName: last_name } = data;
     try {
-      await new Promise((resolve) => setTimeout(resolve, 500));
-      personalMethods.reset();
-      console.info("DATA", data);
+      await updateData({ first_name, last_name });
+      user.setState({ firstName: first_name, lastName: last_name });
     } catch (error) {
-      console.error(error);
+      handleFormError(error);
     }
   });
 
@@ -84,7 +100,7 @@ export function AccountPersonalView() {
         })}
       />
 
-      <Form methods={personalMethods} onSubmit={onSubmitPersonal}>
+      <Form methods={methods} onSubmit={onSubmitPersonal}>
         <Box
           sx={{
             my: 3,
@@ -98,12 +114,7 @@ export function AccountPersonalView() {
         </Box>
 
         <Box sx={{ textAlign: "right" }}>
-          <LoadingButton
-            color="inherit"
-            type="submit"
-            variant="contained"
-            loading={personalMethods.formState.isSubmitting}
-          >
+          <LoadingButton color="inherit" type="submit" variant="contained" loading={isSubmitting}>
             {t("personal.button")}
           </LoadingButton>
         </Box>

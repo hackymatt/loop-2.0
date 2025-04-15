@@ -13,7 +13,7 @@ class ReviewSummaryViewSetTest(TestCase):
         # Set up test data
         self.student_1, _ = create_student()
         self.student_2, _ = create_student()
-        self.course, _ = create_course()
+        self.course = create_course()
 
         self.review_1 = Review.objects.create(
             student=self.student_1,
@@ -48,7 +48,7 @@ class ReviewViewSetTest(TestCase):
         # Set up test data
         self.student_1, _ = create_student()
         self.student_2, _ = create_student()
-        self.course, _ = create_course()
+        self.course = create_course()
         self.review_1 = Review.objects.create(
             student=self.student_1,
             course=self.course,
@@ -80,7 +80,7 @@ class FeaturedReviewsViewTest(TestCase):
         # Set up test data
         self.student_1, _ = create_student()
         self.student_2, _ = create_student()
-        self.course, _ = create_course()
+        self.course = create_course()
         self.review_1 = Review.objects.create(
             student=self.student_1,
             course=self.course,

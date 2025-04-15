@@ -23,12 +23,21 @@ import { Image } from "src/components/image";
 
 type Props = BoxProps & {
   posts: IBlogListProps[];
-  count: number;
+  recordsCount: number;
+  pagesCount: number;
   page: number;
   onPageChange: (selectedPage: number) => void;
 };
 
-export function Posts({ posts, count, page, onPageChange, sx, ...other }: Props) {
+export function Posts({
+  posts,
+  recordsCount,
+  pagesCount,
+  page,
+  onPageChange,
+  sx,
+  ...other
+}: Props) {
   return (
     <>
       <Box
@@ -48,12 +57,14 @@ export function Posts({ posts, count, page, onPageChange, sx, ...other }: Props)
         ))}
       </Box>
 
-      <Pagination
-        count={count}
-        page={page}
-        onChange={(event, selectedPage: number) => onPageChange(selectedPage)}
-        sx={{ py: 10, [`& .${paginationClasses.ul}`]: { justifyContent: "center" } }}
-      />
+      {recordsCount ? (
+        <Pagination
+          count={pagesCount}
+          page={page}
+          onChange={(event, selectedPage: number) => onPageChange(selectedPage)}
+          sx={{ py: 10, [`& .${paginationClasses.ul}`]: { justifyContent: "center" } }}
+        />
+      ) : null}
     </>
   );
 }

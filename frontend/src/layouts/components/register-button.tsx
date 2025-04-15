@@ -55,7 +55,7 @@ export function RegisterButton({ slotProps, sx }: RegisterButtonProps) {
         href={paths.register}
         {...slotProps?.button}
         sx={[
-          { px: 2, borderRadius: "inherit", textAlign: "center" },
+          { px: 2, borderRadius: "inherit", textAlign: "center", whiteSpace: "nowrap" },
           ...(Array.isArray(slotProps?.button?.sx)
             ? (slotProps?.button?.sx ?? [])
             : [slotProps?.button?.sx]),

@@ -3,6 +3,8 @@
 import Grid from "@mui/material/Grid2";
 import { Box, Container } from "@mui/material";
 
+import { useDashboard } from "src/api/me/dashboard";
+
 import { ProfileSummary } from "../dashboard/profile-summary";
 import { CoursesProgress } from "../dashboard/courses-progress";
 import { CertificatesProgress } from "../dashboard/certificates-progress";
@@ -10,6 +12,8 @@ import { CertificatesProgress } from "../dashboard/certificates-progress";
 // ----------------------------------------------------------------------
 
 export function DashboardView() {
+  const { data: dashboard } = useDashboard();
+
   const renderContent = () => (
     <Box
       sx={{
@@ -28,9 +32,9 @@ export function DashboardView() {
           mb: 1,
         }}
       >
-        <CoursesProgress />
+        <CoursesProgress courses={dashboard?.courses || []} />
 
-        <CertificatesProgress />
+        <CertificatesProgress certificates={dashboard?.certificates || []} />
       </Box>
     </Box>
   );
@@ -41,7 +45,10 @@ export function DashboardView() {
         py: 5,
       }}
     >
-      <ProfileSummary />
+      <ProfileSummary
+        totalPoints={dashboard?.totalPoints || 0}
+        dailyStreak={dashboard?.dailyStreak || 0}
+      />
     </Box>
   );
 

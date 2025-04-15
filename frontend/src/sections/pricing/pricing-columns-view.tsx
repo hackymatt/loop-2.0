@@ -1,5 +1,7 @@
 "use client";
 
+import type { IPlanProps } from "src/types/plan";
+
 import { useState, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -9,30 +11,21 @@ import Switch from "@mui/material/Switch";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 
+import { usePlans } from "src/api/plan/plans";
+
 import { PricingColumnHeader } from "./pricing-column-header";
 import { PricingColumnContentMobile, PricingColumnContentDesktop } from "./pricing-column-content";
-
-// ----------------------------------------------------------------------
-
-type IPackage = {
-  license: string;
-  popular: boolean;
-  premium: boolean;
-  price: { monthly: number; yearly: number };
-  icon: string;
-  options: { title: string; disabled: boolean }[];
-};
 
 // ----------------------------------------------------------------------
 
 export function PricingColumnsView() {
   const { t } = useTranslation("pricing");
 
-  const packages = t("packages", { returnObjects: true }) as IPackage[];
+  const { data: plans } = usePlans();
 
   const [isYearly, setIsYearly] = useState(true);
 
-  const pricingColumns = packages.map(({ price, ...rest }: IPackage) => {
+  const pricingColumns = (plans || []).map(({ price, ...rest }: IPlanProps) => {
     const { monthly, yearly } = price;
     return { ...rest, price: isYearly ? yearly : monthly };
   });

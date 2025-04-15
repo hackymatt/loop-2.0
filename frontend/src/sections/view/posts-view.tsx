@@ -14,7 +14,7 @@ import { _mock } from "src/_mock";
 import { usePosts } from "src/api/blog/posts";
 import { usePostTags } from "src/api/blog/tag/tags";
 import { useRecentPosts } from "src/api/blog/recent";
-import { useFeaturedPost } from "src/api/blog/featured";
+import { useFeaturedPosts } from "src/api/blog/featured";
 import { usePostTopics } from "src/api/blog/topic/topics";
 
 import { Posts } from "../posts/posts";
@@ -31,19 +31,20 @@ export function PostsView() {
 
   const { data: postTopics } = usePostTopics();
   const { data: postTags } = usePostTags();
-  const { data: featuredPost } = useFeaturedPost();
+  const { data: featuredPosts } = useFeaturedPosts();
   const { data: recentPosts } = useRecentPosts();
-  const { data: posts, pageSize } = usePosts(query);
+  const { data: posts, count, pageSize } = usePosts(query);
 
   return (
     <>
-      {featuredPost && <FeaturedPost post={featuredPost} />}
+      {!!featuredPosts?.length && <FeaturedPost post={featuredPosts[0]} />}
       <Container sx={{ pt: 10 }}>
         <Grid container spacing={{ md: 8 }}>
           <Grid size={{ xs: 12, md: 8 }}>
             <Posts
               posts={posts || []}
-              count={pageSize || 0}
+              recordsCount={count || 0}
+              pagesCount={pageSize || 0}
               page={Number(query.page) || 1}
               onPageChange={(selectedPage: number) => handleChange("page", String(selectedPage))}
             />

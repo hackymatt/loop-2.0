@@ -5,19 +5,19 @@ from rest_framework import status
 from const import Urls
 from utils.google.gmail import GmailApi
 from ..helpers import mock_send_message
-from ..factory import create_user
+from ..factory import create_student
 
 
 class PasswordResetTest(TestCase):
     def setUp(self):
         self.client = APIClient()
         self.url = f"/{Urls.API}/{Urls.PASSWORD_RESET}"
-        self.user, _ = create_user()
+        self.student, _ = create_student()
 
     @patch.object(GmailApi, "_send_message")
     def test_password_reset_request_valid_email(self, send_message_mock):
         mock_send_message(mock=send_message_mock)
-        response = self.client.post(self.url, {"email": self.user.email})
+        response = self.client.post(self.url, {"email": self.student.user.email})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         # Assert that send_activation_email was called once
         send_message_mock.assert_called_once()

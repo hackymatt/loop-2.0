@@ -10,6 +10,9 @@ class Topic(BaseModel):
         db_table = "blog_topic"
         verbose_name_plural = "Topics"
 
+    def get_translation(self, lang_code):
+        return self.translations.filter(language=lang_code).first()
+
     def __str__(self):
         return self.slug  # pragma: no cover
 

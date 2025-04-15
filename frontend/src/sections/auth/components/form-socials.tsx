@@ -62,14 +62,18 @@ function GoogleSignIn({ methods }: { methods: UseFormReturn<any> }) {
 
     try {
       const { data: responseData } = await googleLogin({ token });
-      const { email, first_name, last_name } = responseData;
+      const { email, first_name, last_name, image, user_type, join_type, is_active, plan } =
+        responseData;
       user.setState({
-        isRegistered: true,
-        isActive: true,
+        isActive: is_active,
         isLoggedIn: true,
         email,
         firstName: first_name,
         lastName: last_name,
+        avatarUrl: image,
+        userType: user_type,
+        joinType: join_type,
+        plan,
       });
       router.push(paths.account.dashboard);
     } catch (error) {
@@ -97,19 +101,22 @@ function GithubSignIn({ methods }: { methods: UseFormReturn<any> }) {
   const handleFormError = useFormErrorHandler(methods);
 
   const handleLogin = async (response: { code: string }) => {
-    console.log(response);
     const { code } = response;
 
     try {
       const { data: responseData } = await githubLogin({ code });
-      const { email, first_name, last_name } = responseData;
+      const { email, first_name, last_name, image, user_type, join_type, is_active, plan } =
+        responseData;
       user.setState({
-        isRegistered: true,
-        isActive: true,
+        isActive: is_active,
         isLoggedIn: true,
         email,
         firstName: first_name,
         lastName: last_name,
+        avatarUrl: image,
+        userType: user_type,
+        joinType: join_type,
+        plan,
       });
       router.push(paths.account.dashboard);
     } catch (error) {
@@ -139,19 +146,22 @@ function FacebookSignIn({ methods }: { methods: UseFormReturn<any> }) {
   const handleFormError = useFormErrorHandler(methods);
 
   const handleLogin = async (response: ReactFacebookLoginInfo) => {
-    console.log(response);
     const { accessToken: access_token } = response;
 
     try {
       const { data: responseData } = await facebookLogin({ access_token });
-      const { email, first_name, last_name } = responseData;
+      const { email, first_name, last_name, image, user_type, join_type, is_active, plan } =
+        responseData;
       user.setState({
-        isRegistered: true,
-        isActive: true,
+        isActive: is_active,
         isLoggedIn: true,
         email,
         firstName: first_name,
         lastName: last_name,
+        avatarUrl: image,
+        userType: user_type,
+        joinType: join_type,
+        plan,
       });
       router.push(paths.account.dashboard);
     } catch (error) {

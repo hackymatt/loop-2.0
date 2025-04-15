@@ -4,7 +4,7 @@ from blog.models import Blog
 from rest_framework import status
 from django.utils import timezone
 from const import Urls
-from ..factory import create_blog, create_admin_user, create_student_user
+from ..factory import create_blog, create_admin, create_student
 
 
 class BlogViewSetTestCase(TestCase):
@@ -13,18 +13,18 @@ class BlogViewSetTestCase(TestCase):
         self.url = f"/{Urls.API}/{Urls.POST}"
 
         # First blog post
-        self.blog1, self.blog1_translations = create_blog()
+        self.blog1 = create_blog()
         self.blog1.published_at = self.blog1.published_at - timezone.timedelta(weeks=1)
         self.blog1.visits = 5
         self.blog1.save()
 
         # Second blog post
-        self.blog2, self.blog2_translations = create_blog()
+        self.blog2 = create_blog()
         self.blog2.visits = 10
         self.blog2.save()
 
-        self.admin_user, self.admin_user_password = create_admin_user()
-        self.regular_user, self.regular_user_password = create_student_user()
+        self.admin, self.admin_password = create_admin()
+        self.student, self.student_password = create_student()
 
     def test_blog_list(self):
         # Test the list view of BlogViewSet
@@ -49,11 +49,11 @@ class BlogViewSetTestCase(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["slug"], self.blog1.slug)
         self.assertEqual(
-            response.data["translated_name"], self.blog1_translations["en"].name
+            response.data["translated_name"], self.blog1.get_translation("en").name
         )
         self.assertEqual(
             response.data["translated_description"],
-            self.blog1_translations["en"].description,
+            self.blog1.get_translation("en").description,
         )
 
     def test_blog_filter_by_category(self):
@@ -85,7 +85,7 @@ class BlogViewSetTestCase(TestCase):
         self.blog1.save()
 
         # Add another blog with fewer visits
-        another_blog, _ = create_blog()
+        another_blog = create_blog()
         another_blog.visits = 5
         another_blog.save()
 
@@ -104,23 +104,23 @@ class RecentBlogsViewTestCase(TestCase):
         self.url = f"/{Urls.API}/{Urls.RECENT_POST}"  # adjust to your actual RecentBlogsView URL
 
         # First blog post
-        self.blog1, self.blog1_translations = create_blog()
+        self.blog1 = create_blog()
         self.blog1.published_at = self.blog1.published_at - timezone.timedelta(weeks=1)
         self.blog1.visits = 20
         self.blog1.save()
 
         # Second blog post
-        self.blog2, self.blog2_translations = create_blog()
+        self.blog2 = create_blog()
         self.blog2.visits = 5
         self.blog2.save()
 
         # Third blog post
-        self.blog3, self.blog3_translations = create_blog()
+        self.blog3 = create_blog()
         self.blog3.visits = 7
         self.blog3.save()
 
-        self.admin_user, self.admin_user_password = create_admin_user()
-        self.regular_user, self.regular_user_password = create_student_user()
+        self.admin, self.admin_password = create_admin()
+        self.student, self.student_password = create_student()
 
     def test_recent_blogs_excludes_most_visited(self):
         response = self.client.get(self.url)
@@ -135,7 +135,7 @@ class RecentBlogsViewTestCase(TestCase):
     def test_recent_blogs_returns_up_to_five(self):
         # Create 4 more recent blogs to reach 6 total (1 will be excluded)
         for i in range(4):
-            blog, _ = create_blog()
+            blog = create_blog()
             blog.published_at = timezone.now() - timezone.timedelta(days=i + 3)
             blog.save()
 
@@ -157,25 +157,25 @@ class FeaturedBlogViewTestCase(TestCase):
         self.url = f"/{Urls.API}/{Urls.FEATURED_POST}"  # replace with your actual featured blog endpoint
 
         # First blog post
-        self.blog1, self.blog1_translations = create_blog()
+        self.blog1 = create_blog()
         self.blog1.published_at = self.blog1.published_at - timezone.timedelta(weeks=1)
         self.blog1.visits = 5
         self.blog1.save()
 
         # Second blog post
-        self.blog2, self.blog2_translations = create_blog()
+        self.blog2 = create_blog()
         self.blog2.visits = 10
         self.blog2.save()
 
-        self.admin_user, self.admin_user_password = create_admin_user()
-        self.regular_user, self.regular_user_password = create_student_user()
+        self.admin, self.admin_password = create_admin()
+        self.student, self.student_password = create_student()
 
     def test_featured_blog_is_most_visited(self):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data["slug"], self.blog2.slug)
+        self.assertEqual(response.data[0]["slug"], self.blog2.slug)
         self.assertEqual(
-            response.data["translated_name"], self.blog2_translations["en"].name
+            response.data[0]["translated_name"], self.blog2.get_translation("en").name
         )
 
     def test_featured_blog_when_no_blogs(self):
@@ -186,5 +186,5 @@ class FeaturedBlogViewTestCase(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(
             response.data,
-            {"slug": "", "name": "", "language": "", "published_at": None},
+            [],
         )

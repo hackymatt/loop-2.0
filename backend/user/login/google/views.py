@@ -5,8 +5,11 @@ from django.contrib.auth import get_user_model
 from django.utils.translation import gettext as _
 from rest_framework_simplejwt.tokens import RefreshToken
 import requests
-from ...utils import get_unique_username, set_cookies
-from const import JoinType
+from ...utils import get_unique_username, set_cookies, download_and_assign_image
+from plan.subscription.utils import subscribe
+from ..serializers import LoginResponseSerializer
+from user.type.student_user.models import Student
+from const import JoinType, UserType
 
 
 class GoogleLoginView(APIView):
@@ -32,27 +35,29 @@ class GoogleLoginView(APIView):
         picture = google_response.get("picture", "")
 
         # Create user or get
-        user, created = get_user_model().objects.get_or_create(
+        user, user_created = get_user_model().objects.get_or_create(
             email=email,
             defaults={
                 "username": email,
                 "first_name": first_name,
                 "last_name": last_name,
-                "image": picture,
+                "user_type": UserType.STUDENT,
                 "join_type": JoinType.GOOGLE,
+                "is_active": True,
             },
         )
+        student, student_created = Student.objects.get_or_create(user=user)
+        subscribe(student)
+
+        if user_created:
+            download_and_assign_image(user, picture)
 
         # Create JWT token for the user
         refresh_token = RefreshToken.for_user(user)
         access_token = refresh_token.access_token
 
         response = Response(
-            {
-                "email": user.email,
-                "first_name": user.first_name,
-                "last_name": user.last_name,
-            },
+            LoginResponseSerializer(user, context={"request": request}).data,
             status=status.HTTP_200_OK,
         )
 

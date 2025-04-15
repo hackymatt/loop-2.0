@@ -4,7 +4,14 @@ import { NextResponse } from "next/server";
 
 import { paths } from "./routes/paths";
 
-const AUTHORIZED_PATHS = [paths.certificates, paths.learn, paths.account.dashboard];
+const AUTHORIZED_PATHS = [
+  paths.certificates,
+  paths.learn,
+  paths.account.dashboard,
+  paths.account.personal,
+  paths.account.manage,
+  paths.account.subscription,
+];
 const UNAUTHORIZED_PATHS = [
   paths.home,
   paths.login,
@@ -22,7 +29,6 @@ export async function middleware(req: NextRequest) {
   // Check if user is logged in
   if (!accessToken) {
     if (AUTHORIZED_PATHS.includes(req.nextUrl.pathname)) {
-      console.log(`Redirecting to login from ${req.nextUrl.pathname}`);
       return NextResponse.redirect(new URL(paths.login, req.url));
     }
   }
@@ -30,7 +36,6 @@ export async function middleware(req: NextRequest) {
   // If the user is logged in and is on an unauthorized path, redirect to the dashboard
   if (accessToken) {
     if (UNAUTHORIZED_PATHS.includes(req.nextUrl.pathname)) {
-      console.log(`Redirecting to dashboard from ${req.nextUrl.pathname}`);
       return NextResponse.redirect(new URL(paths.account.dashboard, req.url));
     }
   }
@@ -43,7 +48,8 @@ export const config = {
   matcher: [
     "/certificates",
     "/lesson",
-    "/account",
+    "/account/:path*",
+    "/learn/:path*",
     "/",
     "/auth/login",
     "/auth/register",

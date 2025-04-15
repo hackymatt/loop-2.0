@@ -10,10 +10,21 @@ import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import LoadingButton from "@mui/lab/LoadingButton";
+import { Link, Button, Divider } from "@mui/material";
 import InputAdornment from "@mui/material/InputAdornment";
 
+import { paths } from "src/routes/paths";
+
+import { useFormErrorHandler } from "src/hooks/use-form-error-handler";
+
+import { JOIN_TYPE, USER_TYPE } from "src/consts/user";
+import { useChangePassword } from "src/api/me/password";
+
 import { Iconify } from "src/components/iconify";
+import { useUserContext } from "src/components/user";
 import { Form, Field } from "src/components/hook-form";
+
+import { DeleteAccountForm } from "./delete-account-form";
 
 // ----------------------------------------------------------------------
 
@@ -42,24 +53,10 @@ const useAccountPasswordSchema = () => {
         .regex(/[!@#$%^&]/, {
           message: t("newPassword.errors.specialCharacter"),
         }),
-      confirmNewPassword: zod
-        .string()
-        .min(1, { message: t("confirmNewPassword.errors.required") })
-        .min(6, { message: t("confirmNewPassword.errors.minLength") })
-        .regex(/[A-Z]/, { message: t("confirmNewPassword.errors.bigLetter") })
-        .regex(/[a-z]/, { message: t("confirmNewPassword.errors.smallLetter") })
-        .regex(/[0-9]/, { message: t("confirmNewPassword.errors.number") })
-        .regex(/[!@#$%^&]/, {
-          message: t("confirmNewPassword.errors.specialCharacter"),
-        }),
     })
     .refine((data) => data.oldPassword !== data.newPassword, {
       message: t("newPassword.errors.same"),
       path: ["newPassword"],
-    })
-    .refine((data) => data.newPassword === data.confirmNewPassword, {
-      message: t("confirmNewPassword.errors.same"),
-      path: ["confirmNewPassword"],
     });
 };
 
@@ -70,22 +67,39 @@ type AccountPasswordSchemaType = zod.infer<ReturnType<typeof useAccountPasswordS
 export function AccountManageView() {
   const { t } = useTranslation("account");
 
+  const user = useUserContext();
+  const { userType, joinType } = user.state;
+
+  const { mutateAsync: changePassword } = useChangePassword();
+
   const passwordShow = useBoolean();
+  const deleteAccountFormOpen = useBoolean();
 
   const AccountPasswordSchema = useAccountPasswordSchema();
 
-  const passwordMethods = useForm<AccountPasswordSchemaType>({
+  const methods = useForm<AccountPasswordSchemaType>({
     resolver: zodResolver(AccountPasswordSchema),
-    defaultValues: { oldPassword: "", newPassword: "", confirmNewPassword: "" },
+    defaultValues: { oldPassword: "", newPassword: "" },
   });
 
-  const onSubmitPassword = passwordMethods.handleSubmit(async (data) => {
+  const {
+    reset,
+    handleSubmit,
+    formState: { isSubmitting, errors },
+  } = methods;
+
+  const handleFormError = useFormErrorHandler(methods, {
+    old_password: "oldPassword",
+    new_password: "newPassword",
+  });
+
+  const onSubmitPassword = handleSubmit(async (data) => {
+    const { oldPassword, newPassword } = data;
     try {
-      await new Promise((resolve) => setTimeout(resolve, 500));
-      passwordMethods.reset();
-      console.info("DATA", data);
+      await changePassword({ old_password: oldPassword, new_password: newPassword });
+      reset();
     } catch (error) {
-      console.error(error);
+      handleFormError(error);
     }
   });
 
@@ -131,25 +145,52 @@ export function AccountManageView() {
           },
         }}
       />
-      <Field.Text
-        name="confirmNewPassword"
-        label={t("confirmNewPassword.label")}
-        placeholder={t("confirmNewPassword.placeholder")}
-        type={passwordShow.value ? "text" : "password"}
-        slotProps={{
-          inputLabel: { shrink: true },
-          input: {
-            endAdornment: (
-              <InputAdornment position="end">
-                <IconButton onClick={passwordShow.onToggle} edge="end">
-                  <Iconify
-                    icon={passwordShow.value ? "solar:eye-outline" : "solar:eye-closed-outline"}
-                  />
-                </IconButton>
-              </InputAdornment>
-            ),
-          },
-        }}
+    </>
+  );
+
+  const renderChangePassword = () => (
+    <>
+      <Form methods={methods} onSubmit={onSubmitPassword}>
+        <Box sx={{ my: 3, gap: 2.5, display: "flex", flexDirection: "column" }}>
+          {renderChangePasswordForm()}
+        </Box>
+
+        <Box sx={{ textAlign: "right" }}>
+          <LoadingButton color="inherit" type="submit" variant="contained" loading={isSubmitting}>
+            {t("manage.button")}
+          </LoadingButton>
+        </Box>
+      </Form>
+
+      {errors.root && (
+        <Typography variant="body2" color="error" sx={{ width: 1 }}>
+          {errors.root.message}
+        </Typography>
+      )}
+
+      <Divider sx={{ borderStyle: "dashed", my: 5 }} />
+    </>
+  );
+
+  const renderDeleteAccount = () => (
+    <>
+      <Typography variant="body1" sx={{ my: 3 }}>
+        {t("delete.text")} <Link href={paths.account.subscription}>{t("subscription.title")}</Link>.
+      </Typography>
+
+      <Button
+        color="error"
+        type="submit"
+        variant="contained"
+        onClick={deleteAccountFormOpen.onToggle}
+        disabled={userType === USER_TYPE.ADMIN}
+      >
+        {t("delete.button")}
+      </Button>
+
+      <DeleteAccountForm
+        open={deleteAccountFormOpen.value}
+        onClose={deleteAccountFormOpen.onFalse}
       />
     </>
   );
@@ -160,22 +201,8 @@ export function AccountManageView() {
         {t("manage.title")}
       </Typography>
 
-      <Form methods={passwordMethods} onSubmit={onSubmitPassword}>
-        <Box sx={{ my: 3, gap: 2.5, display: "flex", flexDirection: "column" }}>
-          {renderChangePasswordForm()}
-        </Box>
-
-        <Box sx={{ textAlign: "right" }}>
-          <LoadingButton
-            color="inherit"
-            type="submit"
-            variant="contained"
-            loading={passwordMethods.formState.isSubmitting}
-          >
-            {t("manage.button")}
-          </LoadingButton>
-        </Box>
-      </Form>
+      {joinType === JOIN_TYPE.EMAIL && renderChangePassword()}
+      {renderDeleteAccount()}
     </div>
   );
 }

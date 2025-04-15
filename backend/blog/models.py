@@ -33,15 +33,18 @@ class Blog(BaseModel):
     class Meta:
         db_table = "blog"
 
-    def __str__(self):
-        return self.slug  # pragma: no cover
-
     def increment_visits(self):
         """Increment visit count atomically."""
         self.visits = (
             models.F("visits") + 1
         )  # Increment visits field by 1 using F expressions
         self.save()
+
+    def get_translation(self, lang_code):
+        return self.translations.filter(language=lang_code).first()
+
+    def __str__(self):
+        return self.slug  # pragma: no cover
 
 
 class BlogTranslation(BaseModel):

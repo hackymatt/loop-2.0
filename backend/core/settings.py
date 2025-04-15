@@ -100,11 +100,15 @@ INSTALLED_APPS = [
     "course.lesson",
     "course.chapter",
     "course.enrollment",
+    "course.progress",
     "course",
     "review",
     "blog.topic",
     "blog.tag",
     "blog",
+    "plan",
+    "plan.subscription",
+    "certificate",
 ]
 
 DEBUG_TOOLBAR_PANELS = [
@@ -136,9 +140,9 @@ MIDDLEWARE = [
 ]
 
 REST_FRAMEWORK = {
-    "DEFAULT_AUTHENTICATION_CLASSES": (
-        "rest_framework_simplejwt.authentication.JWTAuthentication",
-    ),
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "core.authentication.JWTAuthenticationFromCookie",
+    ],
     "DEFAULT_PARSER_CLASSES": (
         "rest_framework.parsers.JSONParser",
         "rest_framework.parsers.MultiPartParser",

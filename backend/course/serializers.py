@@ -1,29 +1,41 @@
 from rest_framework import serializers
-from django.db.models import Sum, Count, Avg, Q
 from .models import Course
+from .chapter.serializers import ChapterSerializer
 from .level.serializers import LevelSerializer
 from .category.serializers import CategorySerializer
 from .technology.serializers import TechnologySerializer
-from .enrollment.models import CourseEnrollment
-from .chapter.serializers import ChapterSerializer
 from user.type.instructor_user.serializers import InstructorSerializer
-from review.models import Review
-from const import LessonType
+from .progress.models import CourseProgress
+from const import UserType
+
+
+class PrerequisiteSerializer(serializers.ModelSerializer):
+    translated_name = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Course
+        fields = ["slug", "translated_name"]
+
+    def get_translated_name(self, obj):
+        lang = self.context.get("request").LANGUAGE_CODE
+        return obj.get_translation(lang).name
 
 
 class BaseCourseSerializer(serializers.ModelSerializer):
     name = serializers.CharField(write_only=True)
     language = serializers.CharField(write_only=True)
+
     translated_name = serializers.SerializerMethodField()
     translated_description = serializers.SerializerMethodField()
     level = LevelSerializer(read_only=True)
     category = CategorySerializer(read_only=True)
     technology = TechnologySerializer(read_only=True)
     instructors = InstructorSerializer(many=True, read_only=True)
-    lessons_count = serializers.SerializerMethodField()
-    average_rating = serializers.SerializerMethodField()
-    ratings_count = serializers.SerializerMethodField()
-    students_count = serializers.SerializerMethodField()
+
+    lessons_count = serializers.IntegerField(read_only=True)
+    average_rating = serializers.FloatField(read_only=True)
+    ratings_count = serializers.IntegerField(read_only=True)
+    students_count = serializers.IntegerField(read_only=True)
 
     class Meta:
         model = Course
@@ -44,33 +56,40 @@ class BaseCourseSerializer(serializers.ModelSerializer):
             "students_count",
         ]
 
-    def _get_translation(self, obj, field):
-        lang = self.context.get("request").LANGUAGE_CODE
-        translation = obj.translations.filter(language=lang).first()
-        return getattr(translation, field, None) if translation else None
-
     def get_translated_name(self, obj):
-        return self._get_translation(obj, "name")
+        lang = self.context.get("request").LANGUAGE_CODE
+        return obj.get_translation(lang).name
 
     def get_translated_description(self, obj):
-        return self._get_translation(obj, "description")
+        lang = self.context.get("request").LANGUAGE_CODE
+        return obj.get_translation(lang).description
 
-    def get_lessons_count(self, obj):
-        return (
-            obj.chapters.aggregate(total_lessons=Count("lessons"))["total_lessons"] or 0
-        )
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
 
-    def get_average_rating(self, obj):
-        avg_rating = Review.objects.filter(course=obj).aggregate(Avg("rating"))[
-            "rating__avg"
-        ]
-        return round(avg_rating, 1) if avg_rating else None
+        user = self.context["request"].user
+        if not user.is_authenticated or user.user_type != UserType.STUDENT:
+            return data
 
-    def get_ratings_count(self, obj):
-        return Review.objects.filter(course=obj).count()
+        data["progress"] = self.get_progress(instance, user)
 
-    def get_students_count(self, obj):
-        return CourseEnrollment.objects.filter(course=obj).count()
+        return data
+
+    def get_progress(self, obj, user):
+        # You could prefetch CourseProgress for all lessons if needed
+        lesson_ids = []
+        for chapter in obj.chapters.all():
+            lesson_ids.extend(chapter.lessons.values_list("id", flat=True))
+
+        total = len(lesson_ids)
+        if total == 0:
+            return 0
+
+        completed = CourseProgress.objects.filter(
+            student__user=user, lesson_id__in=lesson_ids, completed_at__isnull=False
+        ).count()
+
+        return float((completed / total) * 100)
 
 
 class CourseListSerializer(BaseCourseSerializer):
@@ -80,12 +99,15 @@ class CourseListSerializer(BaseCourseSerializer):
 class CourseRetrieveSerializer(BaseCourseSerializer):
     translated_overview = serializers.SerializerMethodField()
     chat_url = serializers.SerializerMethodField()
-    points = serializers.SerializerMethodField()
-    reading_count = serializers.SerializerMethodField()
-    video_count = serializers.SerializerMethodField()
-    quiz_count = serializers.SerializerMethodField()
-    coding_count = serializers.SerializerMethodField()
-    chapters = serializers.SerializerMethodField()
+
+    points = serializers.IntegerField(read_only=True)
+    reading_count = serializers.IntegerField(read_only=True)
+    video_count = serializers.IntegerField(read_only=True)
+    quiz_count = serializers.IntegerField(read_only=True)
+    coding_count = serializers.IntegerField(read_only=True)
+
+    chapters = ChapterSerializer(many=True, read_only=True)
+    prerequisites = PrerequisiteSerializer(many=True, read_only=True)
 
     class Meta(BaseCourseSerializer.Meta):
         fields = BaseCourseSerializer.Meta.fields + [
@@ -97,40 +119,12 @@ class CourseRetrieveSerializer(BaseCourseSerializer):
             "quiz_count",
             "coding_count",
             "chapters",
+            "prerequisites",
         ]
 
     def get_translated_overview(self, obj):
-        return self._get_translation(obj, "overview")
+        lang = self.context.get("request").LANGUAGE_CODE
+        return obj.get_translation(lang).overview
 
     def get_chat_url(self, obj):
-        return None
-
-    def get_points(self, obj):
-        return (
-            obj.chapters.aggregate(Sum("lessons__points"))["lessons__points__sum"] or 0
-        )
-
-    def get_lesson_count_by_type(self, obj, lesson_type):
-        return (
-            obj.chapters.aggregate(
-                total=Count("lessons", filter=Q(lessons__type=lesson_type))
-            )["total"]
-            or 0
-        )
-
-    def get_reading_count(self, obj):
-        return self.get_lesson_count_by_type(obj, LessonType.READING)
-
-    def get_video_count(self, obj):
-        return self.get_lesson_count_by_type(obj, LessonType.VIDEO)
-
-    def get_quiz_count(self, obj):
-        return self.get_lesson_count_by_type(obj, LessonType.QUIZ)
-
-    def get_coding_count(self, obj):
-        return self.get_lesson_count_by_type(obj, LessonType.CODING)
-
-    def get_chapters(self, obj):
-        return ChapterSerializer(
-            obj.chapters.all(), many=True, context=self.context
-        ).data
+        return None  # Placeholder, update if needed

@@ -6,8 +6,11 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.conf import settings
-from ...utils import get_unique_username, set_cookies
-from const import JoinType
+from ...utils import get_unique_username, set_cookies, download_and_assign_image
+from plan.subscription.utils import subscribe
+from ..serializers import LoginResponseSerializer
+from user.type.student_user.models import Student
+from const import JoinType, UserType
 
 github_provider = settings.SOCIALACCOUNT_PROVIDERS.get("github", {})
 
@@ -87,27 +90,29 @@ class GithubLoginView(APIView):
         picture = github_response.get("avatar_url", "")
 
         # Create user or get existing one
-        user, created = get_user_model().objects.get_or_create(
+        user, user_created = get_user_model().objects.get_or_create(
             email=email,
             defaults={
                 "username": username,
                 "first_name": first_name,
                 "last_name": last_name,
-                "image": picture,
+                "user_type": UserType.STUDENT,
                 "join_type": JoinType.GITHUB,
+                "is_active": True,
             },
         )
+        student, student_created = Student.objects.get_or_create(user=user)
+        subscribe(student)
+
+        if user_created:
+            download_and_assign_image(user, picture)
 
         # Create JWT tokens
         refresh_token = RefreshToken.for_user(user)
         access_token = refresh_token.access_token
 
         response = Response(
-            {
-                "email": user.email,
-                "first_name": user.first_name,
-                "last_name": user.last_name,
-            },
+            LoginResponseSerializer(user, context={"request": request}).data,
             status=status.HTTP_200_OK,
         )
 

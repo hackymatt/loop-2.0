@@ -50,21 +50,24 @@ export function SignInView() {
       const { data: responseData, status } = await login(data);
       if (status === 401) {
         user.setState({
-          isRegistered: true,
           isActive: false,
           isLoggedIn: false,
           email: data.email,
         });
         router.push(paths.activate);
       } else {
-        const { email, first_name, last_name } = responseData;
+        const { email, first_name, last_name, image, user_type, join_type, is_active, plan } =
+          responseData;
         user.setState({
-          isRegistered: true,
-          isActive: true,
+          isActive: is_active,
           isLoggedIn: true,
           email,
           firstName: first_name,
           lastName: last_name,
+          avatarUrl: image,
+          userType: user_type,
+          joinType: join_type,
+          plan,
         });
         router.push(paths.account.dashboard);
       }

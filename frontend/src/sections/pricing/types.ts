@@ -1,12 +1,5 @@
-export type PricingCardProps = {
-  license: string;
-  popular: boolean;
-  premium: boolean;
-  icon: string;
+import type { IPlanProps } from "src/types/plan";
+
+export type PricingCardProps = Omit<IPlanProps, "price"> & {
   price: number;
-  options: {
-    title: string;
-    tooltip?: string;
-    disabled: boolean;
-  }[];
 };

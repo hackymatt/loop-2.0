@@ -10,6 +10,8 @@ export const URLS = {
   LOGOUT: "/auth/logout",
   PASSWORD_RESET: "/auth/reset-password",
   PASSWORD_UPDATE: "/auth/reset-password-confirm",
+  REFRESH_TOKEN: "/auth/refresh-token",
+  AUTH_CHECK: "/auth/check",
   // CONTACT
   CONTACT: "/contact",
   // COURSE
@@ -31,4 +33,13 @@ export const URLS = {
   FEATURED_COURSES: "/featured-courses",
   FEATURED_REVIEWS: "/featured-reviews",
   FEATURED_POST: "/featured-post",
+  // PLAN
+  PLANS: "/plans",
+  // CERTIFICATES
+  CERTIFICATES: "/certificates",
+  // ME
+  DATA: "me/data",
+  PASSWORD_CHANGE: "me/password",
+  DELETE_ACCOUNT: "me/delete",
+  DASHBOARD: "me/dashboard",
 } as const;

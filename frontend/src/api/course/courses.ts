@@ -1,6 +1,6 @@
 import type { Language } from "src/locales/types";
-import type { ICourseListProps } from "src/types/course";
 import type { QueryType, ListQueryResponse } from "src/api/types";
+import type { LevelType, ICourseListProps } from "src/types/course";
 
 import { compact } from "lodash-es";
 import { useQuery } from "@tanstack/react-query";
@@ -81,7 +81,7 @@ export const coursesQuery = (query?: QueryType, language?: Language) => {
         name: translated_name,
         description: translated_description,
         level: {
-          slug: level.slug,
+          slug: level.slug as LevelType,
           name: level.translated_name,
         },
         category: {

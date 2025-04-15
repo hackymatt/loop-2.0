@@ -11,12 +11,13 @@ import Typography from "@mui/material/Typography";
 
 import { useQueryParams } from "src/hooks/use-query-params";
 
-import { _courses } from "src/_mock";
+import { useCourses } from "src/api/course/courses";
 import { useCourseLevels } from "src/api/course/level/levels";
 import { useCourseCategories } from "src/api/course/category/categories";
 import { useCourseTechnologies } from "src/api/course/technology/technologies";
 
 import { Iconify } from "src/components/iconify";
+import { SplashScreen } from "src/components/loading-screen";
 
 import { CourseList } from "../courses/course-list";
 import { CoursesFilters } from "../courses/courses-filters";
@@ -34,12 +35,17 @@ export function CoursesView() {
 
   const { handleChange, query } = useQueryParams();
 
-  const { data: courseLevels } = useCourseLevels({ sort_by: "order", page_size: "-1" });
-  const { data: courseTechnologies } = useCourseTechnologies({ page_size: "-1" });
-  const { data: courseCategories } = useCourseCategories({ page_size: "-1" });
-  // const { data: courses, pageSize } = useCourses(query);
-  const courses = _courses;
-  const pageSize = 10;
+  const { data: courseLevels, isLoading: isLoadingLevels } = useCourseLevels({
+    sort_by: "order",
+    page_size: "-1",
+  });
+  const { data: courseTechnologies, isLoading: isLoadingTechnologies } = useCourseTechnologies({
+    page_size: "-1",
+  });
+  const { data: courseCategories, isLoading: isLoadingCategories } = useCourseCategories({
+    page_size: "-1",
+  });
+  const { data: courses, count, pageSize, isLoading: isLoadingCourse } = useCourses(query);
 
   const openMobile = useBoolean();
 
@@ -62,7 +68,8 @@ export function CoursesView() {
     <Box sx={{ gap: 4, display: "flex", flexDirection: "column" }}>
       <CourseList
         courses={courses ?? []}
-        count={pageSize || 0}
+        recordsCount={count || 0}
+        pagesCount={pageSize || 0}
         page={Number(query.page) || 1}
         onPageChange={(selectedPage: number) => handleChange("page", String(selectedPage))}
       />
@@ -84,6 +91,10 @@ export function CoursesView() {
       />
     </Box>
   );
+
+  if (isLoadingLevels || isLoadingTechnologies || isLoadingCategories || isLoadingCourse) {
+    return <SplashScreen />;
+  }
 
   return (
     <Container>

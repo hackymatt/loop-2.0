@@ -1,8 +1,10 @@
-import re
 from django.contrib.auth import get_user_model
 from django.utils.translation import gettext as _
 from rest_framework import serializers
+from plan.subscription.utils import subscribe
+from user.type.student_user.models import Student
 from ..utils import check_password, get_unique_username
+from const import UserType
 
 
 class EmailOnlyUserSerializer(serializers.ModelSerializer):
@@ -49,7 +51,10 @@ class EmailOnlyUserSerializer(serializers.ModelSerializer):
             username=username,  # Use the unique username
             email=email,
             password=validated_data["password"],
+            user_type=UserType.STUDENT,
         )
-        user.is_active = False  # Set user as inactive initially
-        user.save()
+
+        student = Student.objects.create(user=user)
+        subscribe(student)
+
         return user

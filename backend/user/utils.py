@@ -1,11 +1,16 @@
 import jwt
 import re
+import os
 import datetime
+import requests
 from mailer.mailer import Mailer
 from utils.url.url import get_website_url
 from global_config import CONFIG
 from django.utils.translation import gettext as _
 from django.contrib.auth import get_user_model
+from urllib.parse import urlparse
+from django.core.files.base import ContentFile
+from utils.logger.logger import logger
 
 
 def check_password(value):
@@ -178,3 +183,22 @@ def set_cookies(response, access_token, refresh_token):
 
     # Return the response with no tokens in the body
     return response
+
+
+def clear_cookies(response):
+    response.delete_cookie("access_token")
+    response.delete_cookie("refresh_token")
+    return response
+
+
+def download_and_assign_image(instance, image_url):
+    if not image_url:
+        return
+
+    try:
+        response = requests.get(image_url, timeout=10)
+        if response.ok:
+            file_name = os.path.basename(urlparse(image_url).path)
+            instance.image.save(file_name, ContentFile(response.content), save=True)
+    except Exception as e:
+        logger.warning(f"Could not download or assign image: {e}")

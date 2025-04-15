@@ -4,7 +4,7 @@ from blog.tag.models import Tag, TagTranslation
 from rest_framework.test import APIClient
 from const import Urls
 from ...helpers import login
-from ...factory import create_admin_user, create_student_user, create_tag
+from ...factory import create_admin, create_student, create_tag
 
 
 class TagViewTest(TestCase):
@@ -13,15 +13,15 @@ class TagViewTest(TestCase):
         self.url = f"/{Urls.API}/{Urls.POST_TAG}"
 
         # Create admin and regular user
-        self.admin_user, self.admin_user_password = create_admin_user()
-        self.regular_user, self.regular_user_password = create_student_user()
+        self.admin, self.admin_password = create_admin()
+        self.student, self.student_password = create_student()
 
         # Create a course tag and translations
-        self.tag, self.tag_translations = create_tag()
+        self.tag = create_tag()
 
     # CREATE (Only Admin)
     def test_create_tag_admin(self):
-        login(self, self.admin_user.email, self.admin_user_password)
+        login(self, self.admin.user.email, self.admin_password)
         data = {"slug": "backend", "language": "en", "name": "Backend"}
         response = self.client.post(self.url, data, format="json")
 
@@ -33,7 +33,7 @@ class TagViewTest(TestCase):
         )
 
     def test_create_tag_regular_user(self):
-        login(self, self.regular_user.email, self.regular_user_password)
+        login(self, self.student.user.email, self.student_password)
         data = {"slug": "backend", "language": "en", "name": "Backend"}
         response = self.client.post(self.url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
@@ -41,7 +41,7 @@ class TagViewTest(TestCase):
     # READ (Allowed for Everyone)
     def test_get_course_tags_regular_user(self):
         """Ensure users can fetch course tags in their preferred language."""
-        login(self, self.regular_user.email, self.regular_user_password)
+        login(self, self.student.user.email, self.student_password)
         self.client.credentials(HTTP_ACCEPT_LANGUAGE="pl")
         response = self.client.get(self.url, format="json")
 
@@ -49,7 +49,7 @@ class TagViewTest(TestCase):
         self.assertEqual(len(response.data["results"]), 1)
         self.assertEqual(
             response.data["results"][0]["translated_name"],
-            self.tag_translations["pl"].name,
+            self.tag.get_translation("pl").name,
         )
 
     def test_get_course_tags_anonymous(self):
@@ -58,13 +58,13 @@ class TagViewTest(TestCase):
         self.assertEqual(len(response.data["results"]), 1)
         self.assertEqual(
             response.data["results"][0]["translated_name"],
-            self.tag_translations["en"].name,
+            self.tag.get_translation("en").name,
         )
 
     # UPDATE TRANSLATION (Only Admin)
     def test_update_tag_translation_admin(self):
         """Ensure admins can update translations for existing course tags."""
-        login(self, self.admin_user.email, self.admin_user_password)
+        login(self, self.admin.user.email, self.admin_password)
         data = {"slug": "backend", "language": "pl", "name": "Backend"}
         url = f"{self.url}/{self.tag.id}"
 
@@ -76,7 +76,7 @@ class TagViewTest(TestCase):
         )
 
     def test_update_tag_translation_regular_user(self):
-        login(self, self.regular_user.email, self.regular_user_password)
+        login(self, self.student.user.email, self.student_password)
         data = {"language": "pl", "name": "Backend"}
         url = f"{self.url}/{self.tag.id}"
 
@@ -85,7 +85,7 @@ class TagViewTest(TestCase):
 
     # DELETE (Only Admin)
     def test_delete_tag_admin(self):
-        login(self, self.admin_user.email, self.admin_user_password)
+        login(self, self.admin.user.email, self.admin_password)
         url = f"{self.url}/{self.tag.id}"
 
         response = self.client.delete(url, format="json")
@@ -93,7 +93,7 @@ class TagViewTest(TestCase):
         self.assertFalse(Tag.objects.filter(slug="frontend").exists())
 
     def test_delete_tag_regular_user(self):
-        login(self, self.regular_user.email, self.regular_user_password)
+        login(self, self.student.user.email, self.student_password)
         url = f"{self.url}/{self.tag.id}"
 
         response = self.client.delete(url, format="json")

@@ -1,30 +1,39 @@
 "use client";
 
-import type { ICourseListProps } from "src/types/course";
+import type { ICertificateProps } from "src/types/certificate";
 
 import { useTranslation } from "react-i18next";
 
 import Grid from "@mui/material/Grid2";
-import { Box, Card, Link, Button, Typography } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 
 import { paths } from "src/routes/paths";
 import { RouterLink } from "src/routes/components";
 
-import { _courses } from "src/_mock";
+import { PLAN_TYPE } from "src/consts/plan";
 import { UpgradeButton } from "src/layouts/components/upgrade-button";
 
 import { Iconify } from "src/components/iconify";
+import { useUserContext } from "src/components/user";
 
-import { Certificate } from "../certificate";
+import { Certificate } from "../certificates";
+import { CertificateItem } from "../certificates/certificate-item";
 
 // ----------------------------------------------------------------------
 
-export function CertificatesProgress({ disabled }: { disabled?: boolean }) {
+type Props = { certificates: ICertificateProps[] };
+
+// ----------------------------------------------------------------------
+
+export function CertificatesProgress({ certificates }: Props) {
   const { t } = useTranslation("dashboard");
 
-  const studentName = "John Doe";
-  const courses = _courses.slice(0, 4).map((x) => ({ ...x, certificateId: "abc" }));
-  // const courses = undefined;
+  const user = useUserContext();
+  const { firstName, lastName, plan } = user.state;
+
+  const studentName = `${firstName} ${lastName}`;
+
+  const blocked = plan === PLAN_TYPE.FREE && certificates.length === 0;
 
   const renderList = () => (
     <Box
@@ -35,8 +44,8 @@ export function CertificatesProgress({ disabled }: { disabled?: boolean }) {
         gridTemplateColumns: { xs: "repeat(1, 1fr)", md: "repeat(2, 1fr)" },
       }}
     >
-      {courses.map((course) => (
-        <CertificateItem key={course.slug} student={studentName} course={course} />
+      {certificates.map((certificate) => (
+        <CertificateItem key={certificate.id} certificate={certificate} />
       ))}
     </Box>
   );
@@ -85,7 +94,10 @@ export function CertificatesProgress({ disabled }: { disabled?: boolean }) {
       <Box sx={{ p: { xs: 0, md: 5 } }}>
         <Grid container spacing={2} sx={{ alignItems: "center", justifyContent: "center" }}>
           <Grid size={{ xs: 12, md: 8 }}>
-            <Certificate course="Introduction to Python Programming" student={studentName} />
+            <Certificate
+              courseName="Introduction to Python Programming"
+              studentName={studentName}
+            />
           </Grid>
 
           <Grid
@@ -108,8 +120,8 @@ export function CertificatesProgress({ disabled }: { disabled?: boolean }) {
   );
 
   const renderContent = () => {
-    if (disabled) return renderBlocked();
-    if (courses?.length) return renderList();
+    if (blocked) return renderBlocked();
+    if (certificates.length) return renderList();
     return renderInfo();
   };
 
@@ -138,11 +150,11 @@ export function CertificatesProgress({ disabled }: { disabled?: boolean }) {
             gap: 1,
           }}
         >
-          {disabled && <Iconify icon="solar:lock-bold" sx={{ color: "text.disabled" }} />}
+          {blocked && <Iconify icon="solar:lock-bold" sx={{ color: "text.disabled" }} />}
           <Typography
             variant="h5"
             sx={{
-              ...(disabled && { color: "text.disabled" }),
+              ...(blocked && { color: "text.disabled" }),
             }}
           >
             {t("certificates.title")}
@@ -155,7 +167,7 @@ export function CertificatesProgress({ disabled }: { disabled?: boolean }) {
           color="inherit"
           endIcon={<Iconify icon="solar:alt-arrow-right-outline" />}
           sx={{ display: "inline-flex" }}
-          disabled={disabled}
+          disabled={blocked}
         >
           {t("certificates.button")}
         </Button>
@@ -163,32 +175,5 @@ export function CertificatesProgress({ disabled }: { disabled?: boolean }) {
 
       {renderContent()}
     </Box>
-  );
-}
-
-function CertificateItem({
-  student,
-  course,
-}: {
-  student: string;
-  course: ICourseListProps & { certificateId: string };
-}) {
-  return (
-    <Link
-      component={RouterLink}
-      href={`${paths.certificate}/${course.certificateId}`}
-      color="inherit"
-      underline="none"
-    >
-      <Card
-        sx={(theme) => ({
-          display: "flex",
-          flexDirection: { xs: "column", sm: "row" },
-          "&:hover": { boxShadow: theme.vars.customShadows.z24 },
-        })}
-      >
-        <Certificate course={course.name} student={student} />
-      </Card>
-    </Link>
   );
 }

@@ -1,11 +1,14 @@
+import type { LEVEL_TYPE } from "src/consts/level";
 import type { COURSE_TYPE } from "src/consts/course";
 
 import type { IInstructorProps } from "./user";
 
 // ----------------------------------------------------------------------
 
+export type LevelType = (typeof LEVEL_TYPE)[keyof typeof LEVEL_TYPE];
+
 export type ICourseLevelProp = {
-  slug: string;
+  slug: LevelType;
   name: string;
 };
 
@@ -33,6 +36,8 @@ export type ICourseLessonProp = {
   name: string;
   type: ICourseLessonType;
   totalPoints: number;
+  progress: number | null;
+  earnedPoints: number | null;
 };
 
 export type ICourseChapterProp = {
@@ -67,6 +72,7 @@ export type ICourseListProps = ICourseBaseProps;
 export type ICourseProps = ICourseBaseProps & {
   overview: string;
   chapters: ICourseChapterProp[];
+  prerequisites: ICoursePrerequisite[];
   totalPoints: number;
   totalReading: number;
   totalVideos: number;

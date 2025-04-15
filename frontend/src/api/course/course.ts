@@ -1,6 +1,6 @@
 import type { Language } from "src/locales/types";
-import type { ICourseProps } from "src/types/course";
 import type { GetQueryResponse } from "src/api/types";
+import type { LevelType, ICourseProps } from "src/types/course";
 
 import { compact } from "lodash-es";
 import { useQuery } from "@tanstack/react-query";
@@ -39,6 +39,8 @@ type ILesson = {
   translated_name: string;
   points: number;
   type: "reading" | "video" | "quiz" | "coding";
+  progress?: number;
+  earned_points?: number | null;
 };
 
 type IChapter = {
@@ -47,6 +49,11 @@ type IChapter = {
   translated_description: string;
   lessons: ILesson[];
   progress?: number;
+};
+
+type IPrerequisite = {
+  slug: string;
+  translated_name: string;
 };
 
 type ICourse = {
@@ -70,6 +77,7 @@ type ICourse = {
   ratings_count: number;
   students_count: number;
   chapters: IChapter[];
+  prerequisites: IPrerequisite[];
   progress?: number;
 };
 
@@ -103,6 +111,7 @@ export const courseQuery = (slug: string, language?: Language) => {
       ratings_count,
       students_count,
       chapters,
+      prerequisites,
       progress,
       ...rest
     }: ICourse = data;
@@ -113,7 +122,7 @@ export const courseQuery = (slug: string, language?: Language) => {
       description: translated_description,
       overview: translated_overview,
       level: {
-        slug: level.slug,
+        slug: level.slug as LevelType,
         name: level.translated_name,
       },
       category: {
@@ -152,13 +161,27 @@ export const courseQuery = (slug: string, language?: Language) => {
           name: chapterName,
           description: chapterDescription,
           lessons: lessons.map(
-            ({ translated_name: lessonName, points: lessonPoints, ...restLesson }) => ({
+            ({
+              translated_name: lessonName,
+              points: lessonPoints,
+              progress: lessonProgress,
+              earned_points,
+              ...restLesson
+            }) => ({
               ...restLesson,
               name: lessonName,
               totalPoints: lessonPoints,
+              progress: lessonProgress ?? null,
+              earnedPoints: earned_points ?? null,
             })
           ),
           progress: chapterProgress ?? null,
+        })
+      ),
+      prerequisites: prerequisites.map(
+        ({ translated_name: prerequisiteName, ...restPrerequisite }) => ({
+          ...restPrerequisite,
+          name: prerequisiteName,
         })
       ),
       progress: progress ?? null,

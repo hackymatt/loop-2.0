@@ -1,5 +1,7 @@
 "use client";
 
+import type { ICourseListProps } from "src/types/course";
+
 import { useTranslation } from "react-i18next";
 
 import { Box, Button, Typography } from "@mui/material";
@@ -7,19 +9,18 @@ import { Box, Button, Typography } from "@mui/material";
 import { paths } from "src/routes/paths";
 import { RouterLink } from "src/routes/components";
 
-import { _courses } from "src/_mock";
-
 import { Iconify } from "src/components/iconify";
 
 import { CourseProgressItem } from "../courses/course-progress-item";
 
 // ----------------------------------------------------------------------
 
-export function CoursesProgress() {
-  const { t } = useTranslation("dashboard");
+type Props = { courses: ICourseListProps[] };
 
-  const courses = _courses.slice(0, 4);
-  // const courses: ICourseListProps = [];
+// ----------------------------------------------------------------------
+
+export function CoursesProgress({ courses }: Props) {
+  const { t } = useTranslation("dashboard");
 
   const renderList = () => (
     <Box
@@ -101,7 +102,7 @@ export function CoursesProgress() {
         </Button>
       </Box>
 
-      {courses?.length ? renderList() : renderInfo()}
+      {courses.length ? renderList() : renderInfo()}
     </Box>
   );
 }

@@ -1,14 +1,18 @@
 "use client";
 
+import type { LevelType } from "src/types/course";
+
 import { useSetState } from "minimal-shared/hooks";
 
 import Grid from "@mui/material/Grid2";
 import Divider from "@mui/material/Divider";
 import Container from "@mui/material/Container";
 
-import { _courses } from "src/_mock";
+import { useCourse } from "src/api/course/course";
 import { useReviews } from "src/api/review/reviews";
 import { useSimilarCourses } from "src/api/course/similar";
+
+import { SplashScreen } from "src/components/loading-screen";
 
 import { ReviewList } from "../review/review-list";
 import { NotFoundView } from "../error/not-found-view";
@@ -28,10 +32,8 @@ export function CourseView({ slug }: { slug: string }) {
     page: "1",
   });
 
-  // const { data: course, isError } = useCourse(slug);
-  const course = _courses[0];
-  const isError = false;
-  const { data: reviews, count } = useReviews(slug);
+  const { data: course, isError, isLoading } = useCourse(slug);
+  const { data: reviews, count, pageSize } = useReviews(slug);
   const { data: similarCourses } = useSimilarCourses(slug);
 
   const renderReview = () => (
@@ -45,7 +47,8 @@ export function CourseView({ slug }: { slug: string }) {
       <Container>
         <ReviewList
           reviews={reviews || []}
-          count={count ?? 0}
+          recordsCount={count || 0}
+          pagesCount={pageSize || 0}
           page={Number(query.state.page) || 1}
           onPageChange={(selectedPage: number) => query.setField("page", String(selectedPage))}
         />
@@ -57,12 +60,16 @@ export function CourseView({ slug }: { slug: string }) {
     return <NotFoundView />;
   }
 
+  if (isLoading) {
+    return <SplashScreen />;
+  }
+
   return (
     <>
       <CourseDetailsHero
         slug={slug}
-        title={course?.name || ""}
-        level={course?.level || { slug: "", name: "" }}
+        name={course?.name || ""}
+        level={course?.level || { slug: "" as unknown as LevelType, name: "" }}
         teachers={course?.teachers || []}
         category={course?.category || { slug: "", name: "" }}
         technology={course?.technology || { slug: "", name: "" }}
@@ -76,6 +83,7 @@ export function CourseView({ slug }: { slug: string }) {
         totalQuizzes={course?.totalQuizzes || 0}
         totalLessons={course?.totalLessons || 0}
         totalStudents={course?.totalStudents || 0}
+        chapters={course?.chapters || []}
         progress={course?.progress || 0}
       />
 
@@ -94,6 +102,7 @@ export function CourseView({ slug }: { slug: string }) {
               slug={slug}
               name={course?.name || ""}
               chapters={course?.chapters || []}
+              progress={course?.progress || 0}
               sx={{ mb: 3 }}
             />
 

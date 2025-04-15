@@ -93,7 +93,7 @@ export const useNavData = () => {
   return isLoggedIn
     ? [
         { title: t("courses"), path: paths.courses, ...coursesNav },
-        { title: t("certificates"), path: paths.certificates, disabled: true },
+        { title: t("certificates"), path: paths.certificates },
         { title: t("blog"), path: paths.posts },
         { title: t("contact"), path: paths.contact },
       ]

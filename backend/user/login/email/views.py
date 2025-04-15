@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from .serializers import LoginSerializer
+from ..serializers import LoginResponseSerializer
 from ...utils import set_cookies
 
 
@@ -18,11 +19,7 @@ class LoginView(APIView):
             access_token = refresh_token.access_token
 
             response = Response(
-                {
-                    "email": user.email,
-                    "first_name": user.first_name,
-                    "last_name": user.last_name,
-                },
+                LoginResponseSerializer(user, context={"request": request}).data,
                 status=status.HTTP_200_OK,
             )
 

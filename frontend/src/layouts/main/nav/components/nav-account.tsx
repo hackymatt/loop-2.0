@@ -16,12 +16,14 @@ import IconButton from "@mui/material/IconButton";
 import ButtonBase, { buttonBaseClasses } from "@mui/material/ButtonBase";
 
 import { paths } from "src/routes/paths";
-import { usePathname } from "src/routes/hooks";
 import { RouterLink } from "src/routes/components";
+import { useRouter, usePathname } from "src/routes/hooks";
 
-import { _mock } from "src/_mock";
+import { useLogout } from "src/api/auth/logout";
+import { DEFAULT_AVATAR_URL } from "src/consts/avatar";
 
 import { Iconify } from "src/components/iconify";
+import { useUserContext } from "src/components/user";
 
 // ----------------------------------------------------------------------
 
@@ -60,6 +62,13 @@ export function NavAccountPopover({ sx }: NavItemsProps) {
 
   const { t } = useTranslation("navigation");
 
+  const user = useUserContext();
+  const { avatarUrl } = user.state;
+
+  const { mutateAsync: logout } = useLogout();
+
+  const router = useRouter();
+
   const pathname = usePathname();
 
   const navData = useNavData();
@@ -85,6 +94,19 @@ export function NavAccountPopover({ sx }: NavItemsProps) {
       </Box>
     </Box>
   );
+
+  const handleLogout = async () => {
+    try {
+      const { status } = await logout({});
+      if (status === 205) {
+        router.push(paths.home);
+        user.resetState();
+        onClose();
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const renderMenuActions = () => (
     <Popover
@@ -115,7 +137,7 @@ export function NavAccountPopover({ sx }: NavItemsProps) {
       <NavItem
         title={t("logout")}
         icon={<Iconify icon="solar:logout-2-outline" />}
-        onClick={onClose}
+        onClick={handleLogout}
       />
     </Popover>
   );
@@ -123,7 +145,7 @@ export function NavAccountPopover({ sx }: NavItemsProps) {
   return (
     <>
       <IconButton disableRipple color={open ? "primary" : "inherit"} onClick={onOpen}>
-        <Avatar src={_mock.image.avatar(0)} sx={{ width: 32, height: 32 }} />
+        <Avatar src={avatarUrl || DEFAULT_AVATAR_URL} sx={{ width: 32, height: 32 }} />
         <Iconify
           width={16}
           icon={open ? "solar:alt-arrow-up-outline" : "solar:alt-arrow-down-outline"}

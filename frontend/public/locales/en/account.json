@@ -46,19 +46,6 @@
       "same": "New password must be different than old password"
     }
   },
-  "confirmNewPassword": {
-    "label": "Confirm new password",
-    "placeholder": "Enter password",
-    "errors": {
-      "required": "Password is required",
-      "minLength": "Password must be at least 6 characters",
-      "bigLetter": "Password must contain at least one uppercase letter",
-      "smallLetter": "Password must contain at least one lowercase letter",
-      "number": "Password must contain at least one number",
-      "specialCharacter": "Password must contain at least one special character",
-      "same": "Passwords do not match!"
-    }
-  },
   "termsAcceptance": {
     "label": {
       "accept": "I accept",
@@ -76,5 +63,11 @@
   "manage": { "title": "Manage account", "button": "Save" },
   "subscription": { "title": "Subscription" },
   "logout": { "title": "Logout" },
-  "photo": { "change": "Change photo" }
+  "photo": { "change": "Change photo" },
+  "delete": {
+    "text": "All your profile and learning data will be permanently deleted. If you are looking to cancel your subscription, please have a look at",
+    "button": "Delete account",
+    "cancel": "Cancel",
+    "description": "Are you sure you want to delete your account? This action cannot be undone."
+  }
 }

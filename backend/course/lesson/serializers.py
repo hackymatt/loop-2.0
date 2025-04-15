@@ -6,7 +6,8 @@ from .models import (
     QuizLessonTranslation,
     CodingLessonTranslation,
 )
-from const import LessonType
+from ..progress.models import CourseProgress
+from const import LessonType, UserType
 
 
 class LessonSerializer(serializers.ModelSerializer):
@@ -36,3 +37,34 @@ class LessonSerializer(serializers.ModelSerializer):
                 lesson=obj.coding, language=lang
             ).first()
         return translation.name
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+
+        user = self.context["request"].user
+        if not user.is_authenticated or user.user_type != UserType.STUDENT:
+            return data
+
+        progress = self.get_progress(instance, user)
+        data["progress"] = progress
+        data["earned_points"] = (
+            self.get_points(instance, user) if progress == 100 else None
+        )
+
+        return data
+
+    def get_progress(self, obj, user):
+        is_completed = CourseProgress.objects.filter(
+            student__user=user, lesson=obj, completed_at__isnull=False
+        ).exists()
+
+        return 100 if is_completed else 0
+
+    def get_points(self, obj, user):
+        return (
+            CourseProgress.objects.filter(
+                student__user=user, lesson=obj, completed_at__isnull=False
+            )
+            .first()
+            .points
+        )

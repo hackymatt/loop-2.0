@@ -21,6 +21,8 @@ class Urls:
     LOGOUT = "auth/logout"
     PASSWORD_RESET = "auth/reset-password"
     PASSWORD_RESET_CONFIRM = "auth/reset-password-confirm"
+    REFRESH_TOKEN = "auth/refresh-token"
+    AUTH_CHECK = "auth/check"
     # COURSE
     COURSE_LEVEL = "course-levels"
     COURSE_TECHNOLOGY = "course-technologies"
@@ -39,8 +41,17 @@ class Urls:
     POST = "posts"
     RECENT_POST = "recent-posts"
     FEATURED_POST = "featured-post"
+    # PLAN
+    PLAN = "plans"
     # CONTACT
     CONTACT = "contact"
+    # CERTIFICATE
+    CERTIFICATE = "certificates"
+    # USER
+    DATA = "me/data"
+    PASSWORD_CHANGE = "me/password"
+    DELETE_ACCOUNT = "me/delete"
+    DASHBOARD = "me/dashboard"
 
 
 class UserType(TextChoices):
@@ -66,3 +77,9 @@ class LessonType(TextChoices):
 class QuizType(TextChoices):
     SINGLE = "single"
     MULTI = "multi"
+
+
+class CourseStatus:
+    NOT_STARTED = "not-started"
+    IN_PROGRESS = "in-progress"
+    COMPLETED = "completed"

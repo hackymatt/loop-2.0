@@ -7,6 +7,7 @@ import { paths } from "src/routes/paths";
 import { getLessonTypeIcon } from "src/utils/lesson-type-icon";
 
 import { Iconify } from "src/components/iconify";
+import { useUserContext } from "src/components/user";
 
 // ----------------------------------------------------------------------
 
@@ -17,14 +18,18 @@ type LessonItemProps = {
 };
 
 export function CourseDetailsLessonItem({ course, chapter, lesson }: LessonItemProps) {
-  const completed = true;
-  const gainedPoints = Math.floor(lesson.totalPoints * 0.5);
+  const user = useUserContext();
+  const { isLoggedIn } = user.state;
+
+  const completed = (lesson.progress || 0) === 100;
+  const redirect = `${paths.learn}/${chapter.slug}/${lesson.slug}`;
+
   return (
     <Button
       variant="text"
       size="medium"
       color="inherit"
-      href={`${paths.register}?redirect=${paths.course}/${course.slug}/${chapter.slug}/${lesson.slug}`}
+      href={isLoggedIn ? redirect : `${paths.register}?redirect=${redirect}`}
       sx={{
         display: "flex",
         justifyContent: "space-between",
@@ -40,7 +45,9 @@ export function CourseDetailsLessonItem({ course, chapter, lesson }: LessonItemP
 
       <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
         {completed && <Iconify icon="carbon:checkmark-filled" sx={{ color: "success.main" }} />}
-        <Typography variant="body2">{completed ? gainedPoints : lesson.totalPoints} XP</Typography>
+        <Typography variant="body2">
+          {completed ? lesson.earnedPoints : lesson.totalPoints} XP
+        </Typography>
       </Box>
     </Button>
   );
