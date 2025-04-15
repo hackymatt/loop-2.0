@@ -29,7 +29,6 @@ export async function middleware(req: NextRequest) {
   // Check if user is logged in
   if (!accessToken) {
     if (AUTHORIZED_PATHS.includes(req.nextUrl.pathname)) {
-      console.log(`Redirecting to login from ${req.nextUrl.pathname}`);
       return NextResponse.redirect(new URL(paths.login, req.url));
     }
   }
@@ -37,7 +36,6 @@ export async function middleware(req: NextRequest) {
   // If the user is logged in and is on an unauthorized path, redirect to the dashboard
   if (accessToken) {
     if (UNAUTHORIZED_PATHS.includes(req.nextUrl.pathname)) {
-      console.log(`Redirecting to dashboard from ${req.nextUrl.pathname}`);
       return NextResponse.redirect(new URL(paths.account.dashboard, req.url));
     }
   }

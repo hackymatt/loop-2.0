@@ -101,7 +101,6 @@ function GithubSignIn({ methods }: { methods: UseFormReturn<any> }) {
   const handleFormError = useFormErrorHandler(methods);
 
   const handleLogin = async (response: { code: string }) => {
-    console.log(response);
     const { code } = response;
 
     try {
@@ -147,7 +146,6 @@ function FacebookSignIn({ methods }: { methods: UseFormReturn<any> }) {
   const handleFormError = useFormErrorHandler(methods);
 
   const handleLogin = async (response: ReactFacebookLoginInfo) => {
-    console.log(response);
     const { accessToken: access_token } = response;
 
     try {

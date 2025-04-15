@@ -35,6 +35,8 @@ from review.models import Review
 from plan.models import Plan, PlanTranslation, Option, OptionTranslation
 from plan.subscription.utils import subscribe
 
+from certificate.models import Certificate
+
 languages = [choice.value for choice in Language]
 
 
@@ -84,12 +86,19 @@ def _create_translations(model, obj, languages, translation_fields, related_fiel
 
 
 def create_user():
+    first_name = _generate_random_string(12)
+    last_name = _generate_random_string(12)
     email = _generate_random_email()
     username = get_unique_username(email.split("@")[0])
     password = _generate_random_string(12)
 
     user = get_user_model().objects.create_user(
-        email=email, password=password, username=username, is_active=True
+        email=email,
+        first_name=first_name,
+        last_name=last_name,
+        password=password,
+        username=username,
+        is_active=True,
     )
 
     return user, password
@@ -352,3 +361,10 @@ def create_plan_option():
     )
 
     return plan_option
+
+
+def create_certificate():
+    course = create_course()
+    student, _ = create_student()
+
+    return Certificate.objects.create(student=student, course=course)

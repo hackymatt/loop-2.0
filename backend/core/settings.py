@@ -108,6 +108,7 @@ INSTALLED_APPS = [
     "blog",
     "plan",
     "plan.subscription",
+    "certificate",
 ]
 
 DEBUG_TOOLBAR_PANELS = [

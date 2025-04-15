@@ -1,6 +1,8 @@
 import type { BoxProps } from "@mui/material";
+import type { ICertificateProps } from "src/types/certificate";
 
 import { useTranslation } from "react-i18next";
+import { useRef, useState, useEffect } from "react";
 
 import { Box } from "@mui/material";
 import Typography from "@mui/material/Typography";
@@ -11,12 +13,36 @@ import { CONFIG } from "src/global-config";
 
 import { Logo } from "src/components/logo";
 
-type Props = BoxProps & { course: string; student: string };
+type Props = BoxProps & Omit<ICertificateProps, "id" | "completedAt"> & { completedAt?: string };
 
-export function Certificate({ course, student, sx, ...other }: Props) {
+export function Certificate({
+  courseName,
+  studentName,
+  completedAt = new Date().toISOString(),
+  sx,
+  ...other
+}: Props) {
   const { t } = useTranslation("certificate");
+
+  const boxRef = useRef(null);
+  const [fontSize, setFontSize] = useState(14);
+  const [logoSize, setLogoSize] = useState(24);
+
+  useEffect(() => {
+    const observer = new ResizeObserver(([entry]) => {
+      const { width, height } = entry.contentRect;
+      const scale = Math.min(width, height);
+      setFontSize(Math.max(16, Math.min(32, scale / 16))); // font-size: 8–32px
+      setLogoSize(Math.max(24, Math.min(64, scale / 10))); // logo-size: 16–64px
+    });
+
+    if (boxRef.current) observer.observe(boxRef.current);
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <Box
+      ref={boxRef}
       component="section"
       sx={[
         (theme) => ({
@@ -35,16 +61,17 @@ export function Certificate({ course, student, sx, ...other }: Props) {
           overflow: "hidden",
           gap: 1,
           textAlign: "center",
+          fontSize: `${fontSize}px`,
         }),
         ...(Array.isArray(sx) ? sx : [sx]),
       ]}
       {...other}
     >
-      <Logo isSingle isLink={false} sx={{ width: 24, height: "auto", mb: 2 }} />
+      <Logo isSingle isLink={false} sx={{ width: logoSize, height: logoSize, mb: 2 }} />
 
       <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
         <Typography sx={{ fontSize: "0.7em", fontWeight: "bold", wordBreak: "break-word" }}>
-          {t("title")}
+          {t("label")}
         </Typography>
       </Box>
 
@@ -54,7 +81,7 @@ export function Certificate({ course, student, sx, ...other }: Props) {
           {t("award")}
         </Typography>
         <Typography sx={{ fontSize: "0.8em", fontWeight: "bold", wordBreak: "break-word" }}>
-          {student}
+          {studentName}
         </Typography>
       </Box>
 
@@ -76,7 +103,7 @@ export function Certificate({ course, student, sx, ...other }: Props) {
             wordBreak: "break-word",
           }}
         >
-          {course}
+          {courseName}
         </Typography>
       </Box>
 
@@ -86,7 +113,7 @@ export function Certificate({ course, student, sx, ...other }: Props) {
           {t("date")}
         </Typography>
         <Typography sx={{ fontSize: "0.7em", fontWeight: "bold", wordBreak: "break-word" }}>
-          {fDate(new Date())}
+          {fDate(completedAt)}
         </Typography>
       </Box>
     </Box>

@@ -18,7 +18,7 @@ import { paths } from "src/routes/paths";
 import { useFormErrorHandler } from "src/hooks/use-form-error-handler";
 
 import { JOIN_TYPE, USER_TYPE } from "src/consts/user";
-import { useChangePassword } from "src/api/user/password";
+import { useChangePassword } from "src/api/me/password";
 
 import { Iconify } from "src/components/iconify";
 import { useUserContext } from "src/components/user";

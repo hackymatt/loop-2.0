@@ -15,7 +15,7 @@ import { useRouter } from "src/routes/hooks";
 
 import { useFormErrorHandler } from "src/hooks/use-form-error-handler";
 
-import { useDeleteAccount } from "src/api/user/delete-account";
+import { useDeleteAccount } from "src/api/me/delete-account";
 
 import { Form } from "src/components/hook-form";
 import { useUserContext } from "src/components/user";

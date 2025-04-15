@@ -17,7 +17,7 @@ import { Iconify } from "src/components/iconify";
 import { useUserContext } from "src/components/user";
 import { varFade, MotionViewport } from "src/components/animate";
 
-import { Certificate } from "../certificate";
+import { Certificate } from "../certificates";
 
 // ----------------------------------------------------------------------
 
@@ -69,8 +69,8 @@ export function HomeCertificate({ sx, ...other }: BoxProps) {
   const renderCertificate = () => (
     <m.div variants={varFade("in")}>
       <Certificate
-        course={t("certificate.course")}
-        student={isLoggedIn ? `${firstName} ${lastName}` : t("certificate.student")}
+        courseName={t("certificate.course")}
+        studentName={isLoggedIn ? `${firstName} ${lastName}` : t("certificate.student")}
         sx={(theme) => ({
           height: 260,
           borderRadius: 2,

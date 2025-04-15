@@ -45,10 +45,13 @@ class Urls:
     PLAN = "plans"
     # CONTACT
     CONTACT = "contact"
+    # CERTIFICATE
+    CERTIFICATE = "certificates"
     # USER
     DATA = "me/data"
     PASSWORD_CHANGE = "me/password"
     DELETE_ACCOUNT = "me/delete"
+    DASHBOARD = "me/dashboard"
 
 
 class UserType(TextChoices):

@@ -12,7 +12,7 @@ import LoadingButton from "@mui/lab/LoadingButton";
 
 import { useFormErrorHandler } from "src/hooks/use-form-error-handler";
 
-import { useUpdateData } from "src/api/user/data";
+import { useUpdateData } from "src/api/me/data";
 
 import { useUserContext } from "src/components/user";
 import { Form, Field } from "src/components/hook-form";

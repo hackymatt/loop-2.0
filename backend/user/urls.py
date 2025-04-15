@@ -11,6 +11,7 @@ from .reset_password.views import PasswordResetView, PasswordResetConfirmView
 from .data.views import UpdateUserView, ChangePasswordView, DeleteAccountView
 from .refresh_token.views import RefreshTokenView
 from .login.auth_check.views import AuthCheckView
+from .dashboard.views import DashboardView
 
 from const import Urls
 
@@ -41,4 +42,5 @@ urlpatterns = [
     path(Urls.DATA, UpdateUserView.as_view(), name="data"),
     path(Urls.PASSWORD_CHANGE, ChangePasswordView.as_view(), name="password"),
     path(Urls.DELETE_ACCOUNT, DeleteAccountView.as_view(), name="delete-account"),
+    path(Urls.DASHBOARD, DashboardView.as_view(), name="dashboard"),
 ]

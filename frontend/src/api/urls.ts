@@ -35,8 +35,11 @@ export const URLS = {
   FEATURED_POST: "/featured-post",
   // PLAN
   PLANS: "/plans",
-  // USER
+  // CERTIFICATES
+  CERTIFICATES: "/certificates",
+  // ME
   DATA: "me/data",
   PASSWORD_CHANGE: "me/password",
   DELETE_ACCOUNT: "me/delete",
+  DASHBOARD: "me/dashboard",
 } as const;

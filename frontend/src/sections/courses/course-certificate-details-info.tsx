@@ -13,7 +13,7 @@ import { paths } from "src/routes/paths";
 import { Iconify } from "src/components/iconify";
 import { useUserContext } from "src/components/user";
 
-import { Certificate } from "../certificate";
+import { Certificate } from "../certificates";
 import { findNextLesson } from "./find-next-lesson";
 
 // ----------------------------------------------------------------------
@@ -51,8 +51,8 @@ export function CourseCertificateDetailsInfo({
       </Typography>
 
       <Certificate
-        course={name}
-        student={isLoggedIn ? `${firstName} ${lastName}` : certificate("name")}
+        courseName={name}
+        studentName={isLoggedIn ? `${firstName} ${lastName}` : certificate("name")}
         sx={{ height: 220 }}
       />
 

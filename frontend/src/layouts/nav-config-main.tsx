@@ -4,7 +4,6 @@ import { useTranslation } from "react-i18next";
 
 import { paths } from "src/routes/paths";
 
-import { PLAN_TYPE } from "src/consts/plan";
 import { useFeaturedCourses } from "src/api/course/featured";
 import { useCourseLevels } from "src/api/course/level/levels";
 import { useCourseCategories } from "src/api/course/category/categories";
@@ -87,14 +86,14 @@ const useCourseNav = () => {
 export const useNavData = () => {
   const { t } = useTranslation("navigation");
   const user = useUserContext();
-  const { isLoggedIn, plan } = user.state;
+  const { isLoggedIn } = user.state;
 
   const coursesNav = useCourseNav();
 
   return isLoggedIn
     ? [
         { title: t("courses"), path: paths.courses, ...coursesNav },
-        { title: t("certificates"), path: paths.certificates, disabled: plan === PLAN_TYPE.FREE },
+        { title: t("certificates"), path: paths.certificates },
         { title: t("blog"), path: paths.posts },
         { title: t("contact"), path: paths.contact },
       ]

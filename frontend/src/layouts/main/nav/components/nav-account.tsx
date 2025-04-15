@@ -99,8 +99,8 @@ export function NavAccountPopover({ sx }: NavItemsProps) {
     try {
       const { status } = await logout({});
       if (status === 205) {
-        user.resetState();
         router.push(paths.home);
+        user.resetState();
         onClose();
       }
     } catch (error) {

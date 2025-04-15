@@ -55,15 +55,17 @@ const StatBox = ({
   </Card>
 );
 
-export function ProfileSummary() {
+type Props = {
+  totalPoints: number;
+  dailyStreak: number;
+};
+
+export function ProfileSummary({ totalPoints, dailyStreak }: Props) {
   const { t: locale } = useTranslation("locale");
   const { t } = useTranslation("dashboard");
 
   const user = useUserContext();
   const { firstName, email, avatarUrl } = user.state;
-
-  const totalPoints = 4250;
-  const totalStreak = 12;
 
   const renderUser = () => (
     <Link component={RouterLink} href={paths.account.personal} color="inherit" underline="none">
@@ -120,7 +122,7 @@ export function ProfileSummary() {
         <StatBox
           icon="solar:fire-bold"
           label={t("profile.streak")}
-          value={`${totalStreak} ${t("profile.days")}`}
+          value={`${dailyStreak} ${t("profile.days")}`}
           color="warning"
         />
       </Box>

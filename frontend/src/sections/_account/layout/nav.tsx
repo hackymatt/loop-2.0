@@ -22,7 +22,7 @@ import ButtonBase, { buttonBaseClasses } from "@mui/material/ButtonBase";
 import { usePathname } from "src/routes/hooks";
 import { RouterLink } from "src/routes/components";
 
-import { useUpdateData } from "src/api/user/data";
+import { useUpdateData } from "src/api/me/data";
 import { DEFAULT_AVATAR_URL } from "src/consts/avatar";
 
 import { Iconify } from "src/components/iconify";

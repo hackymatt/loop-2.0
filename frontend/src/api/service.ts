@@ -1,6 +1,5 @@
 import axios from "axios";
 import https from "https";
-import { QueryClient } from "@tanstack/react-query";
 
 import { paths } from "src/routes/paths";
 
@@ -9,8 +8,6 @@ import { CONFIG } from "src/global-config";
 import { defaultUser } from "src/components/user/user-config";
 
 import { URLS } from "./urls";
-
-const queryClient = new QueryClient();
 
 export const createAxiosInstance = (endpoint: string) => {
   if (endpoint.startsWith("https")) {
