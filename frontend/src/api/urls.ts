@@ -20,6 +20,10 @@ export const URLS = {
   COURSE_LEVELS: "/course-levels",
   COURSE_TECHNOLOGIES: "/course-technologies",
   SIMILAR_COURSES: "/similar-courses",
+  // LESSON
+  LESSON: "lesson",
+  LESSON_SUBMIT: "lesson/submit",
+  LESSON_ANSWER: "lesson/answer",
   // REVIEWS
   REVIEWS: "/reviews",
   REVIEWS_SUMMARY: "/reviews-summary",

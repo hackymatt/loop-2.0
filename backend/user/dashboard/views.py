@@ -18,17 +18,16 @@ class DashboardView(APIView):
     def get(self, request):
         user = request.user
         # Get the student progress records for the given student
-        course_progress = CourseProgress.objects.filter(student__user=user)
+        course_progress = CourseProgress.objects.filter(
+            student__user=user, completed_at__isnull=False
+        )
 
         # Calculate total points for the student
         total_points = course_progress.aggregate(Sum("points"))["points__sum"] or 0
 
         # Calculate daily streak (consecutive days of learning till today)
-        # First, filter completed lessons by the last 30 days (or longer if needed)
-        completed_lessons = course_progress.filter(completed_at__isnull=False)
-
         # Extract just the dates the student completed lessons
-        completed_dates = completed_lessons.values_list("completed_at", flat=True)
+        completed_dates = course_progress.values_list("completed_at", flat=True)
         completed_dates = set(
             [date.date() for date in completed_dates]
         )  # Get unique dates

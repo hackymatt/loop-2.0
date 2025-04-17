@@ -31,6 +31,9 @@ class ReadingLesson(BaseModel):
         db_table = "course_reading_lesson"
         verbose_name_plural = "Reading lessons"
 
+    def get_translation(self, lang_code):
+        return self.translations.filter(language=lang_code).first()
+
     def __str__(self):
         return f"Reading: {self.lesson.slug}"  # pragma: no cover
 
@@ -74,6 +77,9 @@ class VideoLesson(BaseModel):
     class Meta:
         db_table = "course_video_lesson"
         verbose_name_plural = "Video lessons"
+
+    def get_translation(self, lang_code):
+        return self.translations.filter(language=lang_code).first()
 
     def __str__(self):
         return f"Video: {self.lesson.slug}"  # pragma: no cover
@@ -119,6 +125,9 @@ class QuizLesson(BaseModel):
         db_table = "course_quiz_lesson"
         verbose_name_plural = "Quiz lessons"
 
+    def get_translation(self, lang_code):
+        return self.translations.filter(language=lang_code).first()
+
     def __str__(self):
         return f"Quiz: {self.lesson.slug}"  # pragma: no cover
 
@@ -143,7 +152,6 @@ class QuizLessonTranslation(BaseModel):
         choices=Language.choices,
     )
     name = models.CharField(max_length=255)
-    questions = models.JSONField()
 
     class Meta:
         db_table = "course_quiz_lesson_translation"
@@ -151,6 +159,35 @@ class QuizLessonTranslation(BaseModel):
 
     def __str__(self):
         return f"{self.lesson.lesson.slug} ({self.language})"  # pragma: no cover
+
+
+class QuizQuestion(BaseModel):
+    translation = models.OneToOneField(
+        QuizLessonTranslation, on_delete=models.CASCADE, related_name="question"
+    )
+    text = models.TextField()
+
+    class Meta:
+        db_table = "course_quiz_question"
+        verbose_name_plural = "Quiz questions"
+
+    def __str__(self):
+        return f"Question ({self.text}) - {self.translation}"  # pragma: no cover
+
+
+class QuizQuestionOption(BaseModel):
+    question = models.ForeignKey(
+        QuizQuestion, on_delete=models.CASCADE, related_name="options"
+    )
+    text = models.CharField(max_length=255)
+    is_correct = models.BooleanField(default=False)
+
+    class Meta:
+        db_table = "course_quiz_question_option"
+        verbose_name_plural = "Quiz question options"
+
+    def __str__(self):
+        return f"Option: {self.text} ({self.question.text}) (Correct: {self.is_correct})"  # pragma: no cover
 
 
 class CodingLesson(BaseModel):
@@ -165,6 +202,9 @@ class CodingLesson(BaseModel):
     class Meta:
         db_table = "course_coding_lesson"
         verbose_name_plural = "Coding lessons"
+
+    def get_translation(self, lang_code):
+        return self.translations.filter(language=lang_code).first()
 
     def __str__(self):
         return f"Coding: {self.lesson.slug}"  # pragma: no cover

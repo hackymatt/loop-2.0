@@ -31,7 +31,6 @@ export async function generateMetadata({
   } catch {
     return createMetadata({
       title: "Nie znaleziono kursu",
-      description: "Nie znaleziono kursu",
     });
   }
 }

@@ -1,0 +1,5 @@
+{
+  "reading": { "submit": "Zrozumiałem!" },
+  "video": { "submit": "Zrozumiałem!" },
+  "quiz": { "submit": "Sprawdź!", "answer": "Pokaż odpowiedź" }
+}

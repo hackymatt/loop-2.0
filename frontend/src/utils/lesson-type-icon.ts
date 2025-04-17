@@ -7,7 +7,7 @@ const EXERCISE_ICON = "solar:code-circle";
 
 const LESSON_TYPE_ICONS = new Map<string, string>([
   ["video", VIDEO_ICON],
-  ["article", ARTICLE_ICON],
+  ["reading", ARTICLE_ICON],
   ["quiz", QUIZ_ICON],
   ["exercise", EXERCISE_ICON],
 ]);

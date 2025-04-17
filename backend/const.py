@@ -32,6 +32,10 @@ class Urls:
     FEATURED_TECHNOLOGIES = "featured-technologies"
     FEATURED_REVIEWS = "featured-reviews"
     SIMILAR_COURSES = "similar-courses/<slug:slug>"
+    # LESSON
+    LESSON = "lesson/<slug:course_slug>/<slug:lesson_slug>"
+    LESSON_SUBMIT = "lesson/submit"
+    LESSON_ANSWER = "lesson/answer"
     # REVIEW
     COURSE_REVIEW_SUMMARY = "reviews-summary/<slug:slug>"
     COURSE_REVIEWS = "reviews/<slug:slug>"
