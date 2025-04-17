@@ -106,7 +106,7 @@ export function QuizLesson({
     );
 
   const renderContent = () => (
-    <ComponentBox sx={{ py: 2 }}>
+    <ComponentBox title={`${lesson.totalPoints} XP`} sx={{ py: 2 }}>
       <FormControl>
         <FormLabel
           sx={{

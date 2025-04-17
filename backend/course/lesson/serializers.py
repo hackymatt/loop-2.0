@@ -79,12 +79,13 @@ class LessonSerializer(serializers.ModelSerializer):
 
 class ReadingLessonSerializer(serializers.ModelSerializer):
     type = serializers.CharField(source="lesson.type")
+    points = serializers.CharField(source="lesson.points")
     name = serializers.SerializerMethodField()
     text = serializers.SerializerMethodField()
 
     class Meta:
         model = ReadingLesson
-        fields = ["type", "name", "text"]
+        fields = ["type", "points", "name", "text"]
 
     def get_name(self, obj):
         lang = self.context.get("request").LANGUAGE_CODE
@@ -97,12 +98,13 @@ class ReadingLessonSerializer(serializers.ModelSerializer):
 
 class VideoLessonSerializer(serializers.ModelSerializer):
     type = serializers.CharField(source="lesson.type")
+    points = serializers.CharField(source="lesson.points")
     video_url = serializers.URLField()
     name = serializers.SerializerMethodField()
 
     class Meta:
         model = VideoLesson
-        fields = ["type", "name", "video_url"]
+        fields = ["type", "points", "name", "video_url"]
 
     def get_name(self, obj):
         lang = self.context.get("request").LANGUAGE_CODE
@@ -125,12 +127,13 @@ class QuizQuestionSerializer(serializers.ModelSerializer):
 
 class QuizLessonSerializer(serializers.ModelSerializer):
     type = serializers.CharField(source="lesson.type")
+    points = serializers.CharField(source="lesson.points")
     name = serializers.SerializerMethodField()
     question = serializers.SerializerMethodField()
 
     class Meta:
         model = QuizLesson
-        fields = ["type", "name", "quiz_type", "question"]
+        fields = ["type", "points", "name", "quiz_type", "question"]
 
     def get_name(self, obj):
         lang = self.context.get("request").LANGUAGE_CODE
@@ -156,6 +159,7 @@ class QuizLessonSerializer(serializers.ModelSerializer):
 
 class CodingLessonSerializer(serializers.ModelSerializer):
     type = serializers.CharField(source="lesson.type")
+    points = serializers.CharField(source="lesson.points")
     name = serializers.SerializerMethodField()
     technology = serializers.CharField(source="technology.name", read_only=True)
     starter_code = serializers.CharField(read_only=True)
@@ -167,6 +171,7 @@ class CodingLessonSerializer(serializers.ModelSerializer):
         model = CodingLesson
         fields = [
             "type",
+            "points",
             "name",
             "technology",
             "starter_code",

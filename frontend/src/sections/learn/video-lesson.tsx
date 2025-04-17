@@ -20,8 +20,8 @@ export function VideoLesson({ lesson, onSubmit, sx, ...other }: VideoLessonProps
   const { t } = useTranslation("learn");
 
   const renderContent = () => (
-    <ComponentBox sx={{ py: 2, height: { xs: 300, md: 600 } }}>
-      <Player controls playing url={lesson.videoUrl} width="100%" height="100%" />
+    <ComponentBox title={`${lesson.totalPoints} XP`} sx={{ py: 2, height: { xs: 300, md: 600 } }}>
+      <Player controls url={lesson.videoUrl} width="100%" height="100%" />
     </ComponentBox>
   );
 

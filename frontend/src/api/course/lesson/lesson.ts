@@ -20,6 +20,7 @@ const endpoint = URLS.LESSON;
 type IBaseLesson = {
   type: "reading" | "video" | "quiz" | "coding";
   name: string;
+  points: number;
 };
 
 type IReadingLesson = {
@@ -70,14 +71,18 @@ export const lessonQuery = (courseSlug: string, lessonSlug: string, language?: L
       },
     });
 
-    const { type, name, ...specificLesson }: ILesson = data;
+    const { type, name, points, ...specificLesson }: ILesson = data;
 
     if (type === "reading") {
-      return { results: { type, name, ...specificLesson } as IReadingLessonProps };
+      return {
+        results: { type, totalPoints: points, name, ...specificLesson } as IReadingLessonProps,
+      };
     }
     if (type === "video") {
       const { video_url } = specificLesson as IVideoLesson;
-      return { results: { type, name, videoUrl: video_url } as IVideoLessonProps };
+      return {
+        results: { type, totalPoints: points, name, videoUrl: video_url } as IVideoLessonProps,
+      };
     }
     if (type === "quiz") {
       const { quiz_type, answer, ...quizRest } = specificLesson as IQuizLesson;
@@ -85,6 +90,7 @@ export const lessonQuery = (courseSlug: string, lessonSlug: string, language?: L
         results: {
           type,
           name,
+          totalPoints: points,
           quizType: quiz_type,
           answer: answer ?? null,
           ...quizRest,
@@ -97,6 +103,7 @@ export const lessonQuery = (courseSlug: string, lessonSlug: string, language?: L
       results: {
         type,
         name,
+        totalPoints: points,
         penaltyPoints: penalty_points,
         starterCode: starter_code,
         ...codingRest,

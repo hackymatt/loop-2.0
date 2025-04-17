@@ -7,6 +7,7 @@ import type { ICourseLessonType } from "./course";
 type ILessonBaseProps = {
   type: ICourseLessonType;
   name: string;
+  totalPoints: number;
 };
 
 export type IReadingLessonProps = ILessonBaseProps & { text: string };

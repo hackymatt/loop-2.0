@@ -20,7 +20,7 @@ export function ReadingLesson({ lesson, onSubmit, sx, ...other }: ReadingLessonP
   const { t } = useTranslation("learn");
 
   const renderContent = () => (
-    <ComponentBox sx={{ py: 0 }}>
+    <ComponentBox title={`${lesson.totalPoints} XP`} sx={{ py: 0 }}>
       <Markdown key={lesson.text} content={lesson.text} />
     </ComponentBox>
   );
