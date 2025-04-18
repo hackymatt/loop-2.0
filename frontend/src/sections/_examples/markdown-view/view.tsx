@@ -1,6 +1,5 @@
 "use client";
 
-import { CONFIG } from "src/global-config";
 
 import { Markdown } from "src/components/markdown";
 
