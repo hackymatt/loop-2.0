@@ -37,7 +37,6 @@ export async function generateMetadata({
   } catch {
     return createMetadata({
       title: "Nie znaleziono artykułu",
-      description: "Nie znaleziono artykułu",
     });
   }
 }

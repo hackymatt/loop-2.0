@@ -8,6 +8,7 @@ class CourseProgress(BaseModel):
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
     lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE)
     completed_at = models.DateTimeField(null=True, blank=True)
+    answer = models.JSONField(null=True, blank=True)
     points = models.PositiveIntegerField(default=0)
     hint_used = models.BooleanField(default=False)
 

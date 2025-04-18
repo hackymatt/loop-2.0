@@ -22,7 +22,7 @@ export function CourseDetailsLessonItem({ course, chapter, lesson }: LessonItemP
   const { isLoggedIn } = user.state;
 
   const completed = (lesson.progress || 0) === 100;
-  const redirect = `${paths.learn}/${chapter.slug}/${lesson.slug}`;
+  const redirect = `${paths.learn}/${course.slug}/${lesson.slug}`;
 
   return (
     <Button

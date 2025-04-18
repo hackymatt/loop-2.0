@@ -83,3 +83,6 @@ msgstr "Zmiana hasła jest dostępna tylko dla kont założonych za pomocą adre
 
 msgid "Incorrect password."
 msgstr "Nieprawidłowe hasło."
+
+msgid "Almost there! Review your answers and give it another shot."
+msgstr "Prawie dobrze! Przejrzyj swoje odpowiedzi i spróbuj ponownie."

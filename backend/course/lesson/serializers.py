@@ -1,9 +1,16 @@
 from rest_framework import serializers
+from django.utils.translation import gettext as _
 from .models import (
     Lesson,
+    ReadingLesson,
     ReadingLessonTranslation,
+    VideoLesson,
     VideoLessonTranslation,
+    QuizLesson,
     QuizLessonTranslation,
+    QuizQuestion,
+    QuizQuestionOption,
+    CodingLesson,
     CodingLessonTranslation,
 )
 from ..progress.models import CourseProgress
@@ -68,3 +75,175 @@ class LessonSerializer(serializers.ModelSerializer):
             .first()
             .points
         )
+
+
+class ReadingLessonSerializer(serializers.ModelSerializer):
+    type = serializers.CharField(source="lesson.type")
+    points = serializers.CharField(source="lesson.points")
+    name = serializers.SerializerMethodField()
+    text = serializers.SerializerMethodField()
+
+    class Meta:
+        model = ReadingLesson
+        fields = ["type", "points", "name", "text"]
+
+    def get_name(self, obj):
+        lang = self.context.get("request").LANGUAGE_CODE
+        return obj.get_translation(lang).name
+
+    def get_text(self, obj):
+        lang = self.context.get("request").LANGUAGE_CODE
+        return obj.get_translation(lang).text
+
+
+class VideoLessonSerializer(serializers.ModelSerializer):
+    type = serializers.CharField(source="lesson.type")
+    points = serializers.CharField(source="lesson.points")
+    video_url = serializers.URLField()
+    name = serializers.SerializerMethodField()
+
+    class Meta:
+        model = VideoLesson
+        fields = ["type", "points", "name", "video_url"]
+
+    def get_name(self, obj):
+        lang = self.context.get("request").LANGUAGE_CODE
+        return obj.get_translation(lang).name
+
+
+class QuizQuestionOptionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = QuizQuestionOption
+        fields = ["text"]
+
+
+class QuizQuestionSerializer(serializers.ModelSerializer):
+    options = QuizQuestionOptionSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = QuizQuestion
+        fields = ["text", "options"]
+
+
+class QuizLessonSerializer(serializers.ModelSerializer):
+    type = serializers.CharField(source="lesson.type")
+    points = serializers.CharField(source="lesson.points")
+    name = serializers.SerializerMethodField()
+    question = serializers.SerializerMethodField()
+
+    class Meta:
+        model = QuizLesson
+        fields = ["type", "points", "name", "quiz_type", "question"]
+
+    def get_name(self, obj):
+        lang = self.context.get("request").LANGUAGE_CODE
+        return obj.get_translation(lang).name
+
+    def get_question(self, obj):
+        lang = self.context.get("request").LANGUAGE_CODE
+        question = obj.get_translation(lang).question
+        return QuizQuestionSerializer(question).data
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+
+        user = self.context["request"].user
+        progress = CourseProgress.objects.filter(
+            student__user=user, lesson=instance.lesson, completed_at__isnull=False
+        )
+        if progress.exists():
+            data["answer"] = progress.first().answer
+
+        return data
+
+
+class CodingLessonSerializer(serializers.ModelSerializer):
+    type = serializers.CharField(source="lesson.type")
+    points = serializers.CharField(source="lesson.points")
+    name = serializers.SerializerMethodField()
+    technology = serializers.CharField(source="technology.name", read_only=True)
+    starter_code = serializers.CharField(read_only=True)
+    penalty_points = serializers.IntegerField(read_only=True)
+    introduction = serializers.SerializerMethodField()
+    instructions = serializers.SerializerMethodField()
+
+    class Meta:
+        model = CodingLesson
+        fields = [
+            "type",
+            "points",
+            "name",
+            "technology",
+            "starter_code",
+            "penalty_points",
+            "introduction",
+            "instructions",
+        ]
+
+    def get_name(self, obj):
+        lang = self.context.get("request").LANGUAGE_CODE
+        return obj.get_translation(lang).name
+
+    def get_introduction(self, obj):
+        lang = self.context.get("request").LANGUAGE_CODE
+        return obj.get_translation(lang).introduction
+
+    def get_instructions(self, obj):
+        lang = self.context.get("request").LANGUAGE_CODE
+        return obj.get_translation(lang).instructions
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+
+        user = self.context["request"].user
+        progress = CourseProgress.objects.filter(
+            student__user=user, lesson=instance.lesson, completed_at__isnull=False
+        )
+        if progress.exists():
+            data["answer"] = progress.first().answer
+
+        return data
+
+
+class QuizLessonSubmitSerializer(serializers.Serializer):
+    answer = serializers.ListField(child=serializers.JSONField(), allow_empty=False)
+
+    def validate(self, attrs):
+        lang = self.context.get("request").LANGUAGE_CODE
+        lesson = self.context.get("lesson")
+        answer = attrs["answer"]
+
+        question = lesson.get_translation(lang).question
+        correct = [option.is_correct for option in question.options.all()]
+
+        if answer != correct:
+            raise serializers.ValidationError(
+                {
+                    "answer": [
+                        _("Almost there! Review your answers and give it another shot.")
+                    ]
+                }
+            )
+
+        return attrs
+
+
+class CodingLessonSubmitSerializer(serializers.Serializer):
+    answer = serializers.CharField()
+
+    def validate(self, attrs):
+        lesson = self.context.get("lesson")
+        answer = attrs["answer"]
+
+        correct = lesson.solution_code
+
+        if answer != correct:
+            raise serializers.ValidationError(
+                {
+                    "answer": [
+                        _("Almost there! Check your code and give it another shot.")
+                    ]
+                }
+            )
+
+        return attrs
