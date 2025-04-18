@@ -232,7 +232,6 @@ class CodingLessonSubmitSerializer(serializers.Serializer):
     answer = serializers.CharField()
 
     def validate(self, attrs):
-        lang = self.context.get("request").LANGUAGE_CODE
         lesson = self.context.get("lesson")
         answer = attrs["answer"]
 

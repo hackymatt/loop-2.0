@@ -3,7 +3,6 @@ from rest_framework import status, views
 from rest_framework.viewsets import GenericViewSet
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.exceptions import NotFound
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from .models import Lesson, ReadingLesson, VideoLesson, QuizLesson, CodingLesson
@@ -27,15 +26,10 @@ class LessonViewSet(RetrieveModelMixin, GenericViewSet):
     permission_classes = [IsAuthenticated]
 
     def retrieve(self, request, *args, **kwargs):
-        user = request.user
         course_slug = kwargs.get("course_slug")
         lesson_slug = kwargs.get("lesson_slug")
 
-        # Get student profile
-        try:
-            student = Student.objects.get(user=user)
-        except Student.DoesNotExist:
-            raise NotFound("Student profile not found.")
+        student = Student.objects.get(user=request.user)
 
         # Get course and its chapters + lessons
         try:
@@ -43,7 +37,9 @@ class LessonViewSet(RetrieveModelMixin, GenericViewSet):
                 slug=course_slug
             )
         except Course.DoesNotExist:
-            raise NotFound("Course not found.")
+            return Response(
+                {"root": "Course not found."}, status=status.HTTP_404_NOT_FOUND
+            )
 
         # Find lesson within chapters
         lesson = None
@@ -53,7 +49,10 @@ class LessonViewSet(RetrieveModelMixin, GenericViewSet):
                 break
 
         if not lesson:
-            raise NotFound("Lesson not found in this course.")
+            return Response(
+                {"root": "Lesson not found in this course."},
+                status=status.HTTP_404_NOT_FOUND,
+            )
 
         # Ensure enrollment and progress exist
         CourseEnrollment.objects.get_or_create(student=student, course=course)
@@ -111,8 +110,9 @@ class LessonSubmitAPIView(views.APIView):
             answer = serializer.validated_data["answer"]
 
         # Save progress
+        student = Student.objects.get(user=request.user)
         CourseProgress.objects.update_or_create(
-            student__user=request.user,
+            student=student,
             lesson=lesson,
             defaults={"answer": answer, "completed_at": timezone.now()},
         )
@@ -144,8 +144,9 @@ class LessonAnswerAPIView(views.APIView):
         else:
             answer = None
 
+        student = Student.objects.get(user=request.user)
         CourseProgress.objects.update_or_create(
-            student__user=request.user,
+            student=student,
             lesson=lesson,
             defaults={"answer": answer, "completed_at": timezone.now(), "points": 0},
         )

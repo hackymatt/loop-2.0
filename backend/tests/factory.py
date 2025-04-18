@@ -21,6 +21,8 @@ from course.lesson.models import (
     Lesson,
     QuizLesson,
     QuizLessonTranslation,
+    QuizQuestion,
+    QuizQuestionOption,
     ReadingLesson,
     ReadingLessonTranslation,
     VideoLesson,
@@ -200,12 +202,14 @@ def create_technology():
     return technology
 
 
-def create_lesson():
+def create_lesson(lesson_type=None):
     slug = _generate_random_slug()
     points = _generate_random_number()
-    lesson_type = random.choice(
-        [LessonType.READING, LessonType.VIDEO, LessonType.QUIZ, LessonType.CODING]
-    )
+
+    if not lesson_type:
+        lesson_type = random.choice(
+            [LessonType.READING, LessonType.VIDEO, LessonType.QUIZ, LessonType.CODING]
+        )
 
     lesson = Lesson.objects.create(
         slug=slug, points=points, type=lesson_type, active=True
@@ -230,13 +234,24 @@ def create_lesson():
     elif lesson_type == LessonType.QUIZ:
         quiz_type = random.choice([QuizType.SINGLE, QuizType.MULTI])
         specific_lesson = QuizLesson.objects.create(lesson=lesson, quiz_type=quiz_type)
-        _create_translations(
+        translations = _create_translations(
             QuizLessonTranslation,
             specific_lesson,
             languages,
-            ["name", "questions"],
+            ["name"],
             "lesson",
         )
+        for language in languages:
+            translation = translations[language]
+            text = _generate_random_string()
+            question = QuizQuestion.objects.create(translation=translation, text=text)
+            for _ in range(_generate_random_number(1, 5)):
+                text = _generate_random_string()
+                is_correct = _generate_random_bool()
+                QuizQuestionOption.objects.create(
+                    question=question, text=text, is_correct=is_correct
+                )
+
     elif lesson_type == LessonType.CODING:
         starter_code = _generate_random_string(50)
         solution_code = _generate_random_string(50)

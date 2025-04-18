@@ -1,8 +1,17 @@
 from django.test import TestCase
+from django.utils import timezone
 from rest_framework.test import APIClient
 from rest_framework import status
-from const import Urls
-from ..factory import create_student, create_certificate
+from const import Urls, LessonType
+from certificate.models import Certificate
+from course.progress.models import CourseProgress
+from ..factory import (
+    create_student,
+    create_certificate,
+    create_course,
+    create_chapter,
+    create_lesson,
+)
 from ..helpers import login
 
 
@@ -37,3 +46,103 @@ class CertificateViewTest(TestCase):
     def test_list_certificates_unauthenticated(self):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+
+class CourseCompletionSignalTestCase(TestCase):
+    def setUp(self):
+        self.student, self.student_password = create_student()
+
+        self.course = create_course()
+        self.course.chapters.clear()
+        chapter = create_chapter()
+        chapter.lessons.clear()
+
+        self.lesson1, _ = create_lesson(LessonType.READING)
+        self.lesson2, _ = create_lesson(LessonType.VIDEO)
+        self.lesson3, _ = create_lesson(LessonType.QUIZ)
+        self.lesson4, _ = create_lesson(LessonType.CODING)
+        chapter.lessons.add(self.lesson1)
+        chapter.lessons.add(self.lesson2)
+        chapter.lessons.add(self.lesson3)
+        chapter.lessons.add(self.lesson4)
+        chapter.save()
+
+        self.course.chapters.add(chapter)
+        self.course.save()
+
+    def test_certificate_created_after_all_lessons_completed(self):
+        # Initially no certificate
+        self.assertFalse(Certificate.objects.exists())
+
+        # Complete the first lesson
+        CourseProgress.objects.create(
+            student=self.student, lesson=self.lesson1, completed_at=timezone.now()
+        )
+        self.assertFalse(Certificate.objects.exists())  # Still incomplete
+
+        # Complete the second lesson
+        CourseProgress.objects.create(
+            student=self.student, lesson=self.lesson2, completed_at=timezone.now()
+        )
+        self.assertFalse(Certificate.objects.exists())  # Still incomplete
+
+        # Complete the third lesson
+        CourseProgress.objects.create(
+            student=self.student, lesson=self.lesson3, completed_at=timezone.now()
+        )
+        self.assertFalse(Certificate.objects.exists())  # Still incomplete
+
+        # Complete the fourth lesson
+        CourseProgress.objects.create(
+            student=self.student, lesson=self.lesson4, completed_at=timezone.now()
+        )
+        self.assertTrue(
+            Certificate.objects.filter(
+                student=self.student, course=self.course
+            ).exists()
+        )
+
+    def test_certificate_not_created_if_not_all_lessons_completed(self):
+        # Mark only one as completed
+        CourseProgress.objects.create(
+            student=self.student, lesson=self.lesson1, completed_at=timezone.now()
+        )
+        self.assertFalse(
+            Certificate.objects.filter(
+                student=self.student, course=self.course
+            ).exists()
+        )
+
+    def test_certificate_not_duplicated(self):
+        # Complete all lessons
+        CourseProgress.objects.create(
+            student=self.student, lesson=self.lesson1, completed_at=timezone.now()
+        )
+        CourseProgress.objects.create(
+            student=self.student, lesson=self.lesson2, completed_at=timezone.now()
+        )
+        CourseProgress.objects.create(
+            student=self.student, lesson=self.lesson3, completed_at=timezone.now()
+        )
+        CourseProgress.objects.create(
+            student=self.student, lesson=self.lesson4, completed_at=timezone.now()
+        )
+
+        # There should be only one certificate
+        self.assertEqual(
+            Certificate.objects.filter(
+                student=self.student, course=self.course
+            ).count(),
+            1,
+        )
+
+        # Trigger signal again by updating progress
+        progress = CourseProgress.objects.get(student=self.student, lesson=self.lesson1)
+        progress.save()
+
+        self.assertEqual(
+            Certificate.objects.filter(
+                student=self.student, course=self.course
+            ).count(),
+            1,
+        )
