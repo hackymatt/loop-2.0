@@ -1,6 +1,5 @@
 "use client";
 
-
 import { Markdown } from "src/components/markdown";
 
 import { ComponentBox, ComponentLayout } from "../layout";

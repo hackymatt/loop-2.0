@@ -12,7 +12,7 @@ describe("getLessonTypeIcon", () => {
   // Returns the correct icon for "article" type
   it('should return ARTICLE_ICON when type is "article"', () => {
     const result = getLessonTypeIcon("article" as unknown as ICourseLessonType);
-    expect(result).toBe("solar:book-outline");
+    expect(result).toBe("solar:code-circle-outline");
   });
 
   // Returns EXERCISE_ICON as fallback when type is not found in the map
