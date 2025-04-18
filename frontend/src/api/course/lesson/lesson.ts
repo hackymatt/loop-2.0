@@ -52,6 +52,8 @@ type ICodingLesson = {
   introduction: string;
   instructions: string;
   penalty_points: number;
+  hint?: string;
+  answer?: string;
 };
 
 type ILesson = IBaseLesson & (IReadingLesson | IVideoLesson | IQuizLesson | ICodingLesson);
@@ -98,7 +100,8 @@ export const lessonQuery = (courseSlug: string, lessonSlug: string, language?: L
       };
     }
 
-    const { penalty_points, starter_code, ...codingRest } = specificLesson as ICodingLesson;
+    const { penalty_points, starter_code, answer, hint, ...codingRest } =
+      specificLesson as ICodingLesson;
     return {
       results: {
         type,
@@ -106,6 +109,8 @@ export const lessonQuery = (courseSlug: string, lessonSlug: string, language?: L
         totalPoints: points,
         penaltyPoints: penalty_points,
         starterCode: starter_code,
+        hint: hint ?? null,
+        answer: answer ?? null,
         ...codingRest,
       } as ICodingLessonProps,
     };

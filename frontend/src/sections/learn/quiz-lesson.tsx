@@ -51,13 +51,13 @@ export function QuizLesson({
   const [selectedOptions, setSelectedOptions] = useState<number[]>([]);
 
   useEffect(() => {
-    const userOption = (lesson.answer || [])
+    const userOption = (userAnswer || [])
       .map((value, index) => (value ? index : -1))
       .filter((index) => index !== -1);
 
     setSelectedOption(userOption.length === 0 ? null : userOption[0]);
     setSelectedOptions(userOption);
-  }, [lesson.answer]);
+  }, [userAnswer]);
 
   const handleRadioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSelectedOption(Number(event.target.value));
@@ -106,7 +106,7 @@ export function QuizLesson({
     );
 
   const renderContent = () => (
-    <ComponentBox title={`${lesson.totalPoints} XP`} sx={{ py: 2 }}>
+    <ComponentBox sx={{ py: 2 }}>
       <FormControl>
         <FormLabel
           sx={{
@@ -162,7 +162,7 @@ export function QuizLesson({
     <Box
       component="section"
       sx={[
-        { overflow: "hidden", gap: 3, p: 2, display: "flex", flexDirection: "column" },
+        { overflow: "hidden", gap: 3, p: 1, display: "flex", flexDirection: "column" },
         ...(Array.isArray(sx) ? sx : [sx]),
       ]}
       {...other}

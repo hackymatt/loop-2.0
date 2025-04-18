@@ -19,9 +19,11 @@ type VideoLessonProps = BoxProps & { lesson: IVideoLessonProps; onSubmit: () => 
 export function VideoLesson({ lesson, onSubmit, sx, ...other }: VideoLessonProps) {
   const { t } = useTranslation("learn");
 
+  const { videoUrl } = lesson;
+
   const renderContent = () => (
-    <ComponentBox title={`${lesson.totalPoints} XP`} sx={{ py: 2, height: { xs: 300, md: 600 } }}>
-      <Player controls url={lesson.videoUrl} width="100%" height="100%" />
+    <ComponentBox sx={{ py: 2, height: { xs: 300, md: 600 } }}>
+      <Player controls url={videoUrl} width="100%" height="100%" />
     </ComponentBox>
   );
 
@@ -37,7 +39,7 @@ export function VideoLesson({ lesson, onSubmit, sx, ...other }: VideoLessonProps
     <Box
       component="section"
       sx={[
-        { overflow: "hidden", gap: 2, p: 2, display: "flex", flexDirection: "column" },
+        { overflow: "hidden", gap: 2, p: 1, display: "flex", flexDirection: "column" },
         ...(Array.isArray(sx) ? sx : [sx]),
       ]}
       {...other}

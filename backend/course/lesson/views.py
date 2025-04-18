@@ -13,6 +13,7 @@ from .serializers import (
     QuizLessonSerializer,
     CodingLessonSerializer,
     QuizLessonSubmitSerializer,
+    CodingLessonSubmitSerializer,
 )
 from ..enrollment.models import CourseEnrollment
 from ..progress.models import CourseProgress
@@ -94,7 +95,7 @@ class LessonSubmitAPIView(views.APIView):
 
         serializer_class = {
             LessonType.QUIZ: QuizLessonSubmitSerializer,
-            LessonType.CODING: QuizLessonSubmitSerializer,
+            LessonType.CODING: CodingLessonSubmitSerializer,
         }.get(lesson.type)
 
         answer = None
@@ -139,9 +140,7 @@ class LessonAnswerAPIView(views.APIView):
             )
             answer = [option.is_correct for option in question.options.all()]
         elif lesson.type == LessonType.CODING:
-            specific_model.objects.get(lesson=lesson).objects.get(
-                lesson=lesson
-            ).solution_code
+            answer = specific_model.objects.get(lesson=lesson).solution_code
         else:
             answer = None
 

@@ -17,36 +17,34 @@ class DashboardView(APIView):
 
     def get(self, request):
         user = request.user
-        # Get the student progress records for the given student
+
         course_progress = CourseProgress.objects.filter(
             student__user=user, completed_at__isnull=False
         )
 
-        # Calculate total points for the student
         total_points = course_progress.aggregate(Sum("points"))["points__sum"] or 0
 
-        # Calculate daily streak (consecutive days of learning till today)
-        # Extract just the dates the student completed lessons
+        # Get all unique dates of lesson completion
         completed_dates = course_progress.values_list("completed_at", flat=True)
-        completed_dates = set(
-            [date.date() for date in completed_dates]
-        )  # Get unique dates
+        completed_dates = set(date.date() for date in completed_dates)
 
-        if not completed_dates:
-            daily_streak = 0
-        else:
-            # Sort the dates and count consecutive streaks backwards from today
-            sorted_dates = sorted(completed_dates, reverse=True)
+        today = timezone.now().date()
+        yesterday = today - timedelta(days=1)
+
+        daily_streak = 0
+
+        if completed_dates:
             streak = 0
-            current_date = timezone.now().date()
+            current_date = today
 
-            # Count consecutive days of learning starting from today
-            for date in sorted_dates:
-                if date == current_date:
-                    streak += 1
-                    current_date -= timedelta(days=1)  # Check previous day
-                else:
-                    break
+            # If nothing is completed today, pretend it's yesterday to preserve streak
+            if current_date not in completed_dates:
+                current_date = yesterday
+
+            # Count streak backwards from current_date
+            while current_date in completed_dates:
+                streak += 1
+                current_date -= timedelta(days=1)
 
             daily_streak = streak
 
@@ -59,7 +57,6 @@ class DashboardView(APIView):
             "-created_at"
         )[:4]
 
-        # Return the dashboard data
         data = {
             "total_points": total_points,
             "daily_streak": daily_streak,

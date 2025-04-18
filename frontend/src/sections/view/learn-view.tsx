@@ -1,12 +1,16 @@
 "use client";
 
 import type { AxiosError } from "axios";
-import type { IQuizLessonProps, IVideoLessonProps, IReadingLessonProps } from "src/types/lesson";
+import type {
+  IQuizLessonProps,
+  IVideoLessonProps,
+  ICodingLessonProps,
+  IReadingLessonProps,
+} from "src/types/lesson";
 
-import { useTranslation } from "react-i18next";
 import React, { useMemo, useState } from "react";
 
-import { Box, Container, Typography } from "@mui/material";
+import { Box, Container } from "@mui/material";
 
 import { paths } from "src/routes/paths";
 import { useRouter } from "src/routes/hooks";
@@ -22,9 +26,10 @@ import { CustomBreadcrumbs } from "src/components/custom-breadcrumbs";
 
 import { QuizLesson } from "../learn/quiz-lesson";
 import { VideoLesson } from "../learn/video-lesson";
+import { CodingLesson } from "../learn/coding-lesson";
 import { NotFoundView } from "../error/not-found-view";
 import { ReadingLesson } from "../learn/reading-lesson";
-import { ArrowFloatButtons } from "../learn/arrow-buttons/arrow-buttons";
+import { ArrowBasicButtons } from "../learn/arrow-buttons/arrow-buttons";
 
 interface LearnViewProps {
   courseSlug: string;
@@ -32,7 +37,6 @@ interface LearnViewProps {
 }
 
 export function LearnView({ courseSlug, lessonSlug }: LearnViewProps) {
-  const { t } = useTranslation("navigation");
   const router = useRouter();
 
   // Fetch course and lesson data
@@ -118,50 +122,30 @@ export function LearnView({ courseSlug, lessonSlug }: LearnViewProps) {
   const lessonType = currentLessonInfo?.type ?? LESSON_TYPE.READING;
 
   const renderHeader = () => (
-    <>
+    <Box
+      sx={{
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        py: 2,
+        width: "100%",
+      }}
+    >
       <CustomBreadcrumbs
         links={[
-          { name: t("home"), href: "/" },
-          { name: t("courses"), href: paths.eLearning.courses },
           { name: courseData?.name, href: `${paths.course}/${courseSlug}` },
           { name: currentChapter?.name },
+          { name: lessonData?.name },
         ]}
       />
-      <Box
-        sx={{
-          position: "relative",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          py: 3,
-          px: { xs: 8, md: 10 },
-        }}
-      >
-        <ArrowFloatButtons
-          disablePrev={currentLessonIndex <= 0}
-          disableNext={currentLessonIndex >= allLessons.length - 1}
-          onClickPrev={() => handleNavigation("prev")}
-          onClickNext={() => handleNavigation("next")}
-          slotProps={{
-            prevBtn: { sx: { left: { xs: 16, md: 24 } } },
-            nextBtn: { sx: { right: { xs: 16, md: 24 } } },
-          }}
-          sx={(theme) => ({
-            borderRadius: "50%",
-            color: "action.active",
-            bgcolor: "transparent",
-            ...theme.applyStyles("dark", { color: "action.active" }),
-          })}
-        />
-        <Typography
-          variant="h3"
-          textAlign="center"
-          sx={{ maxWidth: "100%", px: { xs: 4, md: 6 }, wordBreak: "break-word" }}
-        >
-          {lessonData?.name}
-        </Typography>
-      </Box>
-    </>
+
+      <ArrowBasicButtons
+        disablePrev={currentLessonIndex <= 0}
+        disableNext={currentLessonIndex >= allLessons.length - 1}
+        onClickPrev={() => handleNavigation("prev")}
+        onClickNext={() => handleNavigation("next")}
+      />
+    </Box>
   );
 
   const renderContent = () => {
@@ -189,6 +173,15 @@ export function LearnView({ courseSlug, lessonSlug }: LearnViewProps) {
             error={error}
           />
         );
+      case LESSON_TYPE.CODING:
+        return (
+          <CodingLesson
+            lesson={lessonData as ICodingLessonProps}
+            onSubmit={(answer) => handleSubmit({ answer: answer as string })}
+            onShowAnswer={handleShowAnswer}
+            error={error}
+          />
+        );
       default:
         return null;
     }
@@ -197,7 +190,7 @@ export function LearnView({ courseSlug, lessonSlug }: LearnViewProps) {
   return (
     <Box
       component="section"
-      sx={{ pt: { xs: 3, md: 5 }, pb: { xs: 5, md: 10 }, textAlign: { xs: "center", md: "left" } }}
+      sx={{ pb: { xs: 5, md: 10 }, textAlign: { xs: "center", md: "left" } }}
     >
       <Container>
         {renderHeader()}

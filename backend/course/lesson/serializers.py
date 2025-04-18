@@ -192,6 +192,18 @@ class CodingLessonSerializer(serializers.ModelSerializer):
         lang = self.context.get("request").LANGUAGE_CODE
         return obj.get_translation(lang).instructions
 
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+
+        user = self.context["request"].user
+        progress = CourseProgress.objects.filter(
+            student__user=user, lesson=instance.lesson, completed_at__isnull=False
+        )
+        if progress.exists():
+            data["answer"] = progress.first().answer
+
+        return data
+
 
 class QuizLessonSubmitSerializer(serializers.Serializer):
     answer = serializers.ListField(child=serializers.JSONField(), allow_empty=False)
@@ -209,6 +221,28 @@ class QuizLessonSubmitSerializer(serializers.Serializer):
                 {
                     "answer": [
                         _("Almost there! Review your answers and give it another shot.")
+                    ]
+                }
+            )
+
+        return attrs
+
+
+class CodingLessonSubmitSerializer(serializers.Serializer):
+    answer = serializers.CharField()
+
+    def validate(self, attrs):
+        lang = self.context.get("request").LANGUAGE_CODE
+        lesson = self.context.get("lesson")
+        answer = attrs["answer"]
+
+        correct = lesson.solution_code
+
+        if answer != correct:
+            raise serializers.ValidationError(
+                {
+                    "answer": [
+                        _("Almost there! Check your code and give it another shot.")
                     ]
                 }
             )

@@ -29,4 +29,6 @@ export type ICodingLessonProps = ILessonBaseProps & {
   instructions: string;
   penaltyPoints: number;
   starterCode: string;
+  hint: string | null;
+  answer: string | null;
 };

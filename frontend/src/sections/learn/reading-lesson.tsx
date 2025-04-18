@@ -19,9 +19,11 @@ type ReadingLessonProps = BoxProps & { lesson: IReadingLessonProps; onSubmit: ()
 export function ReadingLesson({ lesson, onSubmit, sx, ...other }: ReadingLessonProps) {
   const { t } = useTranslation("learn");
 
+  const { text } = lesson;
+
   const renderContent = () => (
-    <ComponentBox title={`${lesson.totalPoints} XP`} sx={{ py: 0 }}>
-      <Markdown key={lesson.text} content={lesson.text} />
+    <ComponentBox sx={{ py: 0 }}>
+      <Markdown key={text} content={text} />
     </ComponentBox>
   );
 
@@ -37,7 +39,7 @@ export function ReadingLesson({ lesson, onSubmit, sx, ...other }: ReadingLessonP
     <Box
       component="section"
       sx={[
-        { overflow: "hidden", gap: 2, p: 2, display: "flex", flexDirection: "column" },
+        { overflow: "hidden", gap: 2, p: 1, display: "flex", flexDirection: "column" },
         ...(Array.isArray(sx) ? sx : [sx]),
       ]}
       {...other}
