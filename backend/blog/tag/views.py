@@ -1,4 +1,3 @@
-from django.db.models import F
 from rest_framework import viewsets
 from .models import Tag
 from .serializers import TagSerializer

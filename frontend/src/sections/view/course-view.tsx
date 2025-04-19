@@ -2,7 +2,7 @@
 
 import type { LevelType } from "src/types/course";
 
-import { useSetState } from "minimal-shared/hooks";
+import { useBoolean, useSetState } from "minimal-shared/hooks";
 
 import Grid from "@mui/material/Grid2";
 import Divider from "@mui/material/Divider";
@@ -17,6 +17,7 @@ import { SplashScreen } from "src/components/loading-screen";
 import { ReviewList } from "../review/review-list";
 import { NotFoundView } from "../error/not-found-view";
 import { ReviewSummary } from "../review/review-summary";
+import { ReviewNewForm } from "../courses/review-new-form";
 import { CourseDetailsHero } from "../courses/course-details-hero";
 import { CourseListSimilar } from "../courses/course-list-similar";
 import { CourseDetailsSummary } from "../courses/course-details-summary";
@@ -36,12 +37,16 @@ export function CourseView({ slug }: { slug: string }) {
   const { data: reviews, count, pageSize } = useReviews(slug);
   const { data: similarCourses } = useSimilarCourses(slug);
 
+  const openReviewForm = useBoolean();
+
   const renderReview = () => (
     <>
       <ReviewSummary
         slug={slug}
+        isCompleted={(course?.progress || 0) === 100}
         ratingNumber={course?.ratingNumber || 0}
         reviewNumber={course?.totalReviews || 0}
+        onOpenForm={openReviewForm.onTrue}
       />
 
       <Container>
@@ -53,6 +58,12 @@ export function CourseView({ slug }: { slug: string }) {
           onPageChange={(selectedPage: number) => query.setField("page", String(selectedPage))}
         />
       </Container>
+
+      <ReviewNewForm
+        slug={course?.slug || ""}
+        open={openReviewForm.value}
+        onClose={openReviewForm.onFalse}
+      />
     </>
   );
 

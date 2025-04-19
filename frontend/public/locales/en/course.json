@@ -41,7 +41,7 @@
     "none": "There are no prerequisites for this course."
   },
   "instructors": "Instructors",
-  "reviews": "Reviews",
+  "reviews": { "label": "Reviews", "button": "Write a review" },
   "included": { "start": "Included with", "plans": "Basic and Premium" },
   "overview": "Overview",
   "similar": "Similar courses",

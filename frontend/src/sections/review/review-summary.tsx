@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid2";
+import { Button } from "@mui/material";
 import Rating from "@mui/material/Rating";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
@@ -13,17 +14,29 @@ import { usePluralize } from "src/hooks/use-pluralize";
 
 import { fShortenNumber } from "src/utils/format-number";
 
+import { Iconify } from "src/components/iconify";
+
 import { ReviewProgress } from "./review-progress";
 
 // ----------------------------------------------------------------------
 
 type Props = BoxProps & {
   slug: string;
+  isCompleted: boolean;
   reviewNumber: number;
   ratingNumber: number;
+  onOpenForm: () => void;
 };
 
-export function ReviewSummary({ sx, slug, reviewNumber, ratingNumber, ...other }: Props) {
+export function ReviewSummary({
+  sx,
+  slug,
+  isCompleted,
+  reviewNumber,
+  ratingNumber,
+  onOpenForm,
+  ...other
+}: Props) {
   const { t } = useTranslation("course");
   const { t: locale } = useTranslation("locale");
 
@@ -46,7 +59,7 @@ export function ReviewSummary({ sx, slug, reviewNumber, ratingNumber, ...other }
                 alignItems: { xs: "center", md: "flex-start" },
               }}
             >
-              <Typography variant="h3">{t("reviews")}</Typography>
+              <Typography variant="h3">{t("reviews.label")}</Typography>
 
               <Box sx={{ gap: 2, display: "flex", alignItems: "center", my: 3 }}>
                 <Typography component="span" variant="h2">
@@ -69,6 +82,18 @@ export function ReviewSummary({ sx, slug, reviewNumber, ratingNumber, ...other }
                   </Typography>
                 </div>
               </Box>
+
+              {isCompleted && (
+                <Button
+                  size="large"
+                  color="inherit"
+                  variant="contained"
+                  startIcon={<Iconify icon="solar:pen-2-outline" />}
+                  onClick={onOpenForm}
+                >
+                  {t("reviews.button")}
+                </Button>
+              )}
             </Box>
           </Grid>
 

@@ -27,6 +27,7 @@ export const URLS = {
   // REVIEWS
   REVIEWS: "/reviews",
   REVIEWS_SUMMARY: "/reviews-summary",
+  REVIEW_SUBMIT: "review-submit",
   // BLOG
   POST_TOPICS: "/post-topics",
   POST_TAGS: "/post-tags",
