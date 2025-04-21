@@ -5,10 +5,29 @@ on:
     branches: [develop]
 
 jobs:
+  changes:
+    name: Detect file changes
+    runs-on: ubuntu-latest
+    outputs:
+      backend: ${{ steps.filter.outputs.backend }}
+      frontend: ${{ steps.filter.outputs.frontend }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            backend:
+              - 'backend/**'
+            frontend:
+              - 'frontend/**'
+
   lint-backend:
     name: Lint Backend
     runs-on: ubuntu-latest
-    if: contains(github.event.pull_request.changed_files, 'backend/')
+    needs: changes
+    if: needs.changes.outputs.backend == 'true'
     defaults:
       run:
         shell: bash
@@ -27,7 +46,8 @@ jobs:
   lint-frontend:
     name: Lint Frontend
     runs-on: ubuntu-latest
-    if: contains(github.event.pull_request.changed_files, 'frontend/')
+    needs: changes
+    if: needs.changes.outputs.frontend == 'true'
     defaults:
       run:
         shell: bash
@@ -43,7 +63,8 @@ jobs:
   test-backend:
     name: Test Backend
     runs-on: ubuntu-latest
-    if: contains(github.event.pull_request.changed_files, 'backend/')
+    needs: changes
+    if: needs.changes.outputs.backend == 'true'
     defaults:
       run:
         shell: bash
@@ -92,7 +113,8 @@ jobs:
   test-frontend:
     name: Test Frontend
     runs-on: ubuntu-latest
-    if: contains(github.event.pull_request.changed_files, 'frontend/')
+    needs: changes
+    if: needs.changes.outputs.frontend == 'true'
     defaults:
       run:
         shell: bash
