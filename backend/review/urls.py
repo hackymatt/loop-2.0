@@ -1,4 +1,9 @@
-from .views import ReviewSummaryViewSet, ReviewViewSet, FeaturedReviewsView, SubmitReviewView
+from .views import (
+    ReviewSummaryViewSet,
+    ReviewViewSet,
+    FeaturedReviewsView,
+    SubmitReviewView,
+)
 from django.urls import path
 from const import Urls
 

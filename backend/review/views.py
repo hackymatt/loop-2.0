@@ -2,7 +2,11 @@ from rest_framework import viewsets, views
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
-from review.serializers import ReviewSummarySerializer, ReviewSerializer, ReviewSubmitSerializer
+from review.serializers import (
+    ReviewSummarySerializer,
+    ReviewSerializer,
+    ReviewSubmitSerializer,
+)
 from .models import Review
 from django.db.models import Count, functions
 from course.models import Course
@@ -69,22 +73,19 @@ class SubmitReviewView(views.APIView):
         comment = request.data.get("comment", "")
         language = request.LANGUAGE_CODE
 
-        serializer = ReviewSubmitSerializer(data={
-            "rating": rating,
-            "comment": comment,
-            "language": language
-        })
+        serializer = ReviewSubmitSerializer(
+            data={"rating": rating, "comment": comment, "language": language}
+        )
         serializer.is_valid(raise_exception=True)
 
         # update_or_create logika
         review, created = Review.objects.update_or_create(
             student=student,
             course=course,
-            defaults={
-                "rating": rating,
-                "comment": comment,
-                "language": language
-            }
+            defaults={"rating": rating, "comment": comment, "language": language},
         )
 
-        return Response(ReviewSubmitSerializer(review).data, status=status.HTTP_201_CREATED if created else status.HTTP_200_OK)
+        return Response(
+            ReviewSubmitSerializer(review).data,
+            status=status.HTTP_201_CREATED if created else status.HTTP_200_OK,
+        )
