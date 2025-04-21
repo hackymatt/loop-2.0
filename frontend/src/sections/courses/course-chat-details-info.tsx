@@ -51,7 +51,10 @@ export function CourseChatDetailsInfo({ sx, slug, chatUrl, ...other }: Props) {
           variant="contained"
           size="large"
           startIcon={<Iconify icon="logos:google-icon" />}
-          href={`${paths.register}?redirect=${paths.course}/${slug}`}
+          href={paths.register}
+          onClick={() => {
+            user.setField("redirect", `${paths.course}/${slug}`);
+          }}
           sx={{ px: 2, borderRadius: "inherit", textAlign: "center" }}
         >
           {t("chat.button")}

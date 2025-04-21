@@ -26,10 +26,10 @@ export function UserProvider({
     () => ({
       state,
       setState,
-      resetState: () => resetState(initialUser),
+      resetState: () => resetState(defaultUser),
       setField,
     }),
-    [state, setState, setField, resetState, initialUser]
+    [state, setState, setField, resetState, defaultUser]
   );
 
   return <UserContext.Provider value={memoizedValue}>{children}</UserContext.Provider>;

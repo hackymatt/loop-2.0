@@ -50,6 +50,7 @@ export function FormSocials({ methods, sx, ...other }: FormSocialsProps) {
 function GoogleSignIn({ methods }: { methods: UseFormReturn<any> }) {
   const router = useRouter();
   const user = useUserContext();
+  const { redirect } = user.state;
 
   const { mutateAsync: googleLogin } = useLoginGoogle();
 
@@ -74,8 +75,9 @@ function GoogleSignIn({ methods }: { methods: UseFormReturn<any> }) {
         userType: user_type,
         joinType: join_type,
         plan,
+        redirect: null,
       });
-      router.push(paths.account.dashboard);
+      router.push(redirect || paths.account.dashboard);
     } catch (error) {
       handleFormError(error);
     }
@@ -95,6 +97,7 @@ function GoogleSignIn({ methods }: { methods: UseFormReturn<any> }) {
 function GithubSignIn({ methods }: { methods: UseFormReturn<any> }) {
   const router = useRouter();
   const user = useUserContext();
+  const { redirect } = user.state;
 
   const { mutateAsync: githubLogin } = useLoginGithub();
 
@@ -117,8 +120,9 @@ function GithubSignIn({ methods }: { methods: UseFormReturn<any> }) {
         userType: user_type,
         joinType: join_type,
         plan,
+        redirect: null,
       });
-      router.push(paths.account.dashboard);
+      router.push(redirect || paths.account.dashboard);
     } catch (error) {
       handleFormError(error);
     }
@@ -140,6 +144,7 @@ function GithubSignIn({ methods }: { methods: UseFormReturn<any> }) {
 function FacebookSignIn({ methods }: { methods: UseFormReturn<any> }) {
   const router = useRouter();
   const user = useUserContext();
+  const { redirect } = user.state;
 
   const { mutateAsync: facebookLogin } = useLoginFacebook();
 
@@ -162,8 +167,9 @@ function FacebookSignIn({ methods }: { methods: UseFormReturn<any> }) {
         userType: user_type,
         joinType: join_type,
         plan,
+        redirect: null,
       });
-      router.push(paths.account.dashboard);
+      router.push(redirect || paths.account.dashboard);
     } catch (error) {
       handleFormError(error);
     }

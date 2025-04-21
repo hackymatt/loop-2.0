@@ -73,7 +73,10 @@ export function CourseCertificateDetailsInfo({
           variant="contained"
           color="primary"
           size="large"
-          href={isLoggedIn ? redirect : `${paths.register}?redirect=${redirect}`}
+          href={isLoggedIn ? redirect : paths.register}
+          onClick={() => {
+            user.setField("redirect", redirect);
+          }}
           sx={{ px: 2, borderRadius: "inherit", textAlign: "center" }}
         >
           {isLoggedIn && started ? t("continue") : t("start")}
