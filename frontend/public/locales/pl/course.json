@@ -41,7 +41,7 @@
     "none": "Brak wymagań wstępnych."
   },
   "instructors": "Instruktorzy",
-  "reviews": "Recenzje",
+  "reviews": { "label": "Recenzje", "button": "Napisz opinię" },
   "included": { "start": "Dostępne w planie", "plans": "Podstawowym oraz Premium" },
   "overview": "Opis",
   "similar": "Podobne kursy",

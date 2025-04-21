@@ -39,6 +39,7 @@ class Urls:
     # REVIEW
     COURSE_REVIEW_SUMMARY = "reviews-summary/<slug:slug>"
     COURSE_REVIEWS = "reviews/<slug:slug>"
+    REVIEW_SUBMIT = "review-submit"
     # BLOG
     POST_TOPIC = "post-topics"
     POST_TAG = "post-tags"

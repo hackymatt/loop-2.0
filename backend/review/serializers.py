@@ -14,3 +14,9 @@ class ReviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = Review
         fields = ["student", "rating", "comment", "created_at"]
+
+
+class ReviewSubmitSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Review
+        fields = ["rating", "comment", "language"]
