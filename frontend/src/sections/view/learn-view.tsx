@@ -8,6 +8,8 @@ import type {
   IReadingLessonProps,
 } from "src/types/lesson";
 
+import { useSnackbar } from "notistack";
+import { useTranslation } from "react-i18next";
 import React, { useMemo, useState } from "react";
 
 import { Box, Container } from "@mui/material";
@@ -37,7 +39,10 @@ interface LearnViewProps {
 }
 
 export function LearnView({ courseSlug, lessonSlug }: LearnViewProps) {
+  const { t } = useTranslation("learn");
+
   const router = useRouter();
+  const { enqueueSnackbar } = useSnackbar();
 
   // Fetch course and lesson data
   const {
@@ -111,8 +116,8 @@ export function LearnView({ courseSlug, lessonSlug }: LearnViewProps) {
   const handleShowAnswer = async () => {
     try {
       await showAnswer({ lesson: lessonSlug });
-    } catch (err) {
-      console.log(err);
+    } catch {
+      enqueueSnackbar(t("errors.answer"), { variant: "error" });
     }
   };
 

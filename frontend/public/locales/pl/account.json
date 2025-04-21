@@ -62,8 +62,8 @@
   "personal": { "title": "Dane osobowe", "button": "Zapisz" },
   "manage": { "title": "Zarządzaj kontem", "button": "Zapisz" },
   "subscription": { "title": "Subskrypcja" },
-  "logout": { "title": "Wyloguj się" },
-  "photo": { "change": "Zmień zdjęcie" },
+  "logout": { "title": "Wyloguj się", "error": "Wystąpił błąd. Spróbuj ponownie." },
+  "photo": { "change": "Zmień zdjęcie", "error": "Wystąpił błąd. Spróbuj ponownie." },
   "delete": {
     "text": "Wszystkie Twoje dane profilowe oraz związane z nauką zostaną trwale usunięte. Jeśli chcesz anulować subskrypcję, sprawdź",
     "button": "Usuń konto",

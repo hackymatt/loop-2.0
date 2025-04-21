@@ -4,6 +4,7 @@ import type { ButtonBaseProps } from "@mui/material/ButtonBase";
 import type { Theme, SxProps, Breakpoint } from "@mui/material/styles";
 
 import { useEffect } from "react";
+import { useSnackbar } from "notistack";
 import { useTranslation } from "react-i18next";
 import { usePopover } from "minimal-shared/hooks";
 import { isActiveLink } from "minimal-shared/utils";
@@ -61,6 +62,7 @@ export function NavAccountPopover({ sx }: NavItemsProps) {
   const { open, onClose, onOpen, anchorEl } = usePopover();
 
   const { t } = useTranslation("navigation");
+  const { t: account } = useTranslation("account");
 
   const user = useUserContext();
   const { avatarUrl } = user.state;
@@ -70,6 +72,8 @@ export function NavAccountPopover({ sx }: NavItemsProps) {
   const router = useRouter();
 
   const pathname = usePathname();
+
+  const { enqueueSnackbar } = useSnackbar();
 
   const navData = useNavData();
 
@@ -103,8 +107,8 @@ export function NavAccountPopover({ sx }: NavItemsProps) {
         user.resetState();
         onClose();
       }
-    } catch (error) {
-      console.error(error);
+    } catch {
+      enqueueSnackbar(account("logout.error"), { variant: "error" });
     }
   };
 

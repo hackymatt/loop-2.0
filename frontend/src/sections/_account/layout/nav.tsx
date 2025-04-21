@@ -4,6 +4,7 @@ import type { BoxProps } from "@mui/material/Box";
 import type { Theme, SxProps } from "@mui/material/styles";
 import type { ButtonBaseProps } from "@mui/material/ButtonBase";
 
+import { useSnackbar } from "notistack";
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { usePopover } from "minimal-shared/hooks";
@@ -244,6 +245,8 @@ export function UserPhoto({ sx, ...other }: BoxProps) {
   const user = useUserContext();
   const { avatarUrl } = user.state;
 
+  const { enqueueSnackbar } = useSnackbar();
+
   const { mutateAsync: updateData } = useUpdateData();
 
   const [image, setImage] = useState<string>(avatarUrl || DEFAULT_AVATAR_URL);
@@ -261,8 +264,8 @@ export function UserPhoto({ sx, ...other }: BoxProps) {
     try {
       const { data } = await updateData({ image: file });
       user.setField("avatarUrl", data.image);
-    } catch (error) {
-      console.log(error);
+    } catch {
+      enqueueSnackbar(t("photo.error"), { variant: "error" });
     }
   };
 
