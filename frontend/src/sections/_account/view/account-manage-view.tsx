@@ -17,6 +17,7 @@ import { paths } from "src/routes/paths";
 
 import { useFormErrorHandler } from "src/hooks/use-form-error-handler";
 
+import { CONFIG } from "src/global-config";
 import { JOIN_TYPE, USER_TYPE } from "src/consts/user";
 import { useChangePassword } from "src/api/me/password";
 
@@ -36,7 +37,12 @@ const useAccountPasswordSchema = () => {
       oldPassword: zod
         .string()
         .min(1, { message: t("oldPassword.errors.required") })
-        .min(6, { message: t("oldPassword.errors.minLength") })
+        .min(CONFIG.minPasswordLength, {
+          message: t("oldPassword.errors.minLength").replace(
+            "minPasswordLength",
+            String(CONFIG.minPasswordLength)
+          ),
+        })
         .regex(/[A-Z]/, { message: t("oldPassword.errors.bigLetter") })
         .regex(/[a-z]/, { message: t("oldPassword.errors.smallLetter") })
         .regex(/[0-9]/, { message: t("oldPassword.errors.number") })
@@ -46,7 +52,12 @@ const useAccountPasswordSchema = () => {
       newPassword: zod
         .string()
         .min(1, { message: t("newPassword.errors.required") })
-        .min(6, { message: t("newPassword.errors.minLength") })
+        .min(CONFIG.minPasswordLength, {
+          message: t("newPassword.errors.minLength").replace(
+            "minPasswordLength",
+            String(CONFIG.minPasswordLength)
+          ),
+        })
         .regex(/[A-Z]/, { message: t("newPassword.errors.bigLetter") })
         .regex(/[a-z]/, { message: t("newPassword.errors.smallLetter") })
         .regex(/[0-9]/, { message: t("newPassword.errors.number") })

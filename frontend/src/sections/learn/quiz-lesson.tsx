@@ -18,6 +18,7 @@ import {
 } from "@mui/material";
 
 import { QUIZ_TYPE } from "src/consts/lesson";
+import { useAnalytics } from "src/app/analytics-provider";
 
 import { ComponentBox } from "./component-box";
 
@@ -41,6 +42,8 @@ export function QuizLesson({
   ...other
 }: QuizLessonProps) {
   const { t } = useTranslation("learn");
+  const { trackEvent } = useAnalytics();
+
   const { quizType, question, answer: userAnswer } = lesson;
 
   const isMultiple = quizType === QUIZ_TYPE.MULTI;
@@ -149,7 +152,10 @@ export function QuizLesson({
         variant="text"
         color="inherit"
         size="large"
-        onClick={onShowAnswer}
+        onClick={() => {
+          onShowAnswer();
+          trackEvent({ category: "learn", label: "quiz", action: "showAnswer" });
+        }}
         disabled={isCompleted}
         sx={{ px: 2 }}
       >

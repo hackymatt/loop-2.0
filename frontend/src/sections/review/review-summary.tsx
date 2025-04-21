@@ -14,6 +14,8 @@ import { usePluralize } from "src/hooks/use-pluralize";
 
 import { fShortenNumber } from "src/utils/format-number";
 
+import { useAnalytics } from "src/app/analytics-provider";
+
 import { Iconify } from "src/components/iconify";
 
 import { ReviewProgress } from "./review-progress";
@@ -39,6 +41,8 @@ export function ReviewSummary({
 }: Props) {
   const { t } = useTranslation("course");
   const { t: locale } = useTranslation("locale");
+
+  const { trackEvent } = useAnalytics();
 
   const review = t("review", { returnObjects: true }) as string[];
 
@@ -89,7 +93,10 @@ export function ReviewSummary({
                   color="inherit"
                   variant="contained"
                   startIcon={<Iconify icon="solar:pen-2-outline" />}
-                  onClick={onOpenForm}
+                  onClick={() => {
+                    onOpenForm();
+                    trackEvent({ category: "review", label: "addReview" });
+                  }}
                 >
                   {t("reviews.button")}
                 </Button>

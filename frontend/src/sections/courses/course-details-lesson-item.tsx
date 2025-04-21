@@ -6,6 +6,8 @@ import { paths } from "src/routes/paths";
 
 import { getLessonTypeIcon } from "src/utils/lesson-type-icon";
 
+import { useAnalytics } from "src/app/analytics-provider";
+
 import { Iconify } from "src/components/iconify";
 import { useUserContext } from "src/components/user";
 
@@ -18,6 +20,8 @@ type LessonItemProps = {
 };
 
 export function CourseDetailsLessonItem({ course, chapter, lesson }: LessonItemProps) {
+  const { trackEvent } = useAnalytics();
+
   const user = useUserContext();
   const { isLoggedIn } = user.state;
 
@@ -32,6 +36,7 @@ export function CourseDetailsLessonItem({ course, chapter, lesson }: LessonItemP
       href={isLoggedIn ? redirect : paths.register}
       onClick={() => {
         user.setField("redirect", redirect);
+        trackEvent({ category: "course", label: `lesson (${lesson.slug})`, action: "start" });
       }}
       sx={{
         display: "flex",

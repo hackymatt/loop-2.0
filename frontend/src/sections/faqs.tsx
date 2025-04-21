@@ -14,6 +14,8 @@ import AccordionSummary from "@mui/material/AccordionSummary";
 
 import { paths } from "src/routes/paths";
 
+import { useAnalytics } from "src/app/analytics-provider";
+
 import { Iconify } from "src/components/iconify";
 
 // ----------------------------------------------------------------------
@@ -29,6 +31,8 @@ type Props = {
 
 export function Faqs({ data, sx, ...other }: Props) {
   const { t } = useTranslation("faq");
+
+  const { trackEvent } = useAnalytics();
 
   const [expanded, setExpanded] = useState<string | false>(false);
 
@@ -108,7 +112,13 @@ export function Faqs({ data, sx, ...other }: Props) {
               </div>
 
               <div>
-                <Button size="large" color="inherit" variant="contained" href={paths.contact}>
+                <Button
+                  size="large"
+                  color="inherit"
+                  variant="contained"
+                  href={paths.contact}
+                  onClick={() => trackEvent({ category: "contact", label: "moreQuestions" })}
+                >
                   {t("moreQuestions.button")}
                 </Button>
               </div>
