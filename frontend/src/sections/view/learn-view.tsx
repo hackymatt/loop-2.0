@@ -99,7 +99,9 @@ export function LearnView({ courseSlug, lessonSlug }: LearnViewProps) {
     try {
       await submit({ ...data, lesson: lessonSlug });
       router.push(
-        nextSlug ? `${paths.learn}/${courseSlug}/${nextSlug}` : `${paths.course}/${courseSlug}`
+        nextSlug
+          ? `${paths.learn}/${courseSlug}/${nextSlug}`
+          : `${paths.course}/${courseSlug}?success=true`
       );
     } catch (err) {
       setError(((err as AxiosError).response?.data as { answer: string })?.answer);

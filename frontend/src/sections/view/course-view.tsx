@@ -2,11 +2,14 @@
 
 import type { LevelType } from "src/types/course";
 
+import { useState, useEffect } from "react";
 import { useBoolean, useSetState } from "minimal-shared/hooks";
 
 import Grid from "@mui/material/Grid2";
 import Divider from "@mui/material/Divider";
 import Container from "@mui/material/Container";
+
+import { useQueryParams } from "src/hooks/use-query-params";
 
 import { useCourse } from "src/api/course/course";
 import { useReviews } from "src/api/review/reviews";
@@ -21,6 +24,7 @@ import { ReviewNewForm } from "../courses/review-new-form";
 import { CourseDetailsHero } from "../courses/course-details-hero";
 import { CourseListSimilar } from "../courses/course-list-similar";
 import { CourseDetailsSummary } from "../courses/course-details-summary";
+import { CongratulationsBanner } from "../courses/congratulations-banner";
 import { CourseChatDetailsInfo } from "../courses/course-chat-details-info";
 import { CourseDetailsTeachers } from "../courses/course-details-teachers-info";
 import { CourseDetailsPrerequisites } from "../courses/course-prerequisites-info";
@@ -33,11 +37,21 @@ export function CourseView({ slug }: { slug: string }) {
     page: "1",
   });
 
+  const { query: searchParams, handleChange } = useQueryParams();
+
   const { data: course, isError, isLoading } = useCourse(slug);
   const { data: reviews, count, pageSize } = useReviews(slug);
   const { data: similarCourses } = useSimilarCourses(slug);
 
+  const [showCongratulations, setShowCongratulations] = useState<boolean>(false);
+
   const openReviewForm = useBoolean();
+
+  useEffect(() => {
+    setShowCongratulations(
+      (searchParams?.success || "false") === "true" && (course?.progress || 0) === 100
+    );
+  }, [course?.progress, searchParams?.success]);
 
   const renderReview = () => (
     <>
@@ -127,6 +141,17 @@ export function CourseView({ slug }: { slug: string }) {
       {renderReview()}
 
       {!!similarCourses?.length && <CourseListSimilar courses={similarCourses} />}
+
+      {showCongratulations && (
+        <CongratulationsBanner
+          slug={course?.slug || ""}
+          open
+          onClose={() => {
+            handleChange("success", "");
+            setShowCongratulations(false);
+          }}
+        />
+      )}
     </>
   );
 }

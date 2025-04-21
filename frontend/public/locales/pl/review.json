@@ -9,6 +9,10 @@
     }
   },
   "review": {
-    "label": "Opinia"
+    "label": "Opinia (opcjonalnie)"
+  },
+  "congratulations": {
+    "label": "Gratulacje",
+    "text": "Kurs ukończony! Będzie nam miło, jeśli podzielisz się swoją opinią."
   }
 }
