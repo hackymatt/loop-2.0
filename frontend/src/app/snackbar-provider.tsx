@@ -11,7 +11,7 @@ export default function SnackbarProvider({ children }: Props) {
     <NotistackSnackbarProvider
       maxSnack={3}
       anchorOrigin={{ vertical: "top", horizontal: "right" }}
-      autoHideDuration={3000}
+      autoHideDuration={3500}
       preventDuplicate
     >
       {children}

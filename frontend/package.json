@@ -26,7 +26,7 @@
     "test:coverage": "jest --coverage"
   },
   "lint-staged": {
-    "**/*.ts": [
+    "**/*.{js,jsx,ts,tsx}": [
       "npm run fm:check",
       "npm run lint:check",
       "npm run test"
