@@ -49,7 +49,10 @@ export function CourseDetailsChapterItem({
       variant="contained"
       size="medium"
       color="primary"
-      href={isLoggedIn ? redirect : `${paths.register}?redirect=${redirect}`}
+      href={isLoggedIn ? redirect : paths.register}
+      onClick={() => {
+        user.setField("redirect", redirect);
+      }}
       sx={{ px: 2, textAlign: "center" }}
     >
       {isLoggedIn && started ? t("chapters.continue") : t("chapters.start")}

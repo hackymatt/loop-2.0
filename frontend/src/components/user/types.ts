@@ -13,6 +13,7 @@ export type UserState = {
   isActive: boolean;
   isLoggedIn: boolean;
   plan: PlanType | null;
+  redirect: string | null;
 };
 
 export type UserContextValue = {

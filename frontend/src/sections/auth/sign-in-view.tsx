@@ -32,6 +32,7 @@ export function SignInView() {
 
   const router = useRouter();
   const user = useUserContext();
+  const { redirect } = user.state;
 
   const { mutateAsync: login } = useLogin();
 
@@ -68,8 +69,9 @@ export function SignInView() {
           userType: user_type,
           joinType: join_type,
           plan,
+          redirect: null,
         });
-        router.push(paths.account.dashboard);
+        router.push(redirect || paths.account.dashboard);
       }
       reset();
     } catch (error) {

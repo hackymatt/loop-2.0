@@ -2,8 +2,6 @@
 
 import type { Breakpoint } from "@mui/material/styles";
 
-import { useState, useEffect } from "react";
-
 import Box from "@mui/material/Box";
 import { Toolbar, Container } from "@mui/material";
 
@@ -57,13 +55,8 @@ export function MainLayout({
   slotProps,
   layoutQuery = "md",
 }: MainLayoutProps) {
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
-
   const user = useUserContext();
-
-  useEffect(() => {
-    setIsLoggedIn(user.state.isLoggedIn);
-  }, [user]);
+  const { isLoggedIn } = user.state;
 
   const navData = useNavData();
 

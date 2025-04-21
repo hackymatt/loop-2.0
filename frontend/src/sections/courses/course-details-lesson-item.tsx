@@ -29,7 +29,10 @@ export function CourseDetailsLessonItem({ course, chapter, lesson }: LessonItemP
       variant="text"
       size="medium"
       color="inherit"
-      href={isLoggedIn ? redirect : `${paths.register}?redirect=${redirect}`}
+      href={isLoggedIn ? redirect : paths.register}
+      onClick={() => {
+        user.setField("redirect", redirect);
+      }}
       sx={{
         display: "flex",
         justifyContent: "space-between",
