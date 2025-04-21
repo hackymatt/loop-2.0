@@ -20,6 +20,7 @@ import { defaultUser } from "src/components/user/user-config";
 import { MotionLazy } from "src/components/animate/motion-lazy";
 import { SettingsDrawer, defaultSettings, SettingsProvider } from "src/components/settings";
 
+import SnackbarProvider from "./snackbar-provider";
 import { ReactQueryProvider } from "./react-query-provider";
 
 // ----------------------------------------------------------------------
@@ -64,11 +65,13 @@ export default async function RootLayout({ children }: Props) {
                         defaultMode={themeConfig.defaultMode}
                         modeStorageKey={themeConfig.modeStorageKey}
                       >
-                        <MotionLazy>
-                          <ProgressBar />
-                          <SettingsDrawer defaultSettings={defaultSettings} />
-                          {children}
-                        </MotionLazy>
+                        <SnackbarProvider>
+                          <MotionLazy>
+                            <ProgressBar />
+                            <SettingsDrawer defaultSettings={defaultSettings} />
+                            {children}
+                          </MotionLazy>
+                        </SnackbarProvider>
                       </ThemeProvider>
                     </AppRouterCacheProvider>
                   </LocalizationProvider>

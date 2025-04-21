@@ -62,8 +62,8 @@
   "personal": { "title": "Personal data", "button": "Save" },
   "manage": { "title": "Manage account", "button": "Save" },
   "subscription": { "title": "Subscription" },
-  "logout": { "title": "Logout" },
-  "photo": { "change": "Change photo" },
+  "logout": { "title": "Logout", "error": "Logout failed. Please try again." },
+  "photo": { "change": "Change photo", "error": "Photo change failed. Please try again." },
   "delete": {
     "text": "All your profile and learning data will be permanently deleted. If you are looking to cancel your subscription, please have a look at",
     "button": "Delete account",
