@@ -7,6 +7,8 @@ import Button from "@mui/material/Button";
 
 import { paths } from "src/routes/paths";
 
+import { useAnalytics } from "src/app/analytics-provider";
+
 // ----------------------------------------------------------------------
 
 export type LoginButtonProps = {
@@ -18,11 +20,15 @@ export type LoginButtonProps = {
 
 export function LoginButton({ slotProps, sx }: LoginButtonProps) {
   const { t } = useTranslation("navigation");
+
+  const { trackEvent } = useAnalytics();
+
   return (
     <Button
       variant="outlined"
       size="small"
       href={paths.login}
+      onClick={() => trackEvent({ category: "auth", label: "login" })}
       {...slotProps?.button}
       sx={[
         {

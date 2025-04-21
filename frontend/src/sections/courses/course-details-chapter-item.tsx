@@ -11,6 +11,8 @@ import { Link, Badge, Stack, Button, Divider, LinearProgress } from "@mui/materi
 
 import { paths } from "src/routes/paths";
 
+import { useAnalytics } from "src/app/analytics-provider";
+
 import { Iconify } from "src/components/iconify";
 import { useUserContext } from "src/components/user";
 
@@ -36,6 +38,8 @@ export function CourseDetailsChapterItem({
 }: ChapterItemProps) {
   const { t } = useTranslation("course");
 
+  const { trackEvent } = useAnalytics();
+
   const user = useUserContext();
   const { isLoggedIn } = user.state;
 
@@ -52,6 +56,7 @@ export function CourseDetailsChapterItem({
       href={isLoggedIn ? redirect : paths.register}
       onClick={() => {
         user.setField("redirect", redirect);
+        trackEvent({ category: "chapter", label: `chapter (${chapter.slug})`, action: "start" });
       }}
       sx={{ px: 2, textAlign: "center" }}
     >

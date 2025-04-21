@@ -19,6 +19,8 @@ import { getLevelIcon } from "src/utils/level-icon";
 import { fShortenNumber } from "src/utils/format-number";
 import { getTechnologyIcon } from "src/utils/technology-icon";
 
+import { useAnalytics } from "src/app/analytics-provider";
+
 import { Iconify } from "src/components/iconify";
 import { useUserContext } from "src/components/user";
 import { AnimateBorder } from "src/components/animate";
@@ -78,6 +80,8 @@ export function CourseDetailsHero({
   const { t: navigation } = useTranslation("navigation");
   const { t: locale } = useTranslation("locale");
   const { t } = useTranslation("course");
+
+  const { trackEvent } = useAnalytics();
 
   const user = useUserContext();
   const { isLoggedIn } = user.state;
@@ -273,6 +277,7 @@ export function CourseDetailsHero({
         href={isLoggedIn ? redirect : paths.register}
         onClick={() => {
           user.setField("redirect", redirect);
+          trackEvent({ category: "course", label: `course (${slug})`, action: "start" });
         }}
         sx={{ px: 2, borderRadius: "inherit", textAlign: "center" }}
       >

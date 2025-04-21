@@ -10,6 +10,8 @@ import Typography from "@mui/material/Typography";
 
 import { paths } from "src/routes/paths";
 
+import { useAnalytics } from "src/app/analytics-provider";
+
 import { Iconify } from "src/components/iconify";
 import { useUserContext } from "src/components/user";
 
@@ -29,6 +31,8 @@ export function CourseCertificateDetailsInfo({
 }: Props) {
   const { t } = useTranslation("course");
   const { t: certificate } = useTranslation("certificate");
+
+  const { trackEvent } = useAnalytics();
 
   const user = useUserContext();
   const { isLoggedIn, firstName, lastName } = user.state;
@@ -76,6 +80,7 @@ export function CourseCertificateDetailsInfo({
           href={isLoggedIn ? redirect : paths.register}
           onClick={() => {
             user.setField("redirect", redirect);
+            trackEvent({ category: "course", label: `course (${slug})`, action: "certificate" });
           }}
           sx={{ px: 2, borderRadius: "inherit", textAlign: "center" }}
         >

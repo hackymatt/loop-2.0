@@ -14,6 +14,7 @@ import { getPlanIcon } from "src/utils/plan-icon";
 import { fCurrency } from "src/utils/format-number";
 
 import { CONFIG } from "src/global-config";
+import { useAnalytics } from "src/app/analytics-provider";
 
 import { Label } from "src/components/label";
 import { Iconify } from "src/components/iconify";
@@ -31,6 +32,8 @@ const iconPath = (name: string) => `${CONFIG.assetsDir}/assets/icons/plans/${nam
 export function PricingCard({ plan, sx, ...other }: Props) {
   const { t } = useTranslation("pricing");
   const { t: locale } = useTranslation("locale");
+
+  const { trackEvent } = useAnalytics();
 
   const renderIcons = () => (
     <Box
@@ -141,6 +144,9 @@ export function PricingCard({ plan, sx, ...other }: Props) {
         variant="contained"
         color={plan.popular ? "primary" : "inherit"}
         href={paths.register}
+        onClick={() =>
+          trackEvent({ category: "pricing", label: plan.license, action: "choosePlan" })
+        }
       >
         {`${t("choose")} ${plan.license}`}
       </Button>

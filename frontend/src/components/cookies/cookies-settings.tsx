@@ -10,12 +10,12 @@ import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
 import {
+  Stack,
   Switch,
   Accordion,
   Typography,
   AccordionDetails,
   AccordionSummary,
-  FormControlLabel,
 } from "@mui/material";
 
 import { useCookiesTypes } from "src/hooks/use-cookies-types";
@@ -40,10 +40,25 @@ export function CookiesSettings({ onConfirm, ...other }: Props) {
   const [expanded, setExpanded] = useState<string | false>(false);
 
   const handleChangeExpanded = useCallback(
-    (panel: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
+    (panel: string) => (_: React.SyntheticEvent, isExpanded: boolean) => {
       setExpanded(isExpanded ? panel : false);
     },
     []
+  );
+
+  const handleToggle = (type: string) => {
+    setSettings((prev) => ({
+      ...prev,
+      [type]: !prev[type],
+    }));
+  };
+
+  const allCookies = Object.keys(defaultCookies).reduce(
+    (acc, key) => {
+      acc[key] = true;
+      return acc;
+    },
+    {} as { [cookie: string]: boolean }
   );
 
   return (
@@ -73,7 +88,7 @@ export function CookiesSettings({ onConfirm, ...other }: Props) {
               onChange={handleChangeExpanded(cookie.title)}
             >
               <AccordionSummary
-                expandIcon={null}
+                expandIcon={<Iconify icon="eva:chevron-down-fill" />}
                 sx={{
                   px: 2,
                   py: 1.5,
@@ -84,31 +99,22 @@ export function CookiesSettings({ onConfirm, ...other }: Props) {
                   },
                 }}
               >
-                <Iconify
-                  icon={expanded === cookie.title ? "eva:minus-outline" : "eva:plus-outline"}
-                  sx={{ mr: 1, fontSize: 18, color: "text.secondary" }}
+                <Switch
+                  checked={settings[cookie.type]}
+                  disabled={cookie.disabled}
+                  size="small"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    handleToggle(cookie.type);
+                  }}
                 />
 
-                <Typography variant="subtitle2" sx={{ flexGrow: 1 }}>
-                  {cookie.title}
+                <Typography variant="subtitle2">{cookie.title}</Typography>
+
+                <Typography variant="caption" sx={{ color: "text.disabled", flexGrow: 1 }}>
+                  {cookie.disabled ? t("text.mandatory") : t("text.optional")}
                 </Typography>
-
-                <FormControlLabel
-                  control={
-                    <Switch
-                      checked={settings[cookie.type]}
-                      disabled={cookie.disabled}
-                      size="small"
-                      onClick={(event) => {
-                        event.preventDefault();
-                        event.stopPropagation();
-                        setSettings((prev) => ({ ...prev, [cookie.type]: !settings[cookie.type] }));
-                      }}
-                    />
-                  }
-                  label={cookie.disabled ? t("text.mandatory") : t("text.optional")}
-                  labelPlacement="start"
-                />
               </AccordionSummary>
 
               <AccordionDetails sx={{ color: "text.secondary" }}>
@@ -118,10 +124,19 @@ export function CookiesSettings({ onConfirm, ...other }: Props) {
           ))}
         </DialogContent>
 
-        <DialogActions sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-          <Button variant="contained" onClick={() => onConfirm(settings)}>
-            {t("button.acceptSelected")}
-          </Button>
+        <DialogActions sx={{ display: "flex", flexDirection: "column", gap: 2, mt: 2 }}>
+          <Stack
+            direction="row"
+            spacing={1}
+            sx={{ width: "100%", justifyContent: "space-between" }}
+          >
+            <Button variant="outlined" onClick={() => onConfirm(allCookies)}>
+              {t("button.acceptAll")}
+            </Button>
+            <Button variant="contained" onClick={() => onConfirm(settings)}>
+              {t("button.acceptSelected")}
+            </Button>
+          </Stack>
         </DialogActions>
       </Form>
     </Dialog>

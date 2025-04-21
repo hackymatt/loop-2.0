@@ -10,6 +10,8 @@ import Typography from "@mui/material/Typography";
 
 import { paths } from "src/routes/paths";
 
+import { useAnalytics } from "src/app/analytics-provider";
+
 import { Iconify } from "src/components/iconify";
 import { useUserContext } from "src/components/user";
 
@@ -18,6 +20,8 @@ import { useUserContext } from "src/components/user";
 type Props = CardProps & Pick<ICourseProps, "slug" | "chatUrl">;
 export function CourseChatDetailsInfo({ sx, slug, chatUrl, ...other }: Props) {
   const { t } = useTranslation("course");
+
+  const { trackEvent } = useAnalytics();
 
   const user = useUserContext();
   const { isLoggedIn } = user.state;
@@ -54,6 +58,7 @@ export function CourseChatDetailsInfo({ sx, slug, chatUrl, ...other }: Props) {
           href={paths.register}
           onClick={() => {
             user.setField("redirect", `${paths.course}/${slug}`);
+            trackEvent({ category: "course", label: `course (${slug})`, action: "chat" });
           }}
           sx={{ px: 2, borderRadius: "inherit", textAlign: "center" }}
         >

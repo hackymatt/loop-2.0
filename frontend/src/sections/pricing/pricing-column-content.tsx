@@ -10,6 +10,8 @@ import Collapse, { collapseClasses } from "@mui/material/Collapse";
 
 import { paths } from "src/routes/paths";
 
+import { useAnalytics } from "src/app/analytics-provider";
+
 import { Iconify } from "src/components/iconify";
 
 import type { PricingCardProps } from "./types";
@@ -22,6 +24,8 @@ type PricingColumnContentProps = BoxProps & {
 
 export function PricingColumnContentMobile({ plan, sx, ...other }: PricingColumnContentProps) {
   const { t } = useTranslation("pricing");
+
+  const { trackEvent } = useAnalytics();
 
   const openContent = useBoolean();
 
@@ -94,6 +98,9 @@ export function PricingColumnContentMobile({ plan, sx, ...other }: PricingColumn
         variant="contained"
         color={plan.popular ? "primary" : "inherit"}
         href={paths.register}
+        onClick={() =>
+          trackEvent({ category: "pricing", label: plan.license, action: "choosePlan" })
+        }
         sx={{ mt: 5 }}
       >
         {`${t("choose")} ${plan.license}`}
@@ -106,6 +113,8 @@ export function PricingColumnContentMobile({ plan, sx, ...other }: PricingColumn
 
 export function PricingColumnContentDesktop({ plan, sx, ...other }: PricingColumnContentProps) {
   const { t } = useTranslation("pricing");
+
+  const { trackEvent } = useAnalytics();
 
   return (
     <Box sx={sx} {...other}>
@@ -145,6 +154,9 @@ export function PricingColumnContentDesktop({ plan, sx, ...other }: PricingColum
           variant="contained"
           color={plan.popular ? "primary" : "inherit"}
           href={paths.register}
+          onClick={() =>
+            trackEvent({ category: "pricing", label: plan.license, action: "choosePlan" })
+          }
         >
           {`${t("choose")} ${plan.license}`}
         </Button>

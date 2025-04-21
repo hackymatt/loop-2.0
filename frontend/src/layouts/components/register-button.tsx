@@ -8,6 +8,8 @@ import Button from "@mui/material/Button";
 
 import { paths } from "src/routes/paths";
 
+import { useAnalytics } from "src/app/analytics-provider";
+
 import { AnimateBorder } from "src/components/animate";
 
 // ----------------------------------------------------------------------
@@ -21,6 +23,9 @@ export type RegisterButtonProps = {
 
 export function RegisterButton({ slotProps, sx }: RegisterButtonProps) {
   const { t } = useTranslation("navigation");
+
+  const { trackEvent } = useAnalytics();
+
   return (
     <AnimateBorder
       sx={[
@@ -53,6 +58,7 @@ export function RegisterButton({ slotProps, sx }: RegisterButtonProps) {
       <Button
         variant="text"
         href={paths.register}
+        onClick={() => trackEvent({ category: "auth", label: "register" })}
         {...slotProps?.button}
         sx={[
           { px: 2, borderRadius: "inherit", textAlign: "center", whiteSpace: "nowrap" },
