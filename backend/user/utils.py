@@ -25,7 +25,10 @@ def check_password(value):
     password = value
 
     if len(password) < CONFIG["min_password_length"]:
-        return (True, f"Password must be at least {CONFIG['min_password_length']} characters long.")
+        return (
+            True,
+            f"Password must be at least {CONFIG['min_password_length']} characters long.",
+        )
 
     if not re.search(r"[A-Z]", password):
         return (True, "Password must contain at least one uppercase letter.")
