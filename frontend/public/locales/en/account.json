@@ -14,7 +14,7 @@
     "placeholder": "Enter password",
     "errors": {
       "required": "Password is required",
-      "minLength": "Password must be at least 6 characters",
+      "minLength": "Password must be at least minPasswordLength characters",
       "bigLetter": "Password must contain at least one uppercase letter",
       "smallLetter": "Password must contain at least one lowercase letter",
       "number": "Password must contain at least one number",
@@ -26,7 +26,7 @@
     "placeholder": "Enter password",
     "errors": {
       "required": "Password is required",
-      "minLength": "Password must be at least 6 characters",
+      "minLength": "Password must be at least minPasswordLength characters",
       "bigLetter": "Password must contain at least one uppercase letter",
       "smallLetter": "Password must contain at least one lowercase letter",
       "number": "Password must contain at least one number",
@@ -38,7 +38,7 @@
     "placeholder": "Enter password",
     "errors": {
       "required": "Password is required",
-      "minLength": "Password must be at least 6 characters",
+      "minLength": "Password must be at least minPasswordLength characters",
       "bigLetter": "Password must contain at least one uppercase letter",
       "smallLetter": "Password must contain at least one lowercase letter",
       "number": "Password must contain at least one number",

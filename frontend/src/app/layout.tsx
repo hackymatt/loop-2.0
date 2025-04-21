@@ -21,7 +21,9 @@ import { MotionLazy } from "src/components/animate/motion-lazy";
 import { SettingsDrawer, defaultSettings, SettingsProvider } from "src/components/settings";
 
 import SnackbarProvider from "./snackbar-provider";
+import { AnalyticsProvider } from "./analytics-provider";
 import { ReactQueryProvider } from "./react-query-provider";
+import { CookiesManagerProvider } from "./cookies-manager-provider";
 
 // ----------------------------------------------------------------------
 
@@ -66,11 +68,15 @@ export default async function RootLayout({ children }: Props) {
                         modeStorageKey={themeConfig.modeStorageKey}
                       >
                         <SnackbarProvider>
-                          <MotionLazy>
-                            <ProgressBar />
-                            <SettingsDrawer defaultSettings={defaultSettings} />
-                            {children}
-                          </MotionLazy>
+                          <CookiesManagerProvider>
+                            <AnalyticsProvider>
+                              <MotionLazy>
+                                <ProgressBar />
+                                <SettingsDrawer defaultSettings={defaultSettings} />
+                                {children}
+                              </MotionLazy>
+                            </AnalyticsProvider>
+                          </CookiesManagerProvider>
                         </SnackbarProvider>
                       </ThemeProvider>
                     </AppRouterCacheProvider>

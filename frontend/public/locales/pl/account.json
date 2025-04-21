@@ -14,7 +14,7 @@
     "placeholder": "Wpisz hasło",
     "errors": {
       "required": "Hasło jest wymagane",
-      "minLength": "Hasło musi mieć co najmniej 8 znaków",
+      "minLength": "Hasło musi mieć co najmniej minPasswordLength znaków",
       "bigLetter": "Hasło musi zawierać co najmniej jedną wielką literę",
       "smallLetter": "Hasło musi zawierać co najmniej jedną małą literę",
       "number": "Hasło musi zawierać co najmniej jedną cyfrę",
@@ -26,7 +26,7 @@
     "placeholder": "Wpisz hasło",
     "errors": {
       "required": "Hasło jest wymagane",
-      "minLength": "Hasło musi mieć co najmniej 8 znaków",
+      "minLength": "Hasło musi mieć co najmniej minPasswordLength znaków",
       "bigLetter": "Hasło musi zawierać co najmniej jedną wielką literę",
       "smallLetter": "Hasło musi zawierać co najmniej jedną małą literę",
       "number": "Hasło musi zawierać co najmniej jedną cyfrę",
@@ -38,7 +38,7 @@
     "placeholder": "Wpisz hasło",
     "errors": {
       "required": "Hasło jest wymagane",
-      "minLength": "Hasło musi mieć co najmniej 8 znaków",
+      "minLength": "Hasło musi mieć co najmniej minPasswordLength znaków",
       "bigLetter": "Hasło musi zawierać co najmniej jedną wielką literę",
       "smallLetter": "Hasło musi zawierać co najmniej jedną małą literę",
       "number": "Hasło musi zawierać co najmniej jedną cyfrę",

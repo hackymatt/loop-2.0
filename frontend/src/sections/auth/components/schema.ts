@@ -1,6 +1,8 @@
 import { z as zod } from "zod";
 import { useTranslation } from "react-i18next";
 
+import { CONFIG } from "src/global-config";
+
 // ----------------------------------------------------------------------
 
 export type SignInSchemaType = zod.infer<ReturnType<typeof useSignInSchema>>;
@@ -16,7 +18,12 @@ export const useSignInSchema = () => {
     password: zod
       .string()
       .min(1, { message: t("password.errors.required") })
-      .min(6, { message: t("password.errors.minLength") })
+      .min(CONFIG.minPasswordLength, {
+        message: t("password.errors.minLength").replace(
+          "minPasswordLength",
+          String(CONFIG.minPasswordLength)
+        ),
+      })
       .regex(/[A-Z]/, { message: t("password.errors.bigLetter") })
       .regex(/[a-z]/, { message: t("password.errors.smallLetter") })
       .regex(/[0-9]/, { message: t("password.errors.number") })
@@ -40,7 +47,12 @@ export const useSignUpSchema = () => {
     password: zod
       .string()
       .min(1, { message: t("password.errors.required") })
-      .min(6, { message: t("password.errors.minLength") })
+      .min(CONFIG.minPasswordLength, {
+        message: t("password.errors.minLength").replace(
+          "minPasswordLength",
+          String(CONFIG.minPasswordLength)
+        ),
+      })
       .regex(/[A-Z]/, { message: t("password.errors.bigLetter") })
       .regex(/[a-z]/, { message: t("password.errors.smallLetter") })
       .regex(/[0-9]/, { message: t("password.errors.number") })
@@ -80,7 +92,12 @@ export const useUpdatePasswordSchema = () => {
     password: zod
       .string()
       .min(1, { message: t("password.errors.required") })
-      .min(6, { message: t("password.errors.minLength") })
+      .min(CONFIG.minPasswordLength, {
+        message: t("password.errors.minLength").replace(
+          "minPasswordLength",
+          String(CONFIG.minPasswordLength)
+        ),
+      })
       .regex(/[A-Z]/, { message: t("password.errors.bigLetter") })
       .regex(/[a-z]/, { message: t("password.errors.smallLetter") })
       .regex(/[0-9]/, { message: t("password.errors.number") })
