@@ -25,6 +25,13 @@
     "test": "jest",
     "test:coverage": "jest --coverage"
   },
+  "lint-staged": {
+    "**/*.ts": [
+      "npm run fm:check",
+      "npm run lint:check",
+      "npm run test"
+    ]
+  },
   "engines": {
     "node": "20.x"
   },
@@ -108,8 +115,10 @@
     "eslint-plugin-react-hooks": "^5.0.0",
     "eslint-plugin-unused-imports": "^4.1.4",
     "globals": "^15.13.0",
+    "husky": "^9.1.7",
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
+    "lint-staged": "^15.5.1",
     "prettier": "^3.4.2",
     "ts-node": "^10.9.2",
     "typescript": "^5.7.2",
