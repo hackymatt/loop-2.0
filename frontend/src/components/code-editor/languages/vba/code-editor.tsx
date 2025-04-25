@@ -19,7 +19,7 @@ interface ILanguageExtensionPoint {
 
 // ----------------------------------------------------------------------
 
-export function VbaCodeEditor({ ...other }: EditorProps) {
+export default function VbaCodeEditor({ ...other }: EditorProps) {
   const monaco = useMonaco();
   const suggestions = useSuggestions();
 
@@ -30,7 +30,6 @@ export function VbaCodeEditor({ ...other }: EditorProps) {
       !monaco.languages.getLanguages().some((lang: ILanguageExtensionPoint) => lang.id === "vba")
     ) {
       monaco.languages.register({ id: "vba" });
-
       monaco.languages.setMonarchTokensProvider("vba", {
         tokenizer: {
           root: [

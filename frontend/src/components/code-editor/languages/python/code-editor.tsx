@@ -9,7 +9,7 @@ import { useSuggestions } from "./suggestions";
 
 // ----------------------------------------------------------------------
 
-export function PythonCodeEditor({ ...other }: EditorProps) {
+export default function PythonCodeEditor({ ...other }: EditorProps) {
   const monaco = useMonaco();
   const suggestions = useSuggestions();
 
