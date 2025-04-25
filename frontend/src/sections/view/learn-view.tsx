@@ -1,6 +1,8 @@
 "use client";
 
+import type { ReactNode } from "react";
 import type { AxiosError } from "axios";
+import type { BoxProps } from "@mui/material";
 import type {
   IQuizLessonProps,
   IVideoLessonProps,
@@ -9,8 +11,8 @@ import type {
 } from "src/types/lesson";
 
 import { useSnackbar } from "notistack";
+import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
-import React, { useMemo, useState } from "react";
 
 import { Box, Container } from "@mui/material";
 
@@ -38,13 +40,33 @@ interface LearnViewProps {
   lessonSlug: string;
 }
 
+const ContentBox = ({ children, sx }: { children: ReactNode; sx?: BoxProps["sx"] }) => (
+  <Box
+    component="section"
+    sx={[
+      {
+        px: { xs: 2, md: 4 },
+        py: { xs: 2, md: 3 },
+        bgcolor: "background.paper",
+        borderRadius: 3,
+        boxShadow: 3,
+        display: "flex",
+        flexDirection: "column",
+        gap: 3,
+        height: "80vh",
+      },
+      ...(Array.isArray(sx) ? sx : [sx]),
+    ]}
+  >
+    {children}
+  </Box>
+);
+
 export function LearnView({ courseSlug, lessonSlug }: LearnViewProps) {
   const { t } = useTranslation("learn");
-
-  const router = useRouter();
   const { enqueueSnackbar } = useSnackbar();
+  const router = useRouter();
 
-  // Fetch course and lesson data
   const {
     data: courseData,
     isLoading: isLoadingCourse,
@@ -60,52 +82,31 @@ export function LearnView({ courseSlug, lessonSlug }: LearnViewProps) {
 
   const [error, setError] = useState<string>();
 
-  // Loading and error states
   const isLoading = isLoadingCourse || isLoadingLesson;
   const isError = isErrorCourse || isErrorLesson;
 
-  // Flat list of all lessons
-  const allLessons = useMemo(
-    () => courseData?.chapters.flatMap((ch) => ch.lessons) ?? [],
-    [courseData]
+  const allLessons = courseData?.chapters.flatMap((ch) => ch.lessons) ?? [];
+  const currentLessonIndex = allLessons.findIndex((l) => l.slug === lessonSlug);
+  const currentLessonInfo = allLessons[currentLessonIndex];
+  const currentChapter = courseData?.chapters.find((ch) =>
+    ch.lessons.some((l) => l.slug === lessonSlug)
   );
 
-  // Current lesson index and info
-  const currentLessonIndex = useMemo(
-    () => allLessons.findIndex((l) => l.slug === lessonSlug),
-    [allLessons, lessonSlug]
-  );
-  const currentLessonInfo = useMemo(
-    () => allLessons[currentLessonIndex],
-    [allLessons, currentLessonIndex]
-  );
-
-  // Current chapter
-  const currentChapter = useMemo(
-    () =>
-      courseData?.chapters.find((ch) => ch.lessons.some((lesson) => lesson.slug === lessonSlug)),
-    [courseData, lessonSlug]
-  );
-
-  // Handlers for navigation
-  const handleNavigation = (direction: "prev" | "next") => {
-    const newIndex = direction === "prev" ? currentLessonIndex - 1 : currentLessonIndex + 1;
-    if (newIndex >= 0 && newIndex < allLessons.length) {
-      const newLesson = allLessons[newIndex];
-      router.push(`${paths.learn}/${courseSlug}/${newLesson.slug}`);
+  const navigateTo = (index: number) => {
+    const next = allLessons[index];
+    if (next) {
+      router.push(`${paths.learn}/${courseSlug}/${next.slug}`);
     }
   };
 
-  // Handle lesson submission
   const handleSubmit = async (data: { answer: string | boolean[] }) => {
     setError(undefined);
-    const nextLesson = allLessons[currentLessonIndex + 1];
-    const nextSlug = nextLesson?.slug;
     try {
       await submit({ ...data, lesson: lessonSlug });
+      const next = allLessons[currentLessonIndex + 1];
       router.push(
-        nextSlug
-          ? `${paths.learn}/${courseSlug}/${nextSlug}`
+        next
+          ? `${paths.learn}/${courseSlug}/${next.slug}`
           : `${paths.course}/${courseSlug}?success=true`
       );
     } catch (err) {
@@ -121,14 +122,12 @@ export function LearnView({ courseSlug, lessonSlug }: LearnViewProps) {
     }
   };
 
-  // Fallback states
   if (isError) return <NotFoundView />;
   if (isLoading) return <SplashScreen />;
 
-  // Lesson type
   const lessonType = currentLessonInfo?.type ?? LESSON_TYPE.READING;
 
-  const renderHeader = () => (
+  const Header = () => (
     <Box
       sx={{
         display: "flex",
@@ -145,49 +144,56 @@ export function LearnView({ courseSlug, lessonSlug }: LearnViewProps) {
           { name: lessonData?.name },
         ]}
       />
-
       <ArrowBasicButtons
         disablePrev={currentLessonIndex <= 0}
         disableNext={currentLessonIndex >= allLessons.length - 1}
-        onClickPrev={() => handleNavigation("prev")}
-        onClickNext={() => handleNavigation("next")}
+        onClickPrev={() => navigateTo(currentLessonIndex - 1)}
+        onClickNext={() => navigateTo(currentLessonIndex + 1)}
       />
     </Box>
   );
 
-  const renderContent = () => {
+  const Content = () => {
     switch (lessonType) {
       case LESSON_TYPE.READING:
         return (
-          <ReadingLesson
-            lesson={lessonData as IReadingLessonProps}
-            onSubmit={() => handleSubmit({ answer: "" })}
-          />
+          <ContentBox>
+            <ReadingLesson
+              lesson={lessonData as IReadingLessonProps}
+              onSubmit={() => handleSubmit({ answer: "" })}
+            />
+          </ContentBox>
         );
       case LESSON_TYPE.VIDEO:
         return (
-          <VideoLesson
-            lesson={lessonData as IVideoLessonProps}
-            onSubmit={() => handleSubmit({ answer: "" })}
-          />
+          <ContentBox>
+            <VideoLesson
+              lesson={lessonData as IVideoLessonProps}
+              onSubmit={() => handleSubmit({ answer: "" })}
+            />
+          </ContentBox>
         );
       case LESSON_TYPE.QUIZ:
         return (
-          <QuizLesson
-            lesson={lessonData as IQuizLessonProps}
-            onSubmit={(answer) => handleSubmit({ answer: answer as boolean[] })}
-            onShowAnswer={handleShowAnswer}
-            error={error}
-          />
+          <ContentBox>
+            <QuizLesson
+              lesson={lessonData as IQuizLessonProps}
+              onSubmit={(answer) => handleSubmit({ answer: answer as boolean[] })}
+              onShowAnswer={handleShowAnswer}
+              error={error}
+            />
+          </ContentBox>
         );
       case LESSON_TYPE.CODING:
         return (
-          <CodingLesson
-            lesson={lessonData as ICodingLessonProps}
-            onSubmit={(answer) => handleSubmit({ answer: answer as string })}
-            onShowAnswer={handleShowAnswer}
-            error={error}
-          />
+          <ContentBox sx={{ borderRadius: 0, px: { xs: 0, md: 0 }, py: { xs: 0, md: 0 } }}>
+            <CodingLesson
+              lesson={lessonData as ICodingLessonProps}
+              onSubmit={(answer) => handleSubmit({ answer: answer as string })}
+              onShowAnswer={handleShowAnswer}
+              error={error}
+            />
+          </ContentBox>
         );
       default:
         return null;
@@ -199,9 +205,9 @@ export function LearnView({ courseSlug, lessonSlug }: LearnViewProps) {
       component="section"
       sx={{ pb: { xs: 5, md: 10 }, textAlign: { xs: "center", md: "left" } }}
     >
-      <Container>
-        {renderHeader()}
-        {renderContent()}
+      <Container maxWidth={false}>
+        <Header />
+        <Content />
       </Container>
     </Box>
   );

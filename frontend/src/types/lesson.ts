@@ -10,7 +10,7 @@ type ILessonBaseProps = {
   totalPoints: number;
 };
 
-export type IReadingLessonProps = ILessonBaseProps & { text: string };
+export type IReadingLessonProps = ILessonBaseProps & { text: string; duration: number };
 
 export type IVideoLessonProps = ILessonBaseProps & { videoUrl: string };
 

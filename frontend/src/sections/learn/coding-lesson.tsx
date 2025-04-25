@@ -1,104 +1,90 @@
-import type { BoxProps } from "@mui/material/Box";
+import "./style.css";
+
 import type { ICodingLessonProps } from "src/types/lesson";
 
-import { useState, useEffect } from "react";
+import Split from "react-split";
 import { useTranslation } from "react-i18next";
+import { varAlpha } from "minimal-shared/utils";
+import { useState, useEffect, useCallback } from "react";
 
 import Box from "@mui/material/Box";
-import Grid from "@mui/material/Grid2";
-import { Paper, Button, Typography } from "@mui/material";
+import { Tab, Tabs, Button, Typography } from "@mui/material";
 
+import { Iconify } from "src/components/iconify";
 import { Markdown } from "src/components/markdown";
 
 // ----------------------------------------------------------------------
 
-type CodingLessonProps = BoxProps & {
+type CodingLessonProps = {
   lesson: ICodingLessonProps;
   onSubmit: (answer: string) => void;
   onShowAnswer: () => void;
   error?: string;
 };
 
+type SectionProps = {
+  title: string;
+  icon: string;
+};
+
+const TABS = ["Context", "Exercise"];
+
 // ----------------------------------------------------------------------
 
-export function CodingLesson({
-  lesson,
-  onSubmit,
-  onShowAnswer,
-  error,
-  sx,
-  ...other
-}: CodingLessonProps) {
-  const { t } = useTranslation("learn");
+function SectionHeader({ title, icon }: SectionProps) {
+  return (
+    <Box
+      sx={(theme) => ({
+        display: "flex",
+        alignItems: "center",
+        gap: 1,
+        px: 2,
+        py: 1,
+        bgcolor: varAlpha(theme.vars.palette.grey["500Channel"], 0.14),
+        width: 1,
+      })}
+    >
+      <Iconify icon={icon} width={18} height={18} />
+      <Typography variant="subtitle2" color="text.secondary">
+        {title}
+      </Typography>
+    </Box>
+  );
+}
 
+// ----------------------------------------------------------------------
+
+export function CodingLesson({ lesson, onSubmit, onShowAnswer }: CodingLessonProps) {
+  const { t } = useTranslation("learn");
   const { introduction, instructions, starterCode, answer: userAnswer } = lesson;
 
   const [answer, setAnswer] = useState<string>(starterCode);
+  const [tab, setTab] = useState(TABS[0]);
 
   useEffect(() => {
-    if (userAnswer) {
-      setAnswer(userAnswer);
-    }
+    if (userAnswer) setAnswer(userAnswer);
   }, [userAnswer]);
 
   const handleSubmit = () => {
     onSubmit(answer);
   };
 
-  const renderIntroduction = () => (
-    <Paper elevation={3} sx={{ flex: 1, p: 2, overflow: "auto" }}>
-      <Typography variant="h6">Introduction</Typography>
-      <Markdown key={introduction} content={introduction} />
-    </Paper>
-  );
+  const handleChangeTab = useCallback((event: React.SyntheticEvent, newValue: string) => {
+    setTab(newValue);
+  }, []);
 
-  const renderInstructions = () => (
-    <Paper elevation={3} sx={{ flex: 2, p: 2, backgroundColor: "#f4f4f4", overflow: "auto" }}>
-      <Typography variant="h6">Instructions</Typography>
-      <Markdown key={instructions} content={instructions} />
-    </Paper>
-  );
-
-  const renderEditor = () => (
-    <Paper elevation={3} sx={{ flex: 2, p: 2, overflow: "auto" }}>
-      <Typography variant="h6">Code Editor</Typography>
-      <Box
-        sx={{
-          mt: 1,
-          fontFamily: "monospace",
-          whiteSpace: "pre-wrap",
-          background: "#1e1e1e",
-          color: "#fff",
-          height: "100%",
-          p: 2,
-        }}
+  const renderRunCodeButton = () => (
+    <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+      <Button
+        variant="outlined"
+        color="secondary"
+        size="large"
+        onClick={onShowAnswer}
+        sx={{ px: 2, whiteSpace: "nowrap" }}
       >
-        {userAnswer || starterCode}
-      </Box>
-    </Paper>
-  );
-
-  const renderConsole = () => (
-    <Paper elevation={3} sx={{ flex: 1, p: 2, backgroundColor: "#f4f4f4", overflow: "auto" }}>
-      <Typography variant="h6">Console</Typography>
-      <Box sx={{ mt: 1, fontFamily: "monospace", whiteSpace: "pre-wrap" }}>
-        Output will appear here.
-      </Box>
-    </Paper>
-  );
-
-  const renderContent = () => (
-    <Grid container spacing={2} sx={{ height: "100%", minHeight: "75vh" }}>
-      <Grid size={{ xs: 12, md: 6 }} sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-        {renderIntroduction()}
-        {renderInstructions()}
-      </Grid>
-
-      <Grid size={{ xs: 12, md: 6 }} sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-        {renderEditor()}
-        {renderConsole()}
-      </Grid>
-    </Grid>
+        {t("coding.editor.runCode")}
+      </Button>
+    </Box>
   );
 
   const renderSubmitButton = () => (
@@ -109,43 +95,134 @@ export function CodingLesson({
         size="large"
         onClick={handleSubmit}
         // disabled={isMultiple ? selectedOptions.length === 0 : selectedOption === null}
-        sx={{ px: 2 }}
+        sx={{ px: 2, whiteSpace: "nowrap" }}
       >
-        {t("quiz.submit")}
+        {t("coding.editor.submit")}
       </Button>
     </Box>
   );
 
-  const renderAnswerButton = () => (
-    <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-      <Button
-        variant="text"
-        color="inherit"
-        size="large"
-        onClick={onShowAnswer}
-        // disabled={isCompleted}
-        sx={{ px: 2 }}
-      >
-        {t("quiz.answer")}
-      </Button>
+  const renderButtons = () => (
+    <Box
+      sx={{
+        position: "absolute",
+        bottom: 16,
+        right: 16,
+        display: "flex",
+        gap: 2,
+        zIndex: 2,
+      }}
+    >
+      {renderRunCodeButton()}
+      {renderSubmitButton()}
     </Box>
+  );
+
+  const renderSection = (title: string, icon: string, content: string) => (
+    <Box sx={{ bgcolor: "background.paper", overflowY: "auto" }}>
+      <SectionHeader title={title} icon={icon} />
+      <Box sx={{ px: 2 }}>
+        <Markdown key={content} content={content} />
+      </Box>
+    </Box>
+  );
+
+  const renderEditor = () => (
+    <Box
+      sx={{
+        position: "relative",
+        height: 300,
+        bgcolor: "#1e1e1e",
+      }}
+    >
+      <Box
+        sx={{
+          position: "absolute",
+          inset: "15px 0 0 0",
+          p: 2,
+          color: "#fff",
+          fontFamily: "monospace",
+          whiteSpace: "pre-wrap",
+        }}
+      >
+        {answer}
+      </Box>
+
+      <Box sx={{ position: "absolute", bottom: 0, right: 0, display: "flex", gap: 2 }}>
+        {renderButtons()}
+      </Box>
+    </Box>
+  );
+
+  const renderConsole = () => (
+    <Box>
+      <SectionHeader title={t("coding.console")} icon="carbon:terminal" />
+      <Box sx={{ p: 2 }}>console</Box>
+    </Box>
+  );
+
+  const renderLeft = () => (
+    <Split
+      direction="vertical"
+      sizes={[70, 30]}
+      minSize={200}
+      gutterSize={5}
+      style={{ display: "flex", flexDirection: "column", gap: 2, overflow: "auto" }}
+    >
+      {renderSection(t("coding.introduction"), "solar:book-broken", introduction)}
+      {renderSection(t("coding.instructions"), "solar:checklist-bold", instructions)}
+    </Split>
+  );
+
+  const renderRight = () => (
+    <Split
+      direction="vertical"
+      sizes={[60, 40]}
+      minSize={100}
+      gutterSize={5}
+      style={{ display: "flex", flexDirection: "column", gap: 2, overflow: "auto" }}
+    >
+      {renderEditor()}
+      {renderConsole()}
+    </Split>
+  );
+
+  const renderContentDesktop = () => (
+    <Split
+      className="split"
+      sizes={[40, 60]}
+      minSize={200}
+      gutterSize={5}
+      style={{ height: "100%" }}
+    >
+      {renderLeft()}
+      {renderRight()}
+    </Split>
+  );
+
+  const renderContentMobile = () => (
+    <>
+      <Tabs
+        value={tab}
+        onChange={handleChangeTab}
+        centered
+        variant="standard"
+        sx={{ width: "100%", mb: 1 }}
+      >
+        {TABS.map((category) => (
+          <Tab key={category} value={category} label={category} />
+        ))}
+      </Tabs>
+
+      {tab === TABS[0] && renderLeft()}
+      {tab === TABS[1] && renderRight()}
+    </>
   );
 
   return (
-    <Box
-      component="section"
-      sx={[
-        { overflow: "hidden", gap: 2, p: 1, display: "flex", flexDirection: "column" },
-        ...(Array.isArray(sx) ? sx : [sx]),
-      ]}
-      {...other}
-    >
-      {renderContent()}
-
-      <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }}>
-        {renderAnswerButton()}
-        {renderSubmitButton()}
-      </Box>
-    </Box>
+    <>
+      <Box sx={{ height: 1, display: { xs: "none", md: "block" } }}>{renderContentDesktop()}</Box>
+      <Box sx={{ height: 1, display: { xs: "block", md: "none" } }}>{renderContentMobile()}</Box>
+    </>
   );
 }

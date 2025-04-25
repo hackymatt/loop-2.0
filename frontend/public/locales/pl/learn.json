@@ -1,6 +1,20 @@
 {
   "errors": { "answer": "Wystąpił błąd. Spróbuj ponownie." },
-  "reading": { "submit": "Zrozumiałem!" },
+  "reading": { "estimatedTime": "Szacowany czas", "submit": "Zrozumiałem!" },
   "video": { "submit": "Zrozumiałem!" },
-  "quiz": { "submit": "Sprawdź!", "answer": "Pokaż odpowiedź" }
+  "quiz": {
+    "type": { "label": "Typ pytania", "single": "Jednokrotny wybór", "multi": "Wielokrotny wybór" },
+    "submit": "Sprawdź!",
+    "answer": "Pokaż odpowiedź"
+  },
+  "coding": {
+    "introduction": "Wprowadzenie",
+    "instructions": "Instrukcje",
+    "editor": {
+      "label": "Edytor kodu",
+      "runCode": "Uruchom kod",
+      "submit": "Sprawdź!"
+    },
+    "console": "Konsola"
+  }
 }

@@ -1,51 +1,77 @@
-import type { BoxProps } from "@mui/material/Box";
 import type { IReadingLessonProps } from "src/types/lesson";
 
+import { m } from "framer-motion";
 import { useTranslation } from "react-i18next";
 
 import Box from "@mui/material/Box";
-import { Button } from "@mui/material";
+import { Button, Divider, Typography } from "@mui/material";
 
+import { Iconify } from "src/components/iconify";
 import { Markdown } from "src/components/markdown";
 
-import { ComponentBox } from "./component-box";
+// ----------------------------------------------------------------------
+
+type ReadingLessonProps = {
+  lesson: IReadingLessonProps;
+  onSubmit: () => void;
+};
 
 // ----------------------------------------------------------------------
 
-type ReadingLessonProps = BoxProps & { lesson: IReadingLessonProps; onSubmit: () => void };
-
-// ----------------------------------------------------------------------
-
-export function ReadingLesson({ lesson, onSubmit, sx, ...other }: ReadingLessonProps) {
+export function ReadingLesson({ lesson, onSubmit }: ReadingLessonProps) {
   const { t } = useTranslation("learn");
+  const { text, name, duration } = lesson;
 
-  const { text } = lesson;
+  const renderHeader = () => (
+    <Box>
+      <Typography variant="h4" gutterBottom>
+        {name}
+      </Typography>
+      <Typography variant="subtitle2" color="text.secondary">
+        ⏱ {t("reading.estimatedTime")}: {duration} min
+      </Typography>
+    </Box>
+  );
 
   const renderContent = () => (
-    <ComponentBox sx={{ py: 0 }}>
+    <m.div
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3 }}
+      style={{ overflowY: "auto" }}
+    >
       <Markdown key={text} content={text} />
-    </ComponentBox>
+    </m.div>
   );
 
   const renderSubmitButton = () => (
     <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-      <Button variant="contained" color="primary" size="large" onClick={onSubmit} sx={{ px: 2 }}>
+      <Button
+        variant="contained"
+        color="primary"
+        size="large"
+        startIcon={<Iconify icon="solar:check-circle-bold" />}
+        onClick={onSubmit}
+        sx={(theme) => ({
+          px: 3,
+          borderRadius: 2,
+          textTransform: "none",
+          fontWeight: "medium",
+          boxShadow: theme.shadows[2],
+        })}
+      >
         {t("reading.submit")}
       </Button>
     </Box>
   );
 
   return (
-    <Box
-      component="section"
-      sx={[
-        { overflow: "hidden", gap: 2, p: 1, display: "flex", flexDirection: "column" },
-        ...(Array.isArray(sx) ? sx : [sx]),
-      ]}
-      {...other}
-    >
+    <>
+      {renderHeader()}
+      <Divider />
       {renderContent()}
+      <Divider sx={{ mt: "auto" }} />
       {renderSubmitButton()}
-    </Box>
+    </>
   );
 }

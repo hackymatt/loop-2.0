@@ -1,3 +1,7 @@
+import math
+import re
+import markdown
+from bs4 import BeautifulSoup
 from rest_framework import serializers
 from django.utils.translation import gettext as _
 from .models import (
@@ -15,6 +19,7 @@ from .models import (
 )
 from ..progress.models import CourseProgress
 from const import LessonType, UserType
+from global_config import CONFIG
 
 
 class LessonSerializer(serializers.ModelSerializer):
@@ -82,10 +87,11 @@ class ReadingLessonSerializer(serializers.ModelSerializer):
     points = serializers.CharField(source="lesson.points")
     name = serializers.SerializerMethodField()
     text = serializers.SerializerMethodField()
+    duration = serializers.SerializerMethodField()
 
     class Meta:
         model = ReadingLesson
-        fields = ["type", "points", "name", "text"]
+        fields = ["type", "points", "name", "text", "duration"]
 
     def get_name(self, obj):
         lang = self.context.get("request").LANGUAGE_CODE
@@ -94,6 +100,20 @@ class ReadingLessonSerializer(serializers.ModelSerializer):
     def get_text(self, obj):
         lang = self.context.get("request").LANGUAGE_CODE
         return obj.get_translation(lang).text
+    
+    def get_duration(self, obj):
+        content = self.get_text(obj)
+        html = markdown.markdown(content)
+
+        # Strip HTML tags
+        soup = BeautifulSoup(html, features="html.parser")
+        plain_text = soup.get_text()
+
+        # Count words
+        words = re.findall(r"\w+", plain_text)
+        return math.ceil(
+            len(words) / CONFIG["words_per_minute"]
+        )  # Assuming 200 words per minute
 
 
 class VideoLessonSerializer(serializers.ModelSerializer):
