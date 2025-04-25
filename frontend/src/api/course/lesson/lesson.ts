@@ -48,7 +48,7 @@ type IQuizLesson = {
 };
 
 type ICodingLesson = {
-  technology: string;
+  language: string;
   starter_code: string;
   introduction: string;
   instructions: string;

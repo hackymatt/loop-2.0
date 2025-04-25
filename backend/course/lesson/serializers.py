@@ -181,7 +181,7 @@ class CodingLessonSerializer(serializers.ModelSerializer):
     type = serializers.CharField(source="lesson.type")
     points = serializers.CharField(source="lesson.points")
     name = serializers.SerializerMethodField()
-    technology = serializers.CharField(source="technology.name", read_only=True)
+    language = serializers.CharField(source="technology.slug", read_only=True)
     starter_code = serializers.CharField(read_only=True)
     penalty_points = serializers.IntegerField(read_only=True)
     introduction = serializers.SerializerMethodField()
@@ -193,7 +193,7 @@ class CodingLessonSerializer(serializers.ModelSerializer):
             "type",
             "points",
             "name",
-            "technology",
+            "language",
             "starter_code",
             "penalty_points",
             "introduction",

@@ -12,6 +12,7 @@ import { Tab, Tabs, Button, Typography } from "@mui/material";
 
 import { Iconify } from "src/components/iconify";
 import { Markdown } from "src/components/markdown";
+import { CodeEditor } from "src/components/code-editor";
 
 // ----------------------------------------------------------------------
 
@@ -58,15 +59,15 @@ export function CodingLesson({ lesson, onSubmit, onShowAnswer }: CodingLessonPro
   const { t } = useTranslation("learn");
   const { introduction, instructions, starterCode, answer: userAnswer } = lesson;
 
-  const [answer, setAnswer] = useState<string>(starterCode);
+  const [code, setCode] = useState<string>(starterCode);
   const [tab, setTab] = useState(TABS[0]);
 
   useEffect(() => {
-    if (userAnswer) setAnswer(userAnswer);
+    if (userAnswer) setCode(userAnswer);
   }, [userAnswer]);
 
   const handleSubmit = () => {
-    onSubmit(answer);
+    onSubmit(code);
   };
 
   const handleChangeTab = useCallback((event: React.SyntheticEvent, newValue: string) => {
@@ -78,7 +79,7 @@ export function CodingLesson({ lesson, onSubmit, onShowAnswer }: CodingLessonPro
       <Button
         variant="outlined"
         color="secondary"
-        size="large"
+        size="medium"
         onClick={onShowAnswer}
         sx={{ px: 2, whiteSpace: "nowrap" }}
       >
@@ -92,7 +93,7 @@ export function CodingLesson({ lesson, onSubmit, onShowAnswer }: CodingLessonPro
       <Button
         variant="contained"
         color="primary"
-        size="large"
+        size="medium"
         onClick={handleSubmit}
         // disabled={isMultiple ? selectedOptions.length === 0 : selectedOption === null}
         sx={{ px: 2, whiteSpace: "nowrap" }}
@@ -109,7 +110,7 @@ export function CodingLesson({ lesson, onSubmit, onShowAnswer }: CodingLessonPro
         bottom: 16,
         right: 16,
         display: "flex",
-        gap: 2,
+        gap: 1,
         zIndex: 2,
       }}
     >
@@ -132,23 +133,20 @@ export function CodingLesson({ lesson, onSubmit, onShowAnswer }: CodingLessonPro
       sx={{
         position: "relative",
         height: 300,
-        bgcolor: "#1e1e1e",
       }}
     >
+      <SectionHeader title={t("coding.editor.label")} icon="solar:code-2-bold" />
       <Box
         sx={{
           position: "absolute",
           inset: "15px 0 0 0",
-          p: 2,
-          color: "#fff",
-          fontFamily: "monospace",
-          whiteSpace: "pre-wrap",
+          mt: 3,
         }}
       >
-        {answer}
+        <CodeEditor language={lesson.language} value={code} onChange={setCode} />
       </Box>
 
-      <Box sx={{ position: "absolute", bottom: 0, right: 0, display: "flex", gap: 2 }}>
+      <Box sx={{ position: "absolute", bottom: 0, right: 0, display: "flex" }}>
         {renderButtons()}
       </Box>
     </Box>

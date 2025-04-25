@@ -88,7 +88,13 @@ export function NavAccountPopover({ sx }: NavItemsProps) {
     <Box component="nav">
       <Box
         component="ul"
-        sx={{ gap: 0.5, display: "flex", flexDirection: "column", "& li": { display: "flex" } }}
+        sx={{
+          gap: 0.5,
+          display: "flex",
+          flexDirection: "column",
+          p: 0,
+          "& li": { display: "flex" },
+        }}
       >
         {navData.map((item) => (
           <li key={item.title}>
