@@ -211,16 +211,25 @@ class CodingLessonSerializer(serializers.ModelSerializer):
     def get_instructions(self, obj):
         lang = self.context.get("request").LANGUAGE_CODE
         return obj.get_translation(lang).instructions
-
+    
     def to_representation(self, instance):
+        lang = self.context.get("request").LANGUAGE_CODE
         data = super().to_representation(instance)
 
-        user = self.context["request"].user
+        request = self.context["request"]
+        user = request.user
+
         progress = CourseProgress.objects.filter(
-            student__user=user, lesson=instance.lesson, completed_at__isnull=False
-        )
-        if progress.exists():
-            data["answer"] = progress.first().answer
+            student__user=user,
+            lesson=instance.lesson,
+        ).first()
+
+        if progress:
+            if progress.hint_used:
+                data["hint"] = instance.get_translation(lang).hint
+
+            if progress.completed_at:
+                data["answer"] = progress.answer
 
         return data
 

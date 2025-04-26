@@ -64,6 +64,7 @@ export function CodeEditor({ value, language, onChange }: CodeEditorProps) {
           suggestOnTriggerCharacters: true,
           tabSize: 2,
         }}
+        loading={<CircularProgress />}
       />
     </Suspense>
   );

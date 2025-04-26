@@ -79,6 +79,7 @@ type ICourse = {
   chapters: IChapter[];
   prerequisites: IPrerequisite[];
   progress?: number;
+  reviewed?: boolean;
 };
 
 export const courseQuery = (slug: string, language?: Language) => {
@@ -113,6 +114,7 @@ export const courseQuery = (slug: string, language?: Language) => {
       chapters,
       prerequisites,
       progress,
+      reviewed,
       ...rest
     }: ICourse = data;
 
@@ -185,6 +187,7 @@ export const courseQuery = (slug: string, language?: Language) => {
         })
       ),
       progress: progress ?? null,
+      reviewed: reviewed ?? null,
     };
     return { results: modifiedResults };
   };

@@ -1,5 +1,8 @@
 {
-  "errors": { "answer": "Wystąpił błąd. Spróbuj ponownie." },
+  "errors": {
+    "answer": "Wystąpił błąd. Spróbuj ponownie.",
+    "hint": "Wystąpił błąd. Spróbuj ponownie."
+  },
   "reading": { "estimatedTime": "Szacowany czas", "submit": "Zrozumiałem!" },
   "video": { "submit": "Zrozumiałem!" },
   "quiz": {
@@ -15,6 +18,8 @@
       "runCode": "Uruchom kod",
       "submit": "Sprawdź!"
     },
+    "hint": { "button": "Podpowiedź", "label": "Podpowiedź" },
+    "answer": "Pokaż odpowiedź",
     "console": "Konsola"
   }
 }

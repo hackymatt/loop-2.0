@@ -12,10 +12,6 @@ button._selectTrigger_uazmk_307 {
 }
 
 ul {
-  list-style-type: disc; /* or 'circle', 'square' depending on your preference */
+  list-style-type: disc;
   padding-left: 20px;
-}
-
-li {
-  font-size: 16px; /* Optional, adjust text size */
 }

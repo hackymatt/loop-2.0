@@ -79,4 +79,5 @@ export type ICourseProps = ICourseBaseProps & {
   totalQuizzes: number;
   totalExercises: number;
   chatUrl: string | null;
+  reviewed: boolean | null;
 };

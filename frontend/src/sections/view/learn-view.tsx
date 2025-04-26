@@ -22,6 +22,7 @@ import { useRouter } from "src/routes/hooks";
 import { LESSON_TYPE } from "src/consts/lesson";
 import { useCourse } from "src/api/course/course";
 import { useLesson } from "src/api/course/lesson/lesson";
+import { useLessonHint } from "src/api/course/lesson/hint";
 import { useLessonSubmit } from "src/api/course/lesson/submit";
 import { useLessonAnswer } from "src/api/course/lesson/answer";
 
@@ -79,6 +80,7 @@ export function LearnView({ courseSlug, lessonSlug }: LearnViewProps) {
   } = useLesson(courseSlug, lessonSlug);
   const { mutateAsync: submit } = useLessonSubmit();
   const { mutateAsync: showAnswer } = useLessonAnswer();
+  const { mutateAsync: showHint } = useLessonHint();
 
   const [error, setError] = useState<string>();
 
@@ -105,9 +107,7 @@ export function LearnView({ courseSlug, lessonSlug }: LearnViewProps) {
       await submit({ ...data, lesson: lessonSlug });
       const next = allLessons[currentLessonIndex + 1];
       router.push(
-        next
-          ? `${paths.learn}/${courseSlug}/${next.slug}`
-          : `${paths.course}/${courseSlug}?success=true`
+        next ? `${paths.learn}/${courseSlug}/${next.slug}` : `${paths.course}/${courseSlug}`
       );
     } catch (err) {
       setError(((err as AxiosError).response?.data as { answer: string })?.answer);
@@ -119,6 +119,14 @@ export function LearnView({ courseSlug, lessonSlug }: LearnViewProps) {
       await showAnswer({ lesson: lessonSlug });
     } catch {
       enqueueSnackbar(t("errors.answer"), { variant: "error" });
+    }
+  };
+
+  const handleShowHint = async () => {
+    try {
+      await showHint({ lesson: lessonSlug });
+    } catch {
+      enqueueSnackbar(t("errors.hint"), { variant: "error" });
     }
   };
 
@@ -189,7 +197,9 @@ export function LearnView({ courseSlug, lessonSlug }: LearnViewProps) {
           <ContentBox sx={{ borderRadius: 0, px: { xs: 0, md: 0 }, py: { xs: 0, md: 0 } }}>
             <CodingLesson
               lesson={lessonData as ICodingLessonProps}
+              onRunCode={(answer) => {}}
               onSubmit={(answer) => handleSubmit({ answer: answer as string })}
+              onHint={handleShowHint}
               onShowAnswer={handleShowAnswer}
               error={error}
             />

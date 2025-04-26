@@ -3,12 +3,11 @@ import "./style.css";
 import type { ICodingLessonProps } from "src/types/lesson";
 
 import Split from "react-split";
+import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { varAlpha } from "minimal-shared/utils";
-import { useState, useEffect, useCallback } from "react";
 
 import Box from "@mui/material/Box";
-import { Tab, Tabs, Button, Typography } from "@mui/material";
+import { Button, Typography, ButtonGroup } from "@mui/material";
 
 import { Iconify } from "src/components/iconify";
 import { Markdown } from "src/components/markdown";
@@ -18,7 +17,9 @@ import { CodeEditor } from "src/components/code-editor";
 
 type CodingLessonProps = {
   lesson: ICodingLessonProps;
+  onRunCode: (answer: string) => void;
   onSubmit: (answer: string) => void;
+  onHint: () => void;
   onShowAnswer: () => void;
   error?: string;
 };
@@ -27,8 +28,6 @@ type SectionProps = {
   title: string;
   icon: string;
 };
-
-const TABS = ["Context", "Exercise"];
 
 // ----------------------------------------------------------------------
 
@@ -41,8 +40,11 @@ function SectionHeader({ title, icon }: SectionProps) {
         gap: 1,
         px: 2,
         py: 1,
-        bgcolor: varAlpha(theme.vars.palette.grey["500Channel"], 0.14),
+        bgcolor: theme.vars.palette.background.neutral,
         width: 1,
+        position: "sticky",
+        top: 0,
+        zIndex: 1,
       })}
     >
       <Iconify icon={icon} width={18} height={18} />
@@ -55,24 +57,33 @@ function SectionHeader({ title, icon }: SectionProps) {
 
 // ----------------------------------------------------------------------
 
-export function CodingLesson({ lesson, onSubmit, onShowAnswer }: CodingLessonProps) {
+export function CodingLesson({
+  lesson,
+  onSubmit,
+  onRunCode,
+  onHint,
+  onShowAnswer,
+}: CodingLessonProps) {
   const { t } = useTranslation("learn");
-  const { introduction, instructions, starterCode, answer: userAnswer } = lesson;
+
+  const mobileTabs = [t("coding.context"), t("coding.exercise")];
+
+  const { introduction, instructions, starterCode, hint, answer: userAnswer } = lesson;
 
   const [code, setCode] = useState<string>(starterCode);
-  const [tab, setTab] = useState(TABS[0]);
+  const [mobileTab, setMobileTab] = useState(mobileTabs[0]);
 
   useEffect(() => {
     if (userAnswer) setCode(userAnswer);
   }, [userAnswer]);
 
-  const handleSubmit = () => {
+  const handleRunCode = () => {
     onSubmit(code);
   };
 
-  const handleChangeTab = useCallback((event: React.SyntheticEvent, newValue: string) => {
-    setTab(newValue);
-  }, []);
+  const handleSubmit = () => {
+    onSubmit(code);
+  };
 
   const renderRunCodeButton = () => (
     <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
@@ -80,7 +91,7 @@ export function CodingLesson({ lesson, onSubmit, onShowAnswer }: CodingLessonPro
         variant="outlined"
         color="secondary"
         size="medium"
-        onClick={onShowAnswer}
+        onClick={handleRunCode}
         sx={{ px: 2, whiteSpace: "nowrap" }}
       >
         {t("coding.editor.runCode")}
@@ -95,10 +106,39 @@ export function CodingLesson({ lesson, onSubmit, onShowAnswer }: CodingLessonPro
         color="primary"
         size="medium"
         onClick={handleSubmit}
-        // disabled={isMultiple ? selectedOptions.length === 0 : selectedOption === null}
         sx={{ px: 2, whiteSpace: "nowrap" }}
       >
         {t("coding.editor.submit")}
+      </Button>
+    </Box>
+  );
+
+  const renderHintButton = () => (
+    <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+      <Button
+        variant="outlined"
+        color="inherit"
+        size="medium"
+        onClick={onHint}
+        startIcon={<Iconify icon="solar:lightbulb-linear" />}
+        sx={{ px: 2, whiteSpace: "nowrap" }}
+      >
+        {t("coding.hint.button")} (-{lesson.penaltyPoints} XP)
+      </Button>
+    </Box>
+  );
+
+  const renderShowAnswerButton = () => (
+    <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+      <Button
+        variant="contained"
+        color="primary"
+        size="medium"
+        onClick={onShowAnswer}
+        // disabled={isMultiple ? selectedOptions.length === 0 : selectedOption === null}
+        sx={{ px: 2, whiteSpace: "nowrap" }}
+      >
+        {t("coding.answer")} (-{lesson.totalPoints - lesson.penaltyPoints} XP)
       </Button>
     </Box>
   );
@@ -119,12 +159,39 @@ export function CodingLesson({ lesson, onSubmit, onShowAnswer }: CodingLessonPro
     </Box>
   );
 
-  const renderSection = (title: string, icon: string, content: string) => (
+  const renderIntroduction = () => (
     <Box sx={{ bgcolor: "background.paper", overflowY: "auto" }}>
-      <SectionHeader title={title} icon={icon} />
+      <SectionHeader title={t("coding.introduction")} icon="solar:book-broken" />
       <Box sx={{ px: 2 }}>
-        <Markdown key={content} content={content} />
+        <Markdown key={introduction} content={introduction} />
       </Box>
+    </Box>
+  );
+
+  const renderHint = () => (
+    <Box
+      sx={(theme) => ({
+        bgcolor: theme.vars.palette.background.neutral,
+        overflowY: "auto",
+        pb: 2,
+      })}
+    >
+      <SectionHeader title={t("coding.hint.label")} icon="solar:lightbulb-linear" />
+      <Box sx={{ px: 2 }}>
+        <Markdown key={hint} content={hint || ""} />
+        {!userAnswer && renderShowAnswerButton()}
+      </Box>
+    </Box>
+  );
+
+  const renderInstructions = () => (
+    <Box sx={{ bgcolor: "background.paper", overflowY: "auto" }}>
+      <SectionHeader title={t("coding.instructions")} icon="solar:checklist-bold" />
+      <Box sx={{ px: 2 }}>
+        <Markdown key={instructions} content={instructions} />
+        {!hint && renderHintButton()}
+      </Box>
+      {hint && renderHint()}
     </Box>
   );
 
@@ -132,15 +199,16 @@ export function CodingLesson({ lesson, onSubmit, onShowAnswer }: CodingLessonPro
     <Box
       sx={{
         position: "relative",
-        height: 300,
+        display: "flex",
+        flexDirection: "column",
       }}
     >
       <SectionHeader title={t("coding.editor.label")} icon="solar:code-2-bold" />
       <Box
         sx={{
-          position: "absolute",
-          inset: "15px 0 0 0",
-          mt: 3,
+          flexGrow: 1,
+          position: "relative",
+          height: 300,
         }}
       >
         <CodeEditor language={lesson.language} value={code} onChange={setCode} />
@@ -162,13 +230,19 @@ export function CodingLesson({ lesson, onSubmit, onShowAnswer }: CodingLessonPro
   const renderLeft = () => (
     <Split
       direction="vertical"
-      sizes={[70, 30]}
+      sizes={[60, 40]}
       minSize={200}
       gutterSize={5}
-      style={{ display: "flex", flexDirection: "column", gap: 2, overflow: "auto" }}
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        gap: 2,
+        overflow: "auto",
+        textAlign: "left",
+      }}
     >
-      {renderSection(t("coding.introduction"), "solar:book-broken", introduction)}
-      {renderSection(t("coding.instructions"), "solar:checklist-bold", instructions)}
+      {renderIntroduction()}
+      {renderInstructions()}
     </Split>
   );
 
@@ -176,7 +250,7 @@ export function CodingLesson({ lesson, onSubmit, onShowAnswer }: CodingLessonPro
     <Split
       direction="vertical"
       sizes={[60, 40]}
-      minSize={100}
+      minSize={150}
       gutterSize={5}
       style={{ display: "flex", flexDirection: "column", gap: 2, overflow: "auto" }}
     >
@@ -200,27 +274,37 @@ export function CodingLesson({ lesson, onSubmit, onShowAnswer }: CodingLessonPro
 
   const renderContentMobile = () => (
     <>
-      <Tabs
-        value={tab}
-        onChange={handleChangeTab}
-        centered
-        variant="standard"
-        sx={{ width: "100%", mb: 1 }}
-      >
-        {TABS.map((category) => (
-          <Tab key={category} value={category} label={category} />
+      <ButtonGroup fullWidth sx={{ mb: 1 }}>
+        {mobileTabs.map((mT) => (
+          <Button
+            key={mT}
+            onClick={() => setMobileTab(mT)}
+            variant={mobileTab === mT ? "contained" : "outlined"}
+          >
+            {mT}
+          </Button>
         ))}
-      </Tabs>
+      </ButtonGroup>
 
-      {tab === TABS[0] && renderLeft()}
-      {tab === TABS[1] && renderRight()}
+      <Box sx={{ flexGrow: 1, minHeight: 0, overflow: "auto" }}>
+        {mobileTab === mobileTabs[0] && renderLeft()}
+        {mobileTab === mobileTabs[1] && renderRight()}
+      </Box>
     </>
   );
 
   return (
     <>
       <Box sx={{ height: 1, display: { xs: "none", md: "block" } }}>{renderContentDesktop()}</Box>
-      <Box sx={{ height: 1, display: { xs: "block", md: "none" } }}>{renderContentMobile()}</Box>
+      <Box
+        sx={{
+          height: 1,
+          display: { xs: "flex", md: "none" },
+          flexDirection: "column",
+        }}
+      >
+        {renderContentMobile()}
+      </Box>
     </>
   );
 }

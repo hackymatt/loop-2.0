@@ -6,6 +6,7 @@ from .category.serializers import CategorySerializer
 from .technology.serializers import TechnologySerializer
 from user.type.instructor_user.serializers import InstructorSerializer
 from .progress.models import CourseProgress
+from review.models import Review
 from const import UserType
 
 
@@ -98,7 +99,6 @@ class CourseListSerializer(BaseCourseSerializer):
 
 class CourseRetrieveSerializer(BaseCourseSerializer):
     translated_overview = serializers.SerializerMethodField()
-    chat_url = serializers.SerializerMethodField()
 
     points = serializers.IntegerField(read_only=True)
     reading_count = serializers.IntegerField(read_only=True)
@@ -126,5 +126,15 @@ class CourseRetrieveSerializer(BaseCourseSerializer):
         lang = self.context.get("request").LANGUAGE_CODE
         return obj.get_translation(lang).overview
 
-    def get_chat_url(self, obj):
-        return None  # Placeholder, update if needed
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+
+        user = self.context["request"].user
+        if not user.is_authenticated or user.user_type != UserType.STUDENT:
+            return data
+        
+        review = Review.objects.filter(student__user=user, course=instance)
+
+        data["reviewed"] = review.exists()
+
+        return data
