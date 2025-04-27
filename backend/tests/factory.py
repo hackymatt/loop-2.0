@@ -204,7 +204,7 @@ def create_technology():
 
 def create_lesson(lesson_type=None):
     slug = _generate_random_slug()
-    points = _generate_random_number()
+    points = _generate_random_number(50, 100)
 
     if not lesson_type:
         lesson_type = random.choice(
@@ -255,7 +255,7 @@ def create_lesson(lesson_type=None):
     elif lesson_type == LessonType.CODING:
         starter_code = _generate_random_string(50)
         solution_code = _generate_random_string(50)
-        penalty_points = _generate_random_number()
+        penalty_points = _generate_random_number(0, 50)
         technology = create_technology()
         specific_lesson = CodingLesson.objects.create(
             lesson=lesson,

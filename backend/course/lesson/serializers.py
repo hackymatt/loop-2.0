@@ -224,12 +224,11 @@ class CodingLessonSerializer(serializers.ModelSerializer):
             lesson=instance.lesson,
         ).first()
 
-        if progress:
-            if progress.hint_used:
-                data["hint"] = instance.get_translation(lang).hint
+        if progress.hint_used:
+            data["hint"] = instance.get_translation(lang).hint
 
-            if progress.completed_at:
-                data["answer"] = progress.answer
+        if progress.completed_at:
+            data["answer"] = progress.answer
 
         return data
 
