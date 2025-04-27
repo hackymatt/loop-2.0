@@ -24,6 +24,7 @@ export type IQuizLessonProps = ILessonBaseProps & {
 };
 
 export type ICodingLessonProps = ILessonBaseProps & {
+  fileName: string | null;
   technology: string;
   introduction: string;
   instructions: string;

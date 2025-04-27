@@ -192,6 +192,7 @@ class CodingLessonSerializer(serializers.ModelSerializer):
         fields = [
             "type",
             "points",
+            "file_name",
             "name",
             "technology",
             "starter_code",
