@@ -16,12 +16,14 @@ import { LinkedinIcon } from "src/assets/icons";
 import { useUserContext } from "src/components/user";
 import { useSettingsContext } from "src/components/settings";
 
-type Props = BoxProps & Omit<ICertificateProps, "id" | "completedAt"> & { completedAt?: string };
+type Props = BoxProps &
+  Omit<ICertificateProps, "id" | "completedAt"> & { completedAt?: string; showButtons?: boolean };
 
 export function Certificate({
   courseName,
   studentName,
   completedAt = new Date().toISOString(),
+  showButtons = false,
   sx,
   ...other
 }: Props) {
@@ -199,7 +201,7 @@ export function Certificate({
         </Box>
       </Box>
 
-      {isUserCertificate && renderButtons()}
+      {isUserCertificate && showButtons && renderButtons()}
     </>
   );
 }

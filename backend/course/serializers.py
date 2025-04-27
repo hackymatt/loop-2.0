@@ -132,7 +132,7 @@ class CourseRetrieveSerializer(BaseCourseSerializer):
         user = self.context["request"].user
         if not user.is_authenticated or user.user_type != UserType.STUDENT:
             return data
-        
+
         review = Review.objects.filter(student__user=user, course=instance)
 
         data["reviewed"] = review.exists()

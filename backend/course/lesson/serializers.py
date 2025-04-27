@@ -100,7 +100,7 @@ class ReadingLessonSerializer(serializers.ModelSerializer):
     def get_text(self, obj):
         lang = self.context.get("request").LANGUAGE_CODE
         return obj.get_translation(lang).text
-    
+
     def get_duration(self, obj):
         content = self.get_text(obj)
         html = markdown.markdown(content)
@@ -181,7 +181,7 @@ class CodingLessonSerializer(serializers.ModelSerializer):
     type = serializers.CharField(source="lesson.type")
     points = serializers.CharField(source="lesson.points")
     name = serializers.SerializerMethodField()
-    language = serializers.CharField(source="technology.slug", read_only=True)
+    technology = serializers.CharField(source="technology.slug", read_only=True)
     starter_code = serializers.CharField(read_only=True)
     penalty_points = serializers.IntegerField(read_only=True)
     introduction = serializers.SerializerMethodField()
@@ -193,7 +193,7 @@ class CodingLessonSerializer(serializers.ModelSerializer):
             "type",
             "points",
             "name",
-            "language",
+            "technology",
             "starter_code",
             "penalty_points",
             "introduction",
@@ -211,7 +211,7 @@ class CodingLessonSerializer(serializers.ModelSerializer):
     def get_instructions(self, obj):
         lang = self.context.get("request").LANGUAGE_CODE
         return obj.get_translation(lang).instructions
-    
+
     def to_representation(self, instance):
         lang = self.context.get("request").LANGUAGE_CODE
         data = super().to_representation(instance)

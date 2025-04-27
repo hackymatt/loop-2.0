@@ -211,7 +211,7 @@ export function CodingLesson({
           height: 300,
         }}
       >
-        <CodeEditor language={lesson.language} value={code} onChange={setCode} />
+        <CodeEditor technology={lesson.technology} value={code} onChange={setCode} />
       </Box>
 
       <Box sx={{ position: "absolute", bottom: 0, right: 0, display: "flex" }}>

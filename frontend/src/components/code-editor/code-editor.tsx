@@ -9,11 +9,11 @@ const PythonCodeEditor = lazy(() => import("./languages/python/code-editor"));
 
 interface CodeEditorProps {
   value: string;
-  language: string;
+  technology: string;
   onChange: (value: string) => void;
 }
 
-export function CodeEditor({ value, language, onChange }: CodeEditorProps) {
+export function CodeEditor({ value, technology, onChange }: CodeEditorProps) {
   const theme = useTheme();
   const monaco = useMonaco();
 
@@ -39,16 +39,16 @@ export function CodeEditor({ value, language, onChange }: CodeEditorProps) {
     }
   };
 
-  // Map to get the correct editor component based on language
-  const languageEditorMap: Record<string, React.ComponentType<any>> = {
+  // Map to get the correct editor component based on technology
+  const technologyEditorMap: Record<string, React.ComponentType<any>> = {
     python: PythonCodeEditor,
     vba: VbaCodeEditor,
   };
 
-  const EditorComponent = languageEditorMap[language];
+  const EditorComponent = technologyEditorMap[technology];
 
   if (!EditorComponent) {
-    throw new Error(`No editor found for language ${language}`);
+    throw new Error(`No editor found for technology ${technology}`);
   }
 
   return (

@@ -28,6 +28,7 @@ export function CertificateView({ id }: { id: string }) {
         courseName={certificate?.courseName || ""}
         studentName={certificate?.studentName || ""}
         completedAt={certificate?.completedAt || ""}
+        showButtons
         sx={(theme) => ({
           height: 600,
           [theme.breakpoints.down("md")]: {

@@ -1,4 +1,9 @@
-from .views import LessonViewSet, LessonSubmitAPIView, LessonAnswerAPIView, LessonHintAPIView
+from .views import (
+    LessonViewSet,
+    LessonSubmitAPIView,
+    LessonAnswerAPIView,
+    LessonHintAPIView,
+)
 from django.urls import path
 from const import Urls
 
@@ -17,7 +22,7 @@ urlpatterns = [
         Urls.LESSON_ANSWER,
         LessonAnswerAPIView.as_view(),
         name="lesson-answer",
-    ),    
+    ),
     path(
         Urls.LESSON_HINT,
         LessonHintAPIView.as_view(),
