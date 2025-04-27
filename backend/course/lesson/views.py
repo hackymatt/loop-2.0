@@ -152,3 +152,32 @@ class LessonAnswerAPIView(views.APIView):
         )
 
         return Response({"answer": answer}, status=status.HTTP_200_OK)
+
+
+class LessonHintAPIView(views.APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        lesson_slug = request.data.pop("lesson")
+        lesson = get_object_or_404(Lesson, slug=lesson_slug)
+
+        specific_model = {
+            LessonType.CODING: CodingLesson,
+        }.get(lesson.type)
+
+        if lesson.type == LessonType.CODING:
+            specific_lesson = specific_model.objects.get(lesson=lesson)
+            hint = specific_lesson.get_translation(request.LANGUAGE_CODE).hint
+            penalty_points = specific_lesson.penalty_points
+        else:
+            hint = None
+            penalty_points = 0
+
+        student = Student.objects.get(user=request.user)
+        CourseProgress.objects.update_or_create(
+            student=student,
+            lesson=lesson,
+            defaults={"hint_used": True, "points": lesson.points - penalty_points},
+        )
+
+        return Response({"hint": hint}, status=status.HTTP_200_OK)

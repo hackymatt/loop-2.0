@@ -24,6 +24,7 @@ export const URLS = {
   LESSON: "lesson",
   LESSON_SUBMIT: "lesson/submit",
   LESSON_ANSWER: "lesson/answer",
+  LESSON_HINT: "lesson/hint",
   // REVIEWS
   REVIEWS: "/reviews",
   REVIEWS_SUMMARY: "/reviews-summary",

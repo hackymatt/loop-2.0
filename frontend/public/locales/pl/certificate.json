@@ -4,5 +4,10 @@
   "name": "Jan Kowalski",
   "award": "PRZYZNANY DLA",
   "completion": "ZA UKOŃCZENIE",
-  "date": "DNIA"
+  "date": "DNIA",
+  "buttons": {
+    "png": "Pobierz jako PNG",
+    "pdf": "Pobierz jako PDF",
+    "linkedin": "Udostępnij na LinkedIn"
+  }
 }

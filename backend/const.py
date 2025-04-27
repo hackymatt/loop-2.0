@@ -36,6 +36,7 @@ class Urls:
     LESSON = "lesson/<slug:course_slug>/<slug:lesson_slug>"
     LESSON_SUBMIT = "lesson/submit"
     LESSON_ANSWER = "lesson/answer"
+    LESSON_HINT = "lesson/hint"
     # REVIEW
     COURSE_REVIEW_SUMMARY = "reviews-summary/<slug:slug>"
     COURSE_REVIEWS = "reviews/<slug:slug>"

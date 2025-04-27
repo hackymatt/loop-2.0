@@ -179,6 +179,40 @@ class LessonViewSetTestCase(TestCase):
             ).exists()
         )
 
+    def test_successful_retrieve_coding_lesson_not_completed_hint(self):
+        login(self, self.student.user.email, self.student_password)
+        CourseProgress.objects.create(
+            student=self.student, lesson=self.coding_lesson, hint_used=True
+        )
+        response = self.client.get(
+            self.url.replace("<slug:course_slug>", self.course.slug).replace(
+                "<slug:lesson_slug>", self.coding_lesson.slug
+            )
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn("type", response.data)
+        self.assertIn("points", response.data)
+        self.assertIn("name", response.data)
+        self.assertIn("introduction", response.data)
+        self.assertIn("instructions", response.data)
+        self.assertIn("technology", response.data)
+        self.assertIn("starter_code", response.data)
+        self.assertIn("penalty_points", response.data)
+        self.assertIn("hint", response.data)
+
+        # Ensure progress and enrollment were created
+        self.assertTrue(
+            CourseEnrollment.objects.filter(
+                student=self.student, course=self.course
+            ).exists()
+        )
+        self.assertTrue(
+            CourseProgress.objects.filter(
+                student=self.student, lesson=self.coding_lesson
+            ).exists()
+        )
+
     def test_successful_retrieve_coding_lesson_completed(self):
         login(self, self.student.user.email, self.student_password)
         CourseProgress.objects.create(
@@ -199,6 +233,7 @@ class LessonViewSetTestCase(TestCase):
         self.assertIn("technology", response.data)
         self.assertIn("starter_code", response.data)
         self.assertIn("penalty_points", response.data)
+        self.assertIn("answer", response.data)
 
         # Ensure progress and enrollment were created
         self.assertTrue(
@@ -210,6 +245,15 @@ class LessonViewSetTestCase(TestCase):
             CourseProgress.objects.filter(
                 student=self.student, lesson=self.coding_lesson
             ).exists()
+        )
+
+        self.assertEqual(
+            response.data["answer"],
+            CourseProgress.objects.filter(
+                student=self.student, lesson=self.coding_lesson
+            )
+            .first()
+            .answer,
         )
 
     def test_course_not_found(self):
@@ -397,3 +441,73 @@ class LessonAnswerAPIViewTestCase(TestCase):
             self.url, data={"lesson": "non-existent"}, format="json"
         )
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+
+class LessonHintAPIViewTest(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.url = f"/{Urls.API}/{Urls.LESSON_HINT}"
+
+        self.student, self.student_password = create_student()
+
+        self.course = create_course()
+        chapter = self.course.chapters.all()[0]
+        self.lesson = chapter.lessons.all()[0]
+
+        self.reading_lesson, self.reading_specific_lesson = create_lesson(
+            LessonType.READING
+        )
+        self.coding_lesson, self.coding_specific_lesson = create_lesson(
+            LessonType.CODING
+        )
+        chapter.lessons.add(self.coding_lesson)
+        chapter.save()
+
+    def test_post_hint_success(self):
+        login(self, self.student.user.email, self.student_password)
+        response = self.client.post(
+            self.url, data={"lesson": self.coding_lesson.slug}, format="json"
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn("hint", response.data)
+        self.assertEqual(
+            response.data["hint"],
+            self.coding_specific_lesson.get_translation("en").hint,
+        )
+
+        course_progress = CourseProgress.objects.get(
+            student=self.student, lesson=self.coding_lesson
+        )
+        self.assertTrue(course_progress.hint_used)
+        self.assertEqual(
+            course_progress.points,
+            self.coding_lesson.points - self.coding_specific_lesson.penalty_points,
+        )
+
+    def test_post_hint_not_coding(self):
+        login(self, self.student.user.email, self.student_password)
+        response = self.client.post(
+            self.url, data={"lesson": self.reading_lesson.slug}, format="json"
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn("hint", response.data)
+        self.assertIsNone(response.data["hint"])
+
+        course_progress = CourseProgress.objects.get(
+            student=self.student, lesson=self.reading_lesson
+        )
+        self.assertTrue(course_progress.hint_used)
+        self.assertEqual(course_progress.points, self.reading_lesson.points)
+
+    def test_post_hint_lesson_not_found(self):
+        login(self, self.student.user.email, self.student_password)
+        response = self.client.post(
+            self.url, {"lesson": "non-existent-lesson"}, format="json"
+        )
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_post_hint_unauthenticated(self):
+        response = self.client.post(
+            self.url, data={"lesson": self.coding_lesson.slug}, format="json"
+        )
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)

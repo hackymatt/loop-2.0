@@ -1,4 +1,3 @@
-import type { BoxProps } from "@mui/material";
 import type { IQuizLessonProps } from "src/types/lesson";
 
 import { useState, useEffect } from "react";
@@ -8,6 +7,7 @@ import {
   Box,
   Radio,
   Button,
+  Divider,
   Checkbox,
   FormGroup,
   FormLabel,
@@ -20,11 +20,9 @@ import {
 import { QUIZ_TYPE } from "src/consts/lesson";
 import { useAnalytics } from "src/app/analytics-provider";
 
-import { ComponentBox } from "./component-box";
-
 // ----------------------------------------------------------------------
 
-type QuizLessonProps = BoxProps & {
+type QuizLessonProps = {
   lesson: IQuizLessonProps;
   onSubmit: (answer: boolean[]) => void;
   onShowAnswer: () => void;
@@ -33,18 +31,11 @@ type QuizLessonProps = BoxProps & {
 
 // ----------------------------------------------------------------------
 
-export function QuizLesson({
-  lesson,
-  onSubmit,
-  onShowAnswer,
-  error,
-  sx,
-  ...other
-}: QuizLessonProps) {
+export function QuizLesson({ lesson, onSubmit, onShowAnswer, error }: QuizLessonProps) {
   const { t } = useTranslation("learn");
   const { trackEvent } = useAnalytics();
 
-  const { quizType, question, answer: userAnswer } = lesson;
+  const { name, quizType, question, answer: userAnswer } = lesson;
 
   const isMultiple = quizType === QUIZ_TYPE.MULTI;
   const isCompleted = !!userAnswer;
@@ -108,8 +99,19 @@ export function QuizLesson({
       </RadioGroup>
     );
 
+  const renderHeader = () => (
+    <Box>
+      <Typography variant="h4" gutterBottom>
+        {name}
+      </Typography>
+      <Typography variant="subtitle2" color="text.secondary">
+        🧠 {t("quiz.type.label")}: {isMultiple ? t("quiz.type.multi") : t("quiz.type.single")}
+      </Typography>
+    </Box>
+  );
+
   const renderContent = () => (
-    <ComponentBox sx={{ py: 2 }}>
+    <Box sx={{ py: 2 }}>
       <FormControl>
         <FormLabel
           sx={{
@@ -128,7 +130,7 @@ export function QuizLesson({
           {error}
         </Typography>
       )}
-    </ComponentBox>
+    </Box>
   );
 
   const renderSubmitButton = () => (
@@ -164,21 +166,20 @@ export function QuizLesson({
     </Box>
   );
 
-  return (
-    <Box
-      component="section"
-      sx={[
-        { overflow: "hidden", gap: 3, p: 1, display: "flex", flexDirection: "column" },
-        ...(Array.isArray(sx) ? sx : [sx]),
-      ]}
-      {...other}
-    >
-      {renderContent()}
-
-      <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }}>
-        {renderAnswerButton()}
-        {renderSubmitButton()}
-      </Box>
+  const renderButtons = () => (
+    <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }}>
+      {renderAnswerButton()}
+      {renderSubmitButton()}
     </Box>
+  );
+
+  return (
+    <>
+      {renderHeader()}
+      <Divider />
+      {renderContent()}
+      <Divider sx={{ mt: "auto" }} />
+      {renderButtons()}
+    </>
   );
 }

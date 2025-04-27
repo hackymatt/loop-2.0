@@ -25,6 +25,7 @@ type IBaseLesson = {
 
 type IReadingLesson = {
   text: string;
+  duration: number;
 };
 
 type IVideoLesson = {

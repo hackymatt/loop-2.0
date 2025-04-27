@@ -7,21 +7,21 @@ import { Api } from "src/api/service";
 
 import { useSettingsContext } from "src/components/settings";
 
-const endpoint = URLS.LESSON_ANSWER;
+const endpoint = URLS.LESSON_HINT;
 
-type IAnswer = {
+type IHint = {
   lesson: string;
 };
 
-type IAnswerReturn = { data: { answer: string | boolean[] }; status: number };
+type IHintReturn = { data: { hint: string }; status: number };
 
-export const useLessonAnswer = () => {
+export const useLessonHint = () => {
   const settings = useSettingsContext();
   const { language } = settings.state;
 
   const queryClient = useQueryClient();
 
-  return useMutation<IAnswerReturn, AxiosError, IAnswer>(
+  return useMutation<IHintReturn, AxiosError, IHint>(
     async (variables) => {
       const result = await Api.post(endpoint, variables, {
         headers: {

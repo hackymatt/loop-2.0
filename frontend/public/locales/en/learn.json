@@ -1,6 +1,27 @@
 {
-  "errors": { "answer": "An error occurred. Please try again" },
-  "reading": { "submit": "Got it!" },
+  "errors": {
+    "answer": "An error occurred. Please try again",
+    "hint": "An error occurred. Please try again"
+  },
+  "reading": { "estimatedTime": "Estimated time", "submit": "Got it!" },
   "video": { "submit": "Got it!" },
-  "quiz": { "submit": "Check!", "answer": "Show answer" }
+  "quiz": {
+    "type": { "label": "Question type", "single": "Single choice", "multi": "Multiple choice" },
+    "submit": "Check!",
+    "answer": "Show answer"
+  },
+  "coding": {
+    "introduction": "Introduction",
+    "instructions": "Instructions",
+    "editor": {
+      "label": "Code editor",
+      "runCode": "Run code",
+      "submit": "Check!"
+    },
+    "hint": { "button": "Take hint", "label": "Hint" },
+    "answer": "Show answer",
+    "console": "Console",
+    "context": "Kontekst",
+    "exercise": "Ćwiczenie"
+  }
 }

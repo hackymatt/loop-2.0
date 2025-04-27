@@ -9,8 +9,6 @@ import Grid from "@mui/material/Grid2";
 import Divider from "@mui/material/Divider";
 import Container from "@mui/material/Container";
 
-import { useQueryParams } from "src/hooks/use-query-params";
-
 import { useCourse } from "src/api/course/course";
 import { useReviews } from "src/api/review/reviews";
 import { useSimilarCourses } from "src/api/course/similar";
@@ -37,8 +35,6 @@ export function CourseView({ slug }: { slug: string }) {
     page: "1",
   });
 
-  const { query: searchParams, handleChange } = useQueryParams();
-
   const { data: course, isError, isLoading } = useCourse(slug);
   const { data: reviews, count, pageSize } = useReviews(slug);
   const { data: similarCourses } = useSimilarCourses(slug);
@@ -48,10 +44,8 @@ export function CourseView({ slug }: { slug: string }) {
   const openReviewForm = useBoolean();
 
   useEffect(() => {
-    setShowCongratulations(
-      (searchParams?.success || "false") === "true" && (course?.progress || 0) === 100
-    );
-  }, [course?.progress, searchParams?.success]);
+    setShowCongratulations((course?.progress || 0) === 100 && course?.reviewed === false);
+  }, [course?.progress, course?.reviewed]);
 
   const renderReview = () => (
     <>
@@ -147,7 +141,6 @@ export function CourseView({ slug }: { slug: string }) {
           slug={course?.slug || ""}
           open
           onClose={() => {
-            handleChange("success", "");
             setShowCongratulations(false);
           }}
         />
