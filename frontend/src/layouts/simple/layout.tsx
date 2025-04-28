@@ -2,13 +2,21 @@
 
 import type { Breakpoint } from "@mui/material/styles";
 
-import { SimpleCompactContent } from "./content";
+import { Box } from "@mui/material";
+
+import { CONFIG } from "src/global-config";
+
+import { Logo } from "src/components/logo";
+
+import { langs } from "../langs-config";
 import { MainSection } from "../core/main-section";
 import { LayoutSection } from "../core/layout-section";
+import { SettingsButton } from "../components/settings-button";
+import { LanguagePopover } from "../components/language-popover";
+import { HeaderSection, type HeaderSectionProps } from "../core/header-section";
 
 import type { SimpleCompactContentProps } from "./content";
 import type { MainSectionProps } from "../core/main-section";
-import type { HeaderSectionProps } from "../core/header-section";
 import type { LayoutSectionProps } from "../core/layout-section";
 
 // ----------------------------------------------------------------------
@@ -31,25 +39,39 @@ export function SimpleLayout({
   slotProps,
   layoutQuery = "md",
 }: SimpleLayoutProps) {
-  const renderHeader = () => null;
+  const renderHeader = () => {
+    const headerSlots: HeaderSectionProps["slots"] = {
+      leftArea: (
+        <>
+          {/** @slot Logo */}
+          <Logo sx={{ mt: 0.5 }} />
+        </>
+      ),
+      rightArea: (
+        <Box sx={{ gap: 1, display: "flex", alignItems: "center" }}>
+          {/** @slot Language popover */}
+          {CONFIG.isLocal && <LanguagePopover data={langs} />}
+
+          {/** @slot Settings button */}
+          {CONFIG.isLocal && <SettingsButton />}
+        </Box>
+      ),
+    };
+
+    return (
+      <HeaderSection
+        layoutQuery={layoutQuery}
+        {...slotProps?.header}
+        slots={{ ...headerSlots, ...slotProps?.header?.slots }}
+        slotProps={slotProps?.header?.slotProps}
+        sx={slotProps?.header?.sx}
+      />
+    );
+  };
 
   const renderFooter = () => null;
 
-  const renderMain = () => {
-    const { compact, ...restContentProps } = slotProps?.content ?? {};
-
-    return (
-      <MainSection {...slotProps?.main}>
-        {compact ? (
-          <SimpleCompactContent layoutQuery={layoutQuery} {...restContentProps}>
-            {children}
-          </SimpleCompactContent>
-        ) : (
-          children
-        )}
-      </MainSection>
-    );
-  };
+  const renderMain = () => <MainSection {...slotProps?.main}>{children}</MainSection>;
 
   return (
     <LayoutSection

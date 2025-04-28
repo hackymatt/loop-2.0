@@ -4,7 +4,6 @@ import { varAlpha } from "minimal-shared/utils";
 import { Controller, useFormContext } from "react-hook-form";
 
 import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
 
 import { Iconify } from "src/components/iconify";
 
@@ -21,7 +20,7 @@ type Props = BoxProps & {
   }[];
 };
 
-export function TravelCheckOutPaymentForm({ name, options, sx, ...other }: Props) {
+export function PaymentForm({ name, options, sx, ...other }: Props) {
   const { control } = useFormContext();
 
   return (
@@ -44,7 +43,6 @@ export function TravelCheckOutPaymentForm({ name, options, sx, ...other }: Props
                 key={option.label}
                 option={option}
                 selected={isSelected}
-                isCredit={isSelected && option.value === "card"}
                 onClick={() => onChange(option.value)}
               />
             );
@@ -58,12 +56,11 @@ export function TravelCheckOutPaymentForm({ name, options, sx, ...other }: Props
 // ----------------------------------------------------------------------
 
 type OptionItemProps = BoxProps & {
-  isCredit: boolean;
   selected: boolean;
   option: Props["options"][number];
 };
 
-function OptionItem({ option, selected, isCredit, sx, ...other }: OptionItemProps) {
+function OptionItem({ option, selected, sx, ...other }: OptionItemProps) {
   return (
     <Box
       sx={[
@@ -105,13 +102,15 @@ function OptionItem({ option, selected, isCredit, sx, ...other }: OptionItemProp
               <Iconify width={24} icon="logos:mastercard" />
               <Iconify width={24} icon="logos:visa" />
             </>
-          ) : (
-            <Iconify width={24} icon="logos:paypal" />
-          )}
+          ) : option.value === "applepay" ? (
+            <Iconify width={24} icon="logos:apple-pay" />
+          ) : option.value === "googlepay" ? (
+            <Iconify width={24} icon="logos:google-pay" />
+          ) : null}
         </Box>
       </Box>
 
-      {isCredit && (
+      {option.value === "card" && selected && (
         <Box
           sx={{
             gap: 2.5,
@@ -123,13 +122,11 @@ function OptionItem({ option, selected, isCredit, sx, ...other }: OptionItemProp
           }}
         >
           <PaymentNewCardForm
-            isRHF
             numberField={{ name: "paymentMethods.card.number" }}
             holderField={{ name: "paymentMethods.card.holder" }}
-            dateField={{ name: "paymentMethods.card.expired" }}
-            cvvField={{ name: "paymentMethods.card.ccv" }}
+            dateField={{ name: "paymentMethods.card.expiration" }}
+            cvvField={{ name: "paymentMethods.card.security" }}
           />
-          <Button variant="contained">Apply</Button>
         </Box>
       )}
     </Box>

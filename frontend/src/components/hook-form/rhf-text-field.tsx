@@ -1,5 +1,6 @@
 import type { TextFieldProps } from "@mui/material/TextField";
 
+import InputMask from "react-input-mask";
 import { Controller, useFormContext } from "react-hook-form";
 import { transformValue, transformValueOnBlur, transformValueOnChange } from "minimal-shared/utils";
 
@@ -9,6 +10,7 @@ import TextField from "@mui/material/TextField";
 
 export type RHFTextFieldProps = TextFieldProps & {
   name: string;
+  mask?: string;
 };
 
 export function RHFTextField({
@@ -16,21 +18,24 @@ export function RHFTextField({
   helperText,
   slotProps,
   type = "text",
+  mask,
+  disabled,
   ...other
 }: RHFTextFieldProps) {
   const { control } = useFormContext();
 
   const isNumberType = type === "number";
 
+  const { onChange, onBlur, ...otherClean } = other;
+
   return (
     <Controller
       name={name}
       control={control}
       render={({ field, fieldState: { error } }) => (
-        <TextField
-          {...field}
-          fullWidth
-          value={isNumberType ? transformValue(field.value) : field.value}
+        <InputMask
+          mask={mask || ""}
+          value={field.value}
           onChange={(event) => {
             const transformedValue = isNumberType
               ? transformValueOnChange(event.target.value)
@@ -45,19 +50,28 @@ export function RHFTextField({
 
             field.onChange(transformedValue);
           }}
-          type={isNumberType ? "text" : type}
-          error={!!error}
-          helperText={error?.message ?? helperText}
-          slotProps={{
-            ...slotProps,
-            htmlInput: {
-              autoComplete: "off",
-              ...slotProps?.htmlInput,
-              ...(isNumberType && { inputMode: "decimal", pattern: "[0-9]*\\.?[0-9]*" }),
-            },
-          }}
-          {...other}
-        />
+          disabled={disabled}
+        >
+          {(inputProps) => (
+            <TextField
+              {...inputProps}
+              fullWidth
+              value={isNumberType ? transformValue(field.value) : field.value}
+              type={isNumberType ? "text" : type}
+              error={!!error}
+              helperText={error?.message ?? helperText}
+              slotProps={{
+                ...slotProps,
+                htmlInput: {
+                  autoComplete: "off",
+                  ...slotProps?.htmlInput,
+                  ...(isNumberType && { inputMode: "decimal", pattern: "[0-9]*\\.?[0-9]*" }),
+                },
+              }}
+              {...otherClean}
+            />
+          )}
+        </InputMask>
       )}
     />
   );

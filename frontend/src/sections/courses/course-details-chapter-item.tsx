@@ -55,7 +55,9 @@ export function CourseDetailsChapterItem({
       color="primary"
       href={isLoggedIn ? redirect : paths.register}
       onClick={() => {
-        user.setField("redirect", redirect);
+        if (!isLoggedIn) {
+          user.setField("redirect", redirect);
+        }
         trackEvent({ category: "chapter", label: `chapter (${chapter.slug})`, action: "start" });
       }}
       sx={{ px: 2, textAlign: "center" }}

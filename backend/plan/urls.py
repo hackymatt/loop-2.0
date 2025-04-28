@@ -1,8 +1,11 @@
-from .views import PlanListView
-from django.urls import path
+from .views import PlanViewSet
+from core.routers import Router
+from django.urls import path, include
 from const import Urls
 
+router = Router(trailing_slash=False)
+router.register(Urls.PLAN, PlanViewSet, basename="plans")
 
 urlpatterns = [
-    path(Urls.PLAN, PlanListView.as_view(), name="plans"),
+    path("", include(router.urls)),
 ]

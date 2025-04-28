@@ -35,7 +35,9 @@ export function CourseDetailsLessonItem({ course, chapter, lesson }: LessonItemP
       color="inherit"
       href={isLoggedIn ? redirect : paths.register}
       onClick={() => {
-        user.setField("redirect", redirect);
+        if (!isLoggedIn) {
+          user.setField("redirect", redirect);
+        }
         trackEvent({ category: "course", label: `lesson (${lesson.slug})`, action: "start" });
       }}
       sx={{

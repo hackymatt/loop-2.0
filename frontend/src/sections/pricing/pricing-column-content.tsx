@@ -13,6 +13,7 @@ import { paths } from "src/routes/paths";
 import { useAnalytics } from "src/app/analytics-provider";
 
 import { Iconify } from "src/components/iconify";
+import { useUserContext } from "src/components/user";
 
 import type { PricingCardProps } from "./types";
 
@@ -20,10 +21,23 @@ import type { PricingCardProps } from "./types";
 
 type PricingColumnContentProps = BoxProps & {
   plan: PricingCardProps;
+  isYearly: boolean;
 };
 
-export function PricingColumnContentMobile({ plan, sx, ...other }: PricingColumnContentProps) {
+export function PricingColumnContentMobile({
+  plan,
+  isYearly,
+  sx,
+  ...other
+}: PricingColumnContentProps) {
   const { t } = useTranslation("pricing");
+
+  const user = useUserContext();
+  const { isLoggedIn, plan: userPlan } = user.state;
+
+  const isCurrentPlan = isLoggedIn && plan.slug === userPlan;
+
+  const redirect = `${paths.payment}?plan=${plan.slug}&yearly=${isYearly}`;
 
   const { trackEvent } = useAnalytics();
 
@@ -95,15 +109,19 @@ export function PricingColumnContentMobile({ plan, sx, ...other }: PricingColumn
       <Button
         fullWidth
         size="large"
-        variant="contained"
+        variant={isCurrentPlan ? "outlined" : "contained"}
         color={plan.popular ? "primary" : "inherit"}
-        href={paths.register}
-        onClick={() =>
-          trackEvent({ category: "pricing", label: plan.license, action: "choosePlan" })
-        }
+        href={isLoggedIn ? redirect : paths.register}
+        disabled={isCurrentPlan}
+        onClick={() => {
+          if (!isLoggedIn) {
+            user.setField("redirect", redirect);
+          }
+          trackEvent({ category: "pricing", label: plan.license, action: "choosePlan" });
+        }}
         sx={{ mt: 5 }}
       >
-        {`${t("choose")} ${plan.license}`}
+        {isCurrentPlan ? t("current") : `${t("choose")} ${plan.license}`}
       </Button>
     </Box>
   );
@@ -111,8 +129,20 @@ export function PricingColumnContentMobile({ plan, sx, ...other }: PricingColumn
 
 // ----------------------------------------------------------------------
 
-export function PricingColumnContentDesktop({ plan, sx, ...other }: PricingColumnContentProps) {
+export function PricingColumnContentDesktop({
+  plan,
+  isYearly,
+  sx,
+  ...other
+}: PricingColumnContentProps) {
   const { t } = useTranslation("pricing");
+
+  const user = useUserContext();
+  const { isLoggedIn, plan: userPlan } = user.state;
+
+  const isCurrentPlan = isLoggedIn && plan.slug === userPlan;
+
+  const redirect = `${paths.payment}?plan=${plan.slug}&yearly=${isYearly}`;
 
   const { trackEvent } = useAnalytics();
 
@@ -151,14 +181,18 @@ export function PricingColumnContentDesktop({ plan, sx, ...other }: PricingColum
       >
         <Button
           size="large"
-          variant="contained"
+          variant={isCurrentPlan ? "outlined" : "contained"}
           color={plan.popular ? "primary" : "inherit"}
-          href={paths.register}
-          onClick={() =>
-            trackEvent({ category: "pricing", label: plan.license, action: "choosePlan" })
-          }
+          href={isLoggedIn ? redirect : paths.register}
+          disabled={isCurrentPlan}
+          onClick={() => {
+            if (!isLoggedIn) {
+              user.setField("redirect", redirect);
+            }
+            trackEvent({ category: "pricing", label: plan.license, action: "choosePlan" });
+          }}
         >
-          {`${t("choose")} ${plan.license}`}
+          {isCurrentPlan ? t("current") : `${t("choose")} ${plan.license}`}
         </Button>
       </Box>
     </Box>

@@ -4,10 +4,12 @@
     "errors": { "required": "Email is required", "invalid": "Email is invalid" }
   },
   "firstName": {
-    "label": "First name"
+    "label": "First name",
+    "errors": { "required": "First name is required" }
   },
   "lastName": {
-    "label": "Last name"
+    "label": "Last name",
+    "errors": { "required": "Last name is required" }
   },
   "password": {
     "label": "Password",

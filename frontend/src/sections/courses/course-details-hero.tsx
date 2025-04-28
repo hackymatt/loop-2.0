@@ -276,7 +276,9 @@ export function CourseDetailsHero({
         size="large"
         href={isLoggedIn ? redirect : paths.register}
         onClick={() => {
-          user.setField("redirect", redirect);
+          if (!isLoggedIn) {
+            user.setField("redirect", redirect);
+          }
           trackEvent({ category: "course", label: `course (${slug})`, action: "start" });
         }}
         sx={{ px: 2, borderRadius: "inherit", textAlign: "center" }}

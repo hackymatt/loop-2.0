@@ -79,7 +79,9 @@ export function CourseCertificateDetailsInfo({
           size="large"
           href={isLoggedIn ? redirect : paths.register}
           onClick={() => {
-            user.setField("redirect", redirect);
+            if (!isLoggedIn) {
+              user.setField("redirect", redirect);
+            }
             trackEvent({ category: "course", label: `course (${slug})`, action: "certificate" });
           }}
           sx={{ px: 2, borderRadius: "inherit", textAlign: "center" }}

@@ -104,7 +104,7 @@ export function HomePricing({ sx, ...other }: BoxProps) {
         >
           {pricingCards.map((plan) => (
             <m.div key={plan.license}>
-              <PricingCard key={plan.license} plan={plan} />
+              <PricingCard key={plan.license} plan={plan} isYearly={isYearly} />
             </m.div>
           ))}
         </Box>
