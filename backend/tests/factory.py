@@ -35,7 +35,7 @@ from course.models import Course, CourseTranslation
 from review.models import Review
 
 from plan.models import Plan, PlanTranslation, Option, OptionTranslation
-from plan.subscription.utils import subscribe
+from plan.subscription.utils import subscribe_free_plan
 
 from certificate.models import Certificate
 
@@ -134,7 +134,7 @@ def create_admin():
 def create_student():
     user, password = create_user_with_type(UserType.STUDENT)
     student = Student.objects.create(user=user)
-    subscribe(student)
+    subscribe_free_plan(student)
     return student, password
 
 

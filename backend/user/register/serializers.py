@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.utils.translation import gettext as _
 from rest_framework import serializers
-from plan.subscription.utils import subscribe
+from plan.subscription.utils import subscribe_free_plan
 from user.type.student_user.models import Student
 from ..utils import check_password, get_unique_username
 from const import UserType
@@ -55,6 +55,6 @@ class EmailOnlyUserSerializer(serializers.ModelSerializer):
         )
 
         student = Student.objects.create(user=user)
-        subscribe(student)
+        subscribe_free_plan(student)
 
         return user

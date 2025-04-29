@@ -25,7 +25,7 @@ export function PricingCardsView() {
 
   const pricingCards = (plans || []).map(({ price, ...rest }: IPlanProps) => {
     const { monthly, yearly } = price;
-    return { ...rest, price: isYearly ? yearly : monthly };
+    return { ...rest, price: isYearly ? yearly / 12 : monthly };
   });
 
   const handleChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
@@ -79,7 +79,7 @@ export function PricingCardsView() {
         }}
       >
         {pricingCards.map((plan) => (
-          <PricingCard key={plan.license} plan={plan} />
+          <PricingCard key={plan.license} plan={plan} isYearly={isYearly} />
         ))}
       </Box>
     </Container>

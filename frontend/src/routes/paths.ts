@@ -31,11 +31,16 @@ export const paths = {
    * Other
    */
   pricing: "/pricing",
+  payment: "/payment",
   about: "/about",
   contact: "/contact",
   privacyPolicy: "/privacy-policy",
   termsAndConditions: "/terms-and-conditions",
   support: "/support",
+  stripe: {
+    termsAndConditions: "https://stripe.com/legal/end-users",
+    privacyPolicy: "https://stripe.com/privacy",
+  },
 
   /**
    * Account
@@ -138,7 +143,6 @@ export const paths = {
   comingsoon: "/coming-soon",
   pricingCards: "/pricing-cards",
   pricingColumns: "/pricing-columns",
-  payment: "/payment",
   page404: "/error/404",
   page500: "/error/500",
   /**

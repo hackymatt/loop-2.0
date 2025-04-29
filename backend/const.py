@@ -49,6 +49,7 @@ class Urls:
     FEATURED_POST = "featured-post"
     # PLAN
     PLAN = "plans"
+    SUBSCRIBE = "subscribe"
     # CONTACT
     CONTACT = "contact"
     # CERTIFICATE

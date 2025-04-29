@@ -3,3 +3,8 @@ export const PLAN_TYPE = {
   BASIC: "basic",
   PREMIUM: "premium",
 } as const;
+
+export const PLAN_INTERVAL = {
+  MONTHLY: "monthly",
+  YEARLY: "yearly",
+} as const;

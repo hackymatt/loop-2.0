@@ -41,6 +41,7 @@ export const URLS = {
   FEATURED_POST: "/featured-post",
   // PLAN
   PLANS: "/plans",
+  SUBSCRIBE: "/subscribe",
   // CERTIFICATES
   CERTIFICATES: "/certificates",
   // ME

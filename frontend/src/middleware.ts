@@ -11,6 +11,7 @@ const AUTHORIZED_PATHS = [
   paths.account.personal,
   paths.account.manage,
   paths.account.subscription,
+  paths.payment,
 ];
 const UNAUTHORIZED_PATHS = [
   paths.home,
@@ -19,7 +20,6 @@ const UNAUTHORIZED_PATHS = [
   paths.activate,
   paths.resetPassword,
   paths.updatePassword,
-  paths.pricing,
   paths.about,
 ];
 
@@ -56,7 +56,7 @@ export const config = {
     "/auth/activate",
     "/auth/resetPassword",
     "/auth/updatePassword",
-    "/pricing",
     "/about",
+    "/payment",
   ],
 };

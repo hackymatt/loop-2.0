@@ -8,7 +8,7 @@ import requests
 from user.type.student_user.models import Student
 from ..serializers import LoginResponseSerializer
 from ...utils import get_unique_username, set_cookies, download_and_assign_image
-from plan.subscription.utils import subscribe
+from plan.subscription.utils import subscribe_free_plan
 from const import JoinType, UserType
 
 
@@ -52,9 +52,9 @@ class FacebookLoginView(APIView):
             },
         )
         student, student_created = Student.objects.get_or_create(user=user)
-        subscribe(student)
 
         if user_created:
+            subscribe_free_plan(student)
             download_and_assign_image(user, picture)
 
         # Create JWT tokens for the user

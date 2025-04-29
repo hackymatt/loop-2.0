@@ -4,10 +4,12 @@
     "errors": { "required": "Email is required", "invalid": "Email is invalid" }
   },
   "firstName": {
-    "label": "First name"
+    "label": "First name",
+    "errors": { "required": "First name is required" }
   },
   "lastName": {
-    "label": "Last name"
+    "label": "Last name",
+    "errors": { "required": "Last name is required" }
   },
   "password": {
     "label": "Password",
@@ -61,7 +63,18 @@
   },
   "personal": { "title": "Personal data", "button": "Save" },
   "manage": { "title": "Manage account", "button": "Save" },
-  "subscription": { "title": "Subscription" },
+  "subscription": {
+    "title": "Subscription",
+    "label": "Current plan",
+    "billing": { "label": "Billing", "monthly": "Monthly", "yearly": "Yearly" },
+    "renewal": "Renewal",
+    "on": "on",
+    "button": "Cancel subscription",
+    "cancel": "Cancel",
+    "description": "Are you sure you want to cancel your subscription? This action cannot be undone.",
+    "sell": "Gain programming skills that will accelerate your career growth! Get access to all courses and certificates.",
+    "error": "Cancellation failed. Please try again."
+  },
   "logout": { "title": "Logout", "error": "Logout failed. Please try again." },
   "photo": { "change": "Change photo", "error": "Photo change failed. Please try again." },
   "delete": {

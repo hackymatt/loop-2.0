@@ -14,10 +14,12 @@ import { getPlanIcon } from "src/utils/plan-icon";
 import { fCurrency } from "src/utils/format-number";
 
 import { CONFIG } from "src/global-config";
+import { PLAN_TYPE } from "src/consts/plan";
 import { useAnalytics } from "src/app/analytics-provider";
 
 import { Label } from "src/components/label";
 import { Iconify } from "src/components/iconify";
+import { useUserContext } from "src/components/user";
 
 import type { PricingCardProps } from "./types";
 
@@ -25,13 +27,24 @@ import type { PricingCardProps } from "./types";
 
 type Props = PaperProps & {
   plan: PricingCardProps;
+  isYearly: boolean;
 };
 
 const iconPath = (name: string) => `${CONFIG.assetsDir}/assets/icons/plans/${name}`;
 
-export function PricingCard({ plan, sx, ...other }: Props) {
+export function PricingCard({ plan, isYearly, sx, ...other }: Props) {
   const { t } = useTranslation("pricing");
   const { t: locale } = useTranslation("locale");
+
+  const user = useUserContext();
+  const { isLoggedIn, plan: userPlan } = user.state;
+
+  const isCurrentPlan = isLoggedIn && plan.slug === userPlan.type;
+
+  const redirect =
+    plan.slug === PLAN_TYPE.FREE
+      ? `${paths.payment}?plan=${plan.slug}`
+      : `${paths.payment}?plan=${plan.slug}&yearly=${isYearly}`;
 
   const { trackEvent } = useAnalytics();
 
@@ -141,14 +154,18 @@ export function PricingCard({ plan, sx, ...other }: Props) {
       <Button
         fullWidth
         size="large"
-        variant="contained"
+        variant={isCurrentPlan ? "outlined" : "contained"}
         color={plan.popular ? "primary" : "inherit"}
-        href={paths.register}
-        onClick={() =>
-          trackEvent({ category: "pricing", label: plan.license, action: "choosePlan" })
-        }
+        href={isLoggedIn ? redirect : paths.register}
+        disabled={isCurrentPlan}
+        onClick={() => {
+          if (!isLoggedIn) {
+            user.setField("redirect", redirect);
+          }
+          trackEvent({ category: "pricing", label: plan.license, action: "choosePlan" });
+        }}
       >
-        {`${t("choose")} ${plan.license}`}
+        {isCurrentPlan ? t("current") : `${t("choose")} ${plan.license}`}
       </Button>
     </Paper>
   );

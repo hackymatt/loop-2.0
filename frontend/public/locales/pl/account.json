@@ -4,10 +4,12 @@
     "errors": { "required": "Email jest wymagany", "invalid": "Email jest nieprawidłowy" }
   },
   "firstName": {
-    "label": "Imię"
+    "label": "Imię",
+    "errors": { "required": "Imię jest wymagane" }
   },
   "lastName": {
-    "label": "Nazwisko"
+    "label": "Nazwisko",
+    "errors": { "required": "Nazwisko jest wymagane" }
   },
   "password": {
     "label": "Hasło",
@@ -61,7 +63,18 @@
   },
   "personal": { "title": "Dane osobowe", "button": "Zapisz" },
   "manage": { "title": "Zarządzaj kontem", "button": "Zapisz" },
-  "subscription": { "title": "Subskrypcja" },
+  "subscription": {
+    "title": "Subskrypcja",
+    "label": "Obecny plan",
+    "billing": { "label": "Rozliczenie", "monthly": "Miesięczne", "yearly": "Roczne" },
+    "renewal": "Odnowienie",
+    "on": "dnia",
+    "button": "Anuluj subskrypcję",
+    "cancel": "Anuluj",
+    "description": "Czy na pewno chcesz anulować subskrypcję? Ta akcja jest nieodwracalna.",
+    "sell": "Zdobądź umiejętności programistyczne, które przyspieszą rozwój Twojej kariery! Zyskaj dostęp do wszystkich kursów oraz certyfikatów.",
+    "error": "Wystąpił błąd. Spróbuj ponownie."
+  },
   "logout": { "title": "Wyloguj się", "error": "Wystąpił błąd. Spróbuj ponownie." },
   "photo": { "change": "Zmień zdjęcie", "error": "Wystąpił błąd. Spróbuj ponownie." },
   "delete": {

@@ -1,5 +1,6 @@
-import type { PlanType } from "src/types/plan";
 import type { JoinType, UserType } from "src/types/user";
+import type { PlanType, PlanInterval } from "src/types/plan";
+import type { DatePickerFormat } from "src/utils/format-time";
 
 // ----------------------------------------------------------------------
 
@@ -12,7 +13,7 @@ export type UserState = {
   joinType: JoinType;
   isActive: boolean;
   isLoggedIn: boolean;
-  plan: PlanType | null;
+  plan: { type: PlanType; interval: PlanInterval | null; valid_to: DatePickerFormat | null };
   redirect: string | null;
 };
 

@@ -27,7 +27,7 @@ export function PricingColumnsView() {
 
   const pricingColumns = (plans || []).map(({ price, ...rest }: IPlanProps) => {
     const { monthly, yearly } = price;
-    return { ...rest, price: isYearly ? yearly : monthly };
+    return { ...rest, price: isYearly ? yearly / 12 : monthly };
   });
 
   const handleChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
@@ -69,7 +69,7 @@ export function PricingColumnsView() {
         size={{ xs: 12, md: 3 }}
         sx={(theme) => ({ borderTop: `solid 1px ${theme.vars.palette.divider}` })}
       >
-        {pricingColumns[0].options.map((option) => (
+        {(pricingColumns[0]?.options || []).map((option) => (
           <Box
             key={option.title}
             sx={(theme) => ({
@@ -92,7 +92,7 @@ export function PricingColumnsView() {
           size={{ xs: 12, md: 3 }}
           sx={(theme) => ({ borderTop: { md: `solid 1px ${theme.vars.palette.divider}` } })}
         >
-          <PricingColumnContentDesktop plan={plan} />
+          <PricingColumnContentDesktop plan={plan} isYearly={isYearly} />
         </Grid>
       ))}
     </Grid>
@@ -129,7 +129,11 @@ export function PricingColumnsView() {
             size={{ xs: 12, md: 3 }}
           >
             <PricingColumnHeader plan={plan} />
-            <PricingColumnContentMobile plan={plan} sx={{ display: { md: "none" } }} />
+            <PricingColumnContentMobile
+              plan={plan}
+              isYearly={isYearly}
+              sx={{ display: { md: "none" } }}
+            />
           </Grid>
         ))}
       </Grid>

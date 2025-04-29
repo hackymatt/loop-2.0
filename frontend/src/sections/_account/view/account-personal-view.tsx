@@ -29,8 +29,8 @@ const useAccountPersonalSchema = () => {
       .string()
       .min(1, { message: t("email.errors.required") })
       .email({ message: t("email.errors.invalid") }),
-    firstName: zod.string().nullable(),
-    lastName: zod.string().nullable(),
+    firstName: zod.string().min(1, { message: t("firstName.errors.required") }),
+    lastName: zod.string().min(1, { message: t("lastName.errors.required") }),
   });
 };
 
@@ -50,8 +50,8 @@ export function AccountPersonalView() {
   const methods = useForm<AccountPersonalSchemaType>({
     resolver: zodResolver(AccountPersonalSchema),
     defaultValues: {
-      firstName,
-      lastName,
+      firstName: firstName || "",
+      lastName: lastName || "",
       email: email || "",
     },
   });

@@ -1,10 +1,11 @@
 import type { BoxProps } from "@mui/material/Box";
 import type { TextFieldProps } from "@mui/material/TextField";
 
+import { useTranslation } from "react-i18next";
 import { useBoolean } from "minimal-shared/hooks";
+import { useController, useFormContext } from "react-hook-form";
 
 import Box from "@mui/material/Box";
-import TextField from "@mui/material/TextField";
 import IconButton from "@mui/material/IconButton";
 import InputAdornment from "@mui/material/InputAdornment";
 
@@ -14,7 +15,6 @@ import { Iconify } from "src/components/iconify";
 // ----------------------------------------------------------------------
 
 type PaymentNewCardFormProps = BoxProps & {
-  isRHF?: boolean;
   numberField?: TextFieldProps & { name: string };
   holderField?: TextFieldProps & { name: string };
   dateField?: TextFieldProps & { name: string };
@@ -23,16 +23,35 @@ type PaymentNewCardFormProps = BoxProps & {
 
 export function PaymentNewCardForm({
   sx,
-  isRHF,
   cvvField,
   dateField,
   numberField,
   holderField,
   ...other
 }: PaymentNewCardFormProps) {
-  const FormField = isRHF ? Field.Text : TextField;
-
   const showPassword = useBoolean();
+  const { t } = useTranslation("payment");
+
+  const { control } = useFormContext();
+
+  const {
+    field: { value: cardNumber },
+  } = useController({ name: "paymentMethods.card.number", control });
+
+  const detectCardProvider = () => {
+    const visaPattern = /^4/;
+    const masterCardPattern = /^(5[1-5]|2[2-7])/;
+
+    if (visaPattern.test(cardNumber)) {
+      return "visa";
+    }
+    if (masterCardPattern.test(cardNumber)) {
+      return "mastercard";
+    }
+    return undefined;
+  };
+
+  const cardProvider = detectCardProvider();
 
   return (
     <Box
@@ -42,36 +61,54 @@ export function PaymentNewCardForm({
       ]}
       {...other}
     >
-      <FormField
-        label="Card number"
+      {/* Card Number Field with Mask */}
+      <Field.Text
+        label={t("card.number.label")}
         placeholder="xxxx xxxx xxxx xxxx"
-        slotProps={{ inputLabel: { shrink: true } }}
+        mask="9999 9999 9999 9999"
+        slotProps={{
+          inputLabel: { shrink: true },
+          input: {
+            endAdornment: (
+              <InputAdornment position="end">
+                <Iconify icon={`logos:${cardProvider}`} />
+              </InputAdornment>
+            ),
+          },
+        }}
         {...numberField}
         name={numberField?.name ?? ""}
       />
 
-      <FormField
-        label="Card holder"
-        placeholder="John Doe"
-        slotProps={{ inputLabel: { shrink: true } }}
+      {/* Card Holder Field */}
+      <Field.Text
+        label={t("card.holder.label")}
+        placeholder={t("card.holder.placeholder")}
+        slotProps={{
+          inputLabel: { shrink: true },
+        }}
         {...holderField}
         name={holderField?.name ?? ""}
       />
 
       <Box sx={{ gap: 2, display: "flex" }}>
-        <FormField
+        {/* Expiration Date Field with Mask */}
+        <Field.Text
           fullWidth
-          label="Expiration date"
+          label={t("card.expiration.label")}
           placeholder="MM/YY"
+          mask="99/99"
           slotProps={{ inputLabel: { shrink: true } }}
           {...dateField}
           name={dateField?.name ?? ""}
         />
 
-        <FormField
+        {/* CVV Field */}
+        <Field.Text
           fullWidth
-          label="Cvv/Cvc"
+          label={t("card.security.label")}
           placeholder="***"
+          mask="999"
           slotProps={{
             inputLabel: { shrink: true },
             input: {
@@ -90,19 +127,6 @@ export function PaymentNewCardForm({
           {...cvvField}
           name={cvvField?.name ?? ""}
         />
-      </Box>
-
-      <Box
-        sx={{
-          gap: 1,
-          display: "flex",
-          alignItems: "center",
-          typography: "caption",
-          color: "text.disabled",
-        }}
-      >
-        <Iconify icon="solar:lock-password-outline" />
-        Your transaction is secured with SSL encryption
       </Box>
     </Box>
   );

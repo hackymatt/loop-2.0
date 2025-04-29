@@ -204,6 +204,7 @@ export function CodingLesson({
       }}
     >
       <SectionHeader title={t("coding.editor.label")} icon="solar:code-2-bold" />
+
       <Box
         sx={{
           flexGrow: 1,

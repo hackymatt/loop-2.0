@@ -195,6 +195,7 @@ class CodingLesson(BaseModel):
         Lesson, on_delete=models.CASCADE, related_name="coding"
     )
     technology = models.ForeignKey(Technology, on_delete=models.PROTECT)
+    file_name = models.CharField(null=True, blank=True)
     starter_code = models.TextField()
     solution_code = models.TextField()
     penalty_points = models.PositiveIntegerField(default=0)
