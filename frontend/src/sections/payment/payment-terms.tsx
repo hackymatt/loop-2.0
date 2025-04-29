@@ -25,7 +25,7 @@ export function PaymentTerms({ sx, ...other }: BoxProps) {
       ]}
       {...other}
     >
-      <Field.Checkbox name="termsAcceptance" label={termsAcceptance} />
+      <Field.Checkbox name="summary.termsAcceptance" label={termsAcceptance} />
     </Box>
   );
 }

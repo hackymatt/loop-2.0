@@ -1,7 +1,14 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
-from plan.subscription.utils import get_active_user_plan
+from plan.subscription.utils import get_active_user_subscription
+from plan.subscription.serializers import UserSubscription
 from const import UserType
+
+
+class UserPlanSerializer(serializers.Serializer):
+    type = serializers.CharField()
+    interval = serializers.CharField(allow_null=True)
+    valid_to = serializers.DateTimeField(allow_null=True)
 
 
 class LoginResponseSerializer(serializers.ModelSerializer):
@@ -22,11 +29,11 @@ class LoginResponseSerializer(serializers.ModelSerializer):
         ]
 
     def get_plan(self, obj):
-        return (
-            get_active_user_plan(obj).slug
-            if obj.user_type == UserType.STUDENT
-            else None
-        )
+        if obj.user_type != UserType.STUDENT:
+            return None
+
+        subscription = get_active_user_subscription(obj)
+        return UserSubscription(subscription).data
 
     def get_image(self, obj):
         request = self.context.get("request")

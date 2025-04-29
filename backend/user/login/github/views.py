@@ -7,7 +7,7 @@ from rest_framework import status
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.conf import settings
 from ...utils import get_unique_username, set_cookies, download_and_assign_image
-from plan.subscription.utils import subscribe
+from plan.subscription.utils import subscribe_free_plan
 from ..serializers import LoginResponseSerializer
 from user.type.student_user.models import Student
 from const import JoinType, UserType
@@ -102,9 +102,9 @@ class GithubLoginView(APIView):
             },
         )
         student, student_created = Student.objects.get_or_create(user=user)
-        subscribe(student)
 
         if user_created:
+            subscribe_free_plan(student)
             download_and_assign_image(user, picture)
 
         # Create JWT tokens

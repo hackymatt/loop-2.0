@@ -8,7 +8,7 @@ from .login.github.views import GithubLoginView
 from .login.facebook.views import FacebookLoginView
 from .logout.views import LogoutView
 from .reset_password.views import PasswordResetView, PasswordResetConfirmView
-from .data.views import UpdateUserView, ChangePasswordView, DeleteAccountView
+from .me.views import UpdateUserView, ChangePasswordView, DeleteAccountView
 from .refresh_token.views import RefreshTokenView
 from .login.auth_check.views import AuthCheckView
 from .dashboard.views import DashboardView

@@ -1,77 +1,166 @@
 "use client";
 
-import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import Divider from "@mui/material/Divider";
+import { useTranslation } from "react-i18next";
+import { useBoolean } from "minimal-shared/hooks";
+
+import { Box, Card } from "@mui/material";
 import Typography from "@mui/material/Typography";
+import LoadingButton from "@mui/lab/LoadingButton";
 
-import { _mock } from "src/_mock";
+import { fDate } from "src/utils/format-time";
+import { getPlanIcon } from "src/utils/plan-icon";
+import { fCurrency } from "src/utils/format-number";
 
-import { PaymentNewCardForm } from "src/sections/payment/payment-new-card-form";
+import { CONFIG } from "src/global-config";
+import { usePlan } from "src/api/plan/plan";
+import { PLAN_TYPE, PLAN_INTERVAL } from "src/consts/plan";
+import { UpgradeButton } from "src/layouts/components/upgrade-button";
 
-import { AccountPaymentCard } from "../account-payment-card";
+import { useUserContext } from "src/components/user";
 
-// ----------------------------------------------------------------------
-
-const CARD_OPTIONS = [
-  {
-    id: _mock.id(1),
-    value: "paypal",
-    label: "Paypal",
-    number: "2904 1902 1802 1234",
-    holder: _mock.fullName(1),
-    expired: "08/24",
-    isPrimary: false,
-  },
-  {
-    id: _mock.id(2),
-    value: "mastercard",
-    label: "Mastercard",
-    number: "2904 1902 1802 5678",
-    holder: _mock.fullName(2),
-    expired: "08/24",
-    isPrimary: true,
-  },
-  {
-    id: _mock.id(3),
-    value: "visa",
-    label: "Visa",
-    number: "2904 1902 1802 7890",
-    holder: _mock.fullName(3),
-    expired: "08/24",
-    isPrimary: false,
-  },
-];
+import { CancelSubscriptionForm } from "./cancel-subscription-form";
 
 // ----------------------------------------------------------------------
 
+const iconPath = (name: string) => `${CONFIG.assetsDir}/assets/icons/plans/${name}`;
 export function AccountSubscriptionView() {
+  const { t } = useTranslation("account");
+  const { t: locale } = useTranslation("locale");
+
+  const cancelSubscriptionFormOpen = useBoolean();
+
+  const user = useUserContext();
+  const { plan: userPlan } = user.state;
+  const isYearly = userPlan.interval === PLAN_INTERVAL.YEARLY;
+
+  const { data: plan } = usePlan(userPlan.type || PLAN_TYPE.FREE);
+
+  const isFreePlan = userPlan.type === PLAN_TYPE.FREE;
+
   return (
     <>
-      <Typography variant="h5">Payment method</Typography>
+      <Typography variant="h5" gutterBottom>
+        {t("subscription.title")}
+      </Typography>
 
-      <Box
+      <Card
         sx={{
-          mt: 3,
-          gap: 3,
-          display: "grid",
-          gridTemplateColumns: { xs: "repeat(1, 1fr)", md: "repeat(2, 1fr)" },
+          p: 5,
+          maxWidth: 420,
+          mx: "auto",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          textAlign: "center",
+          gap: 2,
         }}
       >
-        {CARD_OPTIONS.map((card) => (
-          <AccountPaymentCard key={card.id} card={card} />
-        ))}
-      </Box>
+        {/* Subscription Info */}
+        <Box>
+          <Typography variant="overline" sx={{ color: "text.disabled" }}>
+            {t("subscription.label")}
+          </Typography>
 
-      <Divider sx={{ my: 5, borderStyle: "dashed" }} />
+          <Box>
+            <Box
+              component="img"
+              alt={plan?.license}
+              src={iconPath(getPlanIcon(plan?.slug || PLAN_TYPE.FREE))}
+              sx={{ width: 80, height: 80 }}
+            />
 
-      <Box sx={{ gap: 3, display: "flex", flexDirection: "column" }}>
-        <Typography variant="h5">Add new card </Typography>
-        <PaymentNewCardForm />
-        <Button color="inherit" variant="contained" sx={{ alignSelf: "flex-end" }}>
-          Save changes
-        </Button>
-      </Box>
+            <Typography variant="h4" sx={{ mt: 1 }}>
+              {plan?.license}
+            </Typography>
+          </Box>
+
+          {isFreePlan && (
+            <Typography variant="body2" sx={{ mt: 2, color: "text.secondary" }}>
+              {t("subscription.sell")}
+            </Typography>
+          )}
+
+          {!isFreePlan && (
+            <Box
+              sx={{
+                mt: 2,
+                color: "text.secondary",
+                typography: "body2",
+                display: "flex",
+                alignItems: "center",
+                flexWrap: "wrap",
+                gap: 0.5,
+              }}
+            >
+              {t("subscription.billing.label")}
+              <Typography variant="body2" fontWeight="bold">
+                {isYearly ? t("subscription.billing.yearly") : t("subscription.billing.monthly")}
+              </Typography>
+            </Box>
+          )}
+
+          {!isFreePlan && (
+            <Box
+              sx={{
+                mt: 2,
+                color: "text.secondary",
+                typography: "body2",
+                display: "flex",
+                alignItems: "center",
+                flexWrap: "wrap",
+                gap: 0.5,
+              }}
+            >
+              {t("subscription.renewal")}
+              <Typography variant="body2" fontWeight="bold">
+                {fCurrency(999, {
+                  code: locale("code"),
+                  currency: locale("currency"),
+                })}
+              </Typography>
+              {t("subscription.on")}
+              <Typography variant="body2" fontWeight="bold">
+                {fDate(userPlan.valid_to)}
+              </Typography>
+            </Box>
+          )}
+        </Box>
+
+        {/* Action Buttons */}
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            mt: 2,
+            gap: 1,
+          }}
+        >
+          <UpgradeButton
+            slotProps={{
+              button: {
+                size: "large",
+                sx: { width: { xs: 200, md: 300 } },
+              },
+            }}
+          />
+          {!isFreePlan && (
+            <LoadingButton
+              variant="text"
+              size="large"
+              color="error"
+              onClick={cancelSubscriptionFormOpen.onToggle}
+            >
+              {t("subscription.button")}
+            </LoadingButton>
+          )}
+        </Box>
+      </Card>
+
+      <CancelSubscriptionForm
+        open={cancelSubscriptionFormOpen.value}
+        onClose={cancelSubscriptionFormOpen.onFalse}
+      />
     </>
   );
 }

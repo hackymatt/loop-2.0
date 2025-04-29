@@ -6,7 +6,7 @@
     "plan": "Plan",
     "yearly": { "save": "Zaoszczędź", "part1": "wybierając", "part2": "rozliczanie roczne" },
     "total": "Łącznie",
-    "button": "Zapłać i subskrybuj",
+    "button": { "free": "Subskrybuj", "other": "Zapłać i subskrybuj" },
     "info": "Zatwierdzając subskrypcję, zezwalasz loop na obciążenie Twojego konta przyszłymi płatnościami zgodnie z jego warunkami. Zawsze możesz anulować subskrypcję.",
     "stripe": {
       "managed": "Obsługiwane przez",
@@ -38,6 +38,7 @@
     },
     "holder": {
       "label": "Właściciel karty",
+      "placeholder": "Jan Kowalski",
       "errors": { "required": "Właściciel karty jest wymagany" }
     },
     "expiration": {

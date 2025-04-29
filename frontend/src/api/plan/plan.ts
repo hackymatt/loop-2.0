@@ -51,7 +51,7 @@ export const planQuery = (slug: string, language?: Language) => {
     return { results: modifiedResults };
   };
 
-  return { url, queryFn, queryKey: compact([url, language]) };
+  return { url, queryFn, queryKey: compact([url, slug, language]) };
 };
 
 export const usePlan = (slug: string, enabled: boolean = true) => {

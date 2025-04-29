@@ -53,8 +53,6 @@ export function PaymentNewCardForm({
 
   const cardProvider = detectCardProvider();
 
-  console.log(cardProvider);
-
   return (
     <Box
       sx={[
@@ -85,7 +83,7 @@ export function PaymentNewCardForm({
       {/* Card Holder Field */}
       <Field.Text
         label={t("card.holder.label")}
-        placeholder="John Doe"
+        placeholder={t("card.holder.placeholder")}
         slotProps={{
           inputLabel: { shrink: true },
         }}

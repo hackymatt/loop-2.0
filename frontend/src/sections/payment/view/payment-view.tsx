@@ -1,9 +1,11 @@
 "use client";
 
+import type { PlanType } from "src/types/plan";
 import type { BoxProps } from "@mui/material/Box";
 
 import { z as zod } from "zod";
 import { useForm } from "react-hook-form";
+import { useMemo, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -13,9 +15,15 @@ import { Divider } from "@mui/material";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 
+import { paths } from "src/routes/paths";
+import { useRouter } from "src/routes/hooks";
+
 import { useQueryParams } from "src/hooks/use-query-params";
+import { useFormErrorHandler } from "src/hooks/use-form-error-handler";
 
 import { usePlan } from "src/api/plan/plan";
+import { PLAN_TYPE } from "src/consts/plan";
+import { useSubscribe } from "src/api/plan/subscribe";
 
 import { useUserContext } from "src/components/user";
 import { Form, Field } from "src/components/hook-form";
@@ -25,58 +33,13 @@ import { NotFoundView } from "src/sections/error/not-found-view";
 
 import { PaymentForm } from "../payment-form";
 import { PaymentSummary } from "../payment-summary";
-
-const useCustomerSchema = () => {
-  const { t } = useTranslation("account");
-
-  return zod.object({
-    email: zod
-      .string()
-      .min(1, { message: t("email.errors.required") })
-      .email({ message: t("email.errors.invalid") }),
-    firstName: zod.string().min(1, { message: t("firstName.errors.required") }),
-    lastName: zod.string().min(1, { message: t("lastName.errors.required") }),
-  });
-};
-
-const usePaymentMethods = () => {
-  const { t } = useTranslation("payment");
-
-  return zod.object({
-    method: zod.enum(["card", "applepay", "googlepay"]),
-    card: zod.object({
-      number: zod
-        .string()
-        .min(16, { message: t("card.number.errors.required") })
-        .max(16, { message: t("card.number.errors.invalid") })
-        .regex(/^\d+$/, { message: t("card.number.errors.invalid") }),
-      holder: zod.string().min(1, { message: t("card.holder.errors.required") }),
-      expiration: zod
-        .string()
-        .min(5, { message: t("card.expiration.errors.required") })
-        .max(5, { message: t("card.expiration.errors.invalid") })
-        .regex(/^(0[1-9]|1[0-2])\/\d{2}$/, { message: t("card.expiration.errors.invalid") })
-        .refine(
-          (value) => {
-            const [month, year] = value.split("/");
-            const expirationDate = new Date(Number(`20${year}`), parseInt(month, 10) - 1);
-            const currentDate = new Date();
-            return expirationDate > currentDate;
-          },
-          { message: t("card.expiration.errors.invalid") }
-        ),
-      security: zod
-        .string()
-        .min(3, { message: t("card.security.errors.required") })
-        .max(3, { message: t("card.security.errors.invalid") }),
-    }),
-  });
-};
+import { usePaymentSchema, useCustomerSchema, usePaymentMethods } from "../schema";
 
 // ----------------------------------------------------------------------
 
 export function PaymentView() {
   const { query } = useQueryParams();
+  const router = useRouter();
 
   const { t: account } = useTranslation("account");
   const { t } = useTranslation("payment");
@@ -85,25 +48,33 @@ export function PaymentView() {
   const { email, firstName, lastName } = user.state;
 
   const { data: plan, isLoading, isError } = usePlan(query.plan);
+  const { mutateAsync: subscribe } = useSubscribe();
+
+  const isFreePlan = (plan?.slug || PLAN_TYPE.FREE) === PLAN_TYPE.FREE;
 
   const PaymentSchema = zod.object({
+    summary: usePaymentSchema(),
     customer: useCustomerSchema(),
     paymentMethods: usePaymentMethods(),
   });
 
   type PaymentSchemaType = zod.infer<typeof PaymentSchema>;
 
-  const defaultValues: PaymentSchemaType = {
-    customer: {
-      email: email || "",
-      firstName: firstName || "",
-      lastName: lastName || "",
-    },
-    paymentMethods: {
-      method: "card",
-      card: { number: "", holder: "", expiration: "", security: "" },
-    },
-  };
+  const defaultValues: PaymentSchemaType = useMemo(
+    () => ({
+      summary: { termsAcceptance: false },
+      customer: {
+        email: email || "",
+        firstName: firstName || "",
+        lastName: lastName || "",
+      },
+      paymentMethods: {
+        method: "card",
+        card: { number: "", holder: "", expiration: "", security: "" },
+      },
+    }),
+    [email, firstName, lastName]
+  );
 
   const methods = useForm<PaymentSchemaType>({
     resolver: zodResolver(PaymentSchema),
@@ -111,18 +82,35 @@ export function PaymentView() {
     defaultValues,
   });
 
-  const { handleSubmit } = methods;
+  const { handleSubmit, reset } = methods;
+
+  useEffect(() => {
+    reset({
+      ...defaultValues,
+      paymentMethods: {
+        method: isFreePlan ? "" : "card",
+        card: { number: "", holder: "", expiration: "", security: "" },
+      },
+    });
+  }, [defaultValues, isFreePlan, reset]);
+
+  const handleFormError = useFormErrorHandler(methods);
 
   const onSubmit = handleSubmit(async (data) => {
-    // try {
-    //   await new Promise((resolve) => setTimeout(resolve, 500));
-    //   reset();
-    //   router.push(paths.travel.orderCompleted);
-    //   console.info("DATA", data);
-    // } catch (error) {
-    //   console.error(error);
-    // }
+    try {
+      const { data: response } = await subscribe({
+        plan: query.plan,
+        interval: query.plan === PLAN_TYPE.FREE ? null : query.yearly ? "yearly" : "monthly",
+        user: { first_name: data.customer.firstName, last_name: data.customer.lastName },
+      });
+      const { type, ...rest } = response;
+      user.setField("plan", { ...rest, type: type as PlanType });
+      router.push(paths.account.dashboard);
+    } catch (error) {
+      handleFormError(error);
+    }
   });
+
   if (isError) {
     return <NotFoundView />;
   }
@@ -186,19 +174,25 @@ export function PaymentView() {
         {t("subtitle").replace("{plan}", plan?.license || "")}
       </Typography>
 
-      <Grid container spacing={{ xs: 5, md: 8 }}>
-        <Form methods={methods} onSubmit={onSubmit}>
-          <Grid size={{ xs: 12, md: 12 }}>
-            {renderAccountDetails()}
+      <Form methods={methods} onSubmit={onSubmit}>
+        {!isFreePlan ? (
+          <Grid container spacing={{ xs: 5, md: 8 }}>
+            <Grid size={{ xs: 12, md: 7 }}>
+              {renderAccountDetails()}
 
-            <Divider sx={{ my: 5, borderStyle: "dashed" }} />
+              <Divider sx={{ my: 5, borderStyle: "dashed" }} />
 
-            {renderPaymentMethods()}
+              {renderPaymentMethods()}
+            </Grid>
+
+            <Grid size={{ xs: 12, md: 5 }}>{plan && <PaymentSummary plan={plan} />}</Grid>
           </Grid>
-        </Form>
-
-        <Grid size={{ xs: 12, md: 5 }}>{plan && <PaymentSummary plan={plan} />}</Grid>
-      </Grid>
+        ) : (
+          <Grid container spacing={{ xs: 5, md: 8 }} justifyContent="center">
+            <Grid size={{ xs: 12, md: 5 }}>{plan && <PaymentSummary plan={plan} />}</Grid>
+          </Grid>
+        )}
+      </Form>
     </Container>
   );
 }

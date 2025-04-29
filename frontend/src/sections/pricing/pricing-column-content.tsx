@@ -10,6 +10,7 @@ import Collapse, { collapseClasses } from "@mui/material/Collapse";
 
 import { paths } from "src/routes/paths";
 
+import { PLAN_TYPE } from "src/consts/plan";
 import { useAnalytics } from "src/app/analytics-provider";
 
 import { Iconify } from "src/components/iconify";
@@ -35,9 +36,12 @@ export function PricingColumnContentMobile({
   const user = useUserContext();
   const { isLoggedIn, plan: userPlan } = user.state;
 
-  const isCurrentPlan = isLoggedIn && plan.slug === userPlan;
+  const isCurrentPlan = isLoggedIn && plan.slug === userPlan.type;
 
-  const redirect = `${paths.payment}?plan=${plan.slug}&yearly=${isYearly}`;
+  const redirect =
+    plan.slug === PLAN_TYPE.FREE
+      ? `${paths.payment}?plan=${plan.slug}`
+      : `${paths.payment}?plan=${plan.slug}&yearly=${isYearly}`;
 
   const { trackEvent } = useAnalytics();
 
@@ -140,9 +144,12 @@ export function PricingColumnContentDesktop({
   const user = useUserContext();
   const { isLoggedIn, plan: userPlan } = user.state;
 
-  const isCurrentPlan = isLoggedIn && plan.slug === userPlan;
+  const isCurrentPlan = isLoggedIn && plan.slug === userPlan.type;
 
-  const redirect = `${paths.payment}?plan=${plan.slug}&yearly=${isYearly}`;
+  const redirect =
+    plan.slug === PLAN_TYPE.FREE
+      ? `${paths.payment}?plan=${plan.slug}`
+      : `${paths.payment}?plan=${plan.slug}&yearly=${isYearly}`;
 
   const { trackEvent } = useAnalytics();
 

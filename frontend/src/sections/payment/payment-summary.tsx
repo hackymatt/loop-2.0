@@ -1,9 +1,7 @@
 import type { IPlanProps } from "src/types/plan";
 import type { BoxProps } from "@mui/material/Box";
 
-import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import { zodResolver } from "@hookform/resolvers/zod";
 
 import Box from "@mui/material/Box";
 import Switch from "@mui/material/Switch";
@@ -15,18 +13,15 @@ import LoadingButton from "@mui/lab/LoadingButton";
 import { paths } from "src/routes/paths";
 
 import { useQueryParams } from "src/hooks/use-query-params";
-import { useFormErrorHandler } from "src/hooks/use-form-error-handler";
 
 import { fCurrency } from "src/utils/format-number";
 
+import { PLAN_TYPE } from "src/consts/plan";
+
 import { Label } from "src/components/label";
-import { Form } from "src/components/hook-form";
 import { Iconify } from "src/components/iconify";
 
-import { usePaymentSchema } from "./schema";
 import { PaymentTerms } from "./payment-terms";
-
-import type { PaymentSchemaType } from "./schema";
 
 // ----------------------------------------------------------------------
 
@@ -44,28 +39,7 @@ export function PaymentSummary({ plan, sx, ...other }: PaymentSummaryProps) {
   const isYearly = (query?.yearly ?? "false") === "true";
   const price = isYearly ? priceObj.yearly / 12 : priceObj.monthly;
 
-  const defaultValues: PaymentSchemaType = {
-    termsAcceptance: false,
-  };
-
-  const PaymentSchema = usePaymentSchema();
-
-  const methods = useForm<PaymentSchemaType>({
-    resolver: zodResolver(PaymentSchema),
-    defaultValues,
-  });
-
-  const { handleSubmit } = methods;
-
-  const handleFormError = useFormErrorHandler(methods);
-
-  const onSubmit = handleSubmit(async (data) => {
-    try {
-      console.log("here");
-    } catch (error) {
-      handleFormError(error);
-    }
-  });
+  const isFreePlan = plan.slug === PLAN_TYPE.FREE;
 
   const renderSubscription = () => (
     <Box sx={{ display: "flex", alignItems: "center" }}>
@@ -232,29 +206,27 @@ export function PaymentSummary({ plan, sx, ...other }: PaymentSummaryProps) {
 
       <Box sx={{ gap: 2.5, display: "flex", flexDirection: "column" }}>
         {renderSubscription()}
-        {renderPlanSwitch()}
+        {!isFreePlan && renderPlanSwitch()}
         {renderPrices()}
         <Divider sx={{ borderStyle: "dashed" }} />
         {renderTotalBilled()}
         <Divider sx={{ borderStyle: "dashed" }} />
       </Box>
 
-      <Form methods={methods} onSubmit={onSubmit}>
-        <PaymentTerms />
+      <PaymentTerms />
 
-        <LoadingButton
-          fullWidth
-          size="large"
-          color="inherit"
-          type="submit"
-          variant="contained"
-          sx={{ my: 3 }}
-        >
-          {t("summary.button")}
-        </LoadingButton>
-      </Form>
+      <LoadingButton
+        fullWidth
+        size="large"
+        color="inherit"
+        type="submit"
+        variant="contained"
+        sx={{ my: 3 }}
+      >
+        {isFreePlan ? t("summary.button.free") : t("summary.button.other")}
+      </LoadingButton>
 
-      {renderPaymentNotice()}
+      {!isFreePlan && renderPaymentNotice()}
     </Box>
   );
 }

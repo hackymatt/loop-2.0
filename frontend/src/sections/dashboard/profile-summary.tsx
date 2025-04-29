@@ -9,8 +9,11 @@ import { RouterLink } from "src/routes/components";
 
 import { fNumber } from "src/utils/format-number";
 
+import { usePlan } from "src/api/plan/plan";
+import { PLAN_TYPE } from "src/consts/plan";
 import { DEFAULT_AVATAR_URL } from "src/consts/avatar";
 
+import { Label } from "src/components/label";
 import { Iconify } from "src/components/iconify";
 import { useUserContext } from "src/components/user";
 
@@ -65,7 +68,31 @@ export function ProfileSummary({ totalPoints, dailyStreak }: Props) {
   const { t } = useTranslation("dashboard");
 
   const user = useUserContext();
-  const { firstName, email, avatarUrl } = user.state;
+  const { firstName, email, avatarUrl, plan: userPlan } = user.state;
+
+  const { data: plan } = usePlan(userPlan.type || PLAN_TYPE.FREE);
+
+  const renderPlan = () => (
+    <Link component={RouterLink} href={paths.account.subscription} color="inherit" underline="none">
+      <Card
+        sx={(theme) => ({
+          borderRadius: 2,
+          p: 2,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          textAlign: "center",
+          gap: 2,
+          backgroundColor: theme.palette.background.default,
+          "&:hover": { boxShadow: theme.vars.customShadows.z24 },
+        })}
+      >
+        <Label color="error" sx={{ textTransform: "uppercase" }}>
+          {plan?.license || PLAN_TYPE.FREE}
+        </Label>
+      </Card>
+    </Link>
+  );
 
   const renderUser = () => (
     <Link component={RouterLink} href={paths.account.personal} color="inherit" underline="none">
@@ -95,6 +122,26 @@ export function ProfileSummary({ totalPoints, dailyStreak }: Props) {
     </Link>
   );
 
+  const renderStats = () => (
+    <Box display="flex" gap={2}>
+      <StatBox
+        icon="solar:medal-star-bold"
+        label={t("profile.points")}
+        value={fNumber(totalPoints, {
+          code: locale("code"),
+          currency: locale("currency"),
+        })}
+        color="primary"
+      />
+      <StatBox
+        icon="solar:fire-bold"
+        label={t("profile.streak")}
+        value={`${dailyStreak} ${t("profile.days")}`}
+        color="warning"
+      />
+    </Box>
+  );
+
   return (
     <Box
       display="flex"
@@ -108,24 +155,8 @@ export function ProfileSummary({ totalPoints, dailyStreak }: Props) {
       })}
     >
       {renderUser()}
-
-      <Box display="flex" gap={2}>
-        <StatBox
-          icon="solar:medal-star-bold"
-          label={t("profile.points")}
-          value={fNumber(totalPoints, {
-            code: locale("code"),
-            currency: locale("currency"),
-          })}
-          color="primary"
-        />
-        <StatBox
-          icon="solar:fire-bold"
-          label={t("profile.streak")}
-          value={`${dailyStreak} ${t("profile.days")}`}
-          color="warning"
-        />
-      </Box>
+      {renderPlan()}
+      {renderStats()}
     </Box>
   );
 }

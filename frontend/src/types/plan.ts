@@ -1,8 +1,10 @@
-import type { PLAN_TYPE } from "src/consts/plan";
+import type { PLAN_TYPE, PLAN_INTERVAL } from "src/consts/plan";
 
 // ----------------------------------------------------------------------
 
 export type PlanType = (typeof PLAN_TYPE)[keyof typeof PLAN_TYPE];
+
+export type PlanInterval = (typeof PLAN_INTERVAL)[keyof typeof PLAN_INTERVAL];
 
 export type IPlanPriceProp = {
   monthly: number;

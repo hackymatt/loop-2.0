@@ -1,6 +1,6 @@
 import type { TextFieldProps } from "@mui/material/TextField";
 
-import InputMask from "react-input-mask";
+import InputMask from "react-input-mask-next";
 import { Controller, useFormContext } from "react-hook-form";
 import { transformValue, transformValueOnBlur, transformValueOnChange } from "minimal-shared/utils";
 
@@ -8,7 +8,7 @@ import TextField from "@mui/material/TextField";
 
 // ----------------------------------------------------------------------
 
-export type RHFTextFieldProps = TextFieldProps & {
+type RHFTextFieldProps = TextFieldProps & {
   name: string;
   mask?: string;
 };
@@ -25,8 +25,6 @@ export function RHFTextField({
   const { control } = useFormContext();
 
   const isNumberType = type === "number";
-
-  const { onChange, onBlur, ...otherClean } = other;
 
   return (
     <Controller
@@ -52,25 +50,22 @@ export function RHFTextField({
           }}
           disabled={disabled}
         >
-          {(inputProps) => (
-            <TextField
-              {...inputProps}
-              fullWidth
-              value={isNumberType ? transformValue(field.value) : field.value}
-              type={isNumberType ? "text" : type}
-              error={!!error}
-              helperText={error?.message ?? helperText}
-              slotProps={{
-                ...slotProps,
-                htmlInput: {
-                  autoComplete: "off",
-                  ...slotProps?.htmlInput,
-                  ...(isNumberType && { inputMode: "decimal", pattern: "[0-9]*\\.?[0-9]*" }),
-                },
-              }}
-              {...otherClean}
-            />
-          )}
+          <TextField
+            fullWidth
+            value={isNumberType ? transformValue(field.value) : field.value}
+            type={isNumberType ? "text" : type}
+            error={!!error}
+            helperText={error?.message ?? helperText}
+            slotProps={{
+              ...slotProps,
+              htmlInput: {
+                autoComplete: "off",
+                ...slotProps?.htmlInput,
+                ...(isNumberType && { inputMode: "decimal", pattern: "[0-9]*\\.?[0-9]*" }),
+              },
+            }}
+            {...other}
+          />
         </InputMask>
       )}
     />

@@ -13,6 +13,12 @@ type ILogin = {
   code: string;
 };
 
+type IPlan = {
+  type: "free" | "basic" | "premium";
+  interval: "monthly" | "yearly" | null;
+  valid_to: string | null;
+};
+
 type ILoginReturn = {
   data: {
     email: string;
@@ -22,7 +28,7 @@ type ILoginReturn = {
     user_type: "admin" | "instructor" | "student";
     join_type: "email" | "google" | "facebook" | "github";
     is_active: boolean;
-    plan: "free" | "basic" | "premium";
+    plan: IPlan;
   };
   status: number;
 };

@@ -14,6 +14,7 @@ import { getPlanIcon } from "src/utils/plan-icon";
 import { fCurrency } from "src/utils/format-number";
 
 import { CONFIG } from "src/global-config";
+import { PLAN_TYPE } from "src/consts/plan";
 import { useAnalytics } from "src/app/analytics-provider";
 
 import { Label } from "src/components/label";
@@ -38,9 +39,12 @@ export function PricingCard({ plan, isYearly, sx, ...other }: Props) {
   const user = useUserContext();
   const { isLoggedIn, plan: userPlan } = user.state;
 
-  const isCurrentPlan = isLoggedIn && plan.slug === userPlan;
+  const isCurrentPlan = isLoggedIn && plan.slug === userPlan.type;
 
-  const redirect = `${paths.payment}?plan=${plan.slug}&yearly=${isYearly}`;
+  const redirect =
+    plan.slug === PLAN_TYPE.FREE
+      ? `${paths.payment}?plan=${plan.slug}`
+      : `${paths.payment}?plan=${plan.slug}&yearly=${isYearly}`;
 
   const { trackEvent } = useAnalytics();
 
