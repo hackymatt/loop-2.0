@@ -1,4 +1,3 @@
-import type { Language } from "src/locales/types";
 import type { GetQueryResponse } from "src/api/types";
 import type { LevelType, ICourseProps } from "src/types/course";
 
@@ -6,8 +5,6 @@ import { compact } from "lodash-es";
 import { useQuery } from "@tanstack/react-query";
 
 import { getData } from "src/api/utils";
-
-import { useSettingsContext } from "src/components/settings";
 
 import { URLS } from "../urls";
 
@@ -82,16 +79,12 @@ type ICourse = {
   reviewed?: boolean;
 };
 
-export const courseQuery = (slug: string, language?: Language) => {
+export const courseQuery = (slug: string) => {
   const url = endpoint;
   const queryUrl = `${url}/${slug}`;
 
   const queryFn = async (): Promise<GetQueryResponse<ICourseProps>> => {
-    const { data } = await getData<ICourse>(queryUrl, {
-      headers: {
-        "Accept-Language": language,
-      },
-    });
+    const { data } = await getData<ICourse>(queryUrl);
     const {
       translated_name,
       translated_description,
@@ -192,13 +185,11 @@ export const courseQuery = (slug: string, language?: Language) => {
     return { results: modifiedResults };
   };
 
-  return { url, queryFn, queryKey: compact([url, slug, language]) };
+  return { url, queryFn, queryKey: compact([url, slug]) };
 };
 
 export const useCourse = (slug: string, enabled: boolean = true) => {
-  const settings = useSettingsContext();
-  const { language } = settings.state;
-  const { queryKey, queryFn } = courseQuery(slug, language);
+  const { queryKey, queryFn } = courseQuery(slug);
   const { data, ...rest } = useQuery({ queryKey, queryFn, enabled });
   return { data: data?.results, ...rest };
 };

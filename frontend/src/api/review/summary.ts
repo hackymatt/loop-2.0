@@ -1,4 +1,3 @@
-import type { Language } from "src/locales/types";
 import type { GetQueryResponse } from "src/api/types";
 import type { IReviewSummaryProps } from "src/types/review";
 
@@ -6,8 +5,6 @@ import { compact } from "lodash-es";
 import { useQuery } from "@tanstack/react-query";
 
 import { getSimpleListData } from "src/api/utils";
-
-import { useSettingsContext } from "src/components/settings";
 
 import { URLS } from "../urls";
 
@@ -18,26 +15,20 @@ type IReviewSummary = {
   count: number;
 };
 
-export const reviewsSummaryQuery = (slug: string, language?: Language) => {
+export const reviewsSummaryQuery = (slug: string) => {
   const url = endpoint;
   const queryUrl = `${url}/${slug}`;
 
   const queryFn = async (): Promise<GetQueryResponse<IReviewSummaryProps[]>> => {
-    const results = await getSimpleListData<IReviewSummary>(queryUrl, {
-      headers: {
-        "Accept-Language": language,
-      },
-    });
+    const results = await getSimpleListData<IReviewSummary>(queryUrl);
     return { results };
   };
 
-  return { url, queryFn, queryKey: compact([url, slug, language]) };
+  return { url, queryFn, queryKey: compact([url, slug]) };
 };
 
 export const useReviewsSummary = (slug: string, enabled: boolean = true) => {
-  const settings = useSettingsContext();
-  const { language } = settings.state;
-  const { queryKey, queryFn } = reviewsSummaryQuery(slug, language);
+  const { queryKey, queryFn } = reviewsSummaryQuery(slug);
   const { data, ...rest } = useQuery({ queryKey, queryFn, enabled });
   return {
     data: data?.results,

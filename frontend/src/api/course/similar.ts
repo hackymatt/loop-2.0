@@ -1,4 +1,3 @@
-import type { Language } from "src/locales/types";
 import type { GetQueryResponse } from "src/api/types";
 import type { LevelType, ICourseListProps } from "src/types/course";
 
@@ -6,8 +5,6 @@ import { compact } from "lodash-es";
 import { useQuery } from "@tanstack/react-query";
 
 import { getSimpleListData } from "src/api/utils";
-
-import { useSettingsContext } from "src/components/settings";
 
 import { URLS } from "../urls";
 
@@ -49,16 +46,12 @@ type ICourse = {
   students_count: number;
 };
 
-export const similarCoursesQuery = (slug: string, language?: Language) => {
+export const similarCoursesQuery = (slug: string) => {
   const url = endpoint;
   const queryUrl = `${url}/${slug}`;
 
   const queryFn = async (): Promise<GetQueryResponse<ICourseListProps[]>> => {
-    const results = await getSimpleListData<ICourse>(queryUrl, {
-      headers: {
-        "Accept-Language": language,
-      },
-    });
+    const results = await getSimpleListData<ICourse>(queryUrl);
     const modifiedResults: ICourseListProps[] = (results ?? []).map(
       ({
         translated_name,
@@ -105,13 +98,11 @@ export const similarCoursesQuery = (slug: string, language?: Language) => {
     return { results: modifiedResults };
   };
 
-  return { url, queryFn, queryKey: compact([url, slug, language]) };
+  return { url, queryFn, queryKey: compact([url, slug]) };
 };
 
 export const useSimilarCourses = (slug: string, enabled: boolean = true) => {
-  const settings = useSettingsContext();
-  const { language } = settings.state;
-  const { queryKey, queryFn } = similarCoursesQuery(slug, language);
+  const { queryKey, queryFn } = similarCoursesQuery(slug);
   const { data, ...rest } = useQuery({ queryKey, queryFn, enabled });
   return {
     data: data?.results,

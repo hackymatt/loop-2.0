@@ -1,4 +1,3 @@
-import type { Language } from "src/locales/types";
 import type { QueryType, ListQueryResponse } from "src/api/types";
 import type { LevelType, ICourseListProps } from "src/types/course";
 
@@ -6,8 +5,6 @@ import { compact } from "lodash-es";
 import { useQuery } from "@tanstack/react-query";
 
 import { getListData, formatQueryParams } from "src/api/utils";
-
-import { useSettingsContext } from "src/components/settings";
 
 import { URLS } from "../urls";
 
@@ -50,17 +47,13 @@ type ICourse = {
   progress?: number;
 };
 
-export const coursesQuery = (query?: QueryType, language?: Language) => {
+export const coursesQuery = (query?: QueryType) => {
   const url = endpoint;
   const urlParams = formatQueryParams(query);
   const queryUrl = urlParams ? `${url}?${urlParams}` : url;
 
   const queryFn = async (): Promise<ListQueryResponse<ICourseListProps[]>> => {
-    const { results, records_count, pages_count } = await getListData<ICourse>(queryUrl, {
-      headers: {
-        "Accept-Language": language,
-      },
-    });
+    const { results, records_count, pages_count } = await getListData<ICourse>(queryUrl);
     const modifiedResults: ICourseListProps[] = (results ?? []).map(
       ({
         translated_name,
@@ -108,13 +101,11 @@ export const coursesQuery = (query?: QueryType, language?: Language) => {
     return { results: modifiedResults, count: records_count, pagesCount: pages_count };
   };
 
-  return { url, queryFn, queryKey: compact([url, urlParams, language]) };
+  return { url, queryFn, queryKey: compact([url, urlParams]) };
 };
 
 export const useCourses = (query?: QueryType, enabled: boolean = true) => {
-  const settings = useSettingsContext();
-  const { language } = settings.state;
-  const { queryKey, queryFn } = coursesQuery(query, language);
+  const { queryKey, queryFn } = coursesQuery(query);
   const { data, ...rest } = useQuery({ queryKey, queryFn, enabled });
   return {
     data: data?.results,

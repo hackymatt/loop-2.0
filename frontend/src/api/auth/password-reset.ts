@@ -2,8 +2,6 @@ import type { AxiosError } from "axios";
 
 import { useMutation } from "@tanstack/react-query";
 
-import { useSettingsContext } from "src/components/settings";
-
 import { URLS } from "../urls";
 import { Api } from "../service";
 
@@ -15,19 +13,11 @@ type IPasswordReset = {
 
 type IPasswordResetReturn = { data: IPasswordReset; status: number };
 
-export const usePasswordReset = () => {
-  const settings = useSettingsContext();
-  const { language } = settings.state;
-
-  return useMutation<IPasswordResetReturn, AxiosError, IPasswordReset>(async (variables) => {
-    const result = await Api.post(endpoint, variables, {
-      headers: {
-        "Accept-Language": language,
-      },
-    });
+export const usePasswordReset = () =>
+  useMutation<IPasswordResetReturn, AxiosError, IPasswordReset>(async (variables) => {
+    const result = await Api.post(endpoint, variables);
     return {
       status: result.status,
       data: result.data,
     };
   });
-};

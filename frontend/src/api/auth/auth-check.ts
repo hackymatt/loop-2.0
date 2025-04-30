@@ -1,9 +1,5 @@
-import type { Language } from "src/locales/types";
-
 import { compact } from "lodash";
 import { useQuery } from "@tanstack/react-query";
-
-import { useSettingsContext } from "src/components/settings";
 
 import { URLS } from "../urls";
 import { getData } from "../utils";
@@ -16,16 +12,12 @@ type IAuthCheck = {
   authenticated: boolean;
 };
 
-export const authCheckQuery = (language?: Language) => {
+export const authCheckQuery = () => {
   const url = endpoint;
   const queryUrl = url;
 
   const queryFn = async (): Promise<GetQueryResponse> => {
-    const { data } = await getData<IAuthCheck>(queryUrl, {
-      headers: {
-        "Accept-Language": language,
-      },
-    });
+    const { data } = await getData<IAuthCheck>(queryUrl);
 
     const { authenticated } = data;
 
@@ -35,13 +27,11 @@ export const authCheckQuery = (language?: Language) => {
     return { results: modifiedResult };
   };
 
-  return { url, queryFn, queryKey: compact([url, language]) };
+  return { url, queryFn, queryKey: compact([url]) };
 };
 
 export const useAuthCheck = (enabled: boolean = true) => {
-  const settings = useSettingsContext();
-  const { language } = settings.state;
-  const { queryKey, queryFn } = authCheckQuery(language);
+  const { queryKey, queryFn } = authCheckQuery();
   const { data, ...rest } = useQuery({ queryKey, queryFn, enabled });
   return { data: data?.results, ...rest };
 };

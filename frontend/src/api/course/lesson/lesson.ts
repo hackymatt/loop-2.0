@@ -1,4 +1,3 @@
-import type { Language } from "src/locales/types";
 import type { GetQueryResponse } from "src/api/types";
 import type {
   IQuizLessonProps,
@@ -12,8 +11,6 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { URLS } from "src/api/urls";
 import { getData } from "src/api/utils";
-
-import { useSettingsContext } from "src/components/settings";
 
 const endpoint = URLS.LESSON;
 
@@ -60,7 +57,7 @@ type ICodingLesson = {
 
 type ILesson = IBaseLesson & (IReadingLesson | IVideoLesson | IQuizLesson | ICodingLesson);
 
-export const lessonQuery = (courseSlug: string, lessonSlug: string, language?: Language) => {
+export const lessonQuery = (courseSlug: string, lessonSlug: string) => {
   const url = endpoint;
   const queryUrl = `${url}/${courseSlug}/${lessonSlug}`;
 
@@ -69,11 +66,7 @@ export const lessonQuery = (courseSlug: string, lessonSlug: string, language?: L
       IReadingLessonProps | IVideoLessonProps | IQuizLessonProps | ICodingLessonProps
     >
   > => {
-    const { data } = await getData<ILesson>(queryUrl, {
-      headers: {
-        "Accept-Language": language,
-      },
-    });
+    const { data } = await getData<ILesson>(queryUrl);
 
     const { type, name, points, ...specificLesson }: ILesson = data;
 
@@ -119,14 +112,13 @@ export const lessonQuery = (courseSlug: string, lessonSlug: string, language?: L
     };
   };
 
-  return { url, queryFn, queryKey: compact([url, courseSlug, lessonSlug, language]) };
+  return { url, queryFn, queryKey: compact([url, courseSlug, lessonSlug]) };
 };
 
 export const useLesson = (courseSlug: string, lessonSlug: string, enabled: boolean = true) => {
   const queryClient = useQueryClient();
-  const settings = useSettingsContext();
-  const { language } = settings.state;
-  const { queryKey, queryFn } = lessonQuery(courseSlug, lessonSlug, language);
+
+  const { queryKey, queryFn } = lessonQuery(courseSlug, lessonSlug);
   const { data, ...rest } = useQuery({
     queryKey,
     queryFn,

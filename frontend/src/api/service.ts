@@ -3,23 +3,33 @@ import https from "https";
 
 import { paths } from "src/routes/paths";
 
+import i18n from "src/locales/i18n";
 import { CONFIG } from "src/global-config";
+import { LANGUAGE } from "src/consts/language";
 
 import { defaultUser } from "src/components/user/user-config";
 
 import { URLS } from "./urls";
 
 export const createAxiosInstance = (endpoint: string) => {
-  if (endpoint.startsWith("https")) {
-    const httpsAgent = new https.Agent({
-      rejectUnauthorized: false,
-    });
-    return axios.create({ baseURL: endpoint, httpsAgent });
-  }
-  return axios.create({
+  const instance = axios.create({
     baseURL: endpoint,
     withCredentials: true,
+    ...(endpoint.startsWith("https")
+      ? {
+          httpsAgent: new https.Agent({
+            rejectUnauthorized: false,
+          }),
+        }
+      : {}),
   });
+
+  instance.interceptors.request.use((config) => {
+    config.headers["Accept-Language"] = i18n.language || LANGUAGE.PL;
+    return config;
+  });
+
+  return instance;
 };
 
 export const Api = createAxiosInstance(CONFIG.api);
