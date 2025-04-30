@@ -4,7 +4,10 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 
+import { paths } from "src/routes/paths";
 import { RouterLink } from "src/routes/components";
+
+import { useLocalizedPath } from "src/hooks/use-localized-path";
 
 import { CONFIG } from "src/global-config";
 
@@ -13,6 +16,8 @@ import { MotionContainer } from "src/components/animate";
 // ----------------------------------------------------------------------
 
 export function MaintenanceView() {
+  const localize = useLocalizedPath();
+
   return (
     <MotionContainer>
       <Typography variant="h3" sx={{ mb: 2 }}>
@@ -37,7 +42,13 @@ export function MaintenanceView() {
         }}
       />
 
-      <Button component={RouterLink} href="/" size="large" color="inherit" variant="contained">
+      <Button
+        component={RouterLink}
+        href={localize(paths.home)}
+        size="large"
+        color="inherit"
+        variant="contained"
+      >
         Go to home
       </Button>
     </MotionContainer>

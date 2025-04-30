@@ -9,6 +9,8 @@ import Typography from "@mui/material/Typography";
 
 import { paths } from "src/routes/paths";
 
+import { useLocalizedPath } from "src/hooks/use-localized-path";
+
 // ----------------------------------------------------------------------
 
 type PostTagsProps = BoxProps & {
@@ -17,6 +19,8 @@ type PostTagsProps = BoxProps & {
 
 export function PostTags({ tags, sx, ...other }: PostTagsProps) {
   const { t } = useTranslation("blog");
+  const localize = useLocalizedPath();
+
   return (
     <Box
       sx={[
@@ -36,7 +40,7 @@ export function PostTags({ tags, sx, ...other }: PostTagsProps) {
             variant="outlined"
             size="small"
             component="a"
-            href={`${paths.posts}?tags=${tag.slug}`}
+            href={localize(`${paths.posts}?tags=${tag.slug}`)}
             clickable
           />
         ))}

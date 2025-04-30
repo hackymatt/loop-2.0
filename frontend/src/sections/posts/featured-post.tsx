@@ -11,6 +11,8 @@ import Typography from "@mui/material/Typography";
 import { paths } from "src/routes/paths";
 import { RouterLink } from "src/routes/components";
 
+import { useLocalizedPath } from "src/hooks/use-localized-path";
+
 import { fDate } from "src/utils/format-time";
 
 import { DEFAULT_AVATAR_URL } from "src/consts/avatar";
@@ -26,10 +28,12 @@ type Props = BoxProps & {
 };
 
 export function FeaturedPost({ post, sx, ...other }: Props) {
+  const localize = useLocalizedPath();
+
   return (
     <Link
       component={RouterLink}
-      href={`${paths.post}/${post.slug}`}
+      href={localize(`${paths.post}/${post.slug}`)}
       color="inherit"
       underline="none"
     >

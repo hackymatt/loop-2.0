@@ -14,6 +14,8 @@ import AccordionSummary from "@mui/material/AccordionSummary";
 
 import { paths } from "src/routes/paths";
 
+import { useLocalizedPath } from "src/hooks/use-localized-path";
+
 import { useAnalytics } from "src/app/analytics-provider";
 
 import { Iconify } from "src/components/iconify";
@@ -31,6 +33,7 @@ type Props = {
 
 export function Faqs({ data, sx, ...other }: Props) {
   const { t } = useTranslation("faq");
+  const localize = useLocalizedPath();
 
   const { trackEvent } = useAnalytics();
 
@@ -116,7 +119,7 @@ export function Faqs({ data, sx, ...other }: Props) {
                   size="large"
                   color="inherit"
                   variant="contained"
-                  href={paths.contact}
+                  href={localize(paths.contact)}
                   onClick={() => trackEvent({ category: "contact", label: "moreQuestions" })}
                 >
                   {t("moreQuestions.button")}

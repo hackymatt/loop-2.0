@@ -10,6 +10,8 @@ import { Box, Button, Typography } from "@mui/material";
 import { paths } from "src/routes/paths";
 import { RouterLink } from "src/routes/components";
 
+import { useLocalizedPath } from "src/hooks/use-localized-path";
+
 import { PLAN_TYPE } from "src/consts/plan";
 import { UpgradeButton } from "src/layouts/components/upgrade-button";
 
@@ -27,13 +29,14 @@ type Props = { certificates: ICertificateProps[] };
 
 export function CertificatesProgress({ certificates }: Props) {
   const { t } = useTranslation("dashboard");
+  const localize = useLocalizedPath();
 
   const user = useUserContext();
   const { firstName, lastName, plan } = user.state;
 
   const studentName = `${firstName} ${lastName}`;
 
-  const blocked = plan === PLAN_TYPE.FREE && certificates.length === 0;
+  const blocked = plan.type === PLAN_TYPE.FREE && certificates.length === 0;
 
   const renderList = () => (
     <Box
@@ -68,7 +71,7 @@ export function CertificatesProgress({ certificates }: Props) {
 
       <Button
         component={RouterLink}
-        href={paths.courses}
+        href={localize(paths.courses)}
         color="inherit"
         size="large"
         variant="text"
@@ -163,7 +166,7 @@ export function CertificatesProgress({ certificates }: Props) {
 
         <Button
           component={RouterLink}
-          href={paths.certificates}
+          href={localize(paths.certificates)}
           color="inherit"
           endIcon={<Iconify icon="solar:alt-arrow-right-outline" />}
           sx={{ display: "inline-flex" }}

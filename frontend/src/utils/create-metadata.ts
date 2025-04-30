@@ -1,3 +1,5 @@
+import { paths } from "src/routes/paths";
+
 import { CONFIG } from "src/global-config";
 
 // ----------------------------------------------------------------------
@@ -82,7 +84,7 @@ export const createMetadata = ({
   path,
   image,
 }: Props) => {
-  const location = path || "/";
+  const location = path || paths.home;
 
   const { appName: name } = CONFIG;
 

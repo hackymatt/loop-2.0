@@ -15,6 +15,8 @@ import Link, { linkClasses } from "@mui/material/Link";
 import { paths } from "src/routes/paths";
 import { RouterLink } from "src/routes/components";
 
+import { useLocalizedPath } from "src/hooks/use-localized-path";
+
 import { getTechnologyIcon } from "src/utils/technology-icon";
 
 import { Iconify } from "src/components/iconify";
@@ -30,6 +32,7 @@ type TechnologiesProps = {
 
 export function HomeFeatureTechnologies({ technologies, sx, ...other }: TechnologiesProps) {
   const { t } = useTranslation("home");
+  const localize = useLocalizedPath();
 
   return (
     <Box
@@ -64,7 +67,7 @@ export function HomeFeatureTechnologies({ technologies, sx, ...other }: Technolo
             <m.div variants={variants}>
               <Button
                 component={RouterLink}
-                href={paths.courses}
+                href={localize(paths.courses)}
                 color="inherit"
                 size="large"
                 variant="outlined"
@@ -103,9 +106,11 @@ type TechnologyItemProps = {
 };
 
 function TechnologyItem({ technology }: TechnologyItemProps) {
+  const localize = useLocalizedPath();
+
   return (
     <m.div>
-      <Link href={`${paths.courses}?technologies=${technology.slug}`}>
+      <Link href={localize(`${paths.courses}?technologies=${technology.slug}`)}>
         <Paper
           variant="outlined"
           sx={(theme) => ({

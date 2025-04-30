@@ -4,6 +4,7 @@ const config = {
   i18n: {
     defaultLocale: "pl",
     locales: ["pl", "en"],
+    localeDetection: true,
   },
   reloadOnPrerender: true,
 };

@@ -10,6 +10,8 @@ import Typography from "@mui/material/Typography";
 
 import { paths } from "src/routes/paths";
 
+import { useLocalizedPath } from "src/hooks/use-localized-path";
+
 import { useAnalytics } from "src/app/analytics-provider";
 
 import { Iconify } from "src/components/iconify";
@@ -31,6 +33,7 @@ export function CourseCertificateDetailsInfo({
 }: Props) {
   const { t } = useTranslation("course");
   const { t: certificate } = useTranslation("certificate");
+  const localize = useLocalizedPath();
 
   const { trackEvent } = useAnalytics();
 
@@ -40,7 +43,7 @@ export function CourseCertificateDetailsInfo({
   const started = (progress || 0) > 0;
   const completed = (progress || 0) === 100;
   const next = (findNextLesson(chapters) || chapters[0].lessons[0]).slug;
-  const redirect = `${paths.learn}/${slug}/${next}`;
+  const redirect = localize(`${paths.learn}/${slug}/${next}`);
 
   return (
     <Card
@@ -66,7 +69,7 @@ export function CourseCertificateDetailsInfo({
         <Iconify icon="carbon:checkmark-filled" sx={{ color: "success.main" }} />
         <Typography variant="caption">
           {t("included.start")}{" "}
-          <Link href={paths.pricing} color="text.primary" underline="always">
+          <Link href={localize(paths.pricing)} color="text.primary" underline="always">
             {t("included.plans")}
           </Link>
         </Typography>
@@ -77,7 +80,7 @@ export function CourseCertificateDetailsInfo({
           variant="contained"
           color="primary"
           size="large"
-          href={isLoggedIn ? redirect : paths.register}
+          href={isLoggedIn ? redirect : localize(paths.register)}
           onClick={() => {
             if (!isLoggedIn) {
               user.setField("redirect", redirect);

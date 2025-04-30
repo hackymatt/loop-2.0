@@ -1,7 +1,6 @@
 import type { Language } from "src/locales/types";
 import type { IconButtonProps } from "@mui/material/IconButton";
 
-import { useEffect, useCallback } from "react";
 import { usePopover } from "minimal-shared/hooks";
 
 import Popover from "@mui/material/Popover";
@@ -9,11 +8,9 @@ import MenuList from "@mui/material/MenuList";
 import MenuItem from "@mui/material/MenuItem";
 import IconButton from "@mui/material/IconButton";
 
-import i18n from "src/locales/i18n";
-import { LANGUAGE } from "src/consts/language";
+import { useRouter, useParams, usePathname } from "src/routes/hooks";
 
 import { FlagIcon } from "src/components/flag-icon";
-import { useSettingsContext } from "src/components/settings";
 
 // ----------------------------------------------------------------------
 
@@ -26,24 +23,21 @@ export type LanguagePopoverProps = IconButtonProps & {
 };
 
 export function LanguagePopover({ data = [], sx, ...other }: LanguagePopoverProps) {
-  const settings = useSettingsContext();
+  const router = useRouter();
+  const pathname = usePathname();
+
   const { open, onClose, onOpen, anchorEl } = usePopover();
 
-  const locale = settings.state.language ?? LANGUAGE.PL;
+  const { locale } = useParams() as { locale: string };
 
   const currentLang = data.find((lang) => lang.value === locale);
 
-  useEffect(() => {
-    i18n.changeLanguage(locale);
-  }, [locale]);
+  const handleChangeLang = (newLang: Language) => {
+    const segments = pathname.split("/");
+    segments[1] = newLang; // Zakładamy, że URL to np. /pl/about
 
-  const handleChangeLang = useCallback(
-    (newLang: Language) => {
-      settings.setState({ language: newLang });
-      onClose();
-    },
-    [onClose, settings]
-  );
+    router.push(segments.join("/"));
+  };
 
   const renderButton = () => (
     <IconButton

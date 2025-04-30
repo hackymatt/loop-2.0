@@ -10,6 +10,8 @@ import Collapse, { collapseClasses } from "@mui/material/Collapse";
 
 import { paths } from "src/routes/paths";
 
+import { useLocalizedPath } from "src/hooks/use-localized-path";
+
 import { PLAN_TYPE } from "src/consts/plan";
 import { useAnalytics } from "src/app/analytics-provider";
 
@@ -32,16 +34,18 @@ export function PricingColumnContentMobile({
   ...other
 }: PricingColumnContentProps) {
   const { t } = useTranslation("pricing");
+  const localize = useLocalizedPath();
 
   const user = useUserContext();
   const { isLoggedIn, plan: userPlan } = user.state;
 
   const isCurrentPlan = isLoggedIn && plan.slug === userPlan.type;
 
-  const redirect =
+  const redirect = localize(
     plan.slug === PLAN_TYPE.FREE
       ? `${paths.payment}?plan=${plan.slug}`
-      : `${paths.payment}?plan=${plan.slug}&yearly=${isYearly}`;
+      : `${paths.payment}?plan=${plan.slug}&yearly=${isYearly}`
+  );
 
   const { trackEvent } = useAnalytics();
 
@@ -115,7 +119,7 @@ export function PricingColumnContentMobile({
         size="large"
         variant={isCurrentPlan ? "outlined" : "contained"}
         color={plan.popular ? "primary" : "inherit"}
-        href={isLoggedIn ? redirect : paths.register}
+        href={isLoggedIn ? redirect : localize(paths.register)}
         disabled={isCurrentPlan}
         onClick={() => {
           if (!isLoggedIn) {
@@ -140,16 +144,18 @@ export function PricingColumnContentDesktop({
   ...other
 }: PricingColumnContentProps) {
   const { t } = useTranslation("pricing");
+  const localize = useLocalizedPath();
 
   const user = useUserContext();
   const { isLoggedIn, plan: userPlan } = user.state;
 
   const isCurrentPlan = isLoggedIn && plan.slug === userPlan.type;
 
-  const redirect =
+  const redirect = localize(
     plan.slug === PLAN_TYPE.FREE
       ? `${paths.payment}?plan=${plan.slug}`
-      : `${paths.payment}?plan=${plan.slug}&yearly=${isYearly}`;
+      : `${paths.payment}?plan=${plan.slug}&yearly=${isYearly}`
+  );
 
   const { trackEvent } = useAnalytics();
 

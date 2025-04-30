@@ -6,6 +6,8 @@ import Link from "@mui/material/Link";
 import { paths } from "src/routes/paths";
 import { RouterLink } from "src/routes/components";
 
+import { useLocalizedPath } from "src/hooks/use-localized-path";
+
 import { Certificate } from "./certificate";
 
 // ----------------------------------------------------------------------
@@ -15,10 +17,12 @@ type Props = {
 };
 
 export function CertificateItem({ certificate }: Props) {
+  const localize = useLocalizedPath();
+
   return (
     <Link
       component={RouterLink}
-      href={`${paths.certificate}/${certificate.id}`}
+      href={localize(`${paths.certificate}/${certificate.id}`)}
       color="inherit"
       underline="none"
     >

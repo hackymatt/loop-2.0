@@ -9,6 +9,7 @@ import { Box, Link, Paper, Stack, Button, Typography } from "@mui/material";
 import { paths } from "src/routes/paths";
 
 import { useCookiesTypes } from "src/hooks/use-cookies-types";
+import { useLocalizedPath } from "src/hooks/use-localized-path";
 
 import { Form } from "src/components/hook-form";
 
@@ -24,6 +25,7 @@ interface Props {
 
 export function CookiesBanner({ onConfirm }: Props) {
   const { t } = useTranslation("cookies");
+  const localize = useLocalizedPath();
 
   const methods = useForm();
   const cookieSettingsFormOpen = useBoolean();
@@ -69,7 +71,7 @@ export function CookiesBanner({ onConfirm }: Props) {
                 <Link
                   target="_blank"
                   rel="noopener"
-                  href={paths.privacyPolicy}
+                  href={localize(paths.privacyPolicy)}
                   sx={{ color: "primary.main", textDecoration: "underline" }}
                 >
                   {t("privacyPolicy")}

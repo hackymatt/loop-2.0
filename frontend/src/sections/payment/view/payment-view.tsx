@@ -19,6 +19,7 @@ import { paths } from "src/routes/paths";
 import { useRouter } from "src/routes/hooks";
 
 import { useQueryParams } from "src/hooks/use-query-params";
+import { useLocalizedPath } from "src/hooks/use-localized-path";
 import { useFormErrorHandler } from "src/hooks/use-form-error-handler";
 
 import { usePlan } from "src/api/plan/plan";
@@ -40,6 +41,7 @@ import { usePaymentSchema, useCustomerSchema, usePaymentMethods } from "../schem
 export function PaymentView() {
   const { query } = useQueryParams();
   const router = useRouter();
+  const localize = useLocalizedPath();
 
   const { t: account } = useTranslation("account");
   const { t } = useTranslation("payment");
@@ -105,7 +107,7 @@ export function PaymentView() {
       });
       const { type, ...rest } = response;
       user.setField("plan", { ...rest, type: type as PlanType });
-      router.push(paths.account.dashboard);
+      router.push(localize(paths.account.dashboard));
     } catch (error) {
       handleFormError(error);
     }

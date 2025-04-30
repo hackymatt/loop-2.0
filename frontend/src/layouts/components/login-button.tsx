@@ -7,6 +7,8 @@ import Button from "@mui/material/Button";
 
 import { paths } from "src/routes/paths";
 
+import { useLocalizedPath } from "src/hooks/use-localized-path";
+
 import { useAnalytics } from "src/app/analytics-provider";
 
 // ----------------------------------------------------------------------
@@ -20,6 +22,7 @@ export type LoginButtonProps = {
 
 export function LoginButton({ slotProps, sx }: LoginButtonProps) {
   const { t } = useTranslation("navigation");
+  const localize = useLocalizedPath();
 
   const { trackEvent } = useAnalytics();
 
@@ -27,7 +30,7 @@ export function LoginButton({ slotProps, sx }: LoginButtonProps) {
     <Button
       variant="outlined"
       size="small"
-      href={paths.login}
+      href={localize(paths.login)}
       onClick={() => trackEvent({ category: "auth", label: "login" })}
       {...slotProps?.button}
       sx={[

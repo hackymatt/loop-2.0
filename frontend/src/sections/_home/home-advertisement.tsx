@@ -11,6 +11,8 @@ import Typography from "@mui/material/Typography";
 
 import { paths } from "src/routes/paths";
 
+import { useLocalizedPath } from "src/hooks/use-localized-path";
+
 import { CONFIG } from "src/global-config";
 
 import { Iconify } from "src/components/iconify";
@@ -22,6 +24,7 @@ const variants: Variants = varFade("inUp", { distance: 24 });
 
 export function HomeAdvertisement({ sx, ...other }: BoxProps) {
   const { t } = useTranslation("home");
+  const localize = useLocalizedPath();
 
   const renderActionButton = () => (
     <AnimateBorder
@@ -47,7 +50,7 @@ export function HomeAdvertisement({ sx, ...other }: BoxProps) {
       <Button
         size="large"
         variant="text"
-        href={paths.register}
+        href={localize(paths.register)}
         endIcon={<Iconify icon="eva:arrow-ios-forward-fill" />}
         sx={{ px: 2, borderRadius: "inherit" }}
       >

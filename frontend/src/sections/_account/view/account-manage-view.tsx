@@ -15,6 +15,7 @@ import InputAdornment from "@mui/material/InputAdornment";
 
 import { paths } from "src/routes/paths";
 
+import { useLocalizedPath } from "src/hooks/use-localized-path";
 import { useFormErrorHandler } from "src/hooks/use-form-error-handler";
 
 import { CONFIG } from "src/global-config";
@@ -77,6 +78,7 @@ type AccountPasswordSchemaType = zod.infer<ReturnType<typeof useAccountPasswordS
 
 export function AccountManageView() {
   const { t } = useTranslation("account");
+  const localize = useLocalizedPath();
 
   const user = useUserContext();
   const { userType, joinType } = user.state;
@@ -186,7 +188,8 @@ export function AccountManageView() {
   const renderDeleteAccount = () => (
     <>
       <Typography variant="body1" sx={{ my: 3 }}>
-        {t("delete.text")} <Link href={paths.account.subscription}>{t("subscription.title")}</Link>.
+        {t("delete.text")}{" "}
+        <Link href={localize(paths.account.subscription)}>{t("subscription.title")}</Link>.
       </Typography>
 
       <Button

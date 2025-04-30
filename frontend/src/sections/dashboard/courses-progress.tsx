@@ -9,6 +9,8 @@ import { Box, Button, Typography } from "@mui/material";
 import { paths } from "src/routes/paths";
 import { RouterLink } from "src/routes/components";
 
+import { useLocalizedPath } from "src/hooks/use-localized-path";
+
 import { Iconify } from "src/components/iconify";
 
 import { CourseProgressItem } from "../courses/course-progress-item";
@@ -21,6 +23,7 @@ type Props = { courses: ICourseListProps[] };
 
 export function CoursesProgress({ courses }: Props) {
   const { t } = useTranslation("dashboard");
+  const localize = useLocalizedPath();
 
   const renderList = () => (
     <Box
@@ -60,7 +63,7 @@ export function CoursesProgress({ courses }: Props) {
 
       <Button
         component={RouterLink}
-        href={paths.courses}
+        href={localize(paths.courses)}
         color="inherit"
         size="large"
         variant="text"
@@ -93,7 +96,7 @@ export function CoursesProgress({ courses }: Props) {
 
         <Button
           component={RouterLink}
-          href={paths.courses}
+          href={localize(paths.courses)}
           color="inherit"
           endIcon={<Iconify icon="solar:alt-arrow-right-outline" />}
           sx={{ display: "inline-flex" }}

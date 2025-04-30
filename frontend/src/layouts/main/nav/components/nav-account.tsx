@@ -20,6 +20,8 @@ import { paths } from "src/routes/paths";
 import { RouterLink } from "src/routes/components";
 import { useRouter, usePathname } from "src/routes/hooks";
 
+import { useLocalizedPath } from "src/hooks/use-localized-path";
+
 import { useLogout } from "src/api/auth/logout";
 import { DEFAULT_AVATAR_URL } from "src/consts/avatar";
 
@@ -37,20 +39,22 @@ export type NavItemsProps = {
 
 const useNavData = () => {
   const { t } = useTranslation("navigation");
+  const localize = useLocalizedPath();
+
   return [
     {
       title: t("dashboard"),
-      path: paths.account.dashboard,
+      path: localize(paths.account.dashboard),
       icon: <Iconify icon="solar:home-2-outline" />,
     },
     {
       title: t("accountSettings"),
-      path: paths.account.personal,
+      path: localize(paths.account.personal),
       icon: <Iconify icon="solar:user-rounded-outline" />,
     },
     {
       title: t("support"),
-      path: paths.support,
+      path: localize(paths.support),
       icon: <Iconify icon="solar:question-circle-outline" />,
     },
   ];
@@ -63,6 +67,8 @@ export function NavAccountPopover({ sx }: NavItemsProps) {
 
   const { t } = useTranslation("navigation");
   const { t: account } = useTranslation("account");
+
+  const localize = useLocalizedPath();
 
   const user = useUserContext();
   const { avatarUrl } = user.state;
@@ -109,7 +115,7 @@ export function NavAccountPopover({ sx }: NavItemsProps) {
     try {
       const { status } = await logout({});
       if (status === 205) {
-        router.push(paths.home);
+        router.push(localize(paths.home));
         user.resetState();
         onClose();
       }

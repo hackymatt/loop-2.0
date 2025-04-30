@@ -11,6 +11,8 @@ import Typography from "@mui/material/Typography";
 import { paths } from "src/routes/paths";
 import { RouterLink } from "src/routes/components";
 
+import { useLocalizedPath } from "src/hooks/use-localized-path";
+
 import { Iconify } from "src/components/iconify";
 
 import { CourseItem } from "./course-item";
@@ -23,6 +25,8 @@ type Props = BoxProps & {
 
 export function CourseListSimilar({ courses, sx, ...other }: Props) {
   const { t } = useTranslation("course");
+  const localize = useLocalizedPath();
+
   return (
     <Box
       component="section"
@@ -40,7 +44,7 @@ export function CourseListSimilar({ courses, sx, ...other }: Props) {
 
           <Button
             component={RouterLink}
-            href={paths.courses}
+            href={localize(paths.courses)}
             color="inherit"
             endIcon={<Iconify icon="solar:alt-arrow-right-outline" />}
           >

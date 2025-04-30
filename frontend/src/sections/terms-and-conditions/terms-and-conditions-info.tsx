@@ -7,12 +7,13 @@ import Link from "@mui/material/Link";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 
-import { termsAndConditionsContent } from "./terms-and-conditions-content";
+import { useTermsAndConditionsContent } from "./terms-and-conditions-content";
 
 // ----------------------------------------------------------------------
 
 export function TermsAndConditionsInfo({ sx, ...other }: BoxProps) {
   const { t } = useTranslation("terms-and-conditions");
+  const termsAndConditionsContent = useTermsAndConditionsContent();
 
   const renderList = () =>
     termsAndConditionsContent.map((section) => (

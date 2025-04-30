@@ -14,6 +14,7 @@ import Typography from "@mui/material/Typography";
 import { paths } from "src/routes/paths";
 
 import { usePluralize } from "src/hooks/use-pluralize";
+import { useLocalizedPath } from "src/hooks/use-localized-path";
 
 import { getLevelIcon } from "src/utils/level-icon";
 import { fShortenNumber } from "src/utils/format-number";
@@ -80,6 +81,7 @@ export function CourseDetailsHero({
   const { t: navigation } = useTranslation("navigation");
   const { t: locale } = useTranslation("locale");
   const { t } = useTranslation("course");
+  const localize = useLocalizedPath();
 
   const { trackEvent } = useAnalytics();
 
@@ -97,7 +99,7 @@ export function CourseDetailsHero({
   const started = (progress || 0) > 0;
   const completed = (progress || 0) === 100;
   const next = (findNextLesson(chapters) || chapters[0].lessons[0]).slug;
-  const redirect = `${paths.learn}/${slug}/${next}`;
+  const redirect = localize(`${paths.learn}/${slug}/${next}`);
 
   const languagePluralize = usePluralize();
 
@@ -274,7 +276,7 @@ export function CourseDetailsHero({
       <Button
         variant="text"
         size="large"
-        href={isLoggedIn ? redirect : paths.register}
+        href={isLoggedIn ? redirect : localize(paths.register)}
         onClick={() => {
           if (!isLoggedIn) {
             user.setField("redirect", redirect);
@@ -322,8 +324,8 @@ export function CourseDetailsHero({
       <Container sx={{ overflow: "hidden" }}>
         <CustomBreadcrumbs
           links={[
-            { name: navigation("home"), href: "/" },
-            { name: navigation("courses"), href: paths.courses },
+            { name: navigation("home"), href: localize(paths.home) },
+            { name: navigation("courses"), href: localize(paths.courses) },
             { name },
           ]}
           sx={{ mb: { xs: 5, md: 10 } }}

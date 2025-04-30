@@ -10,6 +10,8 @@ import Typography from "@mui/material/Typography";
 
 import { paths } from "src/routes/paths";
 
+import { useLocalizedPath } from "src/hooks/use-localized-path";
+
 import { useAnalytics } from "src/app/analytics-provider";
 
 import { Iconify } from "src/components/iconify";
@@ -20,6 +22,7 @@ import { useUserContext } from "src/components/user";
 type Props = CardProps & Pick<ICourseProps, "slug" | "chatUrl">;
 export function CourseChatDetailsInfo({ sx, slug, chatUrl, ...other }: Props) {
   const { t } = useTranslation("course");
+  const localize = useLocalizedPath();
 
   const { trackEvent } = useAnalytics();
 
@@ -44,7 +47,7 @@ export function CourseChatDetailsInfo({ sx, slug, chatUrl, ...other }: Props) {
         <Iconify icon="carbon:checkmark-filled" sx={{ color: "success.main" }} />
         <Typography variant="caption">
           {t("included.start")}{" "}
-          <Link href={paths.pricing} color="text.primary" underline="always">
+          <Link href={localize(paths.pricing)} color="text.primary" underline="always">
             {t("included.plans")}
           </Link>
         </Typography>
@@ -55,9 +58,9 @@ export function CourseChatDetailsInfo({ sx, slug, chatUrl, ...other }: Props) {
           variant="contained"
           size="large"
           startIcon={<Iconify icon="logos:google-icon" />}
-          href={paths.register}
+          href={localize(paths.register)}
           onClick={() => {
-            user.setField("redirect", `${paths.course}/${slug}`);
+            user.setField("redirect", localize(`${paths.course}/${slug}`));
             trackEvent({ category: "course", label: `course (${slug})`, action: "chat" });
           }}
           sx={{ px: 2, borderRadius: "inherit", textAlign: "center" }}

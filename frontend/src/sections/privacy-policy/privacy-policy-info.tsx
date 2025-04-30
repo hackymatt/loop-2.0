@@ -7,12 +7,13 @@ import Link from "@mui/material/Link";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 
-import { privacyPolicyContent } from "./privacy-policy-content";
+import { usePrivacyPolicyContent } from "./privacy-policy-content";
 
 // ----------------------------------------------------------------------
 
 export function PrivacyPolicyInfo({ sx, ...other }: BoxProps) {
   const { t } = useTranslation("privacy-policy");
+  const privacyPolicyContent = usePrivacyPolicyContent();
 
   const renderList = () =>
     privacyPolicyContent.map((section) => (
