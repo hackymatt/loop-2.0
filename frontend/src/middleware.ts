@@ -3,6 +3,10 @@ import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
 import { paths } from "./routes/paths";
+import { LANGUAGE } from "./consts/language";
+
+const locales = Object.values(LANGUAGE);
+const defaultLocale = LANGUAGE.PL;
 
 const AUTHORIZED_PATHS = [
   paths.certificates,
@@ -24,94 +28,60 @@ const UNAUTHORIZED_PATHS = [
   paths.about,
 ];
 
-const locales = ["pl", "en"];
-const defaultLocale = "pl";
+const PUBLIC_FILE = /\.(.*)$/;
 
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
-  // --- Extract locale from the pathname ---
-  const pathnameParts = pathname.split("/");
-  const locale = locales.includes(pathnameParts[1]) ? pathnameParts[1] : defaultLocale;
+  // --- 1. Ignoruj pliki statyczne i API
+  if (
+    pathname.startsWith("/api") ||
+    pathname.startsWith("/_next") ||
+    pathname.startsWith("/favicon.ico") ||
+    PUBLIC_FILE.test(pathname)
+  ) {
+    return NextResponse.next();
+  }
 
-  // --- Normalize pathname without locale ---
-  const normalizedPathname = locales.includes(pathnameParts[1])
-    ? "/" + pathnameParts.slice(2).join("/")
-    : pathname;
+  // --- 2. Obsłuż brak języka w URL
+  const hasLocale = locales.some((locale) => pathname.startsWith(`/${locale}`));
 
-  // --- Auth check ---
+  if (!hasLocale) {
+    const newUrl = req.nextUrl.clone();
+    newUrl.pathname = `/${defaultLocale}${pathname}`;
+    return NextResponse.rewrite(newUrl);
+  }
+
+  // --- 3. Obsługa autoryzacji
   const accessToken = req.cookies.get("access_token");
 
-  if (!accessToken && AUTHORIZED_PATHS.includes(normalizedPathname)) {
-    const redirectUrl = new URL(`/${locale}/auth/login`, req.url);
-    return NextResponse.redirect(redirectUrl);
+  // Usuń język z pathname (np. "/pl/account/dashboard" → "/account/dashboard")
+  const localePath = `/${pathname.split("/")[1]}`;
+  const pathWithoutLocale = pathname.replace(localePath, "");
+
+  if (!accessToken) {
+    if (AUTHORIZED_PATHS.includes(pathWithoutLocale)) {
+      return NextResponse.redirect(
+        new URL(`/${req.nextUrl.locale || defaultLocale}${paths.login}`, req.url)
+      );
+    }
   }
 
-  if (accessToken && UNAUTHORIZED_PATHS.includes(normalizedPathname)) {
-    const redirectUrl = new URL(`/${locale}/account/dashboard`, req.url);
-    return NextResponse.redirect(redirectUrl);
+  if (accessToken) {
+    if (UNAUTHORIZED_PATHS.includes(pathWithoutLocale)) {
+      return NextResponse.redirect(
+        new URL(`/${req.nextUrl.locale || defaultLocale}${paths.account.dashboard}`, req.url)
+      );
+    }
   }
 
-  // --- Ensure locale cookie is set ---
-  const response = NextResponse.next();
-  const currentLocaleCookie = req.cookies.get("NEXT_LOCALE")?.value;
-
-  if (!currentLocaleCookie || currentLocaleCookie !== locale) {
-    response.cookies.set("NEXT_LOCALE", locale);
-  }
-
-  return response;
+  return NextResponse.next();
 }
 
 // --- Matcher that captures paths with or without locale ---
 export const config = {
   matcher: [
-    "/certificates",
-    "/pl/certificates",
-    "/en/certificates",
-
-    "/lesson",
-    "/pl/lesson",
-    "/en/lesson",
-
-    "/account/:path*",
-    "/pl/account/:path*",
-    "/en/account/:path*",
-
-    "/learn/:path*",
-    "/pl/learn/:path*",
-    "/en/learn/:path*",
-
-    "/",
-    "/pl",
-    "/en",
-
-    "/auth/login",
-    "/pl/auth/login",
-    "/en/auth/login",
-
-    "/auth/register",
-    "/pl/auth/register",
-    "/en/auth/register",
-
-    "/auth/activate",
-    "/pl/auth/activate",
-    "/en/auth/activate",
-
-    "/auth/resetPassword",
-    "/pl/auth/resetPassword",
-    "/en/auth/resetPassword",
-
-    "/auth/updatePassword",
-    "/pl/auth/updatePassword",
-    "/en/auth/updatePassword",
-
-    "/about",
-    "/pl/about",
-    "/en/about",
-
-    "/payment",
-    "/pl/payment",
-    "/en/payment",
+    // Obsługujemy wszystkie ścieżki, z i bez /locale/
+    "/((?!_next|api|favicon.ico|assets).*)",
   ],
 };

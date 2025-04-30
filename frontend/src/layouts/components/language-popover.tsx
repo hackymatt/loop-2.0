@@ -10,6 +10,8 @@ import IconButton from "@mui/material/IconButton";
 
 import { useRouter, useParams, usePathname } from "src/routes/hooks";
 
+import { LANGUAGE } from "src/consts/language";
+
 import { FlagIcon } from "src/components/flag-icon";
 
 // ----------------------------------------------------------------------
@@ -34,9 +36,21 @@ export function LanguagePopover({ data = [], sx, ...other }: LanguagePopoverProp
 
   const handleChangeLang = (newLang: Language) => {
     const segments = pathname.split("/");
-    segments[1] = newLang; // Zakładamy, że URL to np. /pl/about
+    const locales = Object.values(LANGUAGE);
 
-    router.push(segments.join("/"));
+    if (newLang === LANGUAGE.PL) {
+      if (segments.length > 1 && locales.includes(segments[1] as Language)) {
+        segments.splice(1, 1);
+      }
+    } else {
+      if (locales.includes(segments[1] as Language)) {
+        segments[1] = newLang;
+      } else {
+        segments.splice(1, 0, newLang);
+      }
+    }
+
+    router.push(segments.join("/") || "/");
   };
 
   const renderButton = () => (
