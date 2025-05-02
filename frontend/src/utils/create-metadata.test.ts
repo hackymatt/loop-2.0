@@ -1,6 +1,11 @@
 import { createMetadata } from "./create-metadata";
 
 describe("createMetadata", () => {
+  const defaultMetadata = {
+    title: "Test title",
+    description: "Test description",
+    path: "/test-path",
+  };
   // Function returns correct metadata object with default values when no parameters are provided
   it("should return metadata with default values when no parameters are provided", () => {
     // Mock CONFIG
@@ -10,23 +15,20 @@ describe("createMetadata", () => {
       },
     }));
 
-    const result = createMetadata({});
+    const result = createMetadata(defaultMetadata);
 
     expect(result).toEqual({
-      title: "Programowanie na wyciągniecie ręki z loop • loop",
-      description:
-        "Ucz się programowania szybciej z AI, interaktywnymi kursami i wsparciem mentorów.",
-      keywords: expect.any(String),
+      title: `${defaultMetadata.title} • loop`,
+      description: defaultMetadata.description,
       alternates: {
-        canonical: "https://loop.edu.pl/",
+        canonical: "https://loop.edu.pl/test-path",
       },
       openGraph: {
         type: "website",
-        url: "https://loop.edu.pl/",
+        url: "https://loop.edu.pl/test-path",
         images: "https://loop.edu.pl/logo/logo.svg",
-        title: "Programowanie na wyciągniecie ręki z loop • loop",
-        description:
-          "Ucz się programowania szybciej z AI, interaktywnymi kursami i wsparciem mentorów.",
+        title: `${defaultMetadata.title} • loop`,
+        description: defaultMetadata.description,
       },
     });
   });
@@ -41,25 +43,10 @@ describe("createMetadata", () => {
     }));
 
     const customTitle = "Custom Title";
-    const result = createMetadata({ title: customTitle });
+    const result = createMetadata({ ...defaultMetadata, title: customTitle });
 
     expect(result.title).toBe(`${customTitle} • loop`);
     expect(result.openGraph.title).toBe(`${customTitle} • loop`);
-  });
-
-  // Function joins keywords array into comma-separated string
-  it("should join keywords array into comma-separated string", () => {
-    // Mock CONFIG
-    jest.mock("src/global-config", () => ({
-      CONFIG: {
-        appName: "loop",
-      },
-    }));
-
-    const customKeywords = ["keyword1", "keyword2", "keyword3"];
-    const result = createMetadata({ keywords: customKeywords });
-
-    expect(result.keywords).toBe("keyword1,keyword2,keyword3");
   });
 
   // Function correctly constructs canonical URL with provided path
@@ -72,7 +59,7 @@ describe("createMetadata", () => {
     }));
 
     const customPath = "/test-path";
-    const result = createMetadata({ path: customPath });
+    const result = createMetadata({ ...defaultMetadata, path: customPath });
 
     expect(result.alternates.canonical).toBe(`https://loop.edu.pl${customPath}`);
   });
@@ -87,24 +74,9 @@ describe("createMetadata", () => {
     }));
 
     const customPath = "/test-path";
-    const result = createMetadata({ path: customPath });
+    const result = createMetadata({ ...defaultMetadata, path: customPath });
 
     expect(result.openGraph.url).toBe(`https://loop.edu.pl${customPath}`);
-  });
-
-  // Function handles empty path parameter by using root path "/"
-  it("should use root path when path is empty", () => {
-    // Mock CONFIG
-    jest.mock("src/global-config", () => ({
-      CONFIG: {
-        appName: "loop",
-      },
-    }));
-
-    const result = createMetadata({});
-
-    expect(result.alternates.canonical).toBe("https://loop.edu.pl/");
-    expect(result.openGraph.url).toBe("https://loop.edu.pl/");
   });
 
   // Function handles undefined image by using default logo URL
@@ -116,55 +88,8 @@ describe("createMetadata", () => {
       },
     }));
 
-    const result = createMetadata({});
+    const result = createMetadata(defaultMetadata);
 
     expect(result.openGraph.images).toBe("https://loop.edu.pl/logo/logo.svg");
-  });
-
-  // Function handles empty title by using default title
-  it("should use default title when title is empty", () => {
-    // Mock CONFIG
-    jest.mock("src/global-config", () => ({
-      CONFIG: {
-        appName: "loop",
-      },
-    }));
-
-    const result = createMetadata({});
-    const defaultTitle = "Programowanie na wyciągniecie ręki z loop";
-
-    expect(result.title).toBe(`${defaultTitle} • loop`);
-    expect(result.openGraph.title).toBe(`${defaultTitle} • loop`);
-  });
-
-  // Function handles empty description by using default description
-  it("should use default description when description is empty", () => {
-    // Mock CONFIG
-    jest.mock("src/global-config", () => ({
-      CONFIG: {
-        appName: "loop",
-      },
-    }));
-
-    const result = createMetadata({});
-    const defaultDescription =
-      "Ucz się programowania szybciej z AI, interaktywnymi kursami i wsparciem mentorów.";
-
-    expect(result.description).toBe(defaultDescription);
-    expect(result.openGraph.description).toBe(defaultDescription);
-  });
-
-  // Function handles empty keywords array
-  it("should handle empty keywords array", () => {
-    // Mock CONFIG
-    jest.mock("src/global-config", () => ({
-      CONFIG: {
-        appName: "loop",
-      },
-    }));
-
-    const result = createMetadata({ keywords: [] });
-
-    expect(result.keywords).toBe("");
   });
 });

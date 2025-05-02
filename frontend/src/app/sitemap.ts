@@ -115,6 +115,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { path: paths.register, priority: 0.9, changeFrequency: "yearly" },
     { path: paths.resetPassword, priority: 0.9, changeFrequency: "yearly" },
     { path: paths.updatePassword, priority: 0.9, changeFrequency: "yearly" },
+    { path: paths.account.dashboard, priority: 0.9, changeFrequency: "always" },
     { path: paths.support, priority: 0.6, changeFrequency: "monthly" },
     { path: paths.pricing, priority: 0.6, changeFrequency: "monthly" },
     { path: paths.privacyPolicy, priority: 0.5, changeFrequency: "yearly" },
@@ -130,14 +131,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }))
   );
 
-  const dynamicResults = await Promise.all(locales.map((locale) => fetchData(baseUrl, locale)));
+  const dynamicResults = await Promise.all(
+    locales.map((locale) =>
+      fetchData(locale === LANGUAGE.PL ? baseUrl : `${baseUrl}/${locale}`, locale)
+    )
+  );
 
-  const dynamicRoutes = dynamicResults.flat().reduce<MetadataRoute.Sitemap>((acc, route) => {
-    if (!acc.some((r) => r.url === route.url)) {
-      acc.push(route);
-    }
-    return acc;
-  }, []);
+  const dynamicRoutes = dynamicResults.flat();
 
   return [...staticRoutes, ...dynamicRoutes];
 }

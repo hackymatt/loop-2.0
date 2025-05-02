@@ -1,4 +1,8 @@
 {
+  "meta": {
+    "title": "Lekcja [name] - kontynuuj naukę",
+    "description": "Kontynuuj naukę i zdobądź jeszcze więcej praktycznych umiejętności dzięki lekcji [name]. Zakończ ją i rozwijaj swoje umiejętności programistyczne."
+  },
   "errors": {
     "answer": "Wystąpił błąd. Spróbuj ponownie.",
     "hint": "Wystąpił błąd. Spróbuj ponownie."

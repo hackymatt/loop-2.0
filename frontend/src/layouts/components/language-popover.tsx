@@ -13,6 +13,7 @@ import { useRouter, useParams, usePathname } from "src/routes/hooks";
 import { LANGUAGE } from "src/consts/language";
 
 import { FlagIcon } from "src/components/flag-icon";
+import { useSettingsContext } from "src/components/settings";
 
 // ----------------------------------------------------------------------
 
@@ -27,7 +28,7 @@ export type LanguagePopoverProps = IconButtonProps & {
 export function LanguagePopover({ data = [], sx, ...other }: LanguagePopoverProps) {
   const router = useRouter();
   const pathname = usePathname();
-
+  const settings = useSettingsContext();
   const { open, onClose, onOpen, anchorEl } = usePopover();
 
   const { locale } = useParams() as { locale: string };
@@ -37,6 +38,8 @@ export function LanguagePopover({ data = [], sx, ...other }: LanguagePopoverProp
   const handleChangeLang = (newLang: Language) => {
     const segments = pathname.split("/");
     const locales = Object.values(LANGUAGE);
+
+    settings.setField("language", newLang);
 
     if (newLang === LANGUAGE.PL) {
       if (segments.length > 1 && locales.includes(segments[1] as Language)) {

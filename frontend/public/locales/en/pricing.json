@@ -1,4 +1,8 @@
 {
+  "meta": {
+    "title": "Pricing – Choose What Fits You Best",
+    "description": "Explore our flexible pricing plans and choose the one that suits your learning goals. Start learning programming with access to courses, certificates, and instructor support."
+  },
   "title": { "cards": "Flexible plans tailored to your needs", "columns": "Compare Plans" },
   "subtitle": {
     "cards": "Start learning programming now and develop your skills according to your own needs.",

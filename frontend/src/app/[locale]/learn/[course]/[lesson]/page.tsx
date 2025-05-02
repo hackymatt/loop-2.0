@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
+import type { ICourseLessonProp, ICourseChapterProp } from "src/types/course";
 
 import { paths } from "src/routes/paths";
 
 import { createMetadata } from "src/utils/create-metadata";
 
+import { URLS } from "src/api/urls";
+import { CONFIG } from "src/global-config";
 import { LANGUAGE } from "src/consts/language";
-import { courseQuery } from "src/api/course/course";
 
 import { LearnView } from "src/sections/view/learn-view";
 
@@ -18,24 +20,38 @@ export default function Page({ params }: { params: { course: string; lesson: str
 export async function generateMetadata({
   params,
 }: {
-  params: { course: string; lesson: string };
+  params: { locale: string; course: string; lesson: string };
 }): Promise<Metadata> {
+  const translations = await import(`public/locales/${params.locale}/learn.json`);
+
+  const path = params.locale === LANGUAGE.PL ? paths.learn : `/${LANGUAGE.EN}${paths.learn}`;
   try {
-    const { queryFn } = courseQuery(params.course, LANGUAGE.PL);
+    const res = await fetch(`${CONFIG.api}${URLS.COURSES}/${params.course}`, {
+      headers: { "Content-Type": "application/json", "Accept-Language": params.locale },
+    });
 
-    const { results: course } = await queryFn();
+    if (!res.ok) throw new Error("Failed to fetch course");
 
-    const allLessons = course.chapters.flatMap((ch) => ch.lessons) ?? [];
-    const lesson = allLessons.find((l) => l.slug === params.lesson);
-    const title = `Lekcja ${lesson?.name}`;
+    const course = await res.json();
+
+    const { chapters } = course;
+
+    const allLessons = chapters.flatMap((ch: ICourseChapterProp) => ch.lessons) ?? [];
+    const lesson = allLessons.find((l: ICourseLessonProp) => l.slug === params.lesson);
+
+    const title = translations.meta.title.replace("[name]", lesson.name);
+    const description = translations.meta.post.description.replace("[name]", lesson.name);
 
     return createMetadata({
       title,
-      path: `${paths.learn}/${params.course}/${params.lesson}`,
+      description,
+      path: `${path}/${params.course}/${params.lesson}`,
     });
   } catch {
     return createMetadata({
-      title: "Nie znaleziono lekcji",
+      title: translations.meta.post.title,
+      description: translations.meta.post.description,
+      path: `${path}/${params.course}/${params.lesson}`,
     });
   }
 }

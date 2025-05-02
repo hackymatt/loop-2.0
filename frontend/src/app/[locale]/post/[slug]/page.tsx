@@ -4,7 +4,8 @@ import { paths } from "src/routes/paths";
 
 import { createMetadata } from "src/utils/create-metadata";
 
-import { postQuery } from "src/api/blog/post";
+import { URLS } from "src/api/urls";
+import { CONFIG } from "src/global-config";
 import { LANGUAGE } from "src/consts/language";
 
 import { PostView } from "src/sections/view/post-view";
@@ -18,25 +19,37 @@ export default function Page({ params }: { params: { slug: string } }) {
 export async function generateMetadata({
   params,
 }: {
-  params: { slug: string };
+  params: { locale: string; slug: string };
 }): Promise<Metadata> {
-  try {
-    const { queryFn } = postQuery(params.slug, LANGUAGE.PL);
+  const translations = await import(`public/locales/${params.locale}/blog.json`);
 
-    const { results: post } = await queryFn();
-    const title = `${post.name} - przeczytaj artykuł już teraz`;
-    const description = `Przeczytaj nasz artykuł pod tytułem ${post.name}. Odkryj praktyczne porady i najlepsze praktyki, które pomogą Ci w rozwoju umiejętności programistycznych.`;
-    const coverUrl = post.heroUrl;
+  const path = params.locale === LANGUAGE.PL ? paths.posts : `/${LANGUAGE.EN}${paths.posts}`;
+  try {
+    const res = await fetch(`${CONFIG.api}${URLS.POSTS}/${params.slug}`, {
+      headers: { "Content-Type": "application/json", "Accept-Language": params.locale },
+    });
+
+    if (!res.ok) throw new Error("Failed to fetch course");
+
+    const post = await res.json();
+
+    const { translated_name: name, image: heroUrl } = post;
+
+    const title = translations.meta.post.title.replace("[name]", name);
+    const description = translations.meta.post.description.replace("[name]", name);
+    const coverUrl = heroUrl;
 
     return createMetadata({
       title,
       description,
-      path: `${paths.post}/${params.slug}`,
+      path: `${path}/${params.slug}`,
       image: coverUrl,
     });
   } catch {
     return createMetadata({
-      title: "Nie znaleziono artykułu",
+      title: translations.meta.post.title,
+      description: translations.meta.post.description,
+      path: `${path}/${params.slug}`,
     });
   }
 }

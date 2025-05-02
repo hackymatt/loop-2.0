@@ -1,4 +1,8 @@
 {
+  "meta": {
+    "title": "Login – Access the Learning Platform",
+    "description": "Log in to your account to continue learning programming, track your progress, and earn certificates on the loop platform."
+  },
   "title": "Sign in",
   "subtitle": "Don't have an account?",
   "link": "Get started",
