@@ -1,7 +1,6 @@
 import type { Language } from "src/locales/types";
 import type { IconButtonProps } from "@mui/material/IconButton";
 
-import { useEffect, useCallback } from "react";
 import { usePopover } from "minimal-shared/hooks";
 
 import Popover from "@mui/material/Popover";
@@ -9,7 +8,8 @@ import MenuList from "@mui/material/MenuList";
 import MenuItem from "@mui/material/MenuItem";
 import IconButton from "@mui/material/IconButton";
 
-import i18n from "src/locales/i18n";
+import { useRouter, useParams, usePathname } from "src/routes/hooks";
+
 import { LANGUAGE } from "src/consts/language";
 
 import { FlagIcon } from "src/components/flag-icon";
@@ -26,24 +26,35 @@ export type LanguagePopoverProps = IconButtonProps & {
 };
 
 export function LanguagePopover({ data = [], sx, ...other }: LanguagePopoverProps) {
+  const router = useRouter();
+  const pathname = usePathname();
   const settings = useSettingsContext();
   const { open, onClose, onOpen, anchorEl } = usePopover();
 
-  const locale = settings.state.language ?? LANGUAGE.PL;
+  const { locale } = useParams() as { locale: string };
 
   const currentLang = data.find((lang) => lang.value === locale);
 
-  useEffect(() => {
-    i18n.changeLanguage(locale);
-  }, [locale]);
+  const handleChangeLang = (newLang: Language) => {
+    const segments = pathname.split("/");
+    const locales = Object.values(LANGUAGE);
 
-  const handleChangeLang = useCallback(
-    (newLang: Language) => {
-      settings.setState({ language: newLang });
-      onClose();
-    },
-    [onClose, settings]
-  );
+    settings.setField("language", newLang);
+
+    if (newLang === LANGUAGE.PL) {
+      if (segments.length > 1 && locales.includes(segments[1] as Language)) {
+        segments.splice(1, 1);
+      }
+    } else {
+      if (locales.includes(segments[1] as Language)) {
+        segments[1] = newLang;
+      } else {
+        segments.splice(1, 0, newLang);
+      }
+    }
+
+    router.push(segments.join("/") || "/");
+  };
 
   const renderButton = () => (
     <IconButton

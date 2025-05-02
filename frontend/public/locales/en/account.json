@@ -1,4 +1,18 @@
 {
+  "meta": {
+    "personal": {
+      "title": "Personal Information – Change Name and Profile Picture",
+      "description": "Manage your profile on the platform. Edit your first and last name, and update your profile picture to personalize your account."
+    },
+    "manage": {
+      "title": "Manage Your Account – Change Password or Delete Account",
+      "description": "Update your account details, change your password, or delete your account. Keep your profile secure and stay in control on our learning platform."
+    },
+    "subscription": {
+      "title": "Subscription – View and Change Your Plan",
+      "description": "Check the details of your current subscription, compare available plans, and switch to the one that best fits your learning goals."
+    }
+  },
   "email": {
     "label": "Email",
     "errors": { "required": "Email is required", "invalid": "Email is invalid" }

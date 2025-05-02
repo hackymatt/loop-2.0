@@ -10,6 +10,7 @@ import { paths } from "src/routes/paths";
 import { useRouter } from "src/routes/hooks";
 import { RouterLink } from "src/routes/components";
 
+import { useLocalizedPath } from "src/hooks/use-localized-path";
 import { useFormErrorHandler } from "src/hooks/use-form-error-handler";
 
 import { useLogin } from "src/api/auth/login";
@@ -29,6 +30,7 @@ import type { SignInSchemaType } from "./components/schema";
 
 export function SignInView() {
   const { t } = useTranslation("sign-in");
+  const localize = useLocalizedPath();
 
   const router = useRouter();
   const user = useUserContext();
@@ -55,7 +57,7 @@ export function SignInView() {
           isLoggedIn: false,
           email: data.email,
         });
-        router.push(paths.activate);
+        router.push(localize(paths.activate));
       } else {
         const { email, first_name, last_name, image, user_type, join_type, is_active, plan } =
           responseData;
@@ -71,7 +73,7 @@ export function SignInView() {
           plan,
           redirect: null,
         });
-        router.push(redirect || paths.account.dashboard);
+        router.push(localize(redirect || paths.account.dashboard));
       }
       reset();
     } catch (error) {
@@ -86,7 +88,7 @@ export function SignInView() {
         description={
           <>
             {`${t("subtitle")} `}
-            <Link component={RouterLink} href={paths.register} variant="subtitle2">
+            <Link component={RouterLink} href={localize(paths.register)} variant="subtitle2">
               {t("link")}
             </Link>
           </>

@@ -9,6 +9,7 @@ import Container from "@mui/material/Container";
 import { paths } from "src/routes/paths";
 
 import { useQueryParams } from "src/hooks/use-query-params";
+import { useLocalizedPath } from "src/hooks/use-localized-path";
 
 import { _mock } from "src/_mock";
 import { usePosts } from "src/api/blog/posts";
@@ -26,6 +27,7 @@ import { FeaturedPost } from "../posts/featured-post";
 
 export function PostsView() {
   const { t } = useTranslation("advertisement");
+  const localize = useLocalizedPath();
 
   const { handleChange, query } = useQueryParams();
 
@@ -62,7 +64,7 @@ export function PostsView() {
                     description={t("subtitle")}
                     imageUrl={_mock.image.course(6)}
                     action={
-                      <Button variant="contained" color="primary" href={paths.courses}>
+                      <Button variant="contained" color="primary" href={localize(paths.courses)}>
                         {t("button")}
                       </Button>
                     }

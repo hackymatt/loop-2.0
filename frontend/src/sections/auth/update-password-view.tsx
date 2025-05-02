@@ -13,6 +13,7 @@ import InputAdornment from "@mui/material/InputAdornment";
 import { paths } from "src/routes/paths";
 import { useRouter } from "src/routes/hooks";
 
+import { useLocalizedPath } from "src/hooks/use-localized-path";
 import { useFormErrorHandler } from "src/hooks/use-form-error-handler";
 
 import { CONFIG } from "src/global-config";
@@ -36,6 +37,8 @@ export function UpdatePasswordView({ token }: { token: string }) {
 
   const { t } = useTranslation("update-password");
   const { t: account } = useTranslation("account");
+
+  const localize = useLocalizedPath();
 
   const { mutateAsync: updatePassword } = usePasswordUpdate();
 
@@ -61,7 +64,7 @@ export function UpdatePasswordView({ token }: { token: string }) {
   const onSubmit = handleSubmit(async (data) => {
     try {
       await updatePassword({ ...data, token });
-      router.push(paths.login);
+      router.push(localize(paths.login));
       reset();
     } catch (error) {
       handleFormError(error);
@@ -122,7 +125,7 @@ export function UpdatePasswordView({ token }: { token: string }) {
         {renderForm()}
       </Form>
 
-      <FormReturnLink href={paths.login} label={t("link")} />
+      <FormReturnLink href={localize(paths.login)} label={t("link")} />
     </>
   );
 }

@@ -1,4 +1,14 @@
 {
+  "meta": {
+    "courses": {
+      "title": "Our Courses - Start learning programming with us",
+      "description": "We offer a wide selection of programming courses to help you gain practical skills in the latest technologies. Register now and start your journey in IT!"
+    },
+    "course": {
+      "title": "Course [name] - Start learning now",
+      "description": "Gain practical programming skills in [technologyName] with our [name] course. Register now and grow your IT career!"
+    }
+  },
   "title": "Courses",
   "filter": {
     "level": "Skill levels",

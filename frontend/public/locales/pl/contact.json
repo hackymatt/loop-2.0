@@ -1,4 +1,8 @@
 {
+  "meta": {
+    "title": "Kontakt – Skontaktuj się z nami",
+    "description": "Masz pytania? Skontaktuj się z zespołem platformy loop. Chętnie pomożemy w sprawie kursów, subskrypcji i wsparcia technicznego."
+  },
   "phoneLabel": "Telefon",
   "emailLabel": "E-mail",
   "socialMedia": "Obserwuj nas",

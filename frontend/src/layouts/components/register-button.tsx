@@ -8,6 +8,8 @@ import Button from "@mui/material/Button";
 
 import { paths } from "src/routes/paths";
 
+import { useLocalizedPath } from "src/hooks/use-localized-path";
+
 import { useAnalytics } from "src/app/analytics-provider";
 
 import { AnimateBorder } from "src/components/animate";
@@ -23,6 +25,7 @@ export type RegisterButtonProps = {
 
 export function RegisterButton({ slotProps, sx }: RegisterButtonProps) {
   const { t } = useTranslation("navigation");
+  const localize = useLocalizedPath();
 
   const { trackEvent } = useAnalytics();
 
@@ -57,7 +60,7 @@ export function RegisterButton({ slotProps, sx }: RegisterButtonProps) {
     >
       <Button
         variant="text"
-        href={paths.register}
+        href={localize(paths.register)}
         onClick={() => trackEvent({ category: "auth", label: "register" })}
         {...slotProps?.button}
         sx={[

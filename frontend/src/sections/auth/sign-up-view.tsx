@@ -10,6 +10,7 @@ import { paths } from "src/routes/paths";
 import { useRouter } from "src/routes/hooks";
 import { RouterLink } from "src/routes/components";
 
+import { useLocalizedPath } from "src/hooks/use-localized-path";
 import { useFormErrorHandler } from "src/hooks/use-form-error-handler";
 
 import { useRegister } from "src/api/auth/register";
@@ -32,6 +33,8 @@ type Props = {
 
 export function SignUpView({ header, buttonText = "Utwórz konto" }: Props) {
   const { t } = useTranslation("sign-up");
+
+  const localize = useLocalizedPath();
 
   const router = useRouter();
 
@@ -60,7 +63,7 @@ export function SignUpView({ header, buttonText = "Utwórz konto" }: Props) {
       const { email, password } = data;
       await register({ email, password });
       user.setState({ email });
-      router.push(paths.activate);
+      router.push(localize(paths.activate));
       reset();
     } catch (error) {
       handleFormError(error);
@@ -77,7 +80,7 @@ export function SignUpView({ header, buttonText = "Utwórz konto" }: Props) {
           description={
             <>
               {`${t("subtitle")} `}
-              <Link component={RouterLink} href={paths.login} variant="subtitle2">
+              <Link component={RouterLink} href={localize(paths.login)} variant="subtitle2">
                 {t("link")}
               </Link>
             </>

@@ -1,4 +1,3 @@
-import type { Language } from "src/locales/types";
 import type { GetQueryResponse } from "src/api/types";
 import type { IBlogFeaturedPost } from "src/types/blog";
 
@@ -6,8 +5,6 @@ import { compact } from "lodash-es";
 import { useQuery } from "@tanstack/react-query";
 
 import { getSimpleListData } from "src/api/utils";
-
-import { useSettingsContext } from "src/components/settings";
 
 import { URLS } from "../urls";
 
@@ -35,16 +32,12 @@ type IBlog = {
   duration: number;
 };
 
-export const featuredPostsQuery = (language?: Language) => {
+export const featuredPostsQuery = () => {
   const url = endpoint;
   const queryUrl = url;
 
   const queryFn = async (): Promise<GetQueryResponse<IBlogFeaturedPost[]>> => {
-    const results = await getSimpleListData<IBlog>(queryUrl, {
-      headers: {
-        "Accept-Language": language,
-      },
-    });
+    const results = await getSimpleListData<IBlog>(queryUrl);
 
     const modifiedResults: IBlogFeaturedPost[] = results.map(
       ({
@@ -71,13 +64,11 @@ export const featuredPostsQuery = (language?: Language) => {
     return { results: modifiedResults };
   };
 
-  return { url, queryFn, queryKey: compact([url, language]) };
+  return { url, queryFn, queryKey: compact([url]) };
 };
 
 export const useFeaturedPosts = (enabled: boolean = true) => {
-  const settings = useSettingsContext();
-  const { language } = settings.state;
-  const { queryKey, queryFn } = featuredPostsQuery(language);
+  const { queryKey, queryFn } = featuredPostsQuery();
   const { data, ...rest } = useQuery({ queryKey, queryFn, enabled });
   return {
     data: data?.results,

@@ -12,6 +12,8 @@ import IconButton from "@mui/material/IconButton";
 
 import { paths } from "src/routes/paths";
 
+import { useLocalizedPath } from "src/hooks/use-localized-path";
+
 import { fDate } from "src/utils/format-time";
 
 import { usePost } from "src/api/blog/post";
@@ -34,6 +36,7 @@ import { PrevNextButton } from "../blog/post-prev-and-next";
 
 export function PostView({ slug }: { slug: string }) {
   const { t } = useTranslation("navigation");
+  const localize = useLocalizedPath();
 
   const { data: post, isError, isLoading } = usePost(slug);
   const { data: featuredPosts } = useFeaturedPosts();
@@ -103,7 +106,7 @@ export function PostView({ slug }: { slug: string }) {
       <IconButton
         onClick={() =>
           navigator.share({
-            url: `${paths.post}/${post?.slug}`,
+            url: localize(`${paths.post}/${post?.slug}`),
             title: post?.name,
             text: post?.description,
           })
@@ -144,7 +147,7 @@ export function PostView({ slug }: { slug: string }) {
         <PrevNextButton
           title={post?.prevPost.name}
           coverUrl={post?.prevPost.heroUrl}
-          href={`${paths.post}/${post?.prevPost.slug}`}
+          href={localize(`${paths.post}/${post?.prevPost.slug}`)}
         />
       ) : (
         <Box />
@@ -155,7 +158,7 @@ export function PostView({ slug }: { slug: string }) {
           isNext
           title={post?.nextPost.name}
           coverUrl={post?.nextPost.heroUrl}
-          href={`${paths.post}/${post?.nextPost.slug}`}
+          href={localize(`${paths.post}/${post?.nextPost.slug}`)}
         />
       ) : (
         <Box />
@@ -178,8 +181,8 @@ export function PostView({ slug }: { slug: string }) {
       <Container>
         <CustomBreadcrumbs
           links={[
-            { name: t("home"), href: "/" },
-            { name: t("blog"), href: paths.posts },
+            { name: t("home"), href: localize(paths.home) },
+            { name: t("blog"), href: localize(paths.posts) },
             { name: post?.name },
           ]}
           sx={{ my: { xs: 3, md: 5 } }}

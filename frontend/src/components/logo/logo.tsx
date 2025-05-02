@@ -10,6 +10,8 @@ import { styled } from "@mui/material/styles";
 import { paths } from "src/routes/paths";
 import { RouterLink } from "src/routes/components";
 
+import { useLocalizedPath } from "src/hooks/use-localized-path";
+
 import { CONFIG } from "src/global-config";
 
 import { Image } from "../image";
@@ -25,16 +27,9 @@ export type LogoProps = LinkProps & {
 };
 
 export const Logo = forwardRef<HTMLAnchorElement, LogoProps>((props, ref) => {
-  const {
-    className,
-    href = paths.home,
-    isSingle = false,
-    isLink = true,
-    disabled,
-    sx,
-    ...other
-  } = props;
+  const { className, isSingle = false, isLink = true, disabled, sx, ...other } = props;
 
+  const localize = useLocalizedPath();
   const settings = useSettingsContext();
   const { colorScheme } = settings.state;
 
@@ -60,7 +55,7 @@ export const Logo = forwardRef<HTMLAnchorElement, LogoProps>((props, ref) => {
     <LogoRoot
       ref={ref}
       component={RouterLink}
-      href={href}
+      href={localize(paths.home)}
       aria-label="Logo"
       underline="none"
       className={mergeClasses([logoClasses.root, className])}

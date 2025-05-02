@@ -13,6 +13,7 @@ import DialogActions from "@mui/material/DialogActions";
 import { paths } from "src/routes/paths";
 import { useRouter } from "src/routes/hooks";
 
+import { useLocalizedPath } from "src/hooks/use-localized-path";
 import { useFormErrorHandler } from "src/hooks/use-form-error-handler";
 
 import { useDeleteAccount } from "src/api/me/delete-account";
@@ -28,6 +29,7 @@ type Props = DialogProps & {
 
 export function DeleteAccountForm({ onClose, ...other }: Props) {
   const { t } = useTranslation("account");
+  const localize = useLocalizedPath();
 
   const user = useUserContext();
 
@@ -48,7 +50,7 @@ export function DeleteAccountForm({ onClose, ...other }: Props) {
     try {
       await deleteAccount({});
       user.resetState();
-      router.push(paths.home);
+      router.push(localize(paths.home));
       onClose();
     } catch (error) {
       handleFormError(error);

@@ -19,6 +19,8 @@ import { Box, Container } from "@mui/material";
 import { paths } from "src/routes/paths";
 import { useRouter } from "src/routes/hooks";
 
+import { useLocalizedPath } from "src/hooks/use-localized-path";
+
 import { LESSON_TYPE } from "src/consts/lesson";
 import { useCourse } from "src/api/course/course";
 import { useLesson } from "src/api/course/lesson/lesson";
@@ -65,6 +67,7 @@ const ContentBox = ({ children, sx }: { children: ReactNode; sx?: BoxProps["sx"]
 
 export function LearnView({ courseSlug, lessonSlug }: LearnViewProps) {
   const { t } = useTranslation("learn");
+  const localize = useLocalizedPath();
   const { enqueueSnackbar } = useSnackbar();
   const router = useRouter();
 
@@ -97,7 +100,7 @@ export function LearnView({ courseSlug, lessonSlug }: LearnViewProps) {
   const navigateTo = (index: number) => {
     const next = allLessons[index];
     if (next) {
-      router.push(`${paths.learn}/${courseSlug}/${next.slug}`);
+      router.push(localize(`${paths.learn}/${courseSlug}/${next.slug}`));
     }
   };
 
@@ -107,7 +110,9 @@ export function LearnView({ courseSlug, lessonSlug }: LearnViewProps) {
       await submit({ ...data, lesson: lessonSlug });
       const next = allLessons[currentLessonIndex + 1];
       router.push(
-        next ? `${paths.learn}/${courseSlug}/${next.slug}` : `${paths.course}/${courseSlug}`
+        localize(
+          next ? `${paths.learn}/${courseSlug}/${next.slug}` : `${paths.course}/${courseSlug}`
+        )
       );
     } catch (err) {
       setError(((err as AxiosError).response?.data as { answer: string })?.answer);
@@ -147,7 +152,7 @@ export function LearnView({ courseSlug, lessonSlug }: LearnViewProps) {
     >
       <CustomBreadcrumbs
         links={[
-          { name: courseData?.name, href: `${paths.course}/${courseSlug}` },
+          { name: courseData?.name, href: localize(`${paths.course}/${courseSlug}`) },
           { name: currentChapter?.name },
           { name: lessonData?.name },
         ]}

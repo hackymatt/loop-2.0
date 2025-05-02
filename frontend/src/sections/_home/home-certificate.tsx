@@ -13,6 +13,8 @@ import Typography from "@mui/material/Typography";
 
 import { paths } from "src/routes/paths";
 
+import { useLocalizedPath } from "src/hooks/use-localized-path";
+
 import { Iconify } from "src/components/iconify";
 import { useUserContext } from "src/components/user";
 import { varFade, MotionViewport } from "src/components/animate";
@@ -25,6 +27,7 @@ const variants: Variants = varFade("inDown", { distance: 24 });
 
 export function HomeCertificate({ sx, ...other }: BoxProps) {
   const { t } = useTranslation("home");
+  const localize = useLocalizedPath();
 
   const user = useUserContext();
   const { isLoggedIn, firstName, lastName } = user.state;
@@ -56,7 +59,7 @@ export function HomeCertificate({ sx, ...other }: BoxProps) {
           size="large"
           color="inherit"
           variant="outlined"
-          href={paths.courses}
+          href={localize(paths.courses)}
           endIcon={<Iconify width={16} icon="solar:alt-arrow-right-outline" />}
           sx={{ mt: 5, mb: { xs: 5, md: 0 } }}
         >

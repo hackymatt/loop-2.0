@@ -9,6 +9,8 @@ import Typography from "@mui/material/Typography";
 import { paths } from "src/routes/paths";
 import { RouterLink } from "src/routes/components";
 
+import { useLocalizedPath } from "src/hooks/use-localized-path";
+
 import { Iconify } from "src/components/iconify";
 
 // ----------------------------------------------------------------------
@@ -53,10 +55,12 @@ type CourseItemProps = {
 };
 
 function CourseItem({ course }: CourseItemProps) {
+  const localize = useLocalizedPath();
+
   return (
     <Link
       component={RouterLink}
-      href={`${paths.course}/${course.slug}`}
+      href={localize(`${paths.course}/${course.slug}`)}
       underline="hover"
       color="inherit"
       sx={{

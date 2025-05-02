@@ -13,6 +13,8 @@ import { Typography } from "@mui/material";
 import { paths } from "src/routes/paths";
 import { useRouter } from "src/routes/hooks";
 
+import { useLocalizedPath } from "src/hooks/use-localized-path";
+
 import { CONFIG } from "src/global-config";
 import { useResend } from "src/api/auth/resend";
 import { useActivate } from "src/api/auth/activate";
@@ -27,6 +29,7 @@ import { FormResendLink } from "./components/form-resend-link";
 
 export function ActivateView({ token }: { token: string | undefined }) {
   const { t } = useTranslation("activate");
+  const localize = useLocalizedPath();
 
   const router = useRouter();
 
@@ -43,7 +46,7 @@ export function ActivateView({ token }: { token: string | undefined }) {
         try {
           await activate({ token });
           user.setField("isActive", true);
-          router.push(paths.login);
+          router.push(localize(paths.login));
         } catch (error) {
           setState({ error: ((error as AxiosError).response?.data as { error: string }).error });
         }
@@ -60,10 +63,10 @@ export function ActivateView({ token }: { token: string | undefined }) {
   const handleResendCode = async () => {
     countdownSeconds.start();
     try {
-      const { status } = await resend({ token, email: user.state.email });
+      const { status } = await resend({ token, email: user.state.email || "" });
       user.setField("isActive", true);
       if (status === 200) {
-        router.push(paths.login);
+        router.push(localize(paths.login));
       }
     } catch (error) {
       setState({ error: ((error as AxiosError).response?.data as { root: string }).root });
@@ -101,7 +104,7 @@ export function ActivateView({ token }: { token: string | undefined }) {
         disabled={countdownSeconds.isCounting}
       />
 
-      <FormReturnLink href={paths.login} label={t("link")} />
+      <FormReturnLink href={localize(paths.login)} label={t("link")} />
     </>
   );
 }

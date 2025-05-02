@@ -31,7 +31,7 @@ export function HomePricing({ sx, ...other }: BoxProps) {
 
   const pricingCards = (plans || []).map(({ price, ...rest }: IPlanProps) => {
     const { monthly, yearly } = price;
-    return { ...rest, price: isYearly ? yearly : monthly };
+    return { ...rest, price: isYearly ? yearly / 12 : monthly };
   });
 
   const handleChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {

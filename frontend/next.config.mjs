@@ -25,4 +25,12 @@ export default {
     return config;
   },
   i18n,
+  async rewrites() {
+    return [
+      {
+        source: "/",
+        destination: "/pl",
+      },
+    ];
+  },
 };

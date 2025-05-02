@@ -4,6 +4,8 @@ import { Box, Button, Typography } from "@mui/material";
 
 import { paths } from "src/routes/paths";
 
+import { useLocalizedPath } from "src/hooks/use-localized-path";
+
 import { getLessonTypeIcon } from "src/utils/lesson-type-icon";
 
 import { useAnalytics } from "src/app/analytics-provider";
@@ -21,19 +23,20 @@ type LessonItemProps = {
 
 export function CourseDetailsLessonItem({ course, chapter, lesson }: LessonItemProps) {
   const { trackEvent } = useAnalytics();
+  const localize = useLocalizedPath();
 
   const user = useUserContext();
   const { isLoggedIn } = user.state;
 
   const completed = (lesson.progress || 0) === 100;
-  const redirect = `${paths.learn}/${course.slug}/${lesson.slug}`;
+  const redirect = localize(`${paths.learn}/${course.slug}/${lesson.slug}`);
 
   return (
     <Button
       variant="text"
       size="medium"
       color="inherit"
-      href={isLoggedIn ? redirect : paths.register}
+      href={isLoggedIn ? redirect : localize(paths.register)}
       onClick={() => {
         if (!isLoggedIn) {
           user.setField("redirect", redirect);

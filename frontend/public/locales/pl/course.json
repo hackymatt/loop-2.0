@@ -1,4 +1,14 @@
 {
+  "meta": {
+    "courses": {
+      "title": "Nasze kursy - Rozpocznij naukę programowania z nami",
+      "description": "Oferujemy szeroki wybór kursów programowania, które pomogą Ci zdobyć praktyczne umiejętności w najnowszych technologiach. Zarejestruj się i zacznij swoją podróż w IT!"
+    },
+    "course": {
+      "title": "Kurs [name] - zacznij naukę już teraz",
+      "description": "Zdobądź praktyczne umiejętności programowania w [technologyName] dzięki naszemu kursowi [name]. Zarejestruj się i rozwijaj swoją karierę w IT!"
+    }
+  },
   "title": "Kursy",
   "filter": {
     "level": "Poziom umiejętności",

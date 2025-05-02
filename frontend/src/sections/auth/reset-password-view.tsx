@@ -10,6 +10,7 @@ import LoadingButton from "@mui/lab/LoadingButton";
 
 import { paths } from "src/routes/paths";
 
+import { useLocalizedPath } from "src/hooks/use-localized-path";
 import { useFormErrorHandler } from "src/hooks/use-form-error-handler";
 
 import { CONFIG } from "src/global-config";
@@ -28,6 +29,7 @@ import type { ResetPasswordSchemaType } from "./components/schema";
 export function ResetPasswordView() {
   const { t } = useTranslation("reset-password");
   const { t: account } = useTranslation("account");
+  const localize = useLocalizedPath();
 
   const { mutateAsync: resetPassword } = usePasswordReset();
 
@@ -104,7 +106,7 @@ export function ResetPasswordView() {
         {renderForm()}
       </Form>
 
-      <FormReturnLink href={paths.login} label={t("link")} />
+      <FormReturnLink href={localize(paths.login)} label={t("link")} />
     </>
   );
 }

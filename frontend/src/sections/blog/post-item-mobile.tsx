@@ -8,6 +8,8 @@ import { Typography } from "@mui/material";
 import { paths } from "src/routes/paths";
 import { RouterLink } from "src/routes/components";
 
+import { useLocalizedPath } from "src/hooks/use-localized-path";
+
 import { fDate } from "src/utils/format-time";
 
 import { Image } from "src/components/image";
@@ -22,10 +24,12 @@ type Props = BoxProps & {
 };
 
 export function PostItemMobile({ post, onSidebar, sx, ...other }: Props) {
+  const localize = useLocalizedPath();
+
   return (
     <Link
       component={RouterLink}
-      href={`${paths.post}/${post.slug}`}
+      href={localize(`${paths.post}/${post.slug}`)}
       color="inherit"
       underline="none"
     >

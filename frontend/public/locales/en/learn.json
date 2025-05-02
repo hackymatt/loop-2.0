@@ -1,4 +1,8 @@
 {
+  "meta": {
+    "title": "Lesson [name] – continue learning",
+    "description": "Continue your learning journey and gain more practical skills with the [name] lesson. Finish it and enhance your programming abilities."
+  },
   "errors": {
     "answer": "An error occurred. Please try again",
     "hint": "An error occurred. Please try again"

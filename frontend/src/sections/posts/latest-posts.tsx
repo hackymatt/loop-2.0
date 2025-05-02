@@ -12,6 +12,8 @@ import Typography from "@mui/material/Typography";
 import { paths } from "src/routes/paths";
 import { RouterLink } from "src/routes/components";
 
+import { useLocalizedPath } from "src/hooks/use-localized-path";
+
 import { fDate } from "src/utils/format-time";
 
 import { Image } from "src/components/image";
@@ -29,6 +31,8 @@ type Props = BoxProps & {
 
 export function LatestPosts({ largePost, smallPosts, sx, ...other }: Props) {
   const { t } = useTranslation("blog");
+  const localize = useLocalizedPath();
+
   const renderDesktopList = () => (
     <Box
       sx={{
@@ -69,7 +73,7 @@ export function LatestPosts({ largePost, smallPosts, sx, ...other }: Props) {
       <Box sx={{ mt: 5, textAlign: "center", display: { md: "none" } }}>
         <Button
           component={RouterLink}
-          href={paths.posts}
+          href={localize(paths.posts)}
           color="inherit"
           endIcon={<Iconify icon="solar:alt-arrow-right-outline" />}
         >
@@ -109,7 +113,7 @@ export function LatestPosts({ largePost, smallPosts, sx, ...other }: Props) {
 
           <Button
             component={RouterLink}
-            href={paths.posts}
+            href={localize(paths.posts)}
             color="inherit"
             endIcon={<Iconify icon="solar:alt-arrow-right-outline" />}
             sx={{ display: { xs: "none", md: "inline-flex" } }}
@@ -134,10 +138,12 @@ type PostItemProps = BoxProps & {
 } & ({ largePost: true; post: IBlogFeaturedPost } | { largePost?: false; post: IBlogRecentProps });
 
 export function PostItem({ sx, post, order, largePost, ...other }: PostItemProps) {
+  const localize = useLocalizedPath();
+
   return (
     <Link
       component={RouterLink}
-      href={`${paths.post}/${post.slug}`}
+      href={localize(`${paths.post}/${post.slug}`)}
       color="inherit"
       underline="none"
     >

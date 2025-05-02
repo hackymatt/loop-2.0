@@ -7,6 +7,8 @@ import { Box, Card, Link, Avatar, Typography } from "@mui/material";
 import { paths } from "src/routes/paths";
 import { RouterLink } from "src/routes/components";
 
+import { useLocalizedPath } from "src/hooks/use-localized-path";
+
 import { fNumber } from "src/utils/format-number";
 
 import { usePlan } from "src/api/plan/plan";
@@ -66,6 +68,7 @@ type Props = {
 export function ProfileSummary({ totalPoints, dailyStreak }: Props) {
   const { t: locale } = useTranslation("locale");
   const { t } = useTranslation("dashboard");
+  const localize = useLocalizedPath();
 
   const user = useUserContext();
   const { firstName, email, avatarUrl, plan: userPlan } = user.state;
@@ -73,7 +76,12 @@ export function ProfileSummary({ totalPoints, dailyStreak }: Props) {
   const { data: plan } = usePlan(userPlan.type || PLAN_TYPE.FREE);
 
   const renderPlan = () => (
-    <Link component={RouterLink} href={paths.account.subscription} color="inherit" underline="none">
+    <Link
+      component={RouterLink}
+      href={localize(paths.account.subscription)}
+      color="inherit"
+      underline="none"
+    >
       <Card
         sx={(theme) => ({
           borderRadius: 2,
@@ -95,7 +103,12 @@ export function ProfileSummary({ totalPoints, dailyStreak }: Props) {
   );
 
   const renderUser = () => (
-    <Link component={RouterLink} href={paths.account.personal} color="inherit" underline="none">
+    <Link
+      component={RouterLink}
+      href={localize(paths.account.personal)}
+      color="inherit"
+      underline="none"
+    >
       <Card
         sx={(theme) => ({
           borderRadius: 2,

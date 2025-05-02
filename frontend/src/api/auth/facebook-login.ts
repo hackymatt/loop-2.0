@@ -2,8 +2,6 @@ import type { AxiosError } from "axios";
 
 import { useMutation } from "@tanstack/react-query";
 
-import { useSettingsContext } from "src/components/settings";
-
 import { URLS } from "../urls";
 import { Api } from "../service";
 
@@ -33,19 +31,11 @@ type ILoginReturn = {
   status: number;
 };
 
-export const useLoginFacebook = () => {
-  const settings = useSettingsContext();
-  const { language } = settings.state;
-
-  return useMutation<ILoginReturn, AxiosError, ILogin>(async (variables) => {
-    const result = await Api.post(endpoint, variables, {
-      headers: {
-        "Accept-Language": language,
-      },
-    });
+export const useLoginFacebook = () =>
+  useMutation<ILoginReturn, AxiosError, ILogin>(async (variables) => {
+    const result = await Api.post(endpoint, variables);
     return {
       status: result.status,
       data: result.data,
     };
   });
-};

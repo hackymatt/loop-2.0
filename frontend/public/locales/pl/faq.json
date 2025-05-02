@@ -1,4 +1,8 @@
 {
+  "meta": {
+    "title": "Pomoc",
+    "description": "Masz pytania lub potrzebujesz pomocy? Sprawdź najczęściej zadawane pytania lub skontaktuj się z naszym zespołem wsparcia. Jesteśmy tutaj, aby Ci pomóc!"
+  },
   "title": "Najczęściej zadawane pytania",
   "moreQuestions": {
     "title": "Masz dodatkowe pytania?",

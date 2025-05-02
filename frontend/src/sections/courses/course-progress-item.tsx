@@ -10,6 +10,8 @@ import Typography from "@mui/material/Typography";
 import { paths } from "src/routes/paths";
 import { RouterLink } from "src/routes/components";
 
+import { useLocalizedPath } from "src/hooks/use-localized-path";
+
 import { getLevelIcon } from "src/utils/level-icon";
 import { getTechnologyIcon } from "src/utils/technology-icon";
 
@@ -22,6 +24,8 @@ type Props = {
 };
 
 export function CourseProgressItem({ course }: Props) {
+  const localize = useLocalizedPath();
+
   const renderTop = () => (
     <Box sx={{ gap: 1, display: "flex", alignItems: "center", flexWrap: "wrap" }}>
       <Typography variant="overline" sx={{ color: "primary.main", flexGrow: 1 }}>
@@ -131,7 +135,7 @@ export function CourseProgressItem({ course }: Props) {
   return (
     <Link
       component={RouterLink}
-      href={`${paths.course}/${course.slug}`}
+      href={localize(`${paths.course}/${course.slug}`)}
       color="inherit"
       underline="none"
     >

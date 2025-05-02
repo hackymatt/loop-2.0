@@ -14,6 +14,7 @@ import { paths } from "src/routes/paths";
 import { RouterLink } from "src/routes/components";
 
 import { usePluralize } from "src/hooks/use-pluralize";
+import { useLocalizedPath } from "src/hooks/use-localized-path";
 
 import { getLevelIcon } from "src/utils/level-icon";
 import { fShortenNumber } from "src/utils/format-number";
@@ -33,6 +34,7 @@ type Props = {
 export function CourseItem({ course, isVertical }: Props) {
   const { t: locale } = useTranslation("locale");
   const { t } = useTranslation("course");
+  const localize = useLocalizedPath();
 
   const instructor = t("instructor", { returnObjects: true }) as string[];
   const student = t("student", { returnObjects: true }) as string[];
@@ -228,7 +230,7 @@ export function CourseItem({ course, isVertical }: Props) {
   return (
     <Link
       component={RouterLink}
-      href={`${paths.course}/${course.slug}`}
+      href={localize(`${paths.course}/${course.slug}`)}
       color="inherit"
       underline="none"
     >

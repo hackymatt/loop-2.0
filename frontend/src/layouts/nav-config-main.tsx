@@ -4,6 +4,8 @@ import { useTranslation } from "react-i18next";
 
 import { paths } from "src/routes/paths";
 
+import { useLocalizedPath } from "src/hooks/use-localized-path";
+
 import { useFeaturedCourses } from "src/api/course/featured";
 import { useCourseLevels } from "src/api/course/level/levels";
 import { useCourseCategories } from "src/api/course/category/categories";
@@ -15,6 +17,8 @@ import { useUserContext } from "src/components/user";
 
 export const usePageLinks = () => {
   const { t } = useTranslation("navigation");
+  const localize = useLocalizedPath();
+
   const { data: courseLevels } = useCourseLevels({ sort_by: "order", page_size: "-1" });
   const { data: courseTechnologies } = useCourseTechnologies({ page_size: "-1" });
   const { data: courseCategories } = useCourseCategories({ page_size: "-1" });
@@ -24,7 +28,7 @@ export const usePageLinks = () => {
         subheader: t("levels"),
         items: courseLevels.map(({ slug, name }: ICourseLevelProp) => ({
           title: name,
-          path: `${paths.courses}?levels=${slug}`,
+          path: localize(`${paths.courses}?levels=${slug}`),
         })),
       }
     : null;
@@ -34,7 +38,7 @@ export const usePageLinks = () => {
         subheader: t("technologies"),
         items: courseTechnologies.map(({ slug, name }: ICourseTechnologyProp) => ({
           title: name,
-          path: `${paths.courses}?technologies=${slug}`,
+          path: localize(`${paths.courses}?technologies=${slug}`),
         })),
       }
     : null;
@@ -44,7 +48,7 @@ export const usePageLinks = () => {
         subheader: t("categories"),
         items: courseCategories.map(({ slug, name }: ICourseTechnologyProp) => ({
           title: name,
-          path: `${paths.courses}?categories=${slug}`,
+          path: localize(`${paths.courses}?categories=${slug}`),
         })),
       }
     : null;
@@ -66,6 +70,7 @@ export const usePageLinks = () => {
 
 const useCourseNav = () => {
   const { t } = useTranslation("navigation");
+  const localize = useLocalizedPath();
 
   const { data: featuredCourses } = useFeaturedCourses();
 
@@ -74,17 +79,18 @@ const useCourseNav = () => {
   return {
     moreLink: {
       title: t("more"),
-      path: paths.courses,
+      path: localize(paths.courses),
     },
     tags: (featuredCourses || []).map((course) => ({
       title: course.name,
-      path: `${paths.course}/${course.slug}`,
+      path: localize(`${paths.course}/${course.slug}`),
     })),
     children,
   };
 };
 export const useNavData = () => {
   const { t } = useTranslation("navigation");
+  const localize = useLocalizedPath();
   const user = useUserContext();
   const { isLoggedIn } = user.state;
 
@@ -92,16 +98,16 @@ export const useNavData = () => {
 
   return isLoggedIn
     ? [
-        { title: t("courses"), path: paths.courses, ...coursesNav },
-        { title: t("certificates"), path: paths.certificates },
-        { title: t("blog"), path: paths.posts },
-        { title: t("contact"), path: paths.contact },
+        { title: t("courses"), path: localize(paths.courses), ...coursesNav },
+        { title: t("certificates"), path: localize(paths.certificates) },
+        { title: t("blog"), path: localize(paths.posts) },
+        { title: t("contact"), path: localize(paths.contact) },
       ]
     : [
-        { title: t("courses"), path: paths.courses, ...coursesNav },
-        { title: t("pricing"), path: paths.pricing },
-        { title: t("blog"), path: paths.posts },
-        { title: t("about"), path: paths.about },
-        { title: t("contact"), path: paths.contact },
+        { title: t("courses"), path: localize(paths.courses), ...coursesNav },
+        { title: t("pricing"), path: localize(paths.pricing) },
+        { title: t("blog"), path: localize(paths.posts) },
+        { title: t("about"), path: localize(paths.about) },
+        { title: t("contact"), path: localize(paths.contact) },
       ];
 };

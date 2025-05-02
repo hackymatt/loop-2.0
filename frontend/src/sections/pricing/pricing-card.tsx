@@ -10,6 +10,8 @@ import Typography from "@mui/material/Typography";
 
 import { paths } from "src/routes/paths";
 
+import { useLocalizedPath } from "src/hooks/use-localized-path";
+
 import { getPlanIcon } from "src/utils/plan-icon";
 import { fCurrency } from "src/utils/format-number";
 
@@ -35,16 +37,18 @@ const iconPath = (name: string) => `${CONFIG.assetsDir}/assets/icons/plans/${nam
 export function PricingCard({ plan, isYearly, sx, ...other }: Props) {
   const { t } = useTranslation("pricing");
   const { t: locale } = useTranslation("locale");
+  const localize = useLocalizedPath();
 
   const user = useUserContext();
   const { isLoggedIn, plan: userPlan } = user.state;
 
   const isCurrentPlan = isLoggedIn && plan.slug === userPlan.type;
 
-  const redirect =
+  const redirect = localize(
     plan.slug === PLAN_TYPE.FREE
       ? `${paths.payment}?plan=${plan.slug}`
-      : `${paths.payment}?plan=${plan.slug}&yearly=${isYearly}`;
+      : `${paths.payment}?plan=${plan.slug}&yearly=${isYearly}`
+  );
 
   const { trackEvent } = useAnalytics();
 
@@ -156,7 +160,7 @@ export function PricingCard({ plan, isYearly, sx, ...other }: Props) {
         size="large"
         variant={isCurrentPlan ? "outlined" : "contained"}
         color={plan.popular ? "primary" : "inherit"}
-        href={isLoggedIn ? redirect : paths.register}
+        href={isLoggedIn ? redirect : localize(paths.register)}
         disabled={isCurrentPlan}
         onClick={() => {
           if (!isLoggedIn) {

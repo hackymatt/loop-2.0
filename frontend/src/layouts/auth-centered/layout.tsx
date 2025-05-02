@@ -11,6 +11,8 @@ import Link from "@mui/material/Link";
 import { paths } from "src/routes/paths";
 import { RouterLink } from "src/routes/components";
 
+import { useLocalizedPath } from "src/hooks/use-localized-path";
+
 import { CONFIG } from "src/global-config";
 
 import { Logo } from "src/components/logo";
@@ -49,6 +51,8 @@ export function AuthCenteredLayout({
   layoutQuery = "md",
 }: AuthCenteredLayoutProps) {
   const { t } = useTranslation("navigation");
+  const localize = useLocalizedPath();
+
   const renderHeader = () => {
     const headerSlotProps: HeaderSectionProps["slotProps"] = { container: { maxWidth: false } };
 
@@ -64,7 +68,7 @@ export function AuthCenteredLayout({
           {/** @slot Help link */}
           <Link
             component={RouterLink}
-            href={paths.support}
+            href={localize(paths.support)}
             color="inherit"
             sx={{ typography: "subtitle2" }}
           >

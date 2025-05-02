@@ -1,4 +1,3 @@
-import type { Language } from "src/locales/types";
 import type { IBlogListProps } from "src/types/blog";
 import type { QueryType, ListQueryResponse } from "src/api/types";
 
@@ -6,8 +5,6 @@ import { compact } from "lodash-es";
 import { useQuery } from "@tanstack/react-query";
 
 import { getListData, formatQueryParams } from "src/api/utils";
-
-import { useSettingsContext } from "src/components/settings";
 
 import { URLS } from "../urls";
 
@@ -35,17 +32,13 @@ type IBlog = {
   duration: number;
 };
 
-export const postsQuery = (query?: QueryType, language?: Language) => {
+export const postsQuery = (query?: QueryType) => {
   const url = endpoint;
   const urlParams = formatQueryParams(query);
   const queryUrl = urlParams ? `${url}?${urlParams}` : url;
 
   const queryFn = async (): Promise<ListQueryResponse<IBlogListProps[]>> => {
-    const { results, records_count, pages_count } = await getListData<IBlog>(queryUrl, {
-      headers: {
-        "Accept-Language": language,
-      },
-    });
+    const { results, records_count, pages_count } = await getListData<IBlog>(queryUrl);
     const modifiedResults: IBlogListProps[] = (results ?? []).map(
       ({
         translated_name,
@@ -71,13 +64,11 @@ export const postsQuery = (query?: QueryType, language?: Language) => {
     return { results: modifiedResults, count: records_count, pagesCount: pages_count };
   };
 
-  return { url, queryFn, queryKey: compact([url, urlParams, language]) };
+  return { url, queryFn, queryKey: compact([url, urlParams]) };
 };
 
 export const usePosts = (query?: QueryType, enabled: boolean = true) => {
-  const settings = useSettingsContext();
-  const { language } = settings.state;
-  const { queryKey, queryFn } = postsQuery(query, language);
+  const { queryKey, queryFn } = postsQuery(query);
   const { data, ...rest } = useQuery({ queryKey, queryFn, enabled });
   return {
     data: data?.results,

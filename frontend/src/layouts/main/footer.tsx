@@ -16,6 +16,8 @@ import { paths } from "src/routes/paths";
 import { usePathname } from "src/routes/hooks";
 import { RouterLink } from "src/routes/components";
 
+import { useLocalizedPath } from "src/hooks/use-localized-path";
+
 import { socials } from "src/consts/socials";
 import { FacebookIcon, LinkedinIcon, InstagramIcon } from "src/assets/icons";
 
@@ -33,6 +35,7 @@ export type FooterProps = BoxProps & {
 
 export function Footer({ layoutQuery = "md", sx, ...other }: FooterProps) {
   const { t } = useTranslation("navigation");
+  const localize = useLocalizedPath();
 
   const user = useUserContext();
   const { isLoggedIn } = user.state;
@@ -49,7 +52,7 @@ export function Footer({ layoutQuery = "md", sx, ...other }: FooterProps) {
     <>
       <Link
         component={RouterLink}
-        href={paths.courses}
+        href={localize(paths.courses)}
         variant="body2"
         sx={{ color: "text.primary" }}
       >
@@ -59,7 +62,7 @@ export function Footer({ layoutQuery = "md", sx, ...other }: FooterProps) {
       {!isLoggedIn && (
         <Link
           component={RouterLink}
-          href={paths.pricing}
+          href={localize(paths.pricing)}
           variant="body2"
           sx={{ color: "text.primary" }}
         >
@@ -69,7 +72,7 @@ export function Footer({ layoutQuery = "md", sx, ...other }: FooterProps) {
 
       <Link
         component={RouterLink}
-        href={paths.posts}
+        href={localize(paths.posts)}
         variant="body2"
         sx={{ color: "text.primary" }}
       >
@@ -79,7 +82,7 @@ export function Footer({ layoutQuery = "md", sx, ...other }: FooterProps) {
       {!isLoggedIn && (
         <Link
           component={RouterLink}
-          href={paths.about}
+          href={localize(paths.about)}
           variant="body2"
           sx={{ color: "text.primary" }}
         >
@@ -89,7 +92,7 @@ export function Footer({ layoutQuery = "md", sx, ...other }: FooterProps) {
 
       <Link
         component={RouterLink}
-        href={paths.contact}
+        href={localize(paths.contact)}
         variant="body2"
         sx={{ color: "text.primary" }}
       >
@@ -98,7 +101,7 @@ export function Footer({ layoutQuery = "md", sx, ...other }: FooterProps) {
 
       <Link
         component={RouterLink}
-        href={paths.support}
+        href={localize(paths.support)}
         variant="body2"
         sx={{ color: "text.primary" }}
       >
@@ -255,7 +258,12 @@ export function Footer({ layoutQuery = "md", sx, ...other }: FooterProps) {
           justifyContent: "center",
         }}
       >
-        <Link variant="caption" color="inherit" component={RouterLink} href={paths.privacyPolicy}>
+        <Link
+          variant="caption"
+          color="inherit"
+          component={RouterLink}
+          href={localize(paths.privacyPolicy)}
+        >
           {t("privacyPolicy")}
         </Link>
         <Box
@@ -271,7 +279,7 @@ export function Footer({ layoutQuery = "md", sx, ...other }: FooterProps) {
           variant="caption"
           color="inherit"
           component={RouterLink}
-          href={paths.termsAndConditions}
+          href={localize(paths.termsAndConditions)}
         >
           {t("termsAndConditions")}
         </Link>

@@ -1,4 +1,3 @@
-import type { Language } from "src/locales/types";
 import type { GetQueryResponse } from "src/api/types";
 import type { PlanType, IPlanProps } from "src/types/plan";
 
@@ -6,8 +5,6 @@ import { compact } from "lodash-es";
 import { useQuery } from "@tanstack/react-query";
 
 import { getData } from "src/api/utils";
-
-import { useSettingsContext } from "src/components/settings";
 
 import { URLS } from "../urls";
 
@@ -32,16 +29,12 @@ type IPlan = {
   options: IOption[];
 };
 
-export const planQuery = (slug: string, language?: Language) => {
+export const planQuery = (slug: string) => {
   const url = endpoint;
   const queryUrl = `${url}/${slug}`;
 
   const queryFn = async (): Promise<GetQueryResponse<IPlanProps>> => {
-    const { data } = await getData<IPlan>(queryUrl, {
-      headers: {
-        "Accept-Language": language,
-      },
-    });
+    const { data } = await getData<IPlan>(queryUrl);
     const { slug: planSlug, ...rest }: IPlan = data;
 
     const modifiedResults: IPlanProps = {
@@ -51,13 +44,11 @@ export const planQuery = (slug: string, language?: Language) => {
     return { results: modifiedResults };
   };
 
-  return { url, queryFn, queryKey: compact([url, slug, language]) };
+  return { url, queryFn, queryKey: compact([url, slug]) };
 };
 
 export const usePlan = (slug: string, enabled: boolean = true) => {
-  const settings = useSettingsContext();
-  const { language } = settings.state;
-  const { queryKey, queryFn } = planQuery(slug, language);
+  const { queryKey, queryFn } = planQuery(slug);
   const { data, ...rest } = useQuery({ queryKey, queryFn, enabled });
   return {
     data: data?.results,

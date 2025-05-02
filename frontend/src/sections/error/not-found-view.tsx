@@ -7,7 +7,10 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 
+import { paths } from "src/routes/paths";
 import { RouterLink } from "src/routes/components";
+
+import { useLocalizedPath } from "src/hooks/use-localized-path";
 
 import { CONFIG } from "src/global-config";
 import { SimpleLayout } from "src/layouts/simple";
@@ -18,6 +21,8 @@ import { varBounce, MotionContainer } from "src/components/animate";
 
 export function NotFoundView() {
   const { t } = useTranslation("404");
+  const localize = useLocalizedPath();
+
   return (
     <SimpleLayout slotProps={{ content: { compact: true } }}>
       <MotionContainer>
@@ -40,7 +45,13 @@ export function NotFoundView() {
           />
         </m.div>
 
-        <Button component={RouterLink} href="/" size="large" color="inherit" variant="contained">
+        <Button
+          component={RouterLink}
+          href={localize(paths.home)}
+          size="large"
+          color="inherit"
+          variant="contained"
+        >
           {t("button")}
         </Button>
       </MotionContainer>

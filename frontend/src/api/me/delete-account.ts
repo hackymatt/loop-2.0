@@ -2,8 +2,6 @@ import type { AxiosError } from "axios";
 
 import { useMutation } from "@tanstack/react-query";
 
-import { useSettingsContext } from "src/components/settings";
-
 import { URLS } from "../urls";
 import { Api } from "../service";
 
@@ -16,19 +14,11 @@ type IDeleteAccountReturn = {
   status: number;
 };
 
-export const useDeleteAccount = () => {
-  const settings = useSettingsContext();
-  const { language } = settings.state;
-
-  return useMutation<IDeleteAccountReturn, AxiosError, IDeleteAccount>(async () => {
-    const result = await Api.delete(endpoint, {
-      headers: {
-        "Accept-Language": language,
-      },
-    });
+export const useDeleteAccount = () =>
+  useMutation<IDeleteAccountReturn, AxiosError, IDeleteAccount>(async () => {
+    const result = await Api.delete(endpoint);
     return {
       status: result.status,
       data: result.data,
     };
   });
-};

@@ -3,20 +3,29 @@ import type { MetadataRoute } from "next";
 import { CONFIG } from "src/global-config";
 
 export default function robots(): MetadataRoute.Robots {
-  const { env: ENV } = CONFIG;
-  const env = ENV === "PROD" ? "" : `${ENV.toLocaleLowerCase()}.`;
+  const env = CONFIG.env;
+  const isProd = env === "PROD";
 
-  const allRules = { userAgent: "*", disallow: "/" };
-  const prodRules = {
-    userAgent: ["Googlebot", "Applebot", "Bingbot"],
-    allow: ["/"],
-    disallow: ["/_next"],
-  };
+  const domainPrefix = isProd ? "" : `${env.toLowerCase()}.`;
+  const baseUrl = `https://${domainPrefix}loop.edu.pl`;
 
-  const rules = ENV === "PROD" ? [prodRules, allRules] : [allRules];
+  const prodBots = ["Googlebot", "Applebot", "Bingbot"];
+
+  const rules: MetadataRoute.Robots["rules"] = isProd
+    ? prodBots.map((bot) => ({
+        userAgent: bot,
+        allow: ["/"],
+        disallow: ["/_next"],
+      }))
+    : [
+        {
+          userAgent: "*",
+          disallow: "/",
+        },
+      ];
 
   return {
     rules,
-    sitemap: `https://${env}loop.edu.pl/sitemap.xml`,
+    sitemap: `${baseUrl}/sitemap.xml`,
   };
 }

@@ -8,6 +8,8 @@ import Button from "@mui/material/Button";
 
 import { paths } from "src/routes/paths";
 
+import { useLocalizedPath } from "src/hooks/use-localized-path";
+
 import { useAnalytics } from "src/app/analytics-provider";
 
 import { AnimateBorder } from "src/components/animate";
@@ -23,6 +25,7 @@ export type UpgradeButtonProps = {
 
 export function UpgradeButton({ slotProps, sx }: UpgradeButtonProps) {
   const { t } = useTranslation("navigation");
+  const localize = useLocalizedPath();
 
   const { trackEvent } = useAnalytics();
 
@@ -57,7 +60,7 @@ export function UpgradeButton({ slotProps, sx }: UpgradeButtonProps) {
     >
       <Button
         variant="text"
-        href={paths.pricing}
+        href={localize(paths.pricing)}
         onClick={() => trackEvent({ category: "pricing", label: "upgrade" })}
         {...slotProps?.button}
         sx={[

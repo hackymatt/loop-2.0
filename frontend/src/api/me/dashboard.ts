@@ -1,4 +1,3 @@
-import type { Language } from "src/locales/types";
 import type { LevelType } from "src/types/course";
 import type { GetQueryResponse } from "src/api/types";
 import type { IDashboardProps } from "src/types/user";
@@ -7,8 +6,6 @@ import { compact } from "lodash-es";
 import { useQuery } from "@tanstack/react-query";
 
 import { getData } from "src/api/utils";
-
-import { useSettingsContext } from "src/components/settings";
 
 import { URLS } from "../urls";
 
@@ -65,16 +62,12 @@ type IDashboard = {
   certificates: ICertificate[];
 };
 
-export const dashboardQuery = (language?: Language) => {
+export const dashboardQuery = () => {
   const url = endpoint;
   const queryUrl = url;
 
   const queryFn = async (): Promise<GetQueryResponse<IDashboardProps>> => {
-    const { data } = await getData<IDashboard>(queryUrl, {
-      headers: {
-        "Accept-Language": language,
-      },
-    });
+    const { data } = await getData<IDashboard>(queryUrl);
 
     const { total_points, daily_streak, courses, certificates } = data;
 
@@ -138,13 +131,11 @@ export const dashboardQuery = (language?: Language) => {
     return { results: modifiedResult };
   };
 
-  return { url, queryFn, queryKey: compact([url, language]) };
+  return { url, queryFn, queryKey: compact([url]) };
 };
 
 export const useDashboard = (enabled: boolean = true) => {
-  const settings = useSettingsContext();
-  const { language } = settings.state;
-  const { queryKey, queryFn } = dashboardQuery(language);
+  const { queryKey, queryFn } = dashboardQuery();
   const { data, ...rest } = useQuery({ queryKey, queryFn, enabled });
   return {
     data: data?.results,

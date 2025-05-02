@@ -11,12 +11,16 @@ import Typography from "@mui/material/Typography";
 
 import { paths } from "src/routes/paths";
 
+import { useLocalizedPath } from "src/hooks/use-localized-path";
+
 import { CONFIG } from "src/global-config";
 
 // ----------------------------------------------------------------------
 
 export function AboutHero({ sx, ...other }: BoxProps) {
   const { t } = useTranslation("about");
+  const localize = useLocalizedPath();
+
   return (
     <Box
       component="section"
@@ -81,7 +85,7 @@ export function AboutHero({ sx, ...other }: BoxProps) {
               {t("hero.subtitle")}
             </Typography>
 
-            <Button variant="contained" size="large" color="primary" href={paths.courses}>
+            <Button variant="contained" size="large" color="primary" href={localize(paths.courses)}>
               {t("hero.button")}
             </Button>
           </Grid>

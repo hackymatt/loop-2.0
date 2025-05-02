@@ -4,22 +4,35 @@ import https from "https";
 import { paths } from "src/routes/paths";
 
 import { CONFIG } from "src/global-config";
+import { LANGUAGE } from "src/consts/language";
 
 import { defaultUser } from "src/components/user/user-config";
+import { SETTINGS_STORAGE_KEY } from "src/components/settings";
 
 import { URLS } from "./urls";
 
 export const createAxiosInstance = (endpoint: string) => {
-  if (endpoint.startsWith("https")) {
-    const httpsAgent = new https.Agent({
-      rejectUnauthorized: false,
-    });
-    return axios.create({ baseURL: endpoint, httpsAgent });
-  }
-  return axios.create({
+  const instance = axios.create({
     baseURL: endpoint,
     withCredentials: true,
+    ...(endpoint.startsWith("https")
+      ? {
+          httpsAgent: new https.Agent({
+            rejectUnauthorized: false,
+          }),
+        }
+      : {}),
   });
+
+  instance.interceptors.request.use((config) => {
+    const settingsRaw = localStorage.getItem(SETTINGS_STORAGE_KEY);
+    const settings = settingsRaw ? JSON.parse(settingsRaw) : null;
+    const currentLanguage = settings?.language || LANGUAGE.PL;
+    config.headers["Accept-Language"] = currentLanguage;
+    return config;
+  });
+
+  return instance;
 };
 
 export const Api = createAxiosInstance(CONFIG.api);

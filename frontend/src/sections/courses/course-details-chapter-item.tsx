@@ -11,6 +11,8 @@ import { Link, Badge, Stack, Button, Divider, LinearProgress } from "@mui/materi
 
 import { paths } from "src/routes/paths";
 
+import { useLocalizedPath } from "src/hooks/use-localized-path";
+
 import { useAnalytics } from "src/app/analytics-provider";
 
 import { Iconify } from "src/components/iconify";
@@ -37,6 +39,7 @@ export function CourseDetailsChapterItem({
   onExpanded,
 }: ChapterItemProps) {
   const { t } = useTranslation("course");
+  const localize = useLocalizedPath();
 
   const { trackEvent } = useAnalytics();
 
@@ -46,14 +49,14 @@ export function CourseDetailsChapterItem({
   const started = (chapter.progress || 0) > 0;
   const completed = (chapter.progress || 0) === 100;
   const next = (findNextLesson([chapter]) || chapter.lessons[0]).slug;
-  const redirect = `${paths.learn}/${course.slug}/${next}`;
+  const redirect = localize(`${paths.learn}/${course.slug}/${next}`);
 
   const renderButton = () => (
     <Button
       variant="contained"
       size="medium"
       color="primary"
-      href={isLoggedIn ? redirect : paths.register}
+      href={isLoggedIn ? redirect : localize(paths.register)}
       onClick={() => {
         if (!isLoggedIn) {
           user.setField("redirect", redirect);

@@ -5,8 +5,6 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { URLS } from "src/api/urls";
 import { Api } from "src/api/service";
 
-import { useSettingsContext } from "src/components/settings";
-
 const endpoint = URLS.LESSON_ANSWER;
 
 type IAnswer = {
@@ -16,18 +14,11 @@ type IAnswer = {
 type IAnswerReturn = { data: { answer: string | boolean[] }; status: number };
 
 export const useLessonAnswer = () => {
-  const settings = useSettingsContext();
-  const { language } = settings.state;
-
   const queryClient = useQueryClient();
 
   return useMutation<IAnswerReturn, AxiosError, IAnswer>(
     async (variables) => {
-      const result = await Api.post(endpoint, variables, {
-        headers: {
-          "Accept-Language": language,
-        },
-      });
+      const result = await Api.post(endpoint, variables);
       return {
         status: result.status,
         data: result.data,

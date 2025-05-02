@@ -15,6 +15,7 @@ import IconButton from "@mui/material/IconButton";
 import { paths } from "src/routes/paths";
 import { useRouter } from "src/routes/hooks";
 
+import { useLocalizedPath } from "src/hooks/use-localized-path";
 import { useFormErrorHandler } from "src/hooks/use-form-error-handler";
 
 import { CONFIG } from "src/global-config";
@@ -52,6 +53,8 @@ function GoogleSignIn({ methods }: { methods: UseFormReturn<any> }) {
   const user = useUserContext();
   const { redirect } = user.state;
 
+  const localize = useLocalizedPath();
+
   const { mutateAsync: googleLogin } = useLoginGoogle();
 
   const handleFormError = useFormErrorHandler(methods);
@@ -77,7 +80,7 @@ function GoogleSignIn({ methods }: { methods: UseFormReturn<any> }) {
         plan,
         redirect: null,
       });
-      router.push(redirect || paths.account.dashboard);
+      router.push(localize(redirect || paths.account.dashboard));
     } catch (error) {
       handleFormError(error);
     }
@@ -98,6 +101,8 @@ function GithubSignIn({ methods }: { methods: UseFormReturn<any> }) {
   const router = useRouter();
   const user = useUserContext();
   const { redirect } = user.state;
+
+  const localize = useLocalizedPath();
 
   const { mutateAsync: githubLogin } = useLoginGithub();
 
@@ -122,7 +127,7 @@ function GithubSignIn({ methods }: { methods: UseFormReturn<any> }) {
         plan,
         redirect: null,
       });
-      router.push(redirect || paths.account.dashboard);
+      router.push(localize(redirect || paths.account.dashboard));
     } catch (error) {
       handleFormError(error);
     }
@@ -145,6 +150,8 @@ function FacebookSignIn({ methods }: { methods: UseFormReturn<any> }) {
   const router = useRouter();
   const user = useUserContext();
   const { redirect } = user.state;
+
+  const localize = useLocalizedPath();
 
   const { mutateAsync: facebookLogin } = useLoginFacebook();
 
@@ -169,7 +176,7 @@ function FacebookSignIn({ methods }: { methods: UseFormReturn<any> }) {
         plan,
         redirect: null,
       });
-      router.push(redirect || paths.account.dashboard);
+      router.push(localize(redirect || paths.account.dashboard));
     } catch (error) {
       handleFormError(error);
     }

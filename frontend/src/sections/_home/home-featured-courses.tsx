@@ -14,6 +14,8 @@ import Typography from "@mui/material/Typography";
 import { paths } from "src/routes/paths";
 import { RouterLink } from "src/routes/components";
 
+import { useLocalizedPath } from "src/hooks/use-localized-path";
+
 import { Iconify } from "src/components/iconify";
 import { varFade, MotionViewport } from "src/components/animate";
 
@@ -28,6 +30,7 @@ type CoursesProps = {
 
 export function HomeFeaturedCourses({ courses, sx, ...other }: CoursesProps) {
   const { t } = useTranslation("home");
+  const localize = useLocalizedPath();
 
   return (
     <Box
@@ -80,7 +83,7 @@ export function HomeFeaturedCourses({ courses, sx, ...other }: CoursesProps) {
           <Box sx={{ textAlign: "center" }}>
             <Button
               component={RouterLink}
-              href={paths.courses}
+              href={localize(paths.courses)}
               color="inherit"
               size="large"
               variant="outlined"

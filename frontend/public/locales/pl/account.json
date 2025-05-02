@@ -1,4 +1,18 @@
 {
+  "meta": {
+    "personal": {
+      "title": "Dane Osobowe – Zmień Imię, Nazwisko i Zdjęcie",
+      "description": "Zarządzaj swoim profilem na platformie. Edytuj imię, nazwisko oraz zdjęcie profilowe, aby lepiej dopasować konto do siebie."
+    },
+    "manage": {
+      "title": "Zarządzaj Kontem – Zmień Hasło lub Usuń Konto",
+      "description": "Zaktualizuj dane swojego konta, zmień hasło lub usuń konto. Dbaj o bezpieczeństwo i kontroluj swoje ustawienia na naszej platformie edukacyjnej."
+    },
+    "subscription": {
+      "title": "Subskrypcja – Sprawdź i Zmień Swój Plan",
+      "description": "Zobacz szczegóły swojej subskrypcji, porównaj dostępne plany i zmień pakiet, aby dopasować go do swoich potrzeb edukacyjnych."
+    }
+  },
   "email": {
     "label": "Email",
     "errors": { "required": "Email jest wymagany", "invalid": "Email jest nieprawidłowy" }
