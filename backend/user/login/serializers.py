@@ -1,6 +1,6 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
-from plan.subscription.utils import get_active_user_subscription
+from plan.subscription.utils import get_subscription
 from plan.subscription.serializers import UserSubscription
 from const import UserType
 
@@ -32,7 +32,7 @@ class LoginResponseSerializer(serializers.ModelSerializer):
         if obj.user_type != UserType.STUDENT:
             return None
 
-        subscription = get_active_user_subscription(obj)
+        subscription = get_subscription(obj)
         return UserSubscription(subscription).data
 
     def get_image(self, obj):

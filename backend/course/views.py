@@ -99,7 +99,7 @@ class SimilarCoursesView(views.APIView):
     permission_classes = [AllowAny]
 
     def get(self, request, slug):
-        course = get_object_or_404(Course, slug=slug)
+        course = get_object_or_404(Course, slug=slug, active=True)
 
         similar_courses = (
             Course.objects.filter(

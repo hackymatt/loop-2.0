@@ -14,9 +14,12 @@ from .serializers import (
     QuizLessonSubmitSerializer,
     CodingLessonSubmitSerializer,
 )
-from ..enrollment.models import CourseEnrollment
+from ..enrollment.models import CourseEnrollment, CourseChapterEnrollment
 from ..progress.models import CourseProgress
 from ..models import Course
+from ..chapter.models import Chapter
+from plan.subscription.utils import get_subscription
+from plan.utils import is_default_plan
 from user.type.student_user.models import Student
 from const import LessonType
 
@@ -27,35 +30,45 @@ class LessonViewSet(RetrieveModelMixin, GenericViewSet):
 
     def retrieve(self, request, *args, **kwargs):
         course_slug = kwargs.get("course_slug")
+        chapter_slug = kwargs.get("chapter_slug")
         lesson_slug = kwargs.get("lesson_slug")
 
         student = Student.objects.get(user=request.user)
+        course = get_object_or_404(Course, slug=course_slug, active=True)
+        chapter = get_object_or_404(Chapter, slug=chapter_slug, active=True)
 
-        # Get course and its chapters + lessons
-        try:
-            course = Course.objects.prefetch_related("chapters__lessons").get(
-                slug=course_slug
-            )
-        except Course.DoesNotExist:
+        if not course.chapters.filter(id=chapter.id).exists():
             return Response(
-                {"root": "Course not found."}, status=status.HTTP_404_NOT_FOUND
-            )
-
-        # Find lesson within chapters
-        lesson = None
-        for chapter in course.chapters.all():
-            lesson = chapter.lessons.filter(slug=lesson_slug).first()
-            if lesson:
-                break
-
-        if not lesson:
-            return Response(
-                {"root": "Lesson not found in this course."},
+                {"root": "Chapter not in this course."},
                 status=status.HTTP_404_NOT_FOUND,
             )
 
-        # Ensure enrollment and progress exist
+        lesson = get_object_or_404(Lesson, slug=lesson_slug, active=True)
+        if not chapter.lessons.filter(id=lesson.id).exists():
+            return Response(
+                {"root": "Lesson not found in this course chapter."},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
         CourseEnrollment.objects.get_or_create(student=student, course=course)
+
+        plan = get_subscription(student.user).plan
+        if is_default_plan(plan):
+            # If the user is on a free plan, check if they are enrolled in the other course chapter
+            if (
+                CourseChapterEnrollment.objects.filter(student=student, course=course)
+                .exclude(chapter=chapter)
+                .exists()
+            ):
+                return Response(
+                    {"root": "Upgrade plan."},
+                    status=status.HTTP_403_FORBIDDEN,
+                )
+
+        CourseChapterEnrollment.objects.get_or_create(
+            student=student, course=course, chapter=chapter
+        )
+
         CourseProgress.objects.get_or_create(
             student=student, lesson=lesson, defaults={"points": lesson.points}
         )
@@ -85,7 +98,7 @@ class LessonSubmitAPIView(views.APIView):
 
     def post(self, request, *args, **kwargs):
         lesson_slug = request.data.pop("lesson")
-        lesson = get_object_or_404(Lesson, slug=lesson_slug)
+        lesson = get_object_or_404(Lesson, slug=lesson_slug, active=True)
 
         specific_model = {
             LessonType.QUIZ: QuizLesson,
@@ -125,7 +138,7 @@ class LessonAnswerAPIView(views.APIView):
 
     def post(self, request, *args, **kwargs):
         lesson_slug = request.data.pop("lesson")
-        lesson = get_object_or_404(Lesson, slug=lesson_slug)
+        lesson = get_object_or_404(Lesson, slug=lesson_slug, active=True)
 
         specific_model = {
             LessonType.QUIZ: QuizLesson,
@@ -159,7 +172,7 @@ class LessonHintAPIView(views.APIView):
 
     def post(self, request, *args, **kwargs):
         lesson_slug = request.data.pop("lesson")
-        lesson = get_object_or_404(Lesson, slug=lesson_slug)
+        lesson = get_object_or_404(Lesson, slug=lesson_slug, active=True)
 
         specific_model = {
             LessonType.CODING: CodingLesson,
