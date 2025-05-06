@@ -43,10 +43,16 @@ class LessonViewSet(RetrieveModelMixin, GenericViewSet):
         lesson = get_object_or_404(Lesson, slug=lesson_slug, active=True)
 
         if not course.chapters.filter(id=chapter.id).exists():
-            return Response({"root": "Chapter not in this course."}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"root": "Chapter not in this course."},
+                status=status.HTTP_404_NOT_FOUND,
+            )
 
         if not chapter.lessons.filter(id=lesson.id).exists():
-            return Response({"root": "Lesson not found in this course chapter."}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"root": "Lesson not found in this course chapter."},
+                status=status.HTTP_404_NOT_FOUND,
+            )
 
         CourseEnrollment.objects.get_or_create(student=student, course=course)
 
@@ -76,14 +82,24 @@ class LessonViewSet(RetrieveModelMixin, GenericViewSet):
 
         # Plan check: limit access for free users
         if is_default_plan(get_subscription(student.user).plan):
-            if CourseChapterEnrollment.objects.filter(student=student, course=course).exclude(chapter=chapter).exists():
+            if (
+                CourseChapterEnrollment.objects.filter(student=student, course=course)
+                .exclude(chapter=chapter)
+                .exists()
+            ):
                 base_serializer_class = base_serializer_map.get(lesson.type)
-                serializer = base_serializer_class(specific_lesson, context={"request": request})
+                serializer = base_serializer_class(
+                    specific_lesson, context={"request": request}
+                )
                 return Response(serializer.data, status=status.HTTP_403_FORBIDDEN)
 
         # Allow full access
-        CourseChapterEnrollment.objects.get_or_create(student=student, course=course, chapter=chapter)
-        CourseProgress.objects.get_or_create(student=student, lesson=lesson, defaults={"points": lesson.points})
+        CourseChapterEnrollment.objects.get_or_create(
+            student=student, course=course, chapter=chapter
+        )
+        CourseProgress.objects.get_or_create(
+            student=student, lesson=lesson, defaults={"points": lesson.points}
+        )
 
         serializer_class = serializer_map.get(lesson.type)
         serializer = serializer_class(specific_lesson, context={"request": request})

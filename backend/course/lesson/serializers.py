@@ -81,6 +81,7 @@ class LessonSerializer(serializers.ModelSerializer):
             .points
         )
 
+
 class ReadingLessonBaseSerializer(serializers.ModelSerializer):
     type = serializers.CharField(source="lesson.type")
     points = serializers.CharField(source="lesson.points")
@@ -109,6 +110,7 @@ class ReadingLessonBaseSerializer(serializers.ModelSerializer):
             len(words) / CONFIG["words_per_minute"]
         )  # Assuming 200 words per minute
 
+
 class ReadingLessonSerializer(ReadingLessonBaseSerializer):
     text = serializers.SerializerMethodField()
 
@@ -118,6 +120,7 @@ class ReadingLessonSerializer(ReadingLessonBaseSerializer):
     def get_text(self, obj):
         lang = self.context.get("request").LANGUAGE_CODE
         return obj.get_translation(lang).text
+
 
 class VideoLessonBaseSerializer(serializers.ModelSerializer):
     type = serializers.CharField(source="lesson.type")
@@ -131,6 +134,7 @@ class VideoLessonBaseSerializer(serializers.ModelSerializer):
     def get_name(self, obj):
         lang = self.context.get("request").LANGUAGE_CODE
         return obj.get_translation(lang).name
+
 
 class VideoLessonSerializer(VideoLessonBaseSerializer):
     video_url = serializers.URLField()
@@ -152,7 +156,7 @@ class QuizQuestionSerializer(serializers.ModelSerializer):
         model = QuizQuestion
         fields = ["text", "options"]
 
-    
+
 class QuizLessonBaseSerializer(serializers.ModelSerializer):
     type = serializers.CharField(source="lesson.type")
     points = serializers.CharField(source="lesson.points")
