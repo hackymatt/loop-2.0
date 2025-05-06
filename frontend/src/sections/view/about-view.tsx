@@ -1,6 +1,7 @@
 "use client";
 
-import { _faqs } from "src/_mock";
+import { useTranslation } from "react-i18next";
+
 import { useRecentPosts } from "src/api/blog/recent";
 import { useFeaturedPosts } from "src/api/blog/featured";
 import { useFeaturedReviews } from "src/api/review/featured";
@@ -14,7 +15,18 @@ import { AboutOurMission } from "../about/about-our-mission";
 
 // ----------------------------------------------------------------------
 
+type IFaqProps = {
+  id: string;
+  title: string;
+  icon: string;
+  content: { question: string; answer: string }[];
+};
+
 export function AboutView() {
+  const { t } = useTranslation("faq");
+  const faq = t("faq", { returnObjects: true }) as IFaqProps[];
+  const courses = faq.filter((f) => f.id === "courses")[0].content;
+
   const { data: featuredReviews } = useFeaturedReviews();
   const { data: featuredPosts } = useFeaturedPosts();
   const { data: recentPosts } = useRecentPosts();
@@ -29,7 +41,7 @@ export function AboutView() {
 
       {!!featuredReviews?.length && <Testimonial testimonials={featuredReviews || []} />}
 
-      <Faqs data={_faqs} />
+      <Faqs data={courses} />
 
       {!!featuredPosts?.length && !!recentPosts?.length && (
         <LatestPosts
