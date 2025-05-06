@@ -45,7 +45,7 @@ export function HomeNewStart({ sx, ...other }: BoxProps) {
               component="img"
               loading="lazy"
               alt="Cover"
-              src={`${CONFIG.assetsDir}/assets/images/home/desktop-mouse-keyboard.webp`}
+              src={`${CONFIG.assetsDir}/assets/images/home/demo.webp`}
               sx={{ width: 720 }}
             />
           </m.div>
