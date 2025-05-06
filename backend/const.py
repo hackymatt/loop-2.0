@@ -33,7 +33,7 @@ class Urls:
     FEATURED_REVIEWS = "featured-reviews"
     SIMILAR_COURSES = "similar-courses/<slug:slug>"
     # LESSON
-    LESSON = "lesson/<slug:course_slug>/<slug:lesson_slug>"
+    LESSON = "lesson/<slug:course_slug>/<slug:chapter_slug>/<slug:lesson_slug>"
     LESSON_SUBMIT = "lesson/submit"
     LESSON_ANSWER = "lesson/answer"
     LESSON_HINT = "lesson/hint"

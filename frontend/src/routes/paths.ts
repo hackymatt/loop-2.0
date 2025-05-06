@@ -35,10 +35,10 @@ export const paths = {
   about: "/about",
   contact: "/contact",
   privacyPolicy: "/privacy-policy",
-  termsAndConditions: "/terms-and-conditions",
+  termsOfService: "/terms-of-service",
   support: "/support",
   stripe: {
-    termsAndConditions: "https://stripe.com/legal/end-users",
+    termsOfService: "https://stripe.com/legal/end-users",
     privacyPolicy: "https://stripe.com/privacy",
   },
 

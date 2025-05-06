@@ -44,23 +44,20 @@ export async function getData<T>(
   queryUrl: string,
   config?: AxiosRequestConfig<any>
 ): Promise<GetApiResponse<T>> {
-  let data: GetApiResponse<T> = { data: {} as T };
-
   try {
     const response = await Api.get<T>(queryUrl, config);
-    data = { data: response.data };
+    return { data: response.data };
   } catch (error) {
-    if (
-      (error as AxiosError).response &&
-      ((error as AxiosError).response?.status === 400 ||
-        (error as AxiosError).response?.status === 404)
-    ) {
-      data = { data: {} as T };
-    }
-  }
-  return data;
-}
+    const axiosError = error as AxiosError;
 
+    const fallbackData = axiosError.response?.data as T;
+
+    return {
+      data: fallbackData ?? ({} as T),
+      error: axiosError,
+    };
+  }
+}
 export const formatQueryParams = (query?: QueryType): string => {
   if (!query) return "";
 

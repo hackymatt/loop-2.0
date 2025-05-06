@@ -4,7 +4,7 @@ from rest_framework.test import APIClient
 from plan.models import PlanOption
 from plan.subscription.models import PlanSubscription
 from plan.utils import get_default_plan
-from plan.subscription.utils import get_active_user_subscription
+from plan.subscription.utils import get_subscription
 from ..factory import create_plan, create_plan_option, create_student
 from ..helpers import login
 from const import Urls
@@ -52,7 +52,7 @@ class SubscribeViewTest(TestCase):
         self.assertEqual(self.student.user.first_name, "New first name")
         self.assertEqual(self.student.user.last_name, "New last name")
 
-        sub = get_active_user_subscription(user=self.student.user)
+        sub = get_subscription(user=self.student.user)
         self.assertIsNotNone(sub.end_date)
         self.assertAlmostEqual(
             sub.end_date.date(),
@@ -71,7 +71,7 @@ class SubscribeViewTest(TestCase):
         response = self.client.post(self.url, payload, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        sub = get_active_user_subscription(user=self.student.user)
+        sub = get_subscription(user=self.student.user)
         self.assertIsNotNone(sub.end_date)
         self.assertAlmostEqual(
             sub.end_date.date(),
@@ -90,7 +90,7 @@ class SubscribeViewTest(TestCase):
         response = self.client.post(self.url, payload, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        sub = get_active_user_subscription(user=self.student.user)
+        sub = get_subscription(user=self.student.user)
         self.assertIsNone(sub.end_date)
 
     def test_invalid_plan(self):

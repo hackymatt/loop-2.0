@@ -44,7 +44,7 @@ class ReviewViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         course_slug = self.kwargs["slug"]
-        course = get_object_or_404(Course, slug=course_slug)
+        course = get_object_or_404(Course, slug=course_slug, active=True)
         return Review.objects.filter(course=course).order_by("-created_at")
 
 
@@ -67,7 +67,7 @@ class SubmitReviewView(views.APIView):
     def post(self, request):
         student = get_object_or_404(Student, user=request.user)
         slug = request.data.get("slug")
-        course = get_object_or_404(Course, slug=slug)
+        course = get_object_or_404(Course, slug=slug, active=True)
 
         rating = request.data.get("rating")
         comment = request.data.get("comment", "")

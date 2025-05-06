@@ -32,7 +32,7 @@ const namespaces = [
   "review",
   "sign-in",
   "sign-up",
-  "terms-and-conditions",
+  "terms-of-service",
   "testimonial",
   "update-password",
 ];

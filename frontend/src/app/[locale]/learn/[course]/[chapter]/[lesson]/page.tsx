@@ -13,14 +13,20 @@ import { LearnView } from "src/sections/view/learn-view";
 
 // ----------------------------------------------------------------------
 
-export default function Page({ params }: { params: { course: string; lesson: string } }) {
-  return <LearnView courseSlug={params.course} lessonSlug={params.lesson} />;
+export default function Page({
+  params,
+}: {
+  params: { course: string; chapter: string; lesson: string };
+}) {
+  return (
+    <LearnView courseSlug={params.course} chapterSlug={params.chapter} lessonSlug={params.lesson} />
+  );
 }
 
 export async function generateMetadata({
   params,
 }: {
-  params: { locale: string; course: string; lesson: string };
+  params: { locale: string; course: string; chapter: string; lesson: string };
 }): Promise<Metadata> {
   const translations = await import(`public/locales/${params.locale}/learn.json`);
 
@@ -39,19 +45,21 @@ export async function generateMetadata({
     const allLessons = chapters.flatMap((ch: ICourseChapterProp) => ch.lessons) ?? [];
     const lesson = allLessons.find((l: ICourseLessonProp) => l.slug === params.lesson);
 
-    const title = translations.meta.title.replace("[name]", lesson.name);
-    const description = translations.meta.post.description.replace("[name]", lesson.name);
+    const { translated_name: name } = lesson;
+
+    const title = translations.meta.title.replace("[name]", name);
+    const description = translations.meta.description.replace("[name]", name);
 
     return createMetadata({
       title,
       description,
-      path: `${path}/${params.course}/${params.lesson}`,
+      path: `${path}/${params.course}/${params.chapter}/${params.lesson}`,
     });
   } catch {
     return createMetadata({
-      title: translations.meta.post.title,
-      description: translations.meta.post.description,
-      path: `${path}/${params.course}/${params.lesson}`,
+      title: translations.meta.title,
+      description: translations.meta.description,
+      path: `${path}/${params.course}/${params.chapter}/${params.lesson}`,
     });
   }
 }

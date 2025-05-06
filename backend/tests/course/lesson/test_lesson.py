@@ -1,10 +1,18 @@
 from django.test import TestCase
 from django.utils import timezone
+from dateutil.relativedelta import relativedelta
 from rest_framework.test import APIClient
 from rest_framework import status
-from course.enrollment.models import CourseEnrollment
+from course.enrollment.models import CourseEnrollment, CourseChapterEnrollment
 from course.progress.models import CourseProgress
-from ...factory import create_student, create_course, create_lesson
+from plan.subscription.utils import subscribe
+from ...factory import (
+    create_student,
+    create_course,
+    create_chapter,
+    create_lesson,
+    create_plan,
+)
 from ...helpers import login
 from const import Urls, LessonType
 
@@ -17,7 +25,7 @@ class LessonViewSetTestCase(TestCase):
         self.student, self.student_password = create_student()
 
         self.course = create_course()
-        chapter = self.course.chapters.all()[0]
+        self.chapter = self.course.chapters.all()[0]
 
         self.reading_lesson, self.reading_specific_lesson = create_lesson(
             LessonType.READING
@@ -27,26 +35,28 @@ class LessonViewSetTestCase(TestCase):
         self.coding_lesson, self.coding_specific_lesson = create_lesson(
             LessonType.CODING
         )
-        chapter.lessons.add(self.reading_lesson)
-        chapter.lessons.add(self.video_lesson)
-        chapter.lessons.add(self.quiz_lesson)
-        chapter.lessons.add(self.coding_lesson)
-        chapter.save()
+        self.chapter.lessons.add(self.reading_lesson)
+        self.chapter.lessons.add(self.video_lesson)
+        self.chapter.lessons.add(self.quiz_lesson)
+        self.chapter.lessons.add(self.coding_lesson)
+        self.chapter.save()
+
+        self.paid_plan = create_plan()
 
     def test_requires_authentication(self):
         response = self.client.get(
-            self.url.replace("<slug:course_slug>", self.course.slug).replace(
-                "<slug:lesson_slug>", self.reading_lesson.slug
-            )
+            self.url.replace("<slug:course_slug>", self.course.slug)
+            .replace("<slug:chapter_slug>", self.chapter.slug)
+            .replace("<slug:lesson_slug>", self.reading_lesson.slug)
         )
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_successful_retrieve_reading_lesson(self):
         login(self, self.student.user.email, self.student_password)
         response = self.client.get(
-            self.url.replace("<slug:course_slug>", self.course.slug).replace(
-                "<slug:lesson_slug>", self.reading_lesson.slug
-            )
+            self.url.replace("<slug:course_slug>", self.course.slug)
+            .replace("<slug:chapter_slug>", self.chapter.slug)
+            .replace("<slug:lesson_slug>", self.reading_lesson.slug)
         )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -70,9 +80,9 @@ class LessonViewSetTestCase(TestCase):
     def test_successful_retrieve_video_lesson(self):
         login(self, self.student.user.email, self.student_password)
         response = self.client.get(
-            self.url.replace("<slug:course_slug>", self.course.slug).replace(
-                "<slug:lesson_slug>", self.video_lesson.slug
-            )
+            self.url.replace("<slug:course_slug>", self.course.slug)
+            .replace("<slug:chapter_slug>", self.chapter.slug)
+            .replace("<slug:lesson_slug>", self.video_lesson.slug)
         )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -96,9 +106,9 @@ class LessonViewSetTestCase(TestCase):
     def test_successful_retrieve_quiz_lesson_not_completed(self):
         login(self, self.student.user.email, self.student_password)
         response = self.client.get(
-            self.url.replace("<slug:course_slug>", self.course.slug).replace(
-                "<slug:lesson_slug>", self.quiz_lesson.slug
-            )
+            self.url.replace("<slug:course_slug>", self.course.slug)
+            .replace("<slug:chapter_slug>", self.chapter.slug)
+            .replace("<slug:lesson_slug>", self.quiz_lesson.slug)
         )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -125,9 +135,9 @@ class LessonViewSetTestCase(TestCase):
             student=self.student, lesson=self.quiz_lesson, completed_at=timezone.now()
         )
         response = self.client.get(
-            self.url.replace("<slug:course_slug>", self.course.slug).replace(
-                "<slug:lesson_slug>", self.quiz_lesson.slug
-            )
+            self.url.replace("<slug:course_slug>", self.course.slug)
+            .replace("<slug:chapter_slug>", self.chapter.slug)
+            .replace("<slug:lesson_slug>", self.quiz_lesson.slug)
         )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -152,9 +162,9 @@ class LessonViewSetTestCase(TestCase):
     def test_successful_retrieve_coding_lesson_not_completed(self):
         login(self, self.student.user.email, self.student_password)
         response = self.client.get(
-            self.url.replace("<slug:course_slug>", self.course.slug).replace(
-                "<slug:lesson_slug>", self.coding_lesson.slug
-            )
+            self.url.replace("<slug:course_slug>", self.course.slug)
+            .replace("<slug:chapter_slug>", self.chapter.slug)
+            .replace("<slug:lesson_slug>", self.coding_lesson.slug)
         )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -185,9 +195,9 @@ class LessonViewSetTestCase(TestCase):
             student=self.student, lesson=self.coding_lesson, hint_used=True
         )
         response = self.client.get(
-            self.url.replace("<slug:course_slug>", self.course.slug).replace(
-                "<slug:lesson_slug>", self.coding_lesson.slug
-            )
+            self.url.replace("<slug:course_slug>", self.course.slug)
+            .replace("<slug:chapter_slug>", self.chapter.slug)
+            .replace("<slug:lesson_slug>", self.coding_lesson.slug)
         )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -219,9 +229,9 @@ class LessonViewSetTestCase(TestCase):
             student=self.student, lesson=self.coding_lesson, completed_at=timezone.now()
         )
         response = self.client.get(
-            self.url.replace("<slug:course_slug>", self.course.slug).replace(
-                "<slug:lesson_slug>", self.coding_lesson.slug
-            )
+            self.url.replace("<slug:course_slug>", self.course.slug)
+            .replace("<slug:chapter_slug>", self.chapter.slug)
+            .replace("<slug:lesson_slug>", self.coding_lesson.slug)
         )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -256,26 +266,85 @@ class LessonViewSetTestCase(TestCase):
             .answer,
         )
 
-    def test_course_not_found(self):
+    def test_chapter_not_in_course(self):
         login(self, self.student.user.email, self.student_password)
+
+        other_chapter = create_chapter()
+
         response = self.client.get(
-            self.url.replace("<slug:course_slug>", "aaadddd").replace(
-                "<slug:lesson_slug>", self.reading_lesson.slug
-            )
+            self.url.replace("<slug:course_slug>", self.course.slug)
+            .replace("<slug:chapter_slug>", other_chapter.slug)
+            .replace("<slug:lesson_slug>", self.reading_lesson.slug)
         )
+
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
-    def test_lesson_not_found_in_course(self):
-        # Create a lesson that's not part of the course
-        other_course = create_course()
+    def test_lesson_not_in_chapter(self):
+        login(self, self.student.user.email, self.student_password)
 
+        other_lesson, _ = create_lesson(LessonType.READING)
+
+        response = self.client.get(
+            self.url.replace("<slug:course_slug>", self.course.slug)
+            .replace("<slug:chapter_slug>", self.chapter.slug)
+            .replace("<slug:lesson_slug>", other_lesson.slug)
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_default_plan_first_chapter_allowed(self):
         login(self, self.student.user.email, self.student_password)
         response = self.client.get(
-            self.url.replace("<slug:course_slug>", other_course.slug).replace(
-                "<slug:lesson_slug>", self.reading_lesson.slug
-            )
+            self.url.replace("<slug:course_slug>", self.course.slug)
+            .replace("<slug:chapter_slug>", self.chapter.slug)
+            .replace("<slug:lesson_slug>", self.reading_lesson.slug)
         )
-        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_default_plan_second_chapter_forbidden(self):
+        login(self, self.student.user.email, self.student_password)
+
+        CourseChapterEnrollment.objects.create(
+            student=self.student, course=self.course, chapter=self.chapter
+        )
+
+        other_chapter = create_chapter()
+        self.course.chapters.add(other_chapter)
+        self.course.save()
+        other_lesson = other_chapter.lessons.all()[0]
+
+        response = self.client.get(
+            self.url.replace("<slug:course_slug>", self.course.slug)
+            .replace("<slug:chapter_slug>", other_chapter.slug)
+            .replace("<slug:lesson_slug>", other_lesson.slug)
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_paid_plan_second_chapter_allowed(self):
+        login(self, self.student.user.email, self.student_password)
+        subscribe(
+            student=self.student,
+            plan=self.paid_plan,
+            end_date=timezone.now() + relativedelta(years=1),
+        )
+
+        CourseChapterEnrollment.objects.create(
+            student=self.student, course=self.course, chapter=self.chapter
+        )
+
+        other_chapter = create_chapter()
+        self.course.chapters.add(other_chapter)
+        self.course.save()
+        other_lesson = other_chapter.lessons.all()[0]
+
+        response = self.client.get(
+            self.url.replace("<slug:course_slug>", self.course.slug)
+            .replace("<slug:chapter_slug>", other_chapter.slug)
+            .replace("<slug:lesson_slug>", other_lesson.slug)
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
 
 class LessonSubmitAPIViewTestCase(TestCase):

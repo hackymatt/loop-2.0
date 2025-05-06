@@ -1,5 +1,8 @@
+import type { AxiosError } from "axios";
+
 export interface GetApiResponse<T = any> {
   data: T;
+  error?: AxiosError;
 }
 
 export interface ListApiResponse<T = any> {
@@ -10,6 +13,7 @@ export interface ListApiResponse<T = any> {
 
 export interface GetQueryResponse<T = any> {
   results: T;
+  error?: AxiosError;
 }
 
 export interface ListQueryResponse<T = any> extends GetQueryResponse<T> {

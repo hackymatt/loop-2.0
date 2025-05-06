@@ -7,16 +7,16 @@ import Link from "@mui/material/Link";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 
-import { useTermsAndConditionsContent } from "./terms-and-conditions-content";
+import { useTermsOfServiceContent } from "./terms-of-service-content";
 
 // ----------------------------------------------------------------------
 
-export function TermsAndConditionsInfo({ sx, ...other }: BoxProps) {
-  const { t } = useTranslation("terms-and-conditions");
-  const termsAndConditionsContent = useTermsAndConditionsContent();
+export function TermsOfServiceInfo({ sx, ...other }: BoxProps) {
+  const { t } = useTranslation("terms-of-service");
+  const termsOfServiceContent = useTermsOfServiceContent();
 
   const renderList = () =>
-    termsAndConditionsContent.map((section) => (
+    termsOfServiceContent.map((section) => (
       <Link key={section.header} href={`#${section.header}`}>
         <Typography>{section.header}</Typography>
       </Link>
@@ -24,7 +24,7 @@ export function TermsAndConditionsInfo({ sx, ...other }: BoxProps) {
 
   const renderContent = () => (
     <Box sx={{ mt: 10 }}>
-      {termsAndConditionsContent.map((section) => (
+      {termsOfServiceContent.map((section) => (
         <Box key={section.header}>
           <Box
             id={section.header}

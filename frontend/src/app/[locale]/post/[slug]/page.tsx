@@ -29,7 +29,7 @@ export async function generateMetadata({
       headers: { "Content-Type": "application/json", "Accept-Language": params.locale },
     });
 
-    if (!res.ok) throw new Error("Failed to fetch course");
+    if (!res.ok) throw new Error("Failed to fetch post");
 
     const post = await res.json();
 

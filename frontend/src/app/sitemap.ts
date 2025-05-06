@@ -119,7 +119,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { path: paths.support, priority: 0.6, changeFrequency: "monthly" },
     { path: paths.pricing, priority: 0.6, changeFrequency: "monthly" },
     { path: paths.privacyPolicy, priority: 0.5, changeFrequency: "yearly" },
-    { path: paths.termsAndConditions, priority: 0.5, changeFrequency: "yearly" },
+    { path: paths.termsOfService, priority: 0.5, changeFrequency: "yearly" },
   ] as const;
 
   const staticRoutes: MetadataRoute.Sitemap = locales.flatMap((locale) =>

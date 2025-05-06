@@ -3,27 +3,27 @@ import type { IVideoLessonProps } from "src/types/lesson";
 import { useTranslation } from "react-i18next";
 
 import Box from "@mui/material/Box";
-import { Button, Divider, Typography } from "@mui/material";
+import { Button, Divider, Skeleton, Typography } from "@mui/material";
 
+import { Label } from "src/components/label";
 import { Player } from "src/components/player";
 import { Iconify } from "src/components/iconify";
 
 // ----------------------------------------------------------------------
 
-type VideoLessonProps = { lesson: IVideoLessonProps; onSubmit: () => void };
+type VideoLessonProps = { lesson: IVideoLessonProps; onSubmit: () => void; isLocked?: boolean };
 
 // ----------------------------------------------------------------------
 
-export function VideoLesson({ lesson, onSubmit }: VideoLessonProps) {
+export function VideoLesson({ lesson, onSubmit, isLocked = false }: VideoLessonProps) {
   const { t } = useTranslation("learn");
-
-  const { name, videoUrl } = lesson;
 
   const renderHeader = () => (
     <Box>
-      <Typography variant="h4" gutterBottom>
-        {name}
-      </Typography>
+      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+        <Typography variant="h4">{lesson.name}</Typography>
+        <Label color="warning">{lesson.totalPoints} XP</Label>
+      </Box>
     </Box>
   );
 
@@ -42,11 +42,15 @@ export function VideoLesson({ lesson, onSubmit }: VideoLessonProps) {
           alignItems: "center",
           flexDirection: "column",
           justifyContent: "center",
-          width: { xs: 1, md: 0.5 },
+          width: { xs: 1, md: 0.75 },
           height: { xs: 320, md: 480 },
         }}
       >
-        <Player controls url={videoUrl} width="100%" height="100%" />
+        {isLocked ? (
+          <Skeleton variant="rectangular" sx={{ borderRadius: 2, width: 1, height: 1 }} />
+        ) : (
+          <Player controls url={lesson.videoUrl} width="100%" height="100%" />
+        )}
       </Box>
     </Box>
   );
@@ -59,6 +63,7 @@ export function VideoLesson({ lesson, onSubmit }: VideoLessonProps) {
         size="large"
         startIcon={<Iconify icon="solar:check-circle-bold" />}
         onClick={onSubmit}
+        disabled={isLocked}
         sx={(theme) => ({
           px: 3,
           borderRadius: 2,

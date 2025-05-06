@@ -3,12 +3,13 @@ import "./style.css";
 import type { ICodingLessonProps } from "src/types/lesson";
 
 import Split from "react-split";
-import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import React, { useState, useEffect } from "react";
 
 import Box from "@mui/material/Box";
-import { Button, Typography, ButtonGroup } from "@mui/material";
+import { Button, Skeleton, Typography, ButtonGroup } from "@mui/material";
 
+import { Label } from "src/components/label";
 import { Iconify } from "src/components/iconify";
 import { Markdown } from "src/components/markdown";
 import { CodeEditor } from "src/components/code-editor";
@@ -22,16 +23,18 @@ type CodingLessonProps = {
   onHint: () => void;
   onShowAnswer: () => void;
   error?: string;
+  isLocked?: boolean;
 };
 
 type SectionProps = {
   title: string;
   icon: string;
+  label?: React.ReactNode;
 };
 
 // ----------------------------------------------------------------------
 
-function SectionHeader({ title, icon }: SectionProps) {
+function SectionHeader({ title, icon, label }: SectionProps) {
   return (
     <Box
       sx={(theme) => ({
@@ -48,9 +51,10 @@ function SectionHeader({ title, icon }: SectionProps) {
       })}
     >
       <Iconify icon={icon} width={18} height={18} />
-      <Typography variant="subtitle2" color="text.secondary">
+      <Typography variant="subtitle2" color="text.secondary" flexGrow={1}>
         {title}
       </Typography>
+      {label}
     </Box>
   );
 }
@@ -63,19 +67,19 @@ export function CodingLesson({
   onRunCode,
   onHint,
   onShowAnswer,
+  error,
+  isLocked = false,
 }: CodingLessonProps) {
   const { t } = useTranslation("learn");
 
   const mobileTabs = [t("coding.context"), t("coding.exercise")];
 
-  const { introduction, instructions, starterCode, hint, answer: userAnswer } = lesson;
-
-  const [code, setCode] = useState<string>(starterCode);
+  const [code, setCode] = useState<string>(lesson.starterCode);
   const [mobileTab, setMobileTab] = useState(mobileTabs[0]);
 
   useEffect(() => {
-    if (userAnswer) setCode(userAnswer);
-  }, [userAnswer]);
+    if (lesson.answer) setCode(lesson.answer);
+  }, [lesson.answer]);
 
   const handleRunCode = () => {
     onSubmit(code);
@@ -92,6 +96,7 @@ export function CodingLesson({
         color="secondary"
         size="medium"
         onClick={handleRunCode}
+        disabled={isLocked}
         sx={{ px: 2, whiteSpace: "nowrap" }}
       >
         {t("coding.editor.runCode")}
@@ -106,6 +111,7 @@ export function CodingLesson({
         color="primary"
         size="medium"
         onClick={handleSubmit}
+        disabled={isLocked}
         sx={{ px: 2, whiteSpace: "nowrap" }}
       >
         {t("coding.editor.submit")}
@@ -120,6 +126,7 @@ export function CodingLesson({
         color="inherit"
         size="medium"
         onClick={onHint}
+        disabled={isLocked}
         startIcon={<Iconify icon="solar:lightbulb-linear" />}
         sx={{ px: 2, whiteSpace: "nowrap" }}
       >
@@ -135,7 +142,7 @@ export function CodingLesson({
         color="primary"
         size="medium"
         onClick={onShowAnswer}
-        // disabled={isMultiple ? selectedOptions.length === 0 : selectedOption === null}
+        disabled={isLocked}
         sx={{ px: 2, whiteSpace: "nowrap" }}
       >
         {t("coding.answer")} (-{lesson.totalPoints - lesson.penaltyPoints} XP)
@@ -163,7 +170,15 @@ export function CodingLesson({
     <Box sx={{ bgcolor: "background.paper", overflowY: "auto" }}>
       <SectionHeader title={t("coding.introduction")} icon="solar:book-broken" />
       <Box sx={{ px: 2 }}>
-        <Markdown key={introduction} content={introduction} />
+        {isLocked ? (
+          <>
+            {Array.from({ length: 10 }).map((_, i) => (
+              <Skeleton key={i} variant="text" sx={{ borderRadius: 2, width: 1, height: 0.1 }} />
+            ))}
+          </>
+        ) : (
+          <Markdown key={lesson.introduction} content={lesson.introduction} />
+        )}
       </Box>
     </Box>
   );
@@ -178,20 +193,41 @@ export function CodingLesson({
     >
       <SectionHeader title={t("coding.hint.label")} icon="solar:lightbulb-linear" />
       <Box sx={{ px: 2 }}>
-        <Markdown key={hint} content={hint || ""} />
-        {!userAnswer && renderShowAnswerButton()}
+        {isLocked ? (
+          <>
+            {Array.from({ length: 3 }).map((_, i) => (
+              <Skeleton key={i} variant="text" sx={{ borderRadius: 2, width: 1, height: 0.1 }} />
+            ))}
+          </>
+        ) : (
+          <Markdown key={lesson.hint} content={lesson.hint || ""} />
+        )}
+
+        {!lesson.answer && renderShowAnswerButton()}
       </Box>
     </Box>
   );
 
   const renderInstructions = () => (
     <Box sx={{ bgcolor: "background.paper", overflowY: "auto" }}>
-      <SectionHeader title={t("coding.instructions")} icon="solar:checklist-bold" />
+      <SectionHeader
+        title={t("coding.instructions")}
+        icon="solar:checklist-bold"
+        label={<Label color="warning">{lesson.totalPoints} XP</Label>}
+      />
       <Box sx={{ px: 2 }}>
-        <Markdown key={instructions} content={instructions} />
-        {!hint && renderHintButton()}
+        {isLocked ? (
+          <>
+            {Array.from({ length: 8 }).map((_, i) => (
+              <Skeleton key={i} variant="text" sx={{ borderRadius: 2, width: 1, height: 0.1 }} />
+            ))}
+          </>
+        ) : (
+          <Markdown key={lesson.instructions} content={lesson.instructions} />
+        )}
+        {!lesson.hint && renderHintButton()}
       </Box>
-      {hint && renderHint()}
+      {lesson.hint && renderHint()}
     </Box>
   );
 
@@ -212,7 +248,11 @@ export function CodingLesson({
           height: 300,
         }}
       >
-        <CodeEditor technology={lesson.technology} value={code} onChange={setCode} />
+        {isLocked ? (
+          <Skeleton variant="rectangular" sx={{ width: 1, height: 1 }} />
+        ) : (
+          <CodeEditor technology={lesson.technology} value={code} onChange={setCode} />
+        )}
       </Box>
 
       <Box sx={{ position: "absolute", bottom: 0, right: 0, display: "flex" }}>
@@ -222,9 +262,17 @@ export function CodingLesson({
   );
 
   const renderConsole = () => (
-    <Box>
+    <Box sx={{ height: 1, width: 1 }}>
       <SectionHeader title={t("coding.console")} icon="carbon:terminal" />
-      <Box sx={{ p: 2 }}>console</Box>
+      <Box
+        sx={{
+          flexGrow: 1,
+          position: "relative",
+          height: { xs: 315, md: 250 },
+        }}
+      >
+        {isLocked ? <Skeleton variant="rectangular" sx={{ width: 1, height: 1 }} /> : `console`}
+      </Box>
     </Box>
   );
 
@@ -253,7 +301,12 @@ export function CodingLesson({
       sizes={[60, 40]}
       minSize={150}
       gutterSize={5}
-      style={{ display: "flex", flexDirection: "column", gap: 2, overflow: "auto" }}
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        gap: 2,
+        overflow: "auto",
+      }}
     >
       {renderEditor()}
       {renderConsole()}

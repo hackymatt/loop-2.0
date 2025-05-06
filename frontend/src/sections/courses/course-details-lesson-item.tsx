@@ -29,7 +29,7 @@ export function CourseDetailsLessonItem({ course, chapter, lesson }: LessonItemP
   const { isLoggedIn } = user.state;
 
   const completed = (lesson.progress || 0) === 100;
-  const redirect = localize(`${paths.learn}/${course.slug}/${lesson.slug}`);
+  const redirect = localize(`${paths.learn}/${course.slug}/${chapter.slug}/${lesson.slug}`);
 
   return (
     <Button

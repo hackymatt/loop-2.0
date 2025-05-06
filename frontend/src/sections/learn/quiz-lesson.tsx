@@ -9,6 +9,7 @@ import {
   Button,
   Divider,
   Checkbox,
+  Skeleton,
   FormGroup,
   FormLabel,
   RadioGroup,
@@ -20,6 +21,8 @@ import {
 import { QUIZ_TYPE } from "src/consts/lesson";
 import { useAnalytics } from "src/app/analytics-provider";
 
+import { Label } from "src/components/label";
+
 // ----------------------------------------------------------------------
 
 type QuizLessonProps = {
@@ -27,31 +30,36 @@ type QuizLessonProps = {
   onSubmit: (answer: boolean[]) => void;
   onShowAnswer: () => void;
   error?: string;
+  isLocked?: boolean;
 };
 
 // ----------------------------------------------------------------------
 
-export function QuizLesson({ lesson, onSubmit, onShowAnswer, error }: QuizLessonProps) {
+export function QuizLesson({
+  lesson,
+  onSubmit,
+  onShowAnswer,
+  error,
+  isLocked = false,
+}: QuizLessonProps) {
   const { t } = useTranslation("learn");
   const { trackEvent } = useAnalytics();
 
-  const { name, quizType, question, answer: userAnswer } = lesson;
-
-  const isMultiple = quizType === QUIZ_TYPE.MULTI;
-  const isCompleted = !!userAnswer;
+  const isMultiple = lesson.quizType === QUIZ_TYPE.MULTI;
+  const isCompleted = !!lesson.answer;
 
   // Form state
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
   const [selectedOptions, setSelectedOptions] = useState<number[]>([]);
 
   useEffect(() => {
-    const userOption = (userAnswer || [])
+    const userOption = (lesson.answer || [])
       .map((value, index) => (value ? index : -1))
       .filter((index) => index !== -1);
 
     setSelectedOption(userOption.length === 0 ? null : userOption[0]);
     setSelectedOptions(userOption);
-  }, [userAnswer]);
+  }, [lesson.answer]);
 
   const handleRadioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSelectedOption(Number(event.target.value));
@@ -65,7 +73,7 @@ export function QuizLesson({ lesson, onSubmit, onShowAnswer, error }: QuizLesson
   };
 
   const handleSubmit = () => {
-    const answer = question.options.map((_, index) =>
+    const answer = lesson.question.options.map((_, index) =>
       isMultiple ? selectedOptions.includes(index) : selectedOption === index
     );
     onSubmit(answer);
@@ -73,37 +81,55 @@ export function QuizLesson({ lesson, onSubmit, onShowAnswer, error }: QuizLesson
 
   const renderOptions = () =>
     isMultiple ? (
-      <FormGroup>
-        {question.options.map((option, index) => (
-          <FormControlLabel
-            key={index}
-            control={
-              <Checkbox
-                value={index}
-                checked={selectedOptions.includes(index)}
-                onChange={handleCheckboxChange}
-              />
-            }
-            label={option.text}
-          />
-        ))}
+      <FormGroup sx={{ width: 1, height: 1 }}>
+        {lesson.question.options.map((option, index) =>
+          isLocked ? (
+            <Skeleton
+              key={index}
+              variant="text"
+              sx={{ width: 1, height: 0.1, borderRadius: 1, mb: 1 }}
+            />
+          ) : (
+            <FormControlLabel
+              key={index}
+              control={
+                <Checkbox
+                  value={index}
+                  checked={selectedOptions.includes(index)}
+                  onChange={handleCheckboxChange}
+                />
+              }
+              label={option.text}
+            />
+          )
+        )}
       </FormGroup>
     ) : (
       <RadioGroup
         value={selectedOption !== null ? selectedOption.toString() : ""}
         onChange={handleRadioChange}
+        sx={{ width: 1, height: 1 }}
       >
-        {question.options.map((option, index) => (
-          <FormControlLabel key={index} value={index} control={<Radio />} label={option.text} />
-        ))}
+        {(lesson.question?.options || Array.from({ length: 5 })).map((option, index) =>
+          isLocked ? (
+            <Skeleton
+              key={index}
+              variant="text"
+              sx={{ width: 1, height: 0.1, borderRadius: 1, mb: 1 }}
+            />
+          ) : (
+            <FormControlLabel key={index} value={index} control={<Radio />} label={option.text} />
+          )
+        )}
       </RadioGroup>
     );
 
   const renderHeader = () => (
     <Box>
-      <Typography variant="h4" gutterBottom>
-        {name}
-      </Typography>
+      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+        <Typography variant="h4">{lesson.name}</Typography>
+        <Label color="warning">{lesson.totalPoints} XP</Label>
+      </Box>
       <Typography variant="subtitle2" color="text.secondary">
         🧠 {t("quiz.type.label")}: {isMultiple ? t("quiz.type.multi") : t("quiz.type.single")}
       </Typography>
@@ -111,18 +137,22 @@ export function QuizLesson({ lesson, onSubmit, onShowAnswer, error }: QuizLesson
   );
 
   const renderContent = () => (
-    <Box sx={{ py: 2 }}>
-      <FormControl>
-        <FormLabel
-          sx={{
-            fontSize: "1.25rem",
-            fontWeight: "bold",
-            color: "primary.main",
-            mb: 2,
-          }}
-        >
-          {question.text}
-        </FormLabel>
+    <Box sx={{ py: 2, width: 1, height: 1 }}>
+      <FormControl sx={{ width: 1, height: 1 }}>
+        {isLocked ? (
+          <Skeleton variant="text" sx={{ width: 1, height: 0.1, borderRadius: 2 }} />
+        ) : (
+          <FormLabel
+            sx={{
+              fontSize: "1.25rem",
+              fontWeight: "bold",
+              color: "primary.main",
+              mb: 2,
+            }}
+          >
+            {lesson.question.text}
+          </FormLabel>
+        )}
         {renderOptions()}
       </FormControl>
       {error && (
@@ -140,7 +170,7 @@ export function QuizLesson({ lesson, onSubmit, onShowAnswer, error }: QuizLesson
         color="primary"
         size="large"
         onClick={handleSubmit}
-        disabled={isMultiple ? selectedOptions.length === 0 : selectedOption === null}
+        disabled={isLocked || isMultiple ? selectedOptions.length === 0 : selectedOption === null}
         sx={{ px: 2 }}
       >
         {t("quiz.submit")}
@@ -158,7 +188,7 @@ export function QuizLesson({ lesson, onSubmit, onShowAnswer, error }: QuizLesson
           onShowAnswer();
           trackEvent({ category: "learn", label: "quiz", action: "showAnswer" });
         }}
-        disabled={isCompleted}
+        disabled={isLocked || isCompleted}
         sx={{ px: 2 }}
       >
         {t("quiz.answer")}
