@@ -24,6 +24,17 @@
     },
     "hint": { "button": "Podpowiedź", "label": "Podpowiedź" },
     "answer": "Pokaż odpowiedź",
-    "console": "Konsola"
+    "console": "Konsola",
+    "context": "Kontekst",
+    "exercise": "Ćwiczenie"
+  },
+  "upgrade": {
+    "title": "Odblokuj pełny dostęp!",
+    "description": "Zdobądź wszystkie rozdziały, więcej punktów i dodatkowe materiały!",
+    "banner": {
+      "title": "Jesteś na darmowym planie i masz dostęp tylko do jednego rozdziału.",
+      "description": "Aby kontynuować naukę i odblokować kolejne rozdziały — przejdź na wyższy!"
+    },
+    "button": "Wróć do kursu"
   }
 }

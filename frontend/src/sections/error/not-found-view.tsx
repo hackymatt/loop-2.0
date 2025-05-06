@@ -13,7 +13,6 @@ import { RouterLink } from "src/routes/components";
 import { useLocalizedPath } from "src/hooks/use-localized-path";
 
 import { CONFIG } from "src/global-config";
-import { SimpleLayout } from "src/layouts/simple";
 
 import { varBounce, MotionContainer } from "src/components/animate";
 
@@ -24,7 +23,17 @@ export function NotFoundView() {
   const localize = useLocalizedPath();
 
   return (
-    <SimpleLayout slotProps={{ content: { compact: true } }}>
+    <Box
+      sx={(theme) => ({
+        width: 1,
+        mx: "auto",
+        display: "flex",
+        flex: "1 1 auto",
+        textAlign: "center",
+        flexDirection: "column",
+        p: theme.spacing(3, 2, 10, 2),
+      })}
+    >
       <MotionContainer>
         <m.div variants={varBounce("in")}>
           <Typography variant="h3" sx={{ mb: 2 }}>
@@ -55,6 +64,6 @@ export function NotFoundView() {
           {t("button")}
         </Button>
       </MotionContainer>
-    </SimpleLayout>
+    </Box>
   );
 }

@@ -279,9 +279,9 @@ export function Footer({ layoutQuery = "md", sx, ...other }: FooterProps) {
           variant="caption"
           color="inherit"
           component={RouterLink}
-          href={localize(paths.termsAndConditions)}
+          href={localize(paths.termsOfService)}
         >
-          {t("termsAndConditions")}
+          {t("termsOfService")}
         </Link>
       </Box>
     </Container>

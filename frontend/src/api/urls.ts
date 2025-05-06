@@ -21,18 +21,18 @@ export const URLS = {
   COURSE_TECHNOLOGIES: "/course-technologies",
   SIMILAR_COURSES: "/similar-courses",
   // LESSON
-  LESSON: "lesson",
-  LESSON_SUBMIT: "lesson/submit",
-  LESSON_ANSWER: "lesson/answer",
-  LESSON_HINT: "lesson/hint",
+  LESSON: "/lesson",
+  LESSON_SUBMIT: "/lesson/submit",
+  LESSON_ANSWER: "/lesson/answer",
+  LESSON_HINT: "/lesson/hint",
   // REVIEWS
   REVIEWS: "/reviews",
   REVIEWS_SUMMARY: "/reviews-summary",
-  REVIEW_SUBMIT: "review-submit",
+  REVIEW_SUBMIT: "/review-submit",
   // BLOG
   POST_TOPICS: "/post-topics",
   POST_TAGS: "/post-tags",
-  POSTS: "posts",
+  POSTS: "/posts",
   RECENT_POSTS: "/recent-posts",
   // FEATURED
   FEATURED_TECHNOLOGIES: "/featured-technologies",
@@ -45,8 +45,8 @@ export const URLS = {
   // CERTIFICATES
   CERTIFICATES: "/certificates",
   // ME
-  DATA: "me/data",
-  PASSWORD_CHANGE: "me/password",
-  DELETE_ACCOUNT: "me/delete",
-  DASHBOARD: "me/dashboard",
+  DATA: "/me/data",
+  PASSWORD_CHANGE: "/me/password",
+  DELETE_ACCOUNT: "/me/delete",
+  DASHBOARD: "/me/dashboard",
 } as const;

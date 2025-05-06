@@ -25,7 +25,16 @@
     "hint": { "button": "Take hint", "label": "Hint" },
     "answer": "Show answer",
     "console": "Console",
-    "context": "Kontekst",
-    "exercise": "Ćwiczenie"
+    "context": "Context",
+    "exercise": "Exercise"
+  },
+  "upgrade": {
+    "title": "Unlock full access!",
+    "description": "Get all chapters, more points, and additional materials!",
+    "banner": {
+      "title": "You are on the free plan and only have access to one chapter.",
+      "description": "To continue learning and unlock more chapters — upgrade your plan!"
+    },
+    "button": "Back to course"
   }
 }

@@ -8,7 +8,7 @@ import MenuList from "@mui/material/MenuList";
 import MenuItem from "@mui/material/MenuItem";
 import IconButton from "@mui/material/IconButton";
 
-import { useRouter, useParams, usePathname } from "src/routes/hooks";
+import { useRouter, usePathname } from "src/routes/hooks";
 
 import { LANGUAGE } from "src/consts/language";
 
@@ -31,9 +31,7 @@ export function LanguagePopover({ data = [], sx, ...other }: LanguagePopoverProp
   const settings = useSettingsContext();
   const { open, onClose, onOpen, anchorEl } = usePopover();
 
-  const { locale } = useParams() as { locale: string };
-
-  const currentLang = data.find((lang) => lang.value === locale);
+  const currentLang = data.find((lang) => lang.value === settings.state.language);
 
   const handleChangeLang = (newLang: Language) => {
     const segments = pathname.split("/");

@@ -169,7 +169,7 @@ export function PaymentSummary({ plan, sx, ...other }: PaymentSummaryProps) {
           target="_blank"
           rel="noopener"
           variant="caption"
-          href={paths.stripe.termsAndConditions}
+          href={paths.stripe.termsOfService}
           color="text.primary"
           underline="none"
           sx={{ color: "text.secondary" }}

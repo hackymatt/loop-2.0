@@ -57,69 +57,96 @@ type ICodingLesson = {
 
 type ILesson = IBaseLesson & (IReadingLesson | IVideoLesson | IQuizLesson | ICodingLesson);
 
-export const lessonQuery = (courseSlug: string, lessonSlug: string) => {
+const lessonMapper = {
+  reading: (props: ILesson): IReadingLessonProps => ({
+    type: "reading",
+    name: props.name,
+    totalPoints: props.points,
+    text: (props as IReadingLesson).text,
+    duration: (props as IReadingLesson).duration,
+  }),
+
+  video: (props: ILesson): IVideoLessonProps => ({
+    type: "video",
+    name: props.name,
+    totalPoints: props.points,
+    videoUrl: (props as IVideoLesson).video_url,
+  }),
+
+  quiz: (props: ILesson): IQuizLessonProps => {
+    const { quiz_type, answer, ...quizRest } = props as IQuizLesson;
+    return {
+      type: "quiz",
+      name: props.name,
+      totalPoints: props.points,
+      quizType: quiz_type,
+      question: quizRest.question,
+      answer: answer ?? null,
+    };
+  },
+
+  coding: (props: ILesson): ICodingLessonProps => {
+    const {
+      file_name,
+      technology,
+      starter_code,
+      introduction,
+      instructions,
+      penalty_points,
+      hint,
+      answer,
+    } = props as ICodingLesson;
+
+    return {
+      type: "coding",
+      name: props.name,
+      totalPoints: props.points,
+      fileName: file_name,
+      technology,
+      starterCode: starter_code,
+      introduction,
+      instructions,
+      penaltyPoints: penalty_points,
+      hint: hint ?? null,
+      answer: answer ?? null,
+    };
+  },
+};
+
+export const lessonQuery = (courseSlug: string, chapterSlug: string, lessonSlug: string) => {
   const url = endpoint;
-  const queryUrl = `${url}/${courseSlug}/${lessonSlug}`;
+  const queryUrl = `${url}/${courseSlug}/${chapterSlug}/${lessonSlug}`;
 
   const queryFn = async (): Promise<
     GetQueryResponse<
       IReadingLessonProps | IVideoLessonProps | IQuizLessonProps | ICodingLessonProps
     >
   > => {
-    const { data } = await getData<ILesson>(queryUrl);
+    const { data, error } = await getData<ILesson>(queryUrl);
 
-    const { type, name, points, ...specificLesson }: ILesson = data;
+    const mapped = lessonMapper[data.type](data);
 
-    if (type === "reading") {
-      return {
-        results: { type, totalPoints: points, name, ...specificLesson } as IReadingLessonProps,
-      };
-    }
-    if (type === "video") {
-      const { video_url } = specificLesson as IVideoLesson;
-      return {
-        results: { type, totalPoints: points, name, videoUrl: video_url } as IVideoLessonProps,
-      };
-    }
-    if (type === "quiz") {
-      const { quiz_type, answer, ...quizRest } = specificLesson as IQuizLesson;
-      return {
-        results: {
-          type,
-          name,
-          totalPoints: points,
-          quizType: quiz_type,
-          answer: answer ?? null,
-          ...quizRest,
-        } as IQuizLessonProps,
-      };
-    }
-
-    const { penalty_points, starter_code, answer, hint, file_name, ...codingRest } =
-      specificLesson as ICodingLesson;
     return {
-      results: {
-        type,
-        name,
-        totalPoints: points,
-        penaltyPoints: penalty_points,
-        fileName: file_name,
-        starterCode: starter_code,
-        hint: hint ?? null,
-        answer: answer ?? null,
-        ...codingRest,
-      } as ICodingLessonProps,
+      results: mapped,
+      error,
     };
   };
 
   return { url, queryFn, queryKey: compact([url, courseSlug, lessonSlug]) };
 };
 
-export const useLesson = (courseSlug: string, lessonSlug: string, enabled: boolean = true) => {
+export const useLesson = (
+  courseSlug: string,
+  chapterSlug: string,
+  lessonSlug: string,
+  enabled: boolean = true
+) => {
   const queryClient = useQueryClient();
 
-  const { queryKey, queryFn } = lessonQuery(courseSlug, lessonSlug);
-  const { data, ...rest } = useQuery({
+  const { queryKey, queryFn } = lessonQuery(courseSlug, chapterSlug, lessonSlug);
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { data, error, ...rest } = useQuery({
     queryKey,
     queryFn,
     enabled,
@@ -128,5 +155,10 @@ export const useLesson = (courseSlug: string, lessonSlug: string, enabled: boole
       queryClient.invalidateQueries([URLS.DASHBOARD]);
     },
   });
-  return { data: data?.results, ...rest };
+
+  return {
+    data: data?.results,
+    error: data?.error,
+    ...rest,
+  };
 };

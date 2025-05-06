@@ -16,7 +16,7 @@ export const useTermsAcceptance = () => {
       <Link
         target="_blank"
         rel="noopener"
-        href={localize(paths.termsAndConditions)}
+        href={localize(paths.termsOfService)}
         color="text.primary"
         underline="always"
       >

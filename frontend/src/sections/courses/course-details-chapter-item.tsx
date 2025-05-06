@@ -48,8 +48,10 @@ export function CourseDetailsChapterItem({
 
   const started = (chapter.progress || 0) > 0;
   const completed = (chapter.progress || 0) === 100;
-  const next = (findNextLesson([chapter]) || chapter.lessons[0]).slug;
-  const redirect = localize(`${paths.learn}/${course.slug}/${next}`);
+  const next = findNextLesson([chapter]);
+  const redirect = localize(
+    `${paths.learn}/${course.slug}/${chapter.slug}/${next.lesson?.slug || chapter.lessons[0].slug}`
+  );
 
   const renderButton = () => (
     <Button

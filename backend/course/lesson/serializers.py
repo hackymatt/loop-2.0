@@ -81,25 +81,19 @@ class LessonSerializer(serializers.ModelSerializer):
             .points
         )
 
-
-class ReadingLessonSerializer(serializers.ModelSerializer):
+class ReadingLessonBaseSerializer(serializers.ModelSerializer):
     type = serializers.CharField(source="lesson.type")
     points = serializers.CharField(source="lesson.points")
     name = serializers.SerializerMethodField()
-    text = serializers.SerializerMethodField()
     duration = serializers.SerializerMethodField()
 
     class Meta:
         model = ReadingLesson
-        fields = ["type", "points", "name", "text", "duration"]
+        fields = ["type", "points", "name", "duration"]
 
     def get_name(self, obj):
         lang = self.context.get("request").LANGUAGE_CODE
         return obj.get_translation(lang).name
-
-    def get_text(self, obj):
-        lang = self.context.get("request").LANGUAGE_CODE
-        return obj.get_translation(lang).text
 
     def get_duration(self, obj):
         content = self.get_text(obj)
@@ -115,20 +109,34 @@ class ReadingLessonSerializer(serializers.ModelSerializer):
             len(words) / CONFIG["words_per_minute"]
         )  # Assuming 200 words per minute
 
+class ReadingLessonSerializer(ReadingLessonBaseSerializer):
+    text = serializers.SerializerMethodField()
 
-class VideoLessonSerializer(serializers.ModelSerializer):
+    class Meta(ReadingLessonBaseSerializer.Meta):
+        fields = ReadingLessonBaseSerializer.Meta.fields + ["text"]
+
+    def get_text(self, obj):
+        lang = self.context.get("request").LANGUAGE_CODE
+        return obj.get_translation(lang).text
+
+class VideoLessonBaseSerializer(serializers.ModelSerializer):
     type = serializers.CharField(source="lesson.type")
     points = serializers.CharField(source="lesson.points")
-    video_url = serializers.URLField()
     name = serializers.SerializerMethodField()
 
     class Meta:
         model = VideoLesson
-        fields = ["type", "points", "name", "video_url"]
+        fields = ["type", "points", "name"]
 
     def get_name(self, obj):
         lang = self.context.get("request").LANGUAGE_CODE
         return obj.get_translation(lang).name
+
+class VideoLessonSerializer(VideoLessonBaseSerializer):
+    video_url = serializers.URLField()
+
+    class Meta(VideoLessonBaseSerializer.Meta):
+        fields = VideoLessonBaseSerializer.Meta.fields + ["video_url"]
 
 
 class QuizQuestionOptionSerializer(serializers.ModelSerializer):
@@ -144,20 +152,26 @@ class QuizQuestionSerializer(serializers.ModelSerializer):
         model = QuizQuestion
         fields = ["text", "options"]
 
-
-class QuizLessonSerializer(serializers.ModelSerializer):
+    
+class QuizLessonBaseSerializer(serializers.ModelSerializer):
     type = serializers.CharField(source="lesson.type")
     points = serializers.CharField(source="lesson.points")
     name = serializers.SerializerMethodField()
-    question = serializers.SerializerMethodField()
 
     class Meta:
         model = QuizLesson
-        fields = ["type", "points", "name", "quiz_type", "question"]
+        fields = ["type", "points", "name", "quiz_type"]
 
     def get_name(self, obj):
         lang = self.context.get("request").LANGUAGE_CODE
         return obj.get_translation(lang).name
+
+
+class QuizLessonSerializer(QuizLessonBaseSerializer):
+    question = serializers.SerializerMethodField()
+
+    class Meta(QuizLessonBaseSerializer.Meta):
+        fields = QuizLessonBaseSerializer.Meta.fields + ["question"]
 
     def get_question(self, obj):
         lang = self.context.get("request").LANGUAGE_CODE
@@ -177,33 +191,40 @@ class QuizLessonSerializer(serializers.ModelSerializer):
         return data
 
 
-class CodingLessonSerializer(serializers.ModelSerializer):
+class CodingLessonBaseSerializer(serializers.ModelSerializer):
     type = serializers.CharField(source="lesson.type")
     points = serializers.CharField(source="lesson.points")
     name = serializers.SerializerMethodField()
-    technology = serializers.CharField(source="technology.slug", read_only=True)
-    starter_code = serializers.CharField(read_only=True)
-    penalty_points = serializers.IntegerField(read_only=True)
-    introduction = serializers.SerializerMethodField()
-    instructions = serializers.SerializerMethodField()
 
     class Meta:
         model = CodingLesson
         fields = [
             "type",
             "points",
-            "file_name",
             "name",
+        ]
+
+    def get_name(self, obj):
+        lang = self.context.get("request").LANGUAGE_CODE
+        return obj.get_translation(lang).name
+
+
+class CodingLessonSerializer(CodingLessonBaseSerializer):
+    technology = serializers.CharField(source="technology.slug", read_only=True)
+    starter_code = serializers.CharField(read_only=True)
+    penalty_points = serializers.IntegerField(read_only=True)
+    introduction = serializers.SerializerMethodField()
+    instructions = serializers.SerializerMethodField()
+
+    class Meta(CodingLessonBaseSerializer.Meta):
+        fields = CodingLessonBaseSerializer.Meta.fields + [
+            "file_name",
             "technology",
             "starter_code",
             "penalty_points",
             "introduction",
             "instructions",
         ]
-
-    def get_name(self, obj):
-        lang = self.context.get("request").LANGUAGE_CODE
-        return obj.get_translation(lang).name
 
     def get_introduction(self, obj):
         lang = self.context.get("request").LANGUAGE_CODE

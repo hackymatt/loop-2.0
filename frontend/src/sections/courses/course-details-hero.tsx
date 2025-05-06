@@ -98,8 +98,10 @@ export function CourseDetailsHero({
 
   const started = (progress || 0) > 0;
   const completed = (progress || 0) === 100;
-  const next = (findNextLesson(chapters) || chapters[0].lessons[0]).slug;
-  const redirect = localize(`${paths.learn}/${slug}/${next}`);
+  const next = findNextLesson(chapters);
+  const redirect = localize(
+    `${paths.learn}/${slug}/${next.chapter?.slug || chapters[0].slug}/${next.lesson?.slug || chapters[0].lessons[0].slug}`
+  );
 
   const languagePluralize = usePluralize();
 

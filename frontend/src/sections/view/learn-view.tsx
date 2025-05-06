@@ -36,10 +36,12 @@ import { VideoLesson } from "../learn/video-lesson";
 import { CodingLesson } from "../learn/coding-lesson";
 import { NotFoundView } from "../error/not-found-view";
 import { ReadingLesson } from "../learn/reading-lesson";
+import { UpgradeBanner } from "../learn/upgrade-banner";
 import { ArrowBasicButtons } from "../learn/arrow-buttons/arrow-buttons";
 
 interface LearnViewProps {
   courseSlug: string;
+  chapterSlug: string;
   lessonSlug: string;
 }
 
@@ -65,7 +67,7 @@ const ContentBox = ({ children, sx }: { children: ReactNode; sx?: BoxProps["sx"]
   </Box>
 );
 
-export function LearnView({ courseSlug, lessonSlug }: LearnViewProps) {
+export function LearnView({ courseSlug, chapterSlug, lessonSlug }: LearnViewProps) {
   const { t } = useTranslation("learn");
   const localize = useLocalizedPath();
   const { enqueueSnackbar } = useSnackbar();
@@ -80,7 +82,9 @@ export function LearnView({ courseSlug, lessonSlug }: LearnViewProps) {
     data: lessonData,
     isLoading: isLoadingLesson,
     isError: isErrorLesson,
-  } = useLesson(courseSlug, lessonSlug);
+    error: lessonError,
+  } = useLesson(courseSlug, chapterSlug, lessonSlug);
+
   const { mutateAsync: submit } = useLessonSubmit();
   const { mutateAsync: showAnswer } = useLessonAnswer();
   const { mutateAsync: showHint } = useLessonHint();
@@ -89,18 +93,20 @@ export function LearnView({ courseSlug, lessonSlug }: LearnViewProps) {
 
   const isLoading = isLoadingCourse || isLoadingLesson;
   const isError = isErrorCourse || isErrorLesson;
+  const isLocked = (lessonError as AxiosError)?.status === 403;
 
   const allLessons = courseData?.chapters.flatMap((ch) => ch.lessons) ?? [];
   const currentLessonIndex = allLessons.findIndex((l) => l.slug === lessonSlug);
   const currentLessonInfo = allLessons[currentLessonIndex];
-  const currentChapter = courseData?.chapters.find((ch) =>
-    ch.lessons.some((l) => l.slug === lessonSlug)
-  );
+  const currentChapter = courseData?.chapters.find((ch) => ch.slug === chapterSlug);
 
   const navigateTo = (index: number) => {
-    const next = allLessons[index];
-    if (next) {
-      router.push(localize(`${paths.learn}/${courseSlug}/${next.slug}`));
+    const lesson = allLessons[index];
+    const chapter = courseData?.chapters.find((ch) =>
+      ch.lessons.some((l) => l.slug === lesson.slug)
+    );
+    if (lesson && chapter) {
+      router.push(localize(`${paths.learn}/${courseSlug}/${chapter.slug}/${lesson.slug}`));
     }
   };
 
@@ -108,10 +114,15 @@ export function LearnView({ courseSlug, lessonSlug }: LearnViewProps) {
     setError(undefined);
     try {
       await submit({ ...data, lesson: lessonSlug });
-      const next = allLessons[currentLessonIndex + 1];
+      const lesson = allLessons[currentLessonIndex + 1];
+      const chapter = courseData?.chapters.find((ch) =>
+        ch.lessons.some((l) => l.slug === lesson.slug)
+      );
       router.push(
         localize(
-          next ? `${paths.learn}/${courseSlug}/${next.slug}` : `${paths.course}/${courseSlug}`
+          lesson && chapter
+            ? `${paths.learn}/${courseSlug}/${chapter.slug}/${lesson.slug}`
+            : `${paths.course}/${courseSlug}`
         )
       );
     } catch (err) {
@@ -135,7 +146,9 @@ export function LearnView({ courseSlug, lessonSlug }: LearnViewProps) {
     }
   };
 
-  if (isError) return <NotFoundView />;
+  if (isError && !isLocked) {
+    return <NotFoundView />;
+  }
   if (isLoading) return <SplashScreen />;
 
   const lessonType = currentLessonInfo?.type ?? LESSON_TYPE.READING;
@@ -174,6 +187,7 @@ export function LearnView({ courseSlug, lessonSlug }: LearnViewProps) {
             <ReadingLesson
               lesson={lessonData as IReadingLessonProps}
               onSubmit={() => handleSubmit({ answer: "" })}
+              isLocked={isLocked}
             />
           </ContentBox>
         );
@@ -183,6 +197,7 @@ export function LearnView({ courseSlug, lessonSlug }: LearnViewProps) {
             <VideoLesson
               lesson={lessonData as IVideoLessonProps}
               onSubmit={() => handleSubmit({ answer: "" })}
+              isLocked={isLocked}
             />
           </ContentBox>
         );
@@ -194,6 +209,7 @@ export function LearnView({ courseSlug, lessonSlug }: LearnViewProps) {
               onSubmit={(answer) => handleSubmit({ answer: answer as boolean[] })}
               onShowAnswer={handleShowAnswer}
               error={error}
+              isLocked={isLocked}
             />
           </ContentBox>
         );
@@ -207,6 +223,7 @@ export function LearnView({ courseSlug, lessonSlug }: LearnViewProps) {
               onHint={handleShowHint}
               onShowAnswer={handleShowAnswer}
               error={error}
+              isLocked={isLocked}
             />
           </ContentBox>
         );
@@ -224,6 +241,8 @@ export function LearnView({ courseSlug, lessonSlug }: LearnViewProps) {
         <Header />
         <Content />
       </Container>
+
+      {isLocked && <UpgradeBanner slug={courseSlug} open />}
     </Box>
   );
 }

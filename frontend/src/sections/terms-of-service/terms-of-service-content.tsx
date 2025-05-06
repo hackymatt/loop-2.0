@@ -5,7 +5,7 @@ import { paths } from "src/routes/paths";
 
 import { useLocalizedPath } from "src/hooks/use-localized-path";
 
-export const useTermsAndConditionsContent = () => {
+export const useTermsOfServiceContent = () => {
   const localize = useLocalizedPath();
   return [
     {

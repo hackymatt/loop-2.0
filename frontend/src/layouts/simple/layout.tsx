@@ -2,21 +2,32 @@
 
 import type { Breakpoint } from "@mui/material/styles";
 
-import { Box } from "@mui/material";
+import { merge } from "es-toolkit";
+import { useTranslation } from "react-i18next";
+
+import Box from "@mui/material/Box";
+import Link from "@mui/material/Link";
+
+import { paths } from "src/routes/paths";
+import { RouterLink } from "src/routes/components";
+
+import { useLocalizedPath } from "src/hooks/use-localized-path";
 
 import { CONFIG } from "src/global-config";
 
 import { Logo } from "src/components/logo";
 
 import { langs } from "../langs-config";
+import { SimpleCompactContent } from "./content";
 import { MainSection } from "../core/main-section";
 import { LayoutSection } from "../core/layout-section";
+import { HeaderSection } from "../core/header-section";
 import { SettingsButton } from "../components/settings-button";
 import { LanguagePopover } from "../components/language-popover";
-import { HeaderSection, type HeaderSectionProps } from "../core/header-section";
 
 import type { SimpleCompactContentProps } from "./content";
 import type { MainSectionProps } from "../core/main-section";
+import type { HeaderSectionProps } from "../core/header-section";
 import type { LayoutSectionProps } from "../core/layout-section";
 
 // ----------------------------------------------------------------------
@@ -39,7 +50,12 @@ export function SimpleLayout({
   slotProps,
   layoutQuery = "md",
 }: SimpleLayoutProps) {
+  const { t } = useTranslation("navigation");
+  const localize = useLocalizedPath();
+
   const renderHeader = () => {
+    const headerSlotProps: HeaderSectionProps["slotProps"] = { container: { maxWidth: false } };
+
     const headerSlots: HeaderSectionProps["slots"] = {
       leftArea: (
         <>
@@ -49,6 +65,16 @@ export function SimpleLayout({
       ),
       rightArea: (
         <Box sx={{ gap: 1, display: "flex", alignItems: "center" }}>
+          {/** @slot Help link */}
+          <Link
+            component={RouterLink}
+            href={localize(paths.support)}
+            color="inherit"
+            sx={{ typography: "subtitle2" }}
+          >
+            {t("help")}
+          </Link>
+
           {/** @slot Language popover */}
           {CONFIG.isLocal && <LanguagePopover data={langs} />}
 
@@ -63,7 +89,7 @@ export function SimpleLayout({
         layoutQuery={layoutQuery}
         {...slotProps?.header}
         slots={{ ...headerSlots, ...slotProps?.header?.slots }}
-        slotProps={slotProps?.header?.slotProps}
+        slotProps={merge(headerSlotProps, slotProps?.header?.slotProps ?? {})}
         sx={slotProps?.header?.sx}
       />
     );
@@ -71,7 +97,21 @@ export function SimpleLayout({
 
   const renderFooter = () => null;
 
-  const renderMain = () => <MainSection {...slotProps?.main}>{children}</MainSection>;
+  const renderMain = () => {
+    const { compact, ...restContentProps } = slotProps?.content ?? {};
+
+    return (
+      <MainSection {...slotProps?.main}>
+        {compact ? (
+          <SimpleCompactContent layoutQuery={layoutQuery} {...restContentProps}>
+            {children}
+          </SimpleCompactContent>
+        ) : (
+          children
+        )}
+      </MainSection>
+    );
+  };
 
   return (
     <LayoutSection
