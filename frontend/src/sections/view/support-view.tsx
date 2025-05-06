@@ -16,22 +16,24 @@ import { SupportContent } from "../support/support-content";
 
 // ----------------------------------------------------------------------
 
-type IFaqProps = { question: string; answer: string };
+type IFaqProps = {
+  id: string;
+  title: string;
+  icon: string;
+  content: { question: string; answer: string }[];
+};
 
 export function SupportView() {
   const { t } = useTranslation("faq");
 
-  const pricing = t("pricing", { returnObjects: true }) as IFaqProps[];
+  const faq = t("faq", { returnObjects: true }) as IFaqProps[];
 
-  const TOPICS = [
-    {
-      title: "Pricing",
-      icon: "solar:tag-price-bold",
-      content: <SupportContent contents={pricing} />,
-    },
-  ];
+  const TOPICS = faq.map(({ content, ...rest }) => ({
+    ...rest,
+    content: <SupportContent contents={content} />,
+  }));
 
-  const [topic, setTopic] = useState("Pricing");
+  const [topic, setTopic] = useState(faq[0].title);
 
   const openNavMobile = useBoolean();
 
@@ -45,6 +47,10 @@ export function SupportView() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [topic]);
+
+  useEffect(() => {
+    setTopic(faq[0].title);
+  }, [faq]);
 
   return (
     <>

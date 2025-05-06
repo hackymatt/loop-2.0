@@ -36,7 +36,6 @@ const StatBox = ({
     sx={(theme) => ({
       borderRadius: 2,
       p: 3,
-      //   border: `dashed 1px ${theme.vars.palette.divider}`,
       display: "flex",
       flexDirection: "column",
       alignItems: "center",

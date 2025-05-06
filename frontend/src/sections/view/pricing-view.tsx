@@ -7,18 +7,25 @@ import { PricingCardsView } from "../pricing/pricing-cards-view";
 import { PricingColumnsView } from "../pricing/pricing-columns-view";
 
 // ----------------------------------------------------------------------
-type IFaqProps = { question: string; answer: string };
+
+type IFaqProps = {
+  id: string;
+  title: string;
+  icon: string;
+  content: { question: string; answer: string }[];
+};
 
 export function PricingView() {
   const { t } = useTranslation("faq");
-  const faq = t("pricing", { returnObjects: true }) as IFaqProps[];
+  const faq = t("faq", { returnObjects: true }) as IFaqProps[];
+  const payments = faq.filter((f) => f.id === "payments")[0].content;
   return (
     <>
       <PricingCardsView />
 
       <PricingColumnsView />
 
-      <Faqs data={faq} />
+      <Faqs data={payments} />
     </>
   );
 }

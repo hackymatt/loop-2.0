@@ -33,6 +33,7 @@ type Props = {
 
 export function Faqs({ data, sx, ...other }: Props) {
   const { t } = useTranslation("faq");
+
   const localize = useLocalizedPath();
 
   const { trackEvent } = useAnalytics();
