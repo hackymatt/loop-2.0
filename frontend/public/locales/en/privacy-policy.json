@@ -3,5 +3,295 @@
     "title": "Privacy Policy",
     "description": "Learn how we protect and process your personal data. Read our privacy policy to better understand your rights as a user."
   },
-  "title": "Privacy policy"
+  "title": "Privacy policy",
+  "content": [
+    {
+      "header": "§1 General Provisions",
+      "content": [
+        {
+          "value": "1. This document is an annex to the Terms of Service. By using our services, you entrust us with your information. This Privacy Policy serves to help you understand what information and data we collect and how we use them. This data is very important to us, so please read this document carefully, as it sets out the principles and methods for processing and protecting personal data."
+        },
+        {
+          "value": "2. We hereby declare that we comply with the principles of personal data protection and all legal regulations provided by the Personal Data Protection Act and the Regulation (EU) 2016/679 of the European Parliament and of the Council of 27 April 2016 (GDPR)."
+        },
+        {
+          "value": "3. The data subject has the right to request comprehensive information about how their personal data is used. We always strive to clearly inform about the data we collect, how we use it, the purpose it serves, who we share it with, how we protect it when shared with third parties, and what institutions to contact in case of concerns."
+        },
+        {
+          "value": "4. The service uses technical measures such as physical protection of personal data, hardware infrastructure safeguards, software and database protection tools, and organizational measures to ensure the proper protection of processed personal data. These measures, in particular, protect data against unauthorized access, acquisition by unauthorized persons, unknown usage, and accidental or deliberate alteration, loss, damage, or destruction."
+        },
+        {
+          "value": "5. Under the rules defined in the Terms of Service and in this document, we have exclusive access to the data. Access to personal data may also be granted to entities handling payments. Such access is provided only to the extent necessary to deliver the services."
+        },
+        {
+          "value": "6. Personal data is processed solely for purposes to which you have given consent by selecting the appropriate fields in the form on the website or by other explicit means. The legal basis for processing your data is your consent or the necessity to perform a service (e.g., user account creation, subscription to online courses, access to educational materials), in accordance with Article 6(1)(a) and (b) of the GDPR."
+        }
+      ]
+    },
+    {
+      "header": "§2 Privacy Principles",
+      "content": [
+        {
+          "value": "1. We take privacy seriously. We are committed to respecting privacy and providing the most secure and user-friendly experience with our services."
+        },
+        {
+          "value": "2. We value the trust that users place in us by providing their personal data for the purpose of delivering electronic services. We always use personal data fairly and only to the extent necessary to provide the services."
+        },
+        {
+          "value": "3. Users have the right to clear and complete information about how their personal data is used and for what purposes. We always clearly communicate the data we collect, how we use it, who we share it with, and provide information about entities to contact in case of questions or concerns."
+        },
+        {
+          "value": "4. If there are any doubts regarding the use of your personal data, we will take immediate action to clarify such issues and provide full and comprehensive answers."
+        },
+        {
+          "value": "5. We will take all reasonable steps to protect user data from misuse or uncontrolled use and to ensure comprehensive data security."
+        },
+        {
+          "value": "6. The data controller’s contact information is available on the website in the 'contact' section.",
+          "link": {
+            "url": "contact",
+            "text": "contact"
+          }
+        },
+        {
+          "value": "7. The legal basis for processing your personal data is Article 6(1)(b) of the GDPR. Providing data is not mandatory but is necessary to take actions prior to concluding a contract and for its execution. We may share your data with other recipients who process personal data on our behalf. Your data may also be shared with our business partners. We store collected personal data within the European Economic Area (EEA), but it may also be transferred and processed outside this area. Any transfer of data is performed in accordance with applicable laws. Where data is transferred outside the EEA, we use standard contractual clauses and privacy shields as safeguards."
+        },
+        {
+          "value": "8. Your personal data related to the conclusion and performance of contracts will be processed during the term of the contract and for no longer than required by law, including the Civil Code and accounting regulations, i.e., no longer than 10 years from the end of the calendar year in which the last contract was completed."
+        },
+        {
+          "value": "9. Personal data processed for the purpose of future contract conclusion and performance will be processed until an objection is raised."
+        },
+        {
+          "value": "10. You have the right to: access your personal data and receive a copy, rectify incorrect data, request deletion (right to be forgotten) under Article 17 of the GDPR, request restriction of processing under Article 18, object to data processing under Article 21, and transfer the data processed by automated means."
+        },
+        {
+          "value": "11. If you believe your data is being processed unlawfully, you may lodge a complaint with the supervisory authority (Personal Data Protection Office, ul. Stawki 2, Warsaw). If you need more information or wish to exercise your rights, please contact us by post."
+        },
+        {
+          "value": "12. We make every effort to protect against unauthorized access, unauthorized modification, disclosure, and destruction of data in our possession. In particular:",
+          "subsections": [
+            {
+              "value": "a) We monitor our information collection, storage, and processing methods, including physical security measures, to protect against unauthorized system access."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "header": "§3 Scope and Purpose of Personal Data Collection",
+      "content": [
+        {
+          "value": "1. We process only the necessary personal data to provide services and for accounting purposes, including the following:",
+          "subsections": [
+            { "value": "a) for the purpose of purchasing a subscription." },
+            {
+              "value": "b) for the purpose of concluding a contract, handling complaints, and withdrawing from a contract."
+            },
+            { "value": "c) issuing VAT invoices or other receipts." },
+            { "value": "d) monitoring traffic on our websites." },
+            {
+              "value": "e) collecting anonymous statistics to determine how users use our website."
+            },
+            { "value": "f) determining the number of anonymous users of our websites." },
+            {
+              "value": "g) controlling how often selected content is displayed to users and which content is displayed most frequently."
+            },
+            {
+              "value": "h) controlling how often users choose a given service or from which service most contacts originate."
+            },
+            { "value": "i) analyzing newsletter subscriptions and contact options." },
+            { "value": "j) using a personalized recommendation system." },
+            { "value": "k) using tools for both email and subsequent phone communication." },
+            { "value": "l) integration with a social media platform." },
+            { "value": "m) potential online payments." }
+          ]
+        },
+        {
+          "value": "2. We collect, process, and store the following user data:",
+          "subsections": [
+            { "value": "a) first and last name." },
+            { "value": "b) residential address." },
+            { "value": "c) email address." },
+            { "value": "d) phone number." },
+            { "value": "e) date of birth." }
+          ]
+        },
+        {
+          "value": "3. Providing the above data is completely voluntary but necessary for the full provision of our services."
+        },
+        {
+          "value": "4. The purpose of collecting, processing, or using your data includes:",
+          "subsections": [
+            { "value": "a) direct marketing, archiving advertising campaign goals." },
+            {
+              "value": "b) fulfilling legal obligations by collecting information on unwanted activities."
+            }
+          ]
+        },
+        {
+          "value": "5. We may transfer personal data to servers located outside the user's country of residence or to affiliated entities, third parties based in other countries, including EEA countries, to process personal data on our behalf."
+        },
+        {
+          "value": "6. We store your personal data no longer than necessary for proper service quality. Depending on the method and purpose of collection, data may be stored during the service provision and afterward for purposes such as:",
+          "subsections": [
+            {
+              "value": "a) fulfilling legal obligations, including tax and accounting regulations."
+            },
+            { "value": "b) preventing fraud or crimes." },
+            { "value": "c) statistical and archiving purposes." },
+            {
+              "value": "d) marketing activities — for the duration of the agreement or until separate consent is withdrawn."
+            },
+            {
+              "value": "e) promotional and sales-related activities — e.g., contests, promotions — for the duration and settlement of such campaigns."
+            },
+            {
+              "value": "f) operational activities — until the expiration of obligations under the GDPR and relevant national laws."
+            },
+            { "value": "g) pursuing any claims related to the concluded agreement." }
+          ]
+        },
+        {
+          "value": "7. Please note that many countries to which personal data is transferred may not have the same level of legal data protection as the user's home country."
+        }
+      ]
+    },
+    {
+      "header": "§4 Cookie Policy",
+      "content": [
+        {
+          "value": "1. We automatically collect information contained in cookies to gather user data. A cookie is a small piece of text sent to the user's browser and returned by the browser on subsequent visits to the website. They are mainly used to maintain sessions, e.g., by generating and returning a temporary identifier after login. We use 'session' cookies stored on the user's end device until they log out, close the website, or close the web browser, and 'persistent' cookies stored on the user's end device for a time specified in the cookies' parameters or until they are deleted by the user."
+        },
+        {
+          "value": "2. Cookies tailor and optimize the site and its offerings to users' needs through activities such as generating view statistics and ensuring security. Cookies are also necessary to maintain the session after leaving the website."
+        },
+        {
+          "value": "3. The administrator processes the data contained in cookies each time the site is visited for the following purposes:",
+          "subsections": [
+            {
+              "value": "a) optimizing website usage,"
+            },
+            {
+              "value": "b) identifying logged-in users,"
+            },
+            {
+              "value": "c) customizing graphics, selection options, and other site content to the user's individual preferences,"
+            },
+            {
+              "value": "d) remembering data filled in manually or automatically from Order Forms or login credentials provided by the visitor,"
+            },
+            {
+              "value": "e) collecting and analyzing anonymous statistics about website usage in the admin panel and Google Analytics,"
+            },
+            {
+              "value": "f) creating remarketing lists based on preferences, behavior, usage, interests, and demographic data, then sharing those lists in AdWords and Facebook Ads,"
+            },
+            {
+              "value": "g) creating data segments based on demographic information, interests, and preferences in choosing viewed products/services,"
+            },
+            {
+              "value": "h) using demographic and interest data in Analytics reports."
+            }
+          ]
+        },
+        {
+          "value": "4. The administrator uses cookies for analytical and statistical purposes to understand how users use our website, as well as for marketing purposes."
+        },
+        {
+          "value": "5. Users can disable or delete cookies at any time using their web browser settings."
+        }
+      ]
+    },
+    {
+      "header": "§5 Rights and Obligations",
+      "content": [
+        {
+          "value": "1. We have the right, and in some cases the legal obligation, to provide selected or all personal data to public authorities or third parties that request such information under applicable Polish law."
+        },
+        {
+          "value": "2. The user has the right to access the personal data they provide. The user may correct, supplement, or request deletion of their data at any time, or request the cessation of data processing without giving any reason. To exercise their rights, the user may send a relevant message via email or any other form that conveys such a request."
+        },
+        {
+          "value": "3. The processing of personal data of individuals who are our customers is based on:",
+          "subsections": [
+            {
+              "value": "a) legitimate interest as a data controller (e.g., database creation, analytical and profiling activities, product usage analysis, direct marketing, documentation for legal defense or claims)"
+            },
+            {
+              "value": "b) consent (especially for email marketing or telemarketing)"
+            },
+            {
+              "value": "c) performance of a contract"
+            },
+            {
+              "value": "d) legal obligations (e.g., tax or accounting regulations)"
+            }
+          ]
+        },
+        {
+          "value": "4. The processing of personal data of individuals who are potential clients is based on:",
+          "subsections": [
+            {
+              "value": "a) legitimate interest of the data controller (e.g., database creation, direct marketing)"
+            },
+            {
+              "value": "b) consent (especially for email marketing or telemarketing)"
+            }
+          ]
+        },
+        {
+          "value": "5. A user request to delete or stop processing personal data may result in the inability to provide services or significantly limit their availability."
+        },
+        {
+          "value": "6. We attach special importance to profiling and state that:",
+          "subsections": [
+            {
+              "value": "a) profiling is based on data previously encrypted via SSL"
+            },
+            {
+              "value": "b) typical data used includes email address, IP, or cookies"
+            },
+            {
+              "value": "c) profiling is used to analyze or predict personal preferences and interests to customize content in our services or products"
+            },
+            {
+              "value": "d) profiling is used for marketing purposes to tailor marketing offers to preferences"
+            }
+          ]
+        },
+        {
+          "value": "7. We are committed to complying with applicable laws and social coexistence principles."
+        },
+        {
+          "value": "8. Information on out-of-court resolution of consumer disputes: The authorized entity is the Financial Ombudsman, whose website is: www.rf.gov.pl."
+        }
+      ]
+    },
+    {
+      "header": "§6 Basic Security Rules",
+      "content": [
+        {
+          "value": "1. Every user should ensure the security of their data and devices used to access the Internet. Such a device should have an up-to-date antivirus program, a secure version of the web browser, and an enabled firewall. The user should also ensure that the operating system and installed programs are updated, as attacks often exploit vulnerabilities in outdated software."
+        },
+        {
+          "value": "2. Access credentials to online services — such as logins, passwords, PINs, electronic certificates — should be stored securely, out of reach of unauthorized individuals, and in a manner that prevents access via the Internet. They should not be disclosed or stored in a way that allows unauthorized access."
+        },
+        {
+          "value": "3. Be cautious when opening suspicious attachments or links in emails, especially if they are unexpected or from unknown senders or appear in the spam folder."
+        },
+        {
+          "value": "4. It is recommended to enable anti-phishing filters in the browser to check whether a displayed website is authentic and not attempting to steal information, e.g., by impersonating a person or institution."
+        }
+      ]
+    },
+    {
+      "header": "Copyright Notice for the Sales Terms of Service",
+      "content": [
+        {
+          "value": "The owner of all material copyrights to the template of these Sales Terms of Service is LEGATO Law Office, which has granted this service a non-exclusive and non-transferable right to use this Sales Terms of Service for purposes related to its own commercial activities on the Internet and extends legal protection to the aforementioned document for the duration of the agreement. Copying and distributing the template of these Sales Terms of Service without the consent of LEGATO Law Office is prohibited and may result in both criminal and civil liability. Online sellers can learn more about the possibility of using the Sales Terms of Service template on the website https://www.kancelaria-legato.pl/"
+        }
+      ]
+    }
+  ]
 }
