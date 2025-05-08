@@ -7,13 +7,29 @@ import Link from "@mui/material/Link";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 
-import { usePrivacyPolicyContent } from "./privacy-policy-content";
+import { paths } from "src/routes/paths";
+
+import { useLocalizedPath } from "src/hooks/use-localized-path";
 
 // ----------------------------------------------------------------------
+type IContentProps = {
+  value: string;
+  subsections?: ISubsectionProps[];
+  link?: { url?: string; path?: string; text: string };
+};
+
+type ISubsectionProps = IContentProps;
+
+type ISectionProps = {
+  header: string;
+  content: IContentProps[];
+};
 
 export function PrivacyPolicyInfo({ sx, ...other }: BoxProps) {
   const { t } = useTranslation("privacy-policy");
-  const privacyPolicyContent = usePrivacyPolicyContent();
+  const privacyPolicyContent = t("content", { returnObjects: true }) as ISectionProps[];
+
+  const localize = useLocalizedPath();
 
   const renderList = () =>
     privacyPolicyContent.map((section) => (
@@ -21,6 +37,50 @@ export function PrivacyPolicyInfo({ sx, ...other }: BoxProps) {
         <Typography>{section.header}</Typography>
       </Link>
     ));
+
+  const renderSectionContent = (content: IContentProps) => {
+    const value = content.value;
+    const hasLink = value.includes("[link]");
+    const hasSubsections = value.includes("[subsections]");
+
+    if (hasLink) {
+      const parts = value.split("[link]");
+      const link = content.link!;
+      const hasUrl = "url" in link;
+
+      return (
+        <Typography>
+          {parts[0]}
+          <Link
+            target="_blank"
+            rel="noopener"
+            href={hasUrl ? link.url : localize(paths[link.path as keyof typeof paths] as string)}
+            color="primary"
+          >
+            {content.link!.text}
+          </Link>
+          {parts[1]}
+        </Typography>
+      );
+    }
+
+    if (hasSubsections) {
+      const parts = value.split("[subsections]");
+      return (
+        <Typography>
+          {parts[0]}
+          {content.subsections?.map((subsection) => (
+            <Typography key={subsection.value} sx={{ pl: 2 }}>
+              {renderSectionContent(subsection)}
+            </Typography>
+          ))}
+          {parts[1]}
+        </Typography>
+      );
+    }
+
+    return <Typography>{value}</Typography>;
+  };
 
   const renderContent = () => (
     <Box sx={{ mt: 10 }}>
@@ -34,7 +94,7 @@ export function PrivacyPolicyInfo({ sx, ...other }: BoxProps) {
             <Typography align="center" fontWeight="bold" sx={{ mb: 2 }}>
               {section.header}
             </Typography>
-            <Box>{section.content}</Box>
+            <Box>{section.content.map((x) => renderSectionContent(x))}</Box>
           </Box>
         </Box>
       ))}

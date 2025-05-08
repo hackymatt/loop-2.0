@@ -2,6 +2,7 @@ import type { Language } from "src/locales/types";
 import type { IconButtonProps } from "@mui/material/IconButton";
 
 import { usePopover } from "minimal-shared/hooks";
+import { useQueryClient } from "@tanstack/react-query";
 
 import Popover from "@mui/material/Popover";
 import MenuList from "@mui/material/MenuList";
@@ -26,6 +27,7 @@ export type LanguagePopoverProps = IconButtonProps & {
 };
 
 export function LanguagePopover({ data = [], sx, ...other }: LanguagePopoverProps) {
+  const queryClient = useQueryClient();
   const router = useRouter();
   const pathname = usePathname();
   const settings = useSettingsContext();
@@ -38,6 +40,7 @@ export function LanguagePopover({ data = [], sx, ...other }: LanguagePopoverProp
     const locales = Object.values(LANGUAGE);
 
     settings.setField("language", newLang);
+    queryClient.invalidateQueries();
 
     if (newLang === LANGUAGE.PL) {
       if (segments.length > 1 && locales.includes(segments[1] as Language)) {
