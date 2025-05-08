@@ -15,7 +15,7 @@ import { useLocalizedPath } from "src/hooks/use-localized-path";
 type IContentProps = {
   value: string;
   subsections?: ISubsectionProps[];
-  link?: { url: string; text: string };
+  link?: { url?: string; path?: string; text: string };
 };
 
 type ISubsectionProps = IContentProps;
@@ -45,13 +45,16 @@ export function PrivacyPolicyInfo({ sx, ...other }: BoxProps) {
 
     if (hasLink) {
       const parts = value.split("[link]");
+      const link = content.link!;
+      const hasUrl = "url" in link;
+
       return (
         <Typography>
           {parts[0]}
           <Link
             target="_blank"
             rel="noopener"
-            href={localize(paths[content.link!.url as keyof typeof paths] as string)}
+            href={hasUrl ? link.url : localize(paths[link.path as keyof typeof paths] as string)}
             color="primary"
           >
             {content.link!.text}

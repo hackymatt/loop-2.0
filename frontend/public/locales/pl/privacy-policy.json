@@ -49,7 +49,7 @@
         {
           "value": "6. Dane Administratora Państwa danych osobowych znajdują się na w zakładce [link] umiejscowionej na stronie internetowej.",
           "link": {
-            "url": "contact",
+            "path": "contact",
             "text": "kontakt"
           }
         },

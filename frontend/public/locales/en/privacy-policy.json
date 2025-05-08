@@ -29,52 +29,99 @@
       ]
     },
     {
-      "header": "§2 Privacy Principles",
+      "header": "§2 Privacy Policy",
       "content": [
         {
-          "value": "1. We take privacy seriously. We are committed to respecting privacy and providing the most secure and user-friendly experience with our services."
+          "value": "1. We take privacy seriously. We are characterized by respect for privacy and the highest possible and guaranteed convenience in using our services."
         },
         {
-          "value": "2. We value the trust that users place in us by providing their personal data for the purpose of delivering electronic services. We always use personal data fairly and only to the extent necessary to provide the services."
+          "value": "2. We value the trust that Users place in us by entrusting us with their personal data for the purpose of providing electronic services. We always use personal data fairly and in a way that does not betray that trust, only to the extent necessary to provide services, including their processing."
         },
         {
-          "value": "3. Users have the right to clear and complete information about how their personal data is used and for what purposes. We always clearly communicate the data we collect, how we use it, who we share it with, and provide information about entities to contact in case of questions or concerns."
+          "value": "3. The User has the right to obtain clear and complete information about how we use their personal data and for what purposes they are needed. We always clearly inform about the data we collect, how and to whom we transfer it, and provide information about entities to contact in case of doubts, questions, or comments."
         },
         {
-          "value": "4. If there are any doubts regarding the use of your personal data, we will take immediate action to clarify such issues and provide full and comprehensive answers."
+          "value": "4. In case of doubts regarding our use of the User's personal data, we will promptly take action to clarify such doubts and respond fully and comprehensively to all related questions."
         },
         {
-          "value": "5. We will take all reasonable steps to protect user data from misuse or uncontrolled use and to ensure comprehensive data security."
+          "value": "5. We will take all reasonable actions to protect Users' data from improper and uncontrolled use and secure it comprehensively."
         },
         {
-          "value": "6. The data controller’s contact information is available on the website in the 'contact' section.",
+          "value": "6. The data of the Administrator of your personal data can be found in the [link] tab located on the website.",
           "link": {
-            "url": "contact",
+            "path": "contact",
             "text": "contact"
           }
         },
         {
-          "value": "7. The legal basis for processing your personal data is Article 6(1)(b) of the GDPR. Providing data is not mandatory but is necessary to take actions prior to concluding a contract and for its execution. We may share your data with other recipients who process personal data on our behalf. Your data may also be shared with our business partners. We store collected personal data within the European Economic Area (EEA), but it may also be transferred and processed outside this area. Any transfer of data is performed in accordance with applicable laws. Where data is transferred outside the EEA, we use standard contractual clauses and privacy shields as safeguards."
+          "value": "7. The legal basis for processing your personal data is Article 6(1)(b) of the GDPR. Providing data is not mandatory but necessary to undertake appropriate actions preceding the conclusion of the contract and its execution. We will transfer your personal data to other recipients who have been entrusted with processing personal data on our behalf. Your data will be transferred based on Article 6(1)(f) of the GDPR, where the legitimate interest is the proper performance of contracts/orders. Additionally, we will share your personal data with other business partners. Collected personal data is stored within the European Economic Area (\"EEA\"), but it may also be transferred to and processed in a country outside this area. Each operation of transferring personal data is carried out in accordance with applicable law. If data is transferred outside the EEA, we apply standard contractual clauses and the privacy shield as safeguards concerning countries for which the European Commission has not determined an adequate level of data protection."
         },
         {
-          "value": "8. Your personal data related to the conclusion and performance of contracts will be processed during the term of the contract and for no longer than required by law, including the Civil Code and accounting regulations, i.e., no longer than 10 years from the end of the calendar year in which the last contract was completed."
+          "value": "8. Your personal data related to the conclusion and execution of the contract will be processed for the duration of their execution, and also for a period not longer than provided by law, including the provisions of the Civil Code and the Accounting Act, i.e., no longer than 10 years from the end of the calendar year in which the last contract was executed."
         },
         {
-          "value": "9. Personal data processed for the purpose of future contract conclusion and performance will be processed until an objection is raised."
+          "value": "9. Your personal data processed for the purpose of concluding and executing future contracts will be processed until an objection is raised."
         },
         {
-          "value": "10. You have the right to: access your personal data and receive a copy, rectify incorrect data, request deletion (right to be forgotten) under Article 17 of the GDPR, request restriction of processing under Article 18, object to data processing under Article 21, and transfer the data processed by automated means."
+          "value": "10. You have the right to: access your personal data and receive a copy of the personal data being processed, rectify your incorrect data; request data deletion (right to be forgotten) in cases provided for in Article 17 of the GDPR; request restriction of data processing in cases indicated in Article 18 of the GDPR, object to data processing in cases indicated in Article 21 of the GDPR, transfer the provided data processed in an automated manner."
         },
         {
-          "value": "11. If you believe your data is being processed unlawfully, you may lodge a complaint with the supervisory authority (Personal Data Protection Office, ul. Stawki 2, Warsaw). If you need more information or wish to exercise your rights, please contact us by post."
+          "value": "11. If you believe that personal data is being processed unlawfully, you can lodge a complaint with the supervisory authority (Personal Data Protection Office, ul. Stawki 2, Warsaw). If you need additional information related to personal data protection or wish to exercise your rights, please contact us by mail at the correspondence address."
         },
         {
-          "value": "12. We make every effort to protect against unauthorized access, unauthorized modification, disclosure, and destruction of data in our possession. In particular:",
+          "value": "12. We make every effort to protect against unauthorized access, unauthorized modification, disclosure, and destruction of information in our possession. In particular: [subsections]",
           "subsections": [
             {
-              "value": "a) We monitor our information collection, storage, and processing methods, including physical security measures, to protect against unauthorized system access."
+              "value": "a) We control the methods of collecting, storing, and processing information, including physical security measures, to protect against unauthorized access to the system."
+            },
+            {
+              "value": "b) We grant access to personal data only to those employees, contractors, and representatives who need to have access. Moreover, under the contract, they are obliged to maintain strict confidentiality, allow us to control and verify how they fulfill their entrusted duties, and in case of non-fulfillment of these obligations, they may face consequences."
             }
           ]
+        },
+        {
+          "value": "13. We will comply with all applicable laws and regulations regarding data protection and cooperate with data protection authorities and authorized law enforcement agencies. In the absence of data protection regulations, we will act in accordance with generally accepted data protection principles, social coexistence rules, and established customs."
+        },
+        {
+          "value": "14. The exact method of personal data protection is included in the personal data protection policy (DPA: security policy, personal data protection regulations, IT system management instructions). For security reasons, due to the procedures described therein, it is available only to state control authorities."
+        },
+        {
+          "value": "15. If you have questions regarding how we handle personal data, please contact us via the page from which the user was redirected to this Privacy Policy. The contact request will be promptly forwarded to the appropriate appointed person."
+        },
+        {
+          "value": "16. The User always has the right to notify us if: [subsections]",
+          "subsections": [
+            {
+              "value": "a) they no longer wish to receive any information or messages from us;"
+            },
+            {
+              "value": "b) they wish to receive a copy of their personal data we hold;"
+            },
+            {
+              "value": "c) they wish to correct, update, or delete their personal data in our records;"
+            },
+            {
+              "value": "d) they wish to report violations, improper use, or processing of their personal data."
+            }
+          ]
+        },
+        {
+          "value": "17. To facilitate our response or address the provided information, please provide your first and last name and further details."
+        },
+        {
+          "value": "18. Our website uses cookies and other tracking technologies (e.g., LocalStorage, Facebook Pixel, Google Analytics) to improve the quality of services provided, analyze traffic, and personalize advertising content."
+        },
+        {
+          "value": "19. Personal data may also be processed for marketing purposes (e.g., sending information about new courses, offers, events), provided that the User has given appropriate consent. Consent can be withdrawn at any time."
+        },
+        {
+          "value": "20. Users can register and log in using external provider accounts (e.g., Google, Facebook). In such cases, we receive basic data from these providers (name, email address, profile picture), which are used solely to create an account and provide services."
+        },
+        {
+          "value": "21. As part of using the platform, we may make decisions in a partially automated manner (e.g., course recommendations), but we do not make decisions that have legal effects or significantly affect the User without human intervention."
+        },
+        {
+          "value": "22. To provide services, we use third-party services such as payment operators, mailing systems, cloud service providers, and analytical tools. These entities may process personal data only based on data processing agreements and in accordance with applicable law."
         }
       ]
     },
@@ -82,7 +129,7 @@
       "header": "§3 Scope and Purpose of Personal Data Collection",
       "content": [
         {
-          "value": "1. We process only the necessary personal data to provide services and for accounting purposes, including the following:",
+          "value": "1. We process only the necessary personal data to provide services and for accounting purposes, including the following: [subsections]",
           "subsections": [
             { "value": "a) for the purpose of purchasing a subscription." },
             {
@@ -108,7 +155,7 @@
           ]
         },
         {
-          "value": "2. We collect, process, and store the following user data:",
+          "value": "2. We collect, process, and store the following user data: [subsections]",
           "subsections": [
             { "value": "a) first and last name." },
             { "value": "b) residential address." },
@@ -121,7 +168,7 @@
           "value": "3. Providing the above data is completely voluntary but necessary for the full provision of our services."
         },
         {
-          "value": "4. The purpose of collecting, processing, or using your data includes:",
+          "value": "4. The purpose of collecting, processing, or using your data includes: [subsections]",
           "subsections": [
             { "value": "a) direct marketing, archiving advertising campaign goals." },
             {
@@ -133,7 +180,7 @@
           "value": "5. We may transfer personal data to servers located outside the user's country of residence or to affiliated entities, third parties based in other countries, including EEA countries, to process personal data on our behalf."
         },
         {
-          "value": "6. We store your personal data no longer than necessary for proper service quality. Depending on the method and purpose of collection, data may be stored during the service provision and afterward for purposes such as:",
+          "value": "6. We store your personal data no longer than necessary for proper service quality. Depending on the method and purpose of collection, data may be stored during the service provision and afterward for purposes such as: [subsections]",
           "subsections": [
             {
               "value": "a) fulfilling legal obligations, including tax and accounting regulations."
@@ -167,7 +214,7 @@
           "value": "2. Cookies tailor and optimize the site and its offerings to users' needs through activities such as generating view statistics and ensuring security. Cookies are also necessary to maintain the session after leaving the website."
         },
         {
-          "value": "3. The administrator processes the data contained in cookies each time the site is visited for the following purposes:",
+          "value": "3. The administrator processes the data contained in cookies each time the site is visited for the following purposes: [subsections]",
           "subsections": [
             {
               "value": "a) optimizing website usage,"
@@ -213,7 +260,7 @@
           "value": "2. The user has the right to access the personal data they provide. The user may correct, supplement, or request deletion of their data at any time, or request the cessation of data processing without giving any reason. To exercise their rights, the user may send a relevant message via email or any other form that conveys such a request."
         },
         {
-          "value": "3. The processing of personal data of individuals who are our customers is based on:",
+          "value": "3. The processing of personal data of individuals who are our customers is based on: [subsections]",
           "subsections": [
             {
               "value": "a) legitimate interest as a data controller (e.g., database creation, analytical and profiling activities, product usage analysis, direct marketing, documentation for legal defense or claims)"
@@ -230,7 +277,7 @@
           ]
         },
         {
-          "value": "4. The processing of personal data of individuals who are potential clients is based on:",
+          "value": "4. The processing of personal data of individuals who are potential clients is based on: [subsections]",
           "subsections": [
             {
               "value": "a) legitimate interest of the data controller (e.g., database creation, direct marketing)"
@@ -244,7 +291,7 @@
           "value": "5. A user request to delete or stop processing personal data may result in the inability to provide services or significantly limit their availability."
         },
         {
-          "value": "6. We attach special importance to profiling and state that:",
+          "value": "6. We attach special importance to profiling and state that: [subsections]",
           "subsections": [
             {
               "value": "a) profiling is based on data previously encrypted via SSL"
@@ -269,19 +316,25 @@
       ]
     },
     {
-      "header": "§6 Basic Security Rules",
+      "header": "§6 Basic Security Principles",
       "content": [
         {
-          "value": "1. Every user should ensure the security of their data and devices used to access the Internet. Such a device should have an up-to-date antivirus program, a secure version of the web browser, and an enabled firewall. The user should also ensure that the operating system and installed programs are updated, as attacks often exploit vulnerabilities in outdated software."
+          "value": "1. Every user should take care of the security of their own data and the security of the devices they use to access the Internet. Such a device must have antivirus software with a regularly updated virus definition database, a secure version of the web browser being used, and an enabled firewall. The user should check whether the operating system and installed programs have the latest and compatible updates, as attacks often exploit vulnerabilities found in outdated software."
         },
         {
-          "value": "2. Access credentials to online services — such as logins, passwords, PINs, electronic certificates — should be stored securely, out of reach of unauthorized individuals, and in a manner that prevents access via the Internet. They should not be disclosed or stored in a way that allows unauthorized access."
+          "value": "2. Access data for Internet services — e.g., logins, passwords, PINs, digital certificates, etc. — should be secured in a location inaccessible to others and protected against unauthorized access via the Internet. This data should not be disclosed or stored on a device in a way that allows unauthorized access or reading by unauthorized persons."
         },
         {
-          "value": "3. Be cautious when opening suspicious attachments or links in emails, especially if they are unexpected or from unknown senders or appear in the spam folder."
+          "value": "3. Be cautious when opening suspicious attachments or links in email messages, especially those that were not expected or come from unknown senders or from the spam folder."
         },
         {
-          "value": "4. It is recommended to enable anti-phishing filters in the browser to check whether a displayed website is authentic and not attempting to steal information, e.g., by impersonating a person or institution."
+          "value": "4. It is recommended to enable anti-phishing filters in the web browser — tools that check whether the displayed website is genuine and not intended to steal information, e.g., by impersonating a person or institution."
+        },
+        {
+          "value": "5. Files should be downloaded only from trusted places, services, and websites. Installing software from unverified sources, especially from unknown publishers with unverified reputations, is not recommended. This also applies to portable devices such as smartphones and tablets."
+        },
+        {
+          "value": "6. When using a home wireless Wi-Fi network, a strong and secure password should be set — one that is difficult to guess and not based on predictable patterns such as street names, host names, or birth dates. It is also recommended to use the highest possible wireless encryption standards available on the device, e.g., WPA2."
         }
       ]
     },
