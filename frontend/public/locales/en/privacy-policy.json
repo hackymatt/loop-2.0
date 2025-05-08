@@ -342,7 +342,11 @@
       "header": "Copyright Notice for the Sales Terms of Service",
       "content": [
         {
-          "value": "The owner of all material copyrights to the template of these Sales Terms of Service is LEGATO Law Office, which has granted this service a non-exclusive and non-transferable right to use this Sales Terms of Service for purposes related to its own commercial activities on the Internet and extends legal protection to the aforementioned document for the duration of the agreement. Copying and distributing the template of these Sales Terms of Service without the consent of LEGATO Law Office is prohibited and may result in both criminal and civil liability. Online sellers can learn more about the possibility of using the Sales Terms of Service template on the website https://www.kancelaria-legato.pl/"
+          "value": "The owner of all material copyrights to the template of these Sales Terms of Service is LEGATO Law Office, which has granted this service a non-exclusive and non-transferable right to use this Sales Terms of Service for purposes related to its own commercial activities on the Internet and extends legal protection to the aforementioned document for the duration of the agreement. Copying and distributing the template of these Sales Terms of Service without the consent of LEGATO Law Office is prohibited and may result in both criminal and civil liability. Online sellers can learn more about the possibility of using the Sales Terms of Service template on the website [link]",
+          "link": {
+            "url": "https://www.kancelaria-legato.pl/",
+            "text": "https://www.kancelaria-legato.pl/"
+          }
         }
       ]
     }

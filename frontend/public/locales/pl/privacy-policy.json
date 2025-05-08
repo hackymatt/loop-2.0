@@ -378,7 +378,11 @@
       "header": "Nota o prawach autorskich do Regulaminu Sprzedaży",
       "content": [
         {
-          "value": "Właścicielem wszystkich materialnych praw autorskich do wzorca niniejszego Regulaminu Sprzedaży jest Kancelaria Prawna LEGATO, która udzieliła niniejszemu serwisowi niewyłącznego i niezbywalnego prawa do wykorzystywania tego Regulaminu Sprzedaży do celów związanych z własną działalnością handlową w Internecie oraz rozciąga ochronę prawną na w/w dokument na czas trwania umowy. Kopiowanie oraz rozpowszechnianie wzorca niniejszego Regulaminu Sprzedaży bez zgody Kancelarii Prawnej LEGATO jest zabronione i może podlegać odpowiedzialności zarówno karnej jak i cywilnej. Sprzedawcy internetowi mogą dowiedzieć się więcej o możliwości korzystania z wzorca Regulaminu Sprzedaży na stronie https://www.kancelaria-legato.pl/"
+          "value": "Właścicielem wszystkich materialnych praw autorskich do wzorca niniejszego Regulaminu Sprzedaży jest Kancelaria Prawna LEGATO, która udzieliła niniejszemu serwisowi niewyłącznego i niezbywalnego prawa do wykorzystywania tego Regulaminu Sprzedaży do celów związanych z własną działalnością handlową w Internecie oraz rozciąga ochronę prawną na w/w dokument na czas trwania umowy. Kopiowanie oraz rozpowszechnianie wzorca niniejszego Regulaminu Sprzedaży bez zgody Kancelarii Prawnej LEGATO jest zabronione i może podlegać odpowiedzialności zarówno karnej jak i cywilnej. Sprzedawcy internetowi mogą dowiedzieć się więcej o możliwości korzystania z wzorca Regulaminu Sprzedaży na stronie [link]",
+          "link": {
+            "url": "https://www.kancelaria-legato.pl/",
+            "text": "https://www.kancelaria-legato.pl/"
+          }
         }
       ]
     }
