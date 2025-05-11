@@ -1,7 +1,7 @@
 import json
 import pika
 
-from .channel import EXCHANGE_NAME, RESULT_QUEUE
+from .channel import RESULT_QUEUE
 
 
 def publish(channel, result, job_id, props=None):
@@ -10,14 +10,15 @@ def publish(channel, result, job_id, props=None):
         response_message = json.dumps(result)
 
         channel.basic_publish(
-            exchange='',
+            exchange="",
             routing_key=props.reply_to if props and props.reply_to else RESULT_QUEUE,
             properties=pika.BasicProperties(
-                correlation_id=props.correlation_id if props else None,
-                delivery_mode=2
+                correlation_id=props.correlation_id if props else None, delivery_mode=2
             ),
-            body=response_message
+            body=response_message,
         )
-        print(f"Result for job {job_id} sent to {props.reply_to if props else RESULT_QUEUE}")
-    except Exception as e:
-        print(f"Error sending result: {e}")
+        print(
+            f"Result for job {job_id} sent to {props.reply_to if props else RESULT_QUEUE}"
+        )
+    except Exception as error:
+        print(f"Error sending result: {error}")

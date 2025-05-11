@@ -16,7 +16,7 @@ if not USER_ID:
     sys.exit(1)
 
 
-def callback(ch, method, properties, body):
+def callback(channel, method, properties, body):
     try:
         payload = json.loads(body)
         job_id = payload.get("job_id")
@@ -25,19 +25,20 @@ def callback(ch, method, properties, body):
         result = process_job(body)
 
         if isinstance(result, dict):
-            publish(ch, result, job_id, properties)
+            publish(channel, result, job_id, properties)
         else:
             for partial in result:
-                publish(ch, partial, job_id, properties)
+                publish(channel, partial, job_id, properties)
 
-        ch.basic_ack(delivery_tag=method.delivery_tag)
-    except Exception as e:
-        print("Callback error:", str(e))
-        ch.basic_ack(delivery_tag=method.delivery_tag)
+        channel.basic_ack(delivery_tag=method.delivery_tag)
+    except Exception as error:
+        print("Callback error:", str(error))
+        channel.basic_ack(delivery_tag=method.delivery_tag)
 
 
 def main():
     start_consumer(callback)
+
 
 if __name__ == "__main__":
     main()

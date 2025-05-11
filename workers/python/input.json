@@ -1,8 +1,0 @@
-{
-  "jobId": "testjob1",
-  "files": {
-    "main.py": "a = 10 + 10\nb = 10 + 10\nprint(a)\nprnt(b)",
-    "tests/test_main.py": "from main import add\nassert add(2, 3) == 5"
-  },
-  "command": "python main.py"
-}

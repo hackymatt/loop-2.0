@@ -10,16 +10,17 @@ def write_files(job_dir, files):
         file_path.parent.mkdir(parents=True, exist_ok=True)
         file_path.write_text(content)
 
+
 def _run_command_non_streaming(command, cwd):
-    result = subprocess.Popen(
+    with subprocess.Popen(
         command,
         shell=True,
         cwd=cwd,
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
-        text=True
-    )
-    stdout, stderr = result.communicate()
+        text=True,
+    ) as result:
+        stdout, stderr = result.communicate()
 
     return {
         "stdout": stdout.strip(),
@@ -27,39 +28,40 @@ def _run_command_non_streaming(command, cwd):
         "exit_code": result.returncode,
     }
 
+
 def _run_command_streaming(command, cwd):
-    result = subprocess.Popen(
+    with subprocess.Popen(
         command,
         shell=True,
         cwd=cwd,
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
-        text=True
-    )
+        text=True,
+    ) as result:
+        stdout_lines = []
+        stderr_lines = []
 
-    stdout_lines = []
-    stderr_lines = []
+        while True:
+            output = result.stdout.readline()
+            error = result.stderr.readline()
+            if output:
+                stdout_lines.append(output.strip())
+                yield {"stdout": stdout_lines, "stderr": stderr_lines}
+            if error:
+                stderr_lines.append(error.strip())
+                yield {"stdout": stdout_lines, "stderr": stderr_lines}
+            if output == "" and error == "" and result.poll() is not None:
+                break
 
-    while True:
-        output = result.stdout.readline()
-        error = result.stderr.readline()
-        if output:
-            stdout_lines.append(output.strip())
-            yield {"stdout": stdout_lines, "stderr": stderr_lines}
-        if error:
-            stderr_lines.append(error.strip())
-            yield {"stdout": stdout_lines, "stderr": stderr_lines}
-        if output == '' and error == '' and result.poll() is not None:
-            break
 
 def run_command(command, cwd, stream_output=False):
     try:
         if stream_output:
             return _run_command_streaming(command, cwd)
-        else:
-            return _run_command_non_streaming(command, cwd)
-    except Exception as e:
-        return {"error": str(e)}
+        return _run_command_non_streaming(command, cwd)
+    except Exception as error:
+        return {"error": str(error)}
+
 
 def process_job(body):
     try:
@@ -82,11 +84,11 @@ def process_job(body):
         print(f"Files written to {job_dir}")
 
         result = run_command(command, cwd=job_dir, stream_output=stream)
-        
+
         if isinstance(result, GeneratorType):
             result = list(result)  # Collect all items in the generator
 
         return result
 
-    except Exception as e:
-        return {"error": str(e)}
+    except Exception as error:
+        return {"error": str(error)}
