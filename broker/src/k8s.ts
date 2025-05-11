@@ -1,12 +1,14 @@
 // src/k8s.ts
 import * as k8s from "@kubernetes/client-node";
-import { getRunnerName, RunnerName, Technology } from "./runner";
+
+import { getRunnerName } from "./runner";
+
+import type { RunnerName, Technology } from "./runner";
 
 // Kubernetes client setup
 const kc = new k8s.KubeConfig();
 kc.loadFromDefault();
 const k8sApi = kc.makeApiClient(k8s.CoreV1Api);
-const batchV1Api = kc.makeApiClient(k8s.BatchV1Api);
 
 const NAMESPACE = "default";
 
@@ -15,16 +17,13 @@ function getPodName(userId: string, runnerName: RunnerName): string {
 }
 
 // Function to check if the pod exists for a user
-export async function isPodExists(
-  userId: string,
-  technology: Technology
-): Promise<boolean> {
+export async function isPodExists(userId: string, technology: Technology): Promise<boolean> {
   const runnerName = getRunnerName(technology);
   const podName = getPodName(userId, runnerName);
   try {
     const res = await k8sApi.readNamespacedPod(podName, NAMESPACE);
     return res.body.metadata?.name === podName;
-  } catch (err) {
+  } catch {
     return false; // If not found, return false
   }
 }

@@ -4,7 +4,17 @@
   "main": "src/index.ts",
   "scripts": {
     "start": "ts-node src/index.ts",
-    "build": "tsc"
+    "build": "tsc",
+    "lint": "eslint \"src/**/*.{js,ts}\"",
+    "lint:check": "eslint \"src/**/*.{js,ts}\" --max-warnings=0",
+    "lint:fix": "eslint --fix \"src/**/*.{js,ts}\"",
+    "lint:print": "npx eslint --print-config eslint.config.mjs > eslint-show-config.json",
+    "fm:check": "prettier --check \"src/**/*.{js,ts}\"",
+    "fm:fix": "prettier --write \"src/**/*.{js,ts}\"",
+    "fix:all": "npm run lint:fix && npm run fm:fix"
+  },
+  "engines": {
+    "node": "20.x"
   },
   "dependencies": {
     "@kubernetes/client-node": "^0.17.0",
@@ -14,12 +24,20 @@
     "express": "^4.18.2"
   },
   "devDependencies": {
+    "@eslint/js": "^9.16.0",
     "@types/amqplib": "^0.10.7",
     "@types/body-parser": "^1.19.2",
     "@types/express": "^4.17.13",
     "@types/node": "^16.11.7",
     "@types/uuid": "^10.0.0",
+    "@typescript-eslint/parser": "^8.17.0",
+    "eslint": "^9.16.0",
+    "eslint-import-resolver-typescript": "^3.7.0",
+    "eslint-plugin-import": "^2.31.0",
+    "eslint-plugin-perfectionist": "^4.2.0",
+    "eslint-plugin-unused-imports": "^4.1.4",
+    "prettier": "^3.4.2",
     "ts-node": "^10.9.2",
-    "typescript": "^5.8.3"
+    "typescript-eslint": "^8.17.0"
   }
 }

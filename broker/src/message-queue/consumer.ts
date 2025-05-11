@@ -1,4 +1,5 @@
 import amqp from "amqplib";
+
 import { EXCHANGE_NAME } from "./const";
 import { RABBITMQ_URL } from "../const";
 
@@ -20,9 +21,7 @@ export async function consumeResults() {
     await channel.bindQueue(RESULT_QUEUE, EXCHANGE_NAME, RESULT_QUEUE);
 
     // Start consuming the messages
-    console.log(
-      `Consumer is waiting for messages from the result queue: ${RESULT_QUEUE}`
-    );
+    console.log(`Consumer is waiting for messages from the result queue: ${RESULT_QUEUE}`);
     channel.consume(RESULT_QUEUE, async (msg) => {
       if (msg) {
         const messageContent = msg.content.toString();
@@ -44,6 +43,7 @@ export async function consumeResults() {
 // Function to handle the result (you can modify this as needed)
 function handleResult(result: any, routingKey: string) {
   // Extract runner and userId from the routingKey
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [_, runner, userId] = routingKey.split(".");
 
   console.log(`Received result for runner: ${runner}, userId: ${userId}`);

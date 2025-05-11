@@ -1,8 +1,9 @@
 import express from "express";
 import bodyParser from "body-parser";
+
 import apiRouter from "./api";
-import { consumeResults } from "./message-queue/consumer";
 import { API_PORT } from "./const";
+import { consumeResults } from "./message-queue/consumer";
 
 // Initialize the Express app
 const app = express();

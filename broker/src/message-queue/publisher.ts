@@ -1,8 +1,11 @@
 import amqp from "amqplib";
-import { getRunnerName, Technology } from "../runner";
+import { v4 as uuid } from "uuid";
+
 import { EXCHANGE_NAME } from "./const";
 import { RABBITMQ_URL } from "../const";
-import { v4 as uuid } from "uuid";
+import { getRunnerName } from "../runner";
+
+import type { Technology } from "../runner";
 
 export async function publish(
   userId: string,
@@ -48,27 +51,17 @@ export async function publish(
         { noAck: true }
       );
 
-      channel.publish(
-        EXCHANGE_NAME,
-        routingKey,
-        Buffer.from(JSON.stringify(messagePayload)),
-        {
-          persistent: true,
-          correlationId,
-          replyTo: replyQueue,
-        }
-      );
+      channel.publish(EXCHANGE_NAME, routingKey, Buffer.from(JSON.stringify(messagePayload)), {
+        persistent: true,
+        correlationId,
+        replyTo: replyQueue,
+      });
     });
   } else {
     // no replyTo — results will go to persistent results queue
-    channel.publish(
-      EXCHANGE_NAME,
-      routingKey,
-      Buffer.from(JSON.stringify(messagePayload)),
-      {
-        persistent: true,
-      }
-    );
+    channel.publish(EXCHANGE_NAME, routingKey, Buffer.from(JSON.stringify(messagePayload)), {
+      persistent: true,
+    });
 
     setTimeout(() => connection.close(), 500);
     return { jobId };
