@@ -10,6 +10,8 @@ jobs:
     outputs:
       backend: ${{ steps.filter.outputs.backend }}
       frontend: ${{ steps.filter.outputs.frontend }}
+      broker: ${{ steps.filter.outputs.broker }}
+      workers-python: ${{ steps.filter.outputs.workers-python }}
     steps:
       - uses: dorny/paths-filter@v3
         id: filter
