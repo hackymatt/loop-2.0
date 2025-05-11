@@ -13,14 +13,9 @@ import { LatestPosts } from "../posts/latest-posts";
 import { AboutCoreValues } from "../about/about-core-values";
 import { AboutOurMission } from "../about/about-our-mission";
 
-// ----------------------------------------------------------------------
+import type { IFaqProps } from "../support/types";
 
-type IFaqProps = {
-  id: string;
-  title: string;
-  icon: string;
-  content: { question: string; answer: string }[];
-};
+// ----------------------------------------------------------------------
 
 export function AboutView() {
   const { t } = useTranslation("faq");

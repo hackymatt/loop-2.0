@@ -8,16 +8,11 @@ import { varFade } from "src/components/animate";
 
 import { Faqs } from "../faqs";
 
+import type { IFaqProps } from "../support/types";
+
 // ----------------------------------------------------------------------
 
 const variants: Variants = varFade("inUp", { distance: 24 });
-
-type IFaqProps = {
-  id: string;
-  title: string;
-  icon: string;
-  content: { question: string; answer: string }[];
-};
 
 export function HomeFAQs({ sx, ...other }: BoxProps) {
   const { t } = useTranslation("faq");

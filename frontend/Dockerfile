@@ -5,7 +5,7 @@ WORKDIR /usr/src/app/frontend
 COPY package.json package-lock.json ./
 
 # install dependencies
-RUN npm install
+RUN npm install --legacy-peer-deps
 
 COPY . .
 

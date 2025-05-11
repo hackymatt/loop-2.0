@@ -11,16 +11,19 @@ import Tabs, { tabsClasses } from "@mui/material/Tabs";
 import { Iconify } from "src/components/iconify";
 import { Scrollbar } from "src/components/scrollbar";
 
+import type { IFaqProps } from "./types";
+
 // ----------------------------------------------------------------------
+
+type IData = Omit<IFaqProps, "content"> & {
+  content: React.ReactNode;
+};
 
 type Props = {
   open: boolean;
   topic: string;
   onClose: () => void;
-  data: {
-    title: string;
-    icon: string;
-  }[];
+  data: IData[];
   onChangeTopic: (event: React.SyntheticEvent, newValue: string) => void;
 };
 
@@ -37,8 +40,8 @@ export function SupportNav({ topic, data, onChangeTopic, open, onClose }: Props)
     >
       {data.map((item) => (
         <Tab
-          key={item.title}
-          value={item.title}
+          key={item.id}
+          value={item.id}
           label={item.title}
           icon={
             <Iconify icon={item.icon} sx={{ width: 28, height: 28, color: "secondary.main" }} />

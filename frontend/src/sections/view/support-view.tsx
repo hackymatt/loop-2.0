@@ -14,14 +14,9 @@ import { Iconify } from "src/components/iconify";
 import { SupportNav } from "../support/support-nav";
 import { SupportContent } from "../support/support-content";
 
-// ----------------------------------------------------------------------
+import type { IFaqProps } from "../support/types";
 
-type IFaqProps = {
-  id: string;
-  title: string;
-  icon: string;
-  content: { question: string; answer: string }[];
-};
+// ----------------------------------------------------------------------
 
 export function SupportView() {
   const { t } = useTranslation("faq");
@@ -33,7 +28,7 @@ export function SupportView() {
     content: <SupportContent contents={content} />,
   }));
 
-  const [topic, setTopic] = useState(faq[0].title);
+  const [topic, setTopic] = useState(faq[0].id);
 
   const openNavMobile = useBoolean();
 
@@ -47,10 +42,6 @@ export function SupportView() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [topic]);
-
-  useEffect(() => {
-    setTopic(faq[0].title);
-  }, [faq]);
 
   return (
     <>
@@ -81,7 +72,7 @@ export function SupportView() {
             onClose={openNavMobile.onFalse}
           />
 
-          {TOPICS.map((item) => item.title === topic && <div key={item.title}>{item.content}</div>)}
+          {TOPICS.map((item) => item.id === topic && <div key={item.id}>{item.content}</div>)}
         </Box>
       </Container>
     </>
