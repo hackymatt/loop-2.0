@@ -20,6 +20,10 @@ jobs:
               - 'backend/**'
             frontend:
               - 'frontend/**'
+            broker:
+              - 'broker/**'
+            workers-python:
+              - 'workers/python/**'
 
   lint-backend:
     name: Lint Backend
@@ -57,6 +61,43 @@ jobs:
           npm install --legacy-peer-deps
           npm run fm:check
           npm run lint:check
+
+  lint-broker:
+    name: Lint Broker
+    runs-on: ubuntu-latest
+    needs: detect-changes
+    if: needs.detect-changes.outputs.broker == 'true'
+    defaults:
+      run:
+        shell: bash
+        working-directory: broker
+
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          npm install
+          npm run fm:check
+          npm run lint:check
+
+  lint-python-worker:
+    name: Lint Python Worker
+    runs-on: ubuntu-latest
+    needs: detect-changes
+    if: needs.detect-changes.outputs.workers-python == 'true'
+    defaults:
+      run:
+        shell: bash
+        working-directory: workers/python
+
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          sudo apt-get install -y libjpeg-dev
+          python -m pip install --upgrade pip
+          pip install -r requirements-lint.txt
+          pip install -r requirements.txt
+          pylint . --recursive=true --fail-under=10
+          black . --check
 
   test-backend:
     name: Test Backend
