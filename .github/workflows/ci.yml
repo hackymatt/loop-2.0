@@ -171,7 +171,7 @@ jobs:
     name: Test Python Worker
     runs-on: ubuntu-latest
     needs: detect-changes
-    if: needs.detect-changes.outputs.python-worker == 'true'
+    if: needs.detect-changes.outputs.workers-python == 'true'
     defaults:
       run:
         shell: bash
