@@ -29,6 +29,9 @@ def _run_command_non_streaming(command, cwd):
     }
 
 
+import subprocess
+
+
 def _run_command_streaming(command, cwd):
     with subprocess.Popen(
         command,
@@ -38,35 +41,28 @@ def _run_command_streaming(command, cwd):
         stderr=subprocess.PIPE,
         text=True,
     ) as result:
-        stdout_lines = []
-        stderr_lines = []
-
         while True:
             output = result.stdout.readline()
             error = result.stderr.readline()
+
             if output:
-                stdout_lines.append(output.strip())
-                yield {"stdout": stdout_lines, "stderr": stderr_lines}
+                yield {"stdout": [output.strip()], "stderr": []}
             if error:
-                stderr_lines.append(error.strip())
-                yield {"stdout": stdout_lines, "stderr": stderr_lines}
+                yield {"stdout": [], "stderr": [error.strip()]}
+
             if output == "" and error == "" and result.poll() is not None:
                 break
 
 
 def run_command(command, cwd, stream_output=False):
-    try:
-        if stream_output:
-            return _run_command_streaming(command, cwd)
-        return _run_command_non_streaming(command, cwd)
-    except Exception as error:
-        return {"error": str(error)}
+    if stream_output:
+        return _run_command_streaming(command, cwd)
+    return _run_command_non_streaming(command, cwd)
 
 
 def process_job(body):
     try:
         payload = json.loads(body)
-        print(body)
         job_id = payload.get("job_id")
         files = payload.get("files", {})
         command = payload.get("command")
@@ -75,7 +71,7 @@ def process_job(body):
         print("Stream output:", stream)
 
         if not job_id or not files or not command:
-            return {"error": "Missing required fields: job_id, files, or command"}
+            raise ValueError("Missing required fields: job_id, files, or command")
 
         job_dir = Path("jobs") / job_id
         job_dir.mkdir(parents=True, exist_ok=True)

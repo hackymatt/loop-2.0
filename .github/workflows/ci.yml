@@ -166,3 +166,26 @@ jobs:
       - run: |
           npm install --legacy-peer-deps
           npm run test:coverage
+
+  test-python-worker:
+    name: Test Python Worker
+    runs-on: ubuntu-latest
+    needs: detect-changes
+    if: needs.detect-changes.outputs.python-worker == 'true'
+    defaults:
+      run:
+        shell: bash
+        working-directory: workers/python
+
+    env:
+      USER_ID: user-id
+
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          sudo apt-get install -y libjpeg-dev
+          python -m pip install --upgrade pip
+          pip install -r requirements-test.txt
+          pip install -r requirements.txt
+          coverage run -m pytest
+          coverage report

@@ -12,8 +12,10 @@ load_dotenv()
 USER_ID = os.getenv("USER_ID")
 
 if not USER_ID:
-    print("Error: USER_ID environment variable is required.", file=sys.stderr)
-    sys.exit(1)
+    print(
+        "Error: USER_ID environment variable is required.", file=sys.stderr
+    )  # pragma: no cover
+    sys.exit(1)  # pragma: no cover
 
 
 def callback(channel, method, properties, body):
@@ -37,8 +39,8 @@ def callback(channel, method, properties, body):
 
 
 def main():
-    start_consumer(callback)
+    start_consumer(callback)  # pragma: no cover
 
 
 if __name__ == "__main__":
-    main()
+    main()  # pragma: no cover
