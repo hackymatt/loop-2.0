@@ -24,10 +24,7 @@ export async function consumeResults() {
     console.log(`Consumer is waiting for messages from the result queue: ${RESULT_QUEUE}`);
     channel.consume(RESULT_QUEUE, async (msg) => {
       if (msg) {
-        const messageContent = msg.content.toString();
         try {
-          const result = JSON.parse(messageContent);
-          handleResult(result, msg.fields.routingKey); // Process the result
           channel.ack(msg); // Acknowledge the message
         } catch (error) {
           console.error("Error processing message:", error);
@@ -38,17 +35,4 @@ export async function consumeResults() {
     console.error("Failed to connect to RabbitMQ:", error);
     process.exit(1);
   }
-}
-
-// Function to handle the result (you can modify this as needed)
-function handleResult(result: any, routingKey: string) {
-  // Extract runner and userId from the routingKey
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [_, runner, userId] = routingKey.split(".");
-
-  console.log(`Received result for runner: ${runner}, userId: ${userId}`);
-  console.log("Result:", JSON.stringify(result, null, 2));
-
-  // You can process or store the result based on the extracted runner and userId
-  // For example, update a database or trigger another workflow
 }

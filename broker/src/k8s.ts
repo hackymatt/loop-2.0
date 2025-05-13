@@ -1,7 +1,6 @@
 import * as k8s from "@kubernetes/client-node";
 
 import { getRunnerName, getRunnerImage } from "./runner";
-import { RABBITMQ_HOST, RABBITMQ_PORT, RABBITMQ_USER, RABBITMQ_PASSWORD } from "./const";
 
 import type { RunnerName, Technology } from "./runner";
 
@@ -17,7 +16,7 @@ function getPodName(userId: string, runnerName: RunnerName): string {
 }
 
 // Function to check if the pod exists for a user
-export async function isPodExists(userId: string, technology: Technology): Promise<boolean> {
+async function isPodExists(userId: string, technology: Technology): Promise<boolean> {
   const runnerName = getRunnerName(technology);
   const podName = getPodName(userId, runnerName);
   try {
@@ -30,8 +29,23 @@ export async function isPodExists(userId: string, technology: Technology): Promi
   }
 }
 
+// Function to delete a new pod for the user
+async function deletePod(userId: string, technology: Technology) {
+  const runnerName = getRunnerName(technology);
+  const podName = getPodName(userId, runnerName);
+
+  try {
+    console.log(`Deleting pod ${podName}...`);
+    await k8sApi.deleteNamespacedPod(podName, NAMESPACE);
+    console.log(`Pod ${podName} deleted successfully.`);
+  } catch (error) {
+    console.error(`Error deleting pod ${podName}:`, error);
+    throw error;
+  }
+}
+
 // Function to create a new pod for the user
-export async function createPod(userId: string, technology: Technology) {
+async function createPod(userId: string, technology: Technology) {
   const runnerName = getRunnerName(technology);
   const runnerImage = getRunnerImage(technology);
   const podName = getPodName(userId, runnerName);
@@ -117,7 +131,23 @@ async function waitForPodToBeRunning(userId: string, technology: Technology) {
   }
 }
 
+async function schedulePodDeletion(userId: string, technology: Technology) {
+  const runnerName = getRunnerName(technology);
+  const podName = getPodName(userId, runnerName);
+
+  console.log(`Pod ${podName} will be deleted after 1 hour.`);
+  setTimeout(async () => {
+    try {
+      await deletePod(userId, technology);
+      console.log(`Pod ${podName} deleted successfully.`);
+    } catch (error) {
+      console.error(`Error deleting pod ${podName}: ${error}`);
+    }
+  }, 3.6e6); // 1 hour
+}
+
 export async function createUserPod(userId: string, technology: Technology) {
+  await schedulePodDeletion(userId, technology);
   const podExists = await isPodExists(userId, technology);
   if (podExists) {
     console.log(`Pod for user ${userId} already exists.`);
