@@ -2,6 +2,7 @@ import type { Request, Response } from "express";
 
 import express from "express";
 
+import { createUserPod } from "./k8s";
 import { publish } from "./message-queue/publisher";
 
 const router = express.Router();
@@ -11,18 +12,19 @@ router.post("/test", async (req: Request, res: Response) => {
     const { userId, technology, files, command } = req.body;
 
     if (!userId || !technology || !files || !command) {
-      return res.status(400).json({ error: "Missing required fields: userId, files, or command" });
+      res.status(400).json({ error: "Missing required fields: userId, files, or command" });
+      return;
     }
 
-    // Handle the job execution logic with Python runner
+    await createUserPod(userId, technology);
     const jobResult = await publish(userId, technology, command, files, false, true);
 
     const isError = "error" in jobResult;
 
-    return res.status(isError ? 400 : 200).json(jobResult); // Send back the job result
+    res.status(isError ? 400 : 200).json(jobResult);
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ error: "Internal server error" });
+    res.status(500).json({ error: "Internal server error" });
   }
 });
 

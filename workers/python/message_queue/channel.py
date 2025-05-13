@@ -7,6 +7,8 @@ load_dotenv()
 # Configuration from environment
 RABBITMQ_HOST = os.getenv("RABBITMQ_HOST", "localhost")
 RABBITMQ_PORT = int(os.getenv("RABBITMQ_PORT", "5672"))
+RABBITMQ_USER = os.getenv("RABBITMQ_USER", "guest")
+RABBITMQ_PASSWORD = os.getenv("RABBITMQ_PASSWORD", "guest")
 
 USER_ID = os.getenv("USER_ID")
 EXCHANGE_NAME = "runnerExchange"
@@ -17,8 +19,9 @@ RESULT_QUEUE = f"results.{RUNNER_NAME}.{USER_ID}"
 
 def setup_channel():
     print(f"Connecting to RabbitMQ at {RABBITMQ_HOST}")
+    credentials = pika.PlainCredentials(RABBITMQ_USER, RABBITMQ_PASSWORD)
     connection = pika.BlockingConnection(
-        pika.ConnectionParameters(host=RABBITMQ_HOST, port=RABBITMQ_PORT)
+        pika.ConnectionParameters(host=RABBITMQ_HOST, port=RABBITMQ_PORT, credentials=credentials)
     )
     channel = connection.channel()
 

@@ -1,7 +1,7 @@
-// src/k8s.ts
 import * as k8s from "@kubernetes/client-node";
 
-import { getRunnerName } from "./runner";
+import { getRunnerName, getRunnerImage } from "./runner";
+import { RABBITMQ_HOST, RABBITMQ_PORT, RABBITMQ_USER, RABBITMQ_PASSWORD } from "./const";
 
 import type { RunnerName, Technology } from "./runner";
 
@@ -21,17 +21,19 @@ export async function isPodExists(userId: string, technology: Technology): Promi
   const runnerName = getRunnerName(technology);
   const podName = getPodName(userId, runnerName);
   try {
+    console.log(`Checking if pod ${podName} exists...`);
     const res = await k8sApi.readNamespacedPod(podName, NAMESPACE);
     return res.body.metadata?.name === podName;
-  } catch {
-    return false; // If not found, return false
+  } catch (error) {
+    console.error(`Error checking pod ${podName}: ${error}`);
+    return false;
   }
 }
 
 // Function to create a new pod for the user
 export async function createPod(userId: string, technology: Technology) {
   const runnerName = getRunnerName(technology);
-  const runnerImage = getRunnerName(technology);
+  const runnerImage = getRunnerImage(technology);
   const podName = getPodName(userId, runnerName);
 
   const podSpec = {
@@ -43,6 +45,19 @@ export async function createPod(userId: string, technology: Technology) {
         {
           name: runnerName,
           image: runnerImage,
+          env: [
+            {
+              name: "USER_ID",
+              value: userId,
+            },
+          ],
+          envFrom: [
+            {
+              secretRef: {
+                name: "secrets",
+              },
+            },
+          ],
           volumeMounts: [
             {
               name: "code-volume",
@@ -60,6 +75,61 @@ export async function createPod(userId: string, technology: Technology) {
       ],
     },
   };
+  try {
+    console.log(`Creating pod ${podName}...`);
+    await k8sApi.createNamespacedPod(NAMESPACE, podSpec);
+  } catch (error) {
+    console.error(`Error creating pod ${podName}:`);
+    throw error;
+  }
+}
 
-  await k8sApi.createNamespacedPod(NAMESPACE, podSpec);
+// Function to wait for the pod to reach the Running state
+async function waitForPodToBeRunning(userId: string, technology: Technology) {
+  const runnerName = getRunnerName(technology);
+  const podName = getPodName(userId, runnerName);
+
+  let isRunning = false;
+  const timeout = Date.now() + 1 * 60 * 1000; // Wait for up to 1 minute
+
+  // Poll the pod status until it is running or timeout is reached
+  while (!isRunning && Date.now() < timeout) {
+    try {
+      const res = await k8sApi.readNamespacedPod(podName, NAMESPACE);
+      const podStatus = res.body.status?.phase;
+
+      if (podStatus === "Running") {
+        isRunning = true;
+        console.log(`Pod ${podName} is now running.`);
+      } else {
+        console.log(`Pod ${podName} status: ${podStatus}. Waiting...`);
+      }
+    } catch (error) {
+      console.error(`Error checking pod status: ${error}`);
+      break;
+    }
+
+    await new Promise((resolve) => setTimeout(resolve, 2000)); // Poll every 2 seconds
+  }
+
+  if (!isRunning) {
+    throw new Error(`Pod ${podName} did not reach Running state within the timeout period.`);
+  }
+}
+
+export async function createUserPod(userId: string, technology: Technology) {
+  const podExists = await isPodExists(userId, technology);
+  if (podExists) {
+    console.log(`Pod for user ${userId} already exists.`);
+    return;
+  }
+
+  try {
+    await createPod(userId, technology);
+    await waitForPodToBeRunning(userId, technology);
+    console.log(`Pod for user ${userId} created successfully.`);
+  } catch (error) {
+    console.error(`Error creating user pod: ${error}`);
+    throw error; // Rethrow the error to handle it in the calling function
+  }
 }
