@@ -2,82 +2,227 @@ import { expect } from "chai";
 import sinon from "sinon";
 import proxyquire from "proxyquire";
 
-describe("publisher.ts", () => {
-  let connectStub: sinon.SinonStub;
-  let createChannelStub: sinon.SinonStub;
-  let assertExchangeStub: sinon.SinonStub;
-  let assertQueueStub: sinon.SinonStub;
-  let consumeStub: sinon.SinonStub;
-  let publishStub: sinon.SinonStub;
-  let closeStub: sinon.SinonStub;
-
+describe("publish", () => {
+  let amqpMock: any;
   let uuidStub: sinon.SinonStub;
   let getSandboxNameStub: sinon.SinonStub;
-  let clock: sinon.SinonFakeTimers;
-
-  let fakeChannel: any;
-  let fakeConnection: any;
-
-  const fakeUUIDs = ["job-id-123", "correlation-id-456"];
+  let publisher: any;
+  let channelMock: any;
+  let connectionMock: any;
 
   beforeEach(() => {
-    clock = sinon.useFakeTimers();
+    channelMock = {
+      assertExchange: sinon.stub().resolves(),
+      assertQueue: sinon.stub().resolves({ queue: "reply-queue" }),
+      consume: sinon.stub(),
+      publish: sinon.stub().returns(true),
+    };
 
-    uuidStub = sinon
-      .stub()
-      .onCall(0)
-      .returns(fakeUUIDs[0]) // jobId
-      .onCall(1)
-      .returns(fakeUUIDs[1]); // correlationId
+    connectionMock = {
+      createChannel: sinon.stub().resolves(channelMock),
+      close: sinon.stub(),
+    };
+
+    amqpMock = {
+      connect: sinon.stub().resolves(connectionMock),
+    };
+
+    uuidStub = sinon.stub();
+    uuidStub.onFirstCall().returns("job-uuid");
+    uuidStub.onSecondCall().returns("corr-uuid");
 
     getSandboxNameStub = sinon.stub().returns("python");
 
-    assertExchangeStub = sinon.stub().resolves();
-    assertQueueStub = sinon.stub().resolves({ queue: "fake-reply-queue" });
-    consumeStub = sinon.stub();
-    publishStub = sinon.stub();
-    closeStub = sinon.stub();
-
-    fakeChannel = {
-      assertExchange: assertExchangeStub,
-      assertQueue: assertQueueStub,
-      consume: consumeStub,
-      publish: publishStub,
-    };
-
-    createChannelStub = sinon.stub().resolves(fakeChannel);
-
-    fakeConnection = {
-      createChannel: createChannelStub,
-      close: closeStub,
-    };
-
-    connectStub = sinon.stub().resolves(fakeConnection);
+    publisher = proxyquire("../../src/message-queue/publisher", {
+      amqplib: amqpMock,
+      uuid: { v4: uuidStub },
+      "./const": { EXCHANGE_NAME: "test-exchange" },
+      "../const": { RABBITMQ_URL: "amqp://test" },
+      "../sandbox": { getSandboxName: getSandboxNameStub },
+    });
   });
 
   afterEach(() => {
     sinon.restore();
-    clock.restore();
+  });
+
+  it("should publish with reply and resolve on correct correlationId", async () => {
+    // Setup consume callback before making the publish call
+    let consumeCallback: Function | null = null;
+    channelMock.consume.callsFake((_queue: string, cb: Function) => {
+      consumeCallback = cb;
+      return Promise.resolve();
+    });
+
+    const publishPromise = publisher.publish(
+      "user1",
+      "python",
+      "run",
+      { "main.py": "print(1)" },
+      false,
+      true
+    );
+
+    // Wait for the next tick to allow consume to be set up
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    // Now check if callback was set
+    expect(consumeCallback).to.not.be.null;
+
+    // Simulate receiving a message
+    (consumeCallback as unknown as Function)({
+      properties: { correlationId: "corr-uuid" },
+      content: Buffer.from(JSON.stringify({ result: "ok" })),
+    });
+
+    const result = await publishPromise;
+    expect(result).to.deep.equal({ result: "ok" });
+
+    expect(getSandboxNameStub.calledWith("python")).to.be.true;
+    expect(amqpMock.connect.calledWith("amqp://test")).to.be.true;
+    expect(channelMock.assertExchange.calledWith("test-exchange", "direct", { durable: true })).to
+      .be.true;
+    expect(channelMock.assertQueue.calledWith("", { exclusive: true })).to.be.true;
+    expect(
+      channelMock.publish.calledWith(
+        "test-exchange",
+        "jobs.python.user1",
+        sinon.match.instanceOf(Buffer),
+        sinon.match({
+          persistent: true,
+          correlationId: "corr-uuid",
+          replyTo: "reply-queue",
+        })
+      )
+    ).to.be.true;
   });
 
   it("should publish without reply and return jobId", async () => {
-    const { publish } = proxyquire("../../src/message-queue/publisher", {
-      amqplib: { connect: connectStub },
-      uuid: { v4: uuidStub },
-      "../../src/sandbox": { getSandboxName: getSandboxNameStub },
-      "../../src/const": { RABBITMQ_URL: "amqp://localhost" },
-      "../../src/message-queue/const": { EXCHANGE_NAME: "test.exchange" },
+    const result = await publisher.publish(
+      "user2",
+      "python",
+      "run",
+      { "main.py": "print(2)" },
+      false,
+      false
+    );
+
+    expect(result).to.deep.equal({ jobId: "job-uuid" });
+    expect(getSandboxNameStub.calledWith("python")).to.be.true;
+    expect(amqpMock.connect.calledWith("amqp://test")).to.be.true;
+    expect(channelMock.assertExchange.calledWith("test-exchange", "direct", { durable: true })).to
+      .be.true;
+    expect(
+      channelMock.publish.calledWith(
+        "test-exchange",
+        "jobs.python.user2",
+        sinon.match.instanceOf(Buffer),
+        sinon.match({ persistent: true })
+      )
+    ).to.be.true;
+  });
+
+  it("should publish with stream=true", async () => {
+    const result = await publisher.publish(
+      "user3",
+      "python",
+      "run",
+      { "main.py": "print(3)" },
+      true, // explicitly testing stream=true
+      false
+    );
+
+    expect(result).to.deep.equal({ jobId: "job-uuid" });
+    expect(
+      channelMock.publish.calledWith(
+        "test-exchange",
+        "jobs.python.user3",
+        sinon.match((buffer: Buffer) => {
+          const payload = JSON.parse(buffer.toString());
+          return payload.stream === true;
+        }),
+        sinon.match({ persistent: true })
+      )
+    ).to.be.true;
+  });
+
+  it("should publish with default parameters", async () => {
+    // Setup consume callback before making the publish call
+    let consumeCallback: Function | null = null;
+    channelMock.consume.callsFake((_queue: string, cb: Function) => {
+      consumeCallback = cb;
+      return Promise.resolve();
     });
 
-    const result = await publish("u1", "python", "cmd", {}, false, false);
+    const publishPromise = publisher.publish(
+      "user4",
+      "python",
+      "run",
+      { "main.py": "print(4)" }
+      // Let stream and useReply use their default values
+    );
 
-    // symulujemy działanie setTimeout z close()
-    await clock.tickAsync(500);
+    // Wait for the next tick to allow consume to be set up
+    await new Promise((resolve) => setTimeout(resolve, 0));
 
-    expect(result).to.deep.equal({ jobId: fakeUUIDs[0] });
-    expect(connectStub.calledOnce).to.be.true;
-    expect(publishStub.calledOnce).to.be.true;
-    expect(closeStub.calledOnce).to.be.true;
-    expect(consumeStub.called).to.be.false;
+    // Now check if callback was set
+    expect(consumeCallback).to.not.be.null;
+
+    // Simulate receiving a message
+    (consumeCallback as unknown as Function)({
+      properties: { correlationId: "corr-uuid" },
+      content: Buffer.from(JSON.stringify({ result: "ok" })),
+    });
+
+    const result = await publishPromise;
+    expect(result).to.deep.equal({ result: "ok" });
+
+    expect(
+      channelMock.publish.calledWith(
+        "test-exchange",
+        "jobs.python.user4",
+        sinon.match((buffer: Buffer) => {
+          const payload = JSON.parse(buffer.toString());
+          return payload.stream === false;
+        }),
+        sinon.match({
+          persistent: true,
+          correlationId: "corr-uuid",
+          replyTo: "reply-queue",
+        })
+      )
+    ).to.be.true;
+  });
+
+  it("should ignore messages without properties", async () => {
+    let consumeCallback: Function | null = null;
+    channelMock.consume.callsFake((_queue: string, cb: Function) => {
+      consumeCallback = cb;
+      return Promise.resolve();
+    });
+
+    const publishPromise = publisher.publish(
+      "user5",
+      "python",
+      "run",
+      { "main.py": "print(5)" },
+      false,
+      true
+    );
+
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    expect(consumeCallback).to.not.be.null;
+
+    // Simulate receiving a message with undefined msg object
+    (consumeCallback as unknown as Function)(undefined);
+
+    // Simulate receiving a valid message
+    (consumeCallback as unknown as Function)({
+      properties: { correlationId: "corr-uuid" },
+      content: Buffer.from(JSON.stringify({ result: "ok" })),
+    });
+
+    const result = await publishPromise;
+    expect(result).to.deep.equal({ result: "ok" });
   });
 });
