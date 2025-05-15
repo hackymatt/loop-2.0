@@ -1,5 +1,6 @@
 import * as k8s from "@kubernetes/client-node";
 
+import { RABBITMQ_HOST, RABBITMQ_PORT } from "./const";
 import { getSandboxName, getSandboxImage } from "./sandbox";
 
 import type { Technology, SandboxName } from "./sandbox";
@@ -79,8 +80,12 @@ async function createPod(userId: string, technology: Technology) {
         {
           name: sandboxName,
           image: sandboxImage,
-          env: [{ name: "USER_ID", value: userId }],
-          envFrom: [{ secretRef: { name: "secrets" } }],
+          env: [
+            { name: "USER_ID", value: userId },
+            { name: "RABBITMQ_HOST", value: `${RABBITMQ_HOST}.default` },
+            { name: "RABBITMQ_PORT", value: RABBITMQ_PORT },
+          ],
+          envFrom: [{ secretRef: { name: "rabbitmq-secrets" } }],
           volumeMounts: [{ name: "code-volume", mountPath: "/app/jobs" }],
         },
       ],
