@@ -21,6 +21,7 @@ docker push loopedupl/nginx:latest
 Create secrets:
 kubectl delete secret secrets
 kubectl create secret generic secrets --from-env-file=./secrets.sh
+kubectl create secret generic secrets --from-env-file=./secrets.sh --namespace=sandbox
 
 kubectl delete secret auth
 kubectl create secret generic auth --from-file=./auth

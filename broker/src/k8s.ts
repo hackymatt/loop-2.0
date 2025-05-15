@@ -15,36 +15,56 @@ function getPodName(userId: string, sandboxName: SandboxName): string {
   return `${sandboxName}-${userId}`;
 }
 
-// Function to check if the pod exists for a user
-async function isPodExists(userId: string, technology: Technology): Promise<boolean> {
-  const sandboxName = getSandboxName(technology);
-  const podName = getPodName(userId, sandboxName);
+async function isPodRunningAndReady(podName: string): Promise<boolean> {
   try {
-    console.log(`Checking if pod ${podName} exists...`);
     const res = await k8sApi.readNamespacedPod(podName, NAMESPACE);
-    return res.body.metadata?.name === podName;
-  } catch (error) {
-    console.error(`Error checking pod ${podName}: ${error}`);
+    const pod = res.body;
+
+    if (pod.status?.phase !== "Running") return false;
+    const containers = pod.status?.containerStatuses || [];
+
+    return containers.every((c) => c.ready);
+  } catch {
     return false;
   }
 }
 
-// Function to delete a new pod for the user
-async function deletePod(userId: string, technology: Technology) {
-  const sandboxName = getSandboxName(technology);
-  const podName = getPodName(userId, sandboxName);
-
+// Function to check if the pod exists
+async function isPodExists(podName: string): Promise<boolean> {
   try {
-    console.log(`Deleting pod ${podName}...`);
-    await k8sApi.deleteNamespacedPod(podName, NAMESPACE);
-    console.log(`Pod ${podName} deleted successfully.`);
-  } catch (error) {
-    console.error(`Error deleting pod ${podName}:`, error);
-    throw error;
+    await k8sApi.readNamespacedPod(podName, NAMESPACE);
+    return true;
+  } catch (err: any) {
+    return err.response?.statusCode !== 404;
   }
 }
 
-// Function to create a new pod for the user
+// Delete pod by name
+async function deletePod(podName: string) {
+  console.log(`Deleting pod ${podName}...`);
+
+  try {
+    await k8sApi.deleteNamespacedPod(podName, NAMESPACE);
+    console.log(`Successfully deleted pod ${podName}...`);
+  } catch (err) {
+    console.error(`Failed to delete pod ${podName}:`, err);
+    throw err;
+  }
+}
+
+// Wait until pod is gone
+async function waitForPodDeletion(podName: string, timeoutMs = 30000) {
+  const interval = 2000;
+  const maxTries = Math.ceil(timeoutMs / interval);
+  for (let i = 0; i < maxTries; i++) {
+    const exists = await isPodExists(podName);
+    if (!exists) return;
+    await new Promise((r) => setTimeout(r, interval));
+  }
+  throw new Error(`Timeout waiting for pod ${podName} to be deleted`);
+}
+
+// Create pod
 async function createPod(userId: string, technology: Technology) {
   const sandboxName = getSandboxName(technology);
   const sandboxImage = getSandboxImage(technology);
@@ -59,104 +79,86 @@ async function createPod(userId: string, technology: Technology) {
         {
           name: sandboxName,
           image: sandboxImage,
-          env: [
-            {
-              name: "USER_ID",
-              value: userId,
-            },
-          ],
-          envFrom: [
-            {
-              secretRef: {
-                name: "secrets",
-              },
-            },
-          ],
-          volumeMounts: [
-            {
-              name: "code-volume",
-              mountPath: "/app/jobs",
-            },
-          ],
+          env: [{ name: "USER_ID", value: userId }],
+          envFrom: [{ secretRef: { name: "secrets" } }],
+          volumeMounts: [{ name: "code-volume", mountPath: "/app/jobs" }],
         },
       ],
       restartPolicy: "Never",
-      volumes: [
-        {
-          name: "code-volume",
-          emptyDir: {},
-        },
-      ],
+      volumes: [{ name: "code-volume", emptyDir: {} }],
     },
   };
-  try {
-    console.log(`Creating pod ${podName}...`);
-    await k8sApi.createNamespacedPod(NAMESPACE, podSpec);
-  } catch (error) {
-    console.error(`Error creating pod ${podName}:`);
-    throw error;
-  }
+
+  console.log(`Creating pod ${podName}...`);
+  await k8sApi.createNamespacedPod(NAMESPACE, podSpec);
 }
 
-// Function to wait for the pod to reach the Running state
-async function waitForPodToBeRunning(userId: string, technology: Technology) {
-  const sandboxName = getSandboxName(technology);
-  const podName = getPodName(userId, sandboxName);
+// Wait for pod to be running and ready
+async function waitForPodToBeReady(podName: string, timeoutMs = 60000) {
+  const interval = 2000;
+  const maxTries = Math.ceil(timeoutMs / interval);
 
-  let isRunning = false;
-  const timeout = Date.now() + 1 * 60 * 1000; // Wait for up to 1 minute
-
-  // Poll the pod status until it is running or timeout is reached
-  while (!isRunning && Date.now() < timeout) {
+  for (let i = 0; i < maxTries; i++) {
     try {
       const res = await k8sApi.readNamespacedPod(podName, NAMESPACE);
-      const podStatus = res.body.status?.phase;
+      const pod = res.body;
+      const phase = pod.status?.phase;
+      const ready = pod.status?.containerStatuses?.every((cs) => cs.ready);
 
-      if (podStatus === "Running") {
-        isRunning = true;
-        console.log(`Pod ${podName} is now running.`);
+      if (phase === "Running" && ready) {
+        console.log(`Pod ${podName} is running and ready.`);
+        return;
       } else {
-        console.log(`Pod ${podName} status: ${podStatus}. Waiting...`);
+        console.log(`Pod ${podName} status: ${phase}. Waiting...`);
       }
-    } catch (error) {
-      console.error(`Error checking pod status: ${error}`);
-      break;
+    } catch (err) {
+      console.error(`Error reading pod status:`, err);
     }
 
-    await new Promise((resolve) => setTimeout(resolve, 2000)); // Poll every 2 seconds
+    await new Promise((r) => setTimeout(r, interval));
   }
 
-  if (!isRunning) {
-    throw new Error(`Pod ${podName} did not reach Running state within the timeout period.`);
-  }
+  throw new Error(`Timeout waiting for pod ${podName} to be ready`);
 }
 
-async function schedulePodDeletion(userId: string, technology: Technology) {
+// Schedule deletion
+async function schedulePodDeletion(podName: string) {
+  console.log(`Pod ${podName} will be deleted after 1 hour.`);
+
+  setTimeout(async () => {
+    try {
+      await deletePod(podName);
+      console.log(`Pod ${podName} deleted after timeout.`);
+    } catch (err) {
+      console.error(`Error deleting pod ${podName} on timeout:`, err);
+    }
+  }, 3600000); // 1 hour
+}
+
+// Main function
+export async function createUserPod(userId: string, technology: Technology) {
   const sandboxName = getSandboxName(technology);
   const podName = getPodName(userId, sandboxName);
 
-  console.log(`Pod ${podName} will be deleted after 1 hour.`);
-  setTimeout(async () => {
-    try {
-      await deletePod(userId, technology);
-      console.log(`Pod ${podName} deleted successfully.`);
-    } catch (error) {
-      console.error(`Error deleting pod ${podName}: ${error}`);
-    }
-  }, 3.6e6); // 1 hour
-}
+  await schedulePodDeletion(podName);
 
-export async function createUserPod(userId: string, technology: Technology) {
-  await schedulePodDeletion(userId, technology);
-  const podExists = await isPodExists(userId, technology);
-  if (podExists) {
-    console.log(`Pod for user ${userId} already exists.`);
+  const exists = await isPodExists(podName);
+  const isReady = exists ? await isPodRunningAndReady(podName) : false;
+
+  if (isReady) {
+    console.log(`Pod ${podName} is already running and ready.`);
     return;
+  }
+
+  if (exists) {
+    console.log(`Pod ${podName} exists but is not ready. Deleting...`);
+    await deletePod(podName);
+    await waitForPodDeletion(podName);
   }
 
   try {
     await createPod(userId, technology);
-    await waitForPodToBeRunning(userId, technology);
+    await waitForPodToBeReady(podName);
     console.log(`Pod for user ${userId} created successfully.`);
   } catch (error) {
     console.error(`Error creating user pod: ${error}`);

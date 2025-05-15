@@ -18,11 +18,12 @@ RESULT_QUEUE = f"results.{RUNNER_NAME}.{USER_ID}"
 
 
 def setup_channel():
-    print(f"Connecting to RabbitMQ at {RABBITMQ_HOST}")
+    host = f"{RABBITMQ_HOST}.default"
+    print(f"Connecting to RabbitMQ at {host}")
     credentials = pika.PlainCredentials(RABBITMQ_USER, RABBITMQ_PASSWORD)
     connection = pika.BlockingConnection(
         pika.ConnectionParameters(
-            host=RABBITMQ_HOST, port=RABBITMQ_PORT, credentials=credentials
+            host=host, port=RABBITMQ_PORT, credentials=credentials
         )
     )
     channel = connection.channel()
