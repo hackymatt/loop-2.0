@@ -1,11 +1,8 @@
 import shutil
 import tempfile
-import time
-import pytest
 import json
 from pathlib import Path
-from types import GeneratorType
-from ..utils import write_files, run_command, process_job
+from utils import write_files, run_command, process_job
 
 
 def test_write_files():
@@ -37,15 +34,12 @@ def test_run_command_non_streaming():
 
 
 def test_process_job_non_streaming():
-    tmp_dir = tempfile.mkdtemp()
     payload = {
         "job_id": "test123",
         "files": {"script.sh": "echo hello"},
         "command": "bash script.sh",
         "stream": False,
     }
-
-    import json
 
     body = json.dumps(payload)
     result = process_job(body)
@@ -59,7 +53,6 @@ def test_process_job_non_streaming():
 
 def test_process_job_missing_fields():
     payload = {"job_id": "test123", "files": {}}
-    import json
 
     result = process_job(json.dumps(payload))
     assert "error" in result

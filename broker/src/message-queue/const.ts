@@ -1,1 +1,1 @@
-export const EXCHANGE_NAME = "runnerExchange";
+export const EXCHANGE_NAME = "sandboxExchange";

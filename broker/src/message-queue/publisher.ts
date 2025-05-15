@@ -3,9 +3,9 @@ import { v4 as uuid } from "uuid";
 
 import { EXCHANGE_NAME } from "./const";
 import { RABBITMQ_URL } from "../const";
-import { getRunnerName } from "../runner";
+import { getSandboxName } from "../sandbox";
 
-import type { Technology } from "../runner";
+import type { Technology } from "../sandbox";
 
 export async function publish(
   userId: string,
@@ -15,7 +15,7 @@ export async function publish(
   stream: boolean = false,
   useReply: boolean = true
 ): Promise<any> {
-  const runnerName = getRunnerName(technology);
+  const sandboxName = getSandboxName(technology);
   const jobId = uuid();
 
   const messagePayload: any = {
@@ -29,7 +29,7 @@ export async function publish(
   const channel = await connection.createChannel();
   await channel.assertExchange(EXCHANGE_NAME, "direct", { durable: true });
 
-  const routingKey = `jobs.${runnerName}.${userId}`;
+  const routingKey = `jobs.${sandboxName}.${userId}`;
 
   if (useReply) {
     // temporary queue + correlationId + replyTo

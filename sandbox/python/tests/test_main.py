@@ -1,7 +1,7 @@
 import json
-import pytest
 from unittest.mock import MagicMock, patch
-from ..main import callback
+import pytest
+from main import callback
 
 
 @pytest.fixture(autouse=True)
@@ -9,8 +9,8 @@ def mock_env(monkeypatch):
     monkeypatch.setenv("USER_ID", "test-user")
 
 
-@patch("python.main.process_job")
-@patch("python.main.publish")
+@patch("main.process_job")
+@patch("main.publish")
 def test_callback_with_dict_result(mock_publish, mock_process_job):
     # Arrange
     body = json.dumps(
@@ -34,8 +34,8 @@ def test_callback_with_dict_result(mock_publish, mock_process_job):
     channel.basic_ack.assert_called_once_with(delivery_tag="abc")
 
 
-@patch("python.main.process_job")
-@patch("python.main.publish")
+@patch("main.process_job")
+@patch("main.publish")
 def test_callback_with_generator_result(mock_publish, mock_process_job):
     body = json.dumps(
         {
@@ -69,8 +69,7 @@ def test_callback_with_generator_result(mock_publish, mock_process_job):
     channel.basic_ack.assert_called_once_with(delivery_tag="def")
 
 
-@patch("utils.process_job", side_effect=Exception("boom"))
-def test_callback_handles_exception(mock_process_job):
+def test_callback_handles_exception():
     body = json.dumps({"job_id": "999", "files": {}, "command": "echo fail"})
 
     channel = MagicMock()
@@ -84,8 +83,8 @@ def test_callback_handles_exception(mock_process_job):
     channel.basic_ack.assert_called_once_with(delivery_tag="zzz")
 
 
-@patch("python.main.process_job", side_effect=ValueError("Boom"))
-@patch("python.main.publish")  # publish nie powinien być wywołany
+@patch("main.process_job", side_effect=ValueError("Boom"))
+@patch("main.publish")  # publish nie powinien być wywołany
 @patch("builtins.print")
 def test_callback_exception_handling(mock_print, mock_publish, mock_process_job):
     # Arrange

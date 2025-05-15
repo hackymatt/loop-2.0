@@ -11,7 +11,7 @@ jobs:
       backend: ${{ steps.filter.outputs.backend }}
       frontend: ${{ steps.filter.outputs.frontend }}
       broker: ${{ steps.filter.outputs.broker }}
-      workers-python: ${{ steps.filter.outputs.workers-python }}
+      sandbox-python: ${{ steps.filter.outputs.sandbox-python }}
     steps:
       - uses: dorny/paths-filter@v3
         id: filter
@@ -24,8 +24,8 @@ jobs:
               - 'frontend/**'
             broker:
               - 'broker/**'
-            workers-python:
-              - 'workers/python/**'
+            sandbox-python:
+              - 'sandbox/python/**'
 
   lint-backend:
     name: Lint Backend
@@ -81,15 +81,15 @@ jobs:
           npm run fm:check
           npm run lint:check
 
-  lint-python-worker:
-    name: Lint Python Worker
+  lint-python-sandbox:
+    name: Lint Python sandbox
     runs-on: ubuntu-latest
     needs: detect-changes
-    if: needs.detect-changes.outputs.workers-python == 'true'
+    if: needs.detect-changes.outputs.sandbox-python == 'true'
     defaults:
       run:
         shell: bash
-        working-directory: workers/python
+        working-directory: sandbox/python
 
     steps:
       - uses: actions/checkout@v4
@@ -167,15 +167,15 @@ jobs:
           npm install --legacy-peer-deps
           npm run test:coverage
 
-  test-python-worker:
-    name: Test Python Worker
+  test-python-sandbox:
+    name: Test Python sandbox
     runs-on: ubuntu-latest
     needs: detect-changes
-    if: needs.detect-changes.outputs.workers-python == 'true'
+    if: needs.detect-changes.outputs.sandbox-python == 'true'
     defaults:
       run:
         shell: bash
-        working-directory: workers/python
+        working-directory: sandbox/python
 
     env:
       USER_ID: user-id

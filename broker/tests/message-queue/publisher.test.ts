@@ -12,7 +12,7 @@ describe("publisher.ts", () => {
   let closeStub: sinon.SinonStub;
 
   let uuidStub: sinon.SinonStub;
-  let getRunnerNameStub: sinon.SinonStub;
+  let getSandboxNameStub: sinon.SinonStub;
   let clock: sinon.SinonFakeTimers;
 
   let fakeChannel: any;
@@ -30,7 +30,7 @@ describe("publisher.ts", () => {
       .onCall(1)
       .returns(fakeUUIDs[1]); // correlationId
 
-    getRunnerNameStub = sinon.stub().returns("python");
+    getSandboxNameStub = sinon.stub().returns("python");
 
     assertExchangeStub = sinon.stub().resolves();
     assertQueueStub = sinon.stub().resolves({ queue: "fake-reply-queue" });
@@ -64,7 +64,7 @@ describe("publisher.ts", () => {
     const { publish } = proxyquire("../../src/message-queue/publisher", {
       amqplib: { connect: connectStub },
       uuid: { v4: uuidStub },
-      "../../src/runner": { getRunnerName: getRunnerNameStub },
+      "../../src/sandbox": { getSandboxName: getSandboxNameStub },
       "../../src/const": { RABBITMQ_URL: "amqp://localhost" },
       "../../src/message-queue/const": { EXCHANGE_NAME: "test.exchange" },
     });

@@ -6,11 +6,11 @@ describe("k8s.ts", () => {
   const fakeReadPod = sinon.stub();
   const fakeCreatePod = sinon.stub();
 
-  const getRunnerName = sinon.stub().callsFake((tech) => `runner-${tech}`);
-  const getRunnerImage = sinon.stub().callsFake((tech) => `image-${tech}`);
+  const getSandboxName = sinon.stub().callsFake((tech) => `sandbox-${tech}`);
+  const getSandboxImage = sinon.stub().callsFake((tech) => `image-${tech}`);
 
   const podStatus = {
-    metadata: { name: "runner-js-user123" },
+    metadata: { name: "sandbox-js-user123" },
     status: { phase: "Running" },
   };
 
@@ -28,17 +28,17 @@ describe("k8s.ts", () => {
         }
       },
     },
-    "./runner": {
-      getRunnerName,
-      getRunnerImage,
+    "./sandbox": {
+      getSandboxName,
+      getSandboxImage,
     },
   });
 
   beforeEach(() => {
     fakeReadPod.reset();
     fakeCreatePod.reset();
-    getRunnerName.resetHistory();
-    getRunnerImage.resetHistory();
+    getSandboxName.resetHistory();
+    getSandboxImage.resetHistory();
     consoleErrorStub = sinon.stub(console, "error");
   });
 
@@ -87,11 +87,11 @@ describe("k8s.ts", () => {
     } catch (err) {
       expect((err as any).message).to.contain("did not reach Running state");
       expect(
-        consoleErrorStub.calledWithMatch("Error checking pod runner-js-user123: Error: Not found")
+        consoleErrorStub.calledWithMatch("Error checking pod sandbox-js-user123: Error: Not found")
       ).to.be.true;
       expect(
         consoleErrorStub.calledWithMatch(
-          "Error creating user pod: Error: Pod runner-js-user123 did not reach Running state within the timeout period."
+          "Error creating user pod: Error: Pod sandbox-js-user123 did not reach Running state within the timeout period."
         )
       ).to.be.true;
     }

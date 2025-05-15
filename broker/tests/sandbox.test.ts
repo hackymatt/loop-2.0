@@ -1,18 +1,18 @@
 import { expect } from "chai";
-import { getRunnerName, getRunnerImage } from "../src/runner";
+import { getSandboxName, getSandboxImage } from "../src/sandbox";
 import { TAG } from "../src/const";
 
 describe("runner.ts", function () {
-  describe("getRunnerName", function () {
+  describe("getSandboxName", function () {
     it("should return the correct runner name for python", function () {
-      const result = getRunnerName("python");
+      const result = getSandboxName("python");
       expect(result).to.equal("python-runner");
     });
   });
 
-  describe("getRunnerImage", function () {
+  describe("getSandboxImage", function () {
     it("should return the correct runner image with the tag", function () {
-      const result = getRunnerImage("python");
+      const result = getSandboxImage("python");
       expect(result).to.equal(`loopedupl/python-runner:${TAG}`);
     });
   });

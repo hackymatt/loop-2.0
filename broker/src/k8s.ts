@@ -1,24 +1,24 @@
 import * as k8s from "@kubernetes/client-node";
 
-import { getRunnerName, getRunnerImage } from "./runner";
+import { getSandboxName, getSandboxImage } from "./sandbox";
 
-import type { RunnerName, Technology } from "./runner";
+import type { Technology, SandboxName } from "./sandbox";
 
 // Kubernetes client setup
 const kc = new k8s.KubeConfig();
 kc.loadFromDefault();
 const k8sApi = kc.makeApiClient(k8s.CoreV1Api);
 
-const NAMESPACE = "default";
+const NAMESPACE = "sandbox";
 
-function getPodName(userId: string, runnerName: RunnerName): string {
-  return `${runnerName}-${userId}`;
+function getPodName(userId: string, sandboxName: SandboxName): string {
+  return `${sandboxName}-${userId}`;
 }
 
 // Function to check if the pod exists for a user
 async function isPodExists(userId: string, technology: Technology): Promise<boolean> {
-  const runnerName = getRunnerName(technology);
-  const podName = getPodName(userId, runnerName);
+  const sandboxName = getSandboxName(technology);
+  const podName = getPodName(userId, sandboxName);
   try {
     console.log(`Checking if pod ${podName} exists...`);
     const res = await k8sApi.readNamespacedPod(podName, NAMESPACE);
@@ -31,8 +31,8 @@ async function isPodExists(userId: string, technology: Technology): Promise<bool
 
 // Function to delete a new pod for the user
 async function deletePod(userId: string, technology: Technology) {
-  const runnerName = getRunnerName(technology);
-  const podName = getPodName(userId, runnerName);
+  const sandboxName = getSandboxName(technology);
+  const podName = getPodName(userId, sandboxName);
 
   try {
     console.log(`Deleting pod ${podName}...`);
@@ -46,9 +46,9 @@ async function deletePod(userId: string, technology: Technology) {
 
 // Function to create a new pod for the user
 async function createPod(userId: string, technology: Technology) {
-  const runnerName = getRunnerName(technology);
-  const runnerImage = getRunnerImage(technology);
-  const podName = getPodName(userId, runnerName);
+  const sandboxName = getSandboxName(technology);
+  const sandboxImage = getSandboxImage(technology);
+  const podName = getPodName(userId, sandboxName);
 
   const podSpec = {
     apiVersion: "v1",
@@ -57,8 +57,8 @@ async function createPod(userId: string, technology: Technology) {
     spec: {
       containers: [
         {
-          name: runnerName,
-          image: runnerImage,
+          name: sandboxName,
+          image: sandboxImage,
           env: [
             {
               name: "USER_ID",
@@ -100,8 +100,8 @@ async function createPod(userId: string, technology: Technology) {
 
 // Function to wait for the pod to reach the Running state
 async function waitForPodToBeRunning(userId: string, technology: Technology) {
-  const runnerName = getRunnerName(technology);
-  const podName = getPodName(userId, runnerName);
+  const sandboxName = getSandboxName(technology);
+  const podName = getPodName(userId, sandboxName);
 
   let isRunning = false;
   const timeout = Date.now() + 1 * 60 * 1000; // Wait for up to 1 minute
@@ -132,8 +132,8 @@ async function waitForPodToBeRunning(userId: string, technology: Technology) {
 }
 
 async function schedulePodDeletion(userId: string, technology: Technology) {
-  const runnerName = getRunnerName(technology);
-  const podName = getPodName(userId, runnerName);
+  const sandboxName = getSandboxName(technology);
+  const podName = getPodName(userId, sandboxName);
 
   console.log(`Pod ${podName} will be deleted after 1 hour.`);
   setTimeout(async () => {

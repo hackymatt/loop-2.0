@@ -1,8 +1,8 @@
 import json
 from unittest.mock import MagicMock
 
-from ...message_queue.publisher import publish
-from ...message_queue.channel import RESULT_QUEUE
+from message_queue.publisher import publish
+from message_queue.channel import RESULT_QUEUE
 
 
 def test_publish_with_props():

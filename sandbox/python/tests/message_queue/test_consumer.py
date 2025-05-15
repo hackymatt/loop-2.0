@@ -1,9 +1,9 @@
 from unittest.mock import patch, MagicMock
-from ...message_queue import consumer
+from message_queue import consumer
 
 
-@patch("python.message_queue.consumer.setup_channel")
-@patch("python.message_queue.consumer.QUEUE_NAME", "jobs.test")
+@patch("message_queue.consumer.setup_channel")
+@patch("message_queue.consumer.QUEUE_NAME", "jobs.test")
 def test_start_consumer_config_only(mock_setup_channel):
     mock_channel = MagicMock()
     mock_setup_channel.return_value = mock_channel

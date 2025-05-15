@@ -29,9 +29,6 @@ def _run_command_non_streaming(command, cwd):
     }
 
 
-import subprocess
-
-
 def _run_command_streaming(command, cwd):
     with subprocess.Popen(
         command,
