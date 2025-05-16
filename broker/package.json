@@ -12,7 +12,7 @@
     "fm:check": "prettier --check \"src/**/*.{js,ts}\"",
     "fm:fix": "prettier --write \"src/**/*.{js,ts}\"",
     "fix:all": "npm run lint:fix && npm run fm:fix",
-    "test": "mocha --require ts-node/register tests/**/*.test.ts",
+    "test": "mocha --require ts-node/register \"tests/**/*.@(test|spec).ts\"",
     "test:coverage": "nyc --check-coverage --lines 100 --branches 100 --functions 100 --statements 100 npm run test"
   },
   "engines": {
