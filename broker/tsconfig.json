@@ -7,7 +7,7 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "outDir": "./dist",
-    "types": ["mocha"]
+    "types": ["node", "mocha"]
   },
   "include": ["src/**/*.ts", "tests/**/*.ts"],
   "exclude": ["node_modules"]
