@@ -96,23 +96,17 @@ class ReadingLessonBaseSerializer(serializers.ModelSerializer):
         lang = self.context.get("request").LANGUAGE_CODE
         return obj.get_translation(lang).name
 
-    def get_text(self, obj):
+    def _get_text(self, obj):  # Internal method to avoid name conflict
         lang = self.context.get("request").LANGUAGE_CODE
         return obj.get_translation(lang).text
 
     def get_duration(self, obj):
-        content = self.get_text(obj)
+        content = self._get_text(obj)
         html = markdown.markdown(content)
-
-        # Strip HTML tags
         soup = BeautifulSoup(html, features="html.parser")
         plain_text = soup.get_text()
-
-        # Count words
         words = re.findall(r"\w+", plain_text)
-        return math.ceil(
-            len(words) / CONFIG["words_per_minute"]
-        )  # Assuming 200 words per minute
+        return math.ceil(len(words) / CONFIG["words_per_minute"])
 
 
 class ReadingLessonSerializer(ReadingLessonBaseSerializer):
@@ -122,7 +116,7 @@ class ReadingLessonSerializer(ReadingLessonBaseSerializer):
         fields = ReadingLessonBaseSerializer.Meta.fields + ["text"]
 
     def get_text(self, obj):
-        return self.get_text(obj)
+        return self._get_text(obj)
 
 
 class VideoLessonBaseSerializer(serializers.ModelSerializer):
