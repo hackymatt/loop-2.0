@@ -2,7 +2,7 @@ import { expect } from "chai";
 import sinon from "sinon";
 import proxyquire from "proxyquire";
 
-describe("publish", () => {
+describe("publisher.ts", () => {
   let amqpMock: any;
   let uuidStub: sinon.SinonStub;
   let getSandboxNameStub: sinon.SinonStub;

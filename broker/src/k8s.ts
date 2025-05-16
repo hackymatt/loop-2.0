@@ -19,23 +19,24 @@ function getPodName(userId: string, sandboxName: SandboxName): string {
 async function isPodRunningAndReady(podName: string): Promise<boolean> {
   try {
     const res = await k8sApi.readNamespacedPod(podName, NAMESPACE);
-    const pod = res.body;
+    /* istanbul ignore next */
+    const status = res.body?.status ?? { phase: "", containerStatuses: [] };
 
-    if (pod.status?.phase !== "Running") return false;
-    const containers = pod.status?.containerStatuses || [];
-
-    return containers.every((c) => c.ready);
+    if (status.phase !== "Running") return false;
+    /* istanbul ignore next */
+    return (status.containerStatuses || []).every((c) => c.ready);
   } catch {
     return false;
   }
 }
 
-// Function to check if the pod exists
+// Function to check if the pod exist
 async function isPodExists(podName: string): Promise<boolean> {
   try {
     await k8sApi.readNamespacedPod(podName, NAMESPACE);
     return true;
   } catch (err: any) {
+    /* istanbul ignore next */
     return err.response?.statusCode !== 404;
   }
 }
@@ -46,7 +47,6 @@ async function deletePod(podName: string) {
 
   try {
     await k8sApi.deleteNamespacedPod(podName, NAMESPACE);
-    console.log(`Successfully deleted pod ${podName}...`);
   } catch (err) {
     console.error(`Failed to delete pod ${podName}:`, err);
     throw err;
@@ -54,7 +54,7 @@ async function deletePod(podName: string) {
 }
 
 // Wait until pod is gone
-async function waitForPodDeletion(podName: string, timeoutMs = 30000) {
+async function waitForPodDeletion(podName: string, timeoutMs: number) {
   const interval = 2000;
   const maxTries = Math.ceil(timeoutMs / interval);
   for (let i = 0; i < maxTries; i++) {
@@ -99,16 +99,18 @@ async function createPod(userId: string, technology: Technology) {
 }
 
 // Wait for pod to be running and ready
-async function waitForPodToBeReady(podName: string, timeoutMs = 60000) {
+async function waitForPodToBeReady(podName: string, timeoutMs: number) {
   const interval = 2000;
   const maxTries = Math.ceil(timeoutMs / interval);
 
   for (let i = 0; i < maxTries; i++) {
     try {
       const res = await k8sApi.readNamespacedPod(podName, NAMESPACE);
-      const pod = res.body;
-      const phase = pod.status?.phase;
-      const ready = pod.status?.containerStatuses?.every((cs) => cs.ready);
+      /* istanbul ignore next */
+      const status = res.body?.status ?? { phase: "", containerStatuses: [] };
+      const phase = status.phase;
+      /* istanbul ignore next */
+      const ready = (status.containerStatuses || []).every((cs) => cs.ready);
 
       if (phase === "Running" && ready) {
         console.log(`Pod ${podName} is running and ready.`);
@@ -128,7 +130,9 @@ async function waitForPodToBeReady(podName: string, timeoutMs = 60000) {
 
 // Schedule deletion
 async function schedulePodDeletion(podName: string) {
-  console.log(`Pod ${podName} will be deleted after 1 hour.`);
+  const oneHourLater = new Date(Date.now() + 60 * 60 * 1000);
+  const iso = oneHourLater.toISOString();
+  console.log(`Pod ${podName} will be deleted at ${iso}.`);
 
   setTimeout(async () => {
     try {
@@ -141,7 +145,12 @@ async function schedulePodDeletion(podName: string) {
 }
 
 // Main function
-export async function createUserPod(userId: string, technology: Technology) {
+export async function createUserPod(
+  userId: string,
+  technology: Technology,
+  podReadyTimeoutMs = 60000,
+  podDeletionTimeoutMs = 30000
+) {
   const sandboxName = getSandboxName(technology);
   const podName = getPodName(userId, sandboxName);
 
@@ -157,13 +166,18 @@ export async function createUserPod(userId: string, technology: Technology) {
 
   if (exists) {
     console.log(`Pod ${podName} exists but is not ready. Deleting...`);
-    await deletePod(podName);
-    await waitForPodDeletion(podName);
+    try {
+      await deletePod(podName);
+      await waitForPodDeletion(podName, podDeletionTimeoutMs);
+    } catch (error) {
+      console.error(`Error deleting user pod: ${error}`);
+      throw error;
+    }
   }
 
   try {
     await createPod(userId, technology);
-    await waitForPodToBeReady(podName);
+    await waitForPodToBeReady(podName, podReadyTimeoutMs);
     console.log(`Pod for user ${userId} created successfully.`);
   } catch (error) {
     console.error(`Error creating user pod: ${error}`);

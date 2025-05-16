@@ -3,162 +3,551 @@ import sinon from "sinon";
 import proxyquire from "proxyquire";
 
 describe("k8s.ts", () => {
-  const fakeReadPod = sinon.stub();
-  const fakeCreatePod = sinon.stub();
-
-  const getSandboxName = sinon.stub().callsFake((tech) => `sandbox-${tech}`);
-  const getSandboxImage = sinon.stub().callsFake((tech) => `image-${tech}`);
+  let fakeReadPod: sinon.SinonStub;
+  let fakeCreatePod: sinon.SinonStub;
+  let fakeDeletePod: sinon.SinonStub;
+  let consoleErrorStub: sinon.SinonStub;
+  let consoleLogStub: sinon.SinonStub;
+  let clock: sinon.SinonFakeTimers;
+  let podManager: any;
 
   const podStatus = {
     metadata: { name: "sandbox-js-user123" },
-    status: { phase: "Running" },
+    status: {
+      phase: "Running",
+      containerStatuses: [{ ready: true }],
+    },
   };
 
-  let consoleErrorStub: sinon.SinonStub;
-
-  const podManager = proxyquire("../src/k8s", {
-    "@kubernetes/client-node": {
-      KubeConfig: class {
-        loadFromDefault() {}
-        makeApiClient() {
-          return {
-            readNamespacedPod: fakeReadPod,
-            createNamespacedPod: fakeCreatePod,
-          };
-        }
-      },
-    },
-    "./sandbox": {
-      getSandboxName,
-      getSandboxImage,
-    },
-  });
-
   beforeEach(() => {
-    fakeReadPod.reset();
-    fakeCreatePod.reset();
-    getSandboxName.resetHistory();
-    getSandboxImage.resetHistory();
+    sinon.restore();
+
+    fakeReadPod = sinon.stub();
+    fakeCreatePod = sinon.stub();
+    fakeDeletePod = sinon.stub();
     consoleErrorStub = sinon.stub(console, "error");
+    consoleLogStub = sinon.stub(console, "log");
+
+    clock = sinon.useFakeTimers();
+
+    podManager = proxyquire("../src/k8s", {
+      "@kubernetes/client-node": {
+        KubeConfig: class {
+          loadFromDefault() {}
+          makeApiClient() {
+            return {
+              readNamespacedPod: fakeReadPod,
+              createNamespacedPod: fakeCreatePod,
+              deleteNamespacedPod: fakeDeletePod,
+            };
+          }
+        },
+      },
+      "./sandbox": {
+        getSandboxName: (tech: string) => `sandbox-${tech}`,
+        getSandboxImage: (tech: string) => `image-${tech}`,
+      },
+      "./const": {
+        RABBITMQ_HOST: "rabbitmq",
+        RABBITMQ_PORT: "5672",
+      },
+    });
   });
 
   afterEach(() => {
+    clock.restore();
     sinon.restore();
   });
 
-  it("should not create a pod if it already exists", async () => {
-    fakeReadPod.resolves({ body: podStatus });
+  describe("createUserPod", () => {
+    it("does not create pod if it exists and is ready", async () => {
+      fakeReadPod.resolves({ body: podStatus });
 
-    await podManager.createUserPod("user123", "js");
+      await podManager.createUserPod("user123", "js", 100);
 
-    expect(fakeCreatePod.called).to.be.false;
-  });
+      expect(fakeCreatePod.called).to.be.false;
+      expect(fakeDeletePod.called).to.be.false;
+      expect(consoleLogStub.calledWith("Pod sandbox-js-user123 is already running and ready.")).to
+        .be.true;
+    });
 
-  it("should create a pod if it does not exist", async function () {
-    this.timeout(10000);
-    fakeReadPod.onFirstCall().rejects(new Error("Not found"));
-    fakeReadPod.onSecondCall().resolves({ body: { status: { phase: "Pending" } } });
-    fakeReadPod.onThirdCall().resolves({ body: podStatus });
+    it("creates pod if not found", async () => {
+      fakeReadPod.rejects({ response: { statusCode: 404 } });
+      fakeCreatePod.resolves();
+      fakeReadPod.onSecondCall().resolves({ body: podStatus });
 
-    fakeCreatePod.resolves();
+      await podManager.createUserPod("user123", "js", 100);
 
-    await podManager.createUserPod("user123", "js");
+      expect(fakeCreatePod.calledOnce).to.be.true;
+    });
 
-    expect(fakeCreatePod.calledOnce).to.be.true;
-    expect(fakeReadPod.callCount).to.be.greaterThanOrEqual(3);
-  });
+    it("creates pod with correct spec", async () => {
+      fakeReadPod.rejects({ response: { statusCode: 404 } });
+      fakeCreatePod.resolves();
+      fakeReadPod.onSecondCall().resolves({ body: podStatus });
 
-  it("should throw if pod does not reach Running", async function () {
-    this.timeout(10000);
+      await podManager.createUserPod("user123", "js", 100);
 
-    fakeReadPod.onFirstCall().rejects(new Error("Not found"));
-    fakeReadPod.onSecondCall().resolves({ body: { status: { phase: "Pending" } } });
-
-    const nowStub = sinon.stub(Date, "now");
-    nowStub.onCall(0).returns(1000);
-    nowStub.onCall(1).returns(1001);
-    nowStub.onCall(2).returns(1001 + 61 * 1000); // Ensure that the error is triggered after 60 seconds
-
-    fakeCreatePod.resolves();
-
-    try {
-      await podManager.createUserPod("user123", "js");
-      throw new Error("Should have thrown timeout");
-    } catch (err) {
-      expect((err as any).message).to.contain("did not reach Running state");
       expect(
-        consoleErrorStub.calledWithMatch("Error checking pod sandbox-js-user123: Error: Not found")
-      ).to.be.true;
-      expect(
-        consoleErrorStub.calledWithMatch(
-          "Error creating user pod: Error: Pod sandbox-js-user123 did not reach Running state within the timeout period."
+        fakeCreatePod.calledWith(
+          "sandbox",
+          sinon.match({
+            metadata: { name: "sandbox-js-user123" },
+            spec: {
+              containers: [
+                sinon.match({
+                  name: "sandbox-js",
+                  image: "image-js",
+                  env: [
+                    { name: "USER_ID", value: "user123" },
+                    { name: "RABBITMQ_HOST", value: "rabbitmq.default" },
+                    { name: "RABBITMQ_PORT", value: "5672" },
+                  ],
+                }),
+              ],
+            },
+          })
         )
       ).to.be.true;
-    }
+    });
 
-    nowStub.restore();
-  });
+    it("handles pod creation errors", async () => {
+      fakeReadPod.rejects({ response: { statusCode: 404 } });
+      fakeCreatePod.rejects(new Error("Creation failed"));
 
-  it("should log error and throw when pod creation fails", async () => {
-    fakeReadPod.rejects(new Error("Not found"));
+      try {
+        await podManager.createUserPod("user123", "js", 100);
+        expect.fail("Should throw");
+      } catch (err: any) {
+        expect(consoleErrorStub.calledWith("Error creating user pod: Error: Creation failed")).to.be
+          .true;
+        expect(err.message).to.equal("Creation failed");
+      }
+    });
 
-    const creationError = new Error("Failed to create pod");
-    fakeCreatePod.rejects(creationError);
+    it("schedules pod deletion after 1 hour", async () => {
+      fakeReadPod
+        .onFirstCall()
+        .rejects({ response: { statusCode: 404 } })
+        .onSecondCall()
+        .resolves({ body: podStatus });
 
-    try {
-      await podManager.createUserPod("user123", "js");
-      throw new Error("Test should have thrown");
-    } catch (err) {
-      expect((err as any).message).to.equal("Failed to create pod");
-      expect(consoleErrorStub.calledWithMatch("Error creating pod")).to.be.true;
-    }
-  });
+      fakeCreatePod.resolves();
 
-  it("should log error and break if error occurs during pod status check", async function () {
-    this.timeout(10000);
+      const expectedDeleteTime = new Date(Date.now() + 3600000).toISOString();
 
-    fakeReadPod.onFirstCall().rejects(new Error("Not found"));
+      await podManager.createUserPod("user123", "js", 100);
+      await clock.tickAsync(3600000);
+      await Promise.resolve();
 
-    fakeCreatePod.resolves();
+      const logs = [
+        `Pod sandbox-js-user123 will be deleted at ${expectedDeleteTime}.`,
+        "Creating pod sandbox-js-user123...",
+        "Pod sandbox-js-user123 is running and ready.",
+        "Pod for user user123 created successfully.",
+        "Deleting pod sandbox-js-user123...",
+        "Pod sandbox-js-user123 deleted after timeout.",
+      ];
 
-    const readError = new Error("Connection timeout");
-    fakeReadPod.onSecondCall().rejects(readError);
+      logs.forEach((msg, idx) => {
+        expect(consoleLogStub.getCall(idx)?.args[0]).to.equal(msg);
+      });
 
-    try {
-      await podManager.createUserPod("user123", "js");
-      throw new Error("Test should have thrown due to pod not reaching Running state");
-    } catch (err) {
-      expect((err as any).message).to.contain("did not reach Running state");
-      expect(consoleErrorStub.calledWithMatch("Error checking pod status:")).to.be.true;
-      expect(consoleErrorStub.calledWithMatch(readError.message)).to.be.true;
-    }
-  });
+      expect(fakeDeletePod.calledOnce).to.be.true;
+    });
 
-  it("should return false if pod metadata is undefined", async function () {
-    this.timeout(10000);
-    fakeReadPod.onFirstCall().resolves({ body: {} }); // no metadata
-    fakeReadPod.onSecondCall().resolves({ body: { status: { phase: "Pending" } } });
-    fakeReadPod.onThirdCall().resolves({ body: podStatus });
+    it("handles errors during scheduled deletion", async () => {
+      fakeReadPod
+        .onFirstCall()
+        .rejects({ response: { statusCode: 404 } })
+        .onSecondCall()
+        .resolves({ body: podStatus });
 
-    fakeCreatePod.resolves();
+      fakeCreatePod.resolves();
+      fakeDeletePod.rejects(new Error("Deletion failed"));
 
-    await podManager.createUserPod("user123", "js");
+      await podManager.createUserPod("user123", "js", 100);
+      await clock.tickAsync(3600000);
+      await Promise.resolve();
 
-    expect(fakeCreatePod.calledOnce).to.be.true;
-    expect(fakeReadPod.callCount).to.be.greaterThanOrEqual(3);
-  });
+      expect(fakeDeletePod.calledOnce).to.be.true;
+      expect(
+        consoleErrorStub.calledWith(
+          "Error deleting pod sandbox-js-user123 on timeout:",
+          sinon.match.instanceOf(Error)
+        )
+      ).to.be.true;
+    });
 
-  it("should retry checking if status is undefined", async function () {
-    this.timeout(10000);
-    fakeReadPod.onFirstCall().resolves(podStatus);
-    fakeReadPod.onSecondCall().resolves({ body: {} });
-    fakeReadPod.onThirdCall().resolves({ body: podStatus });
+    it("recreates pod if not ready", async function () {
+      this.timeout(20000);
 
-    fakeCreatePod.resolves();
+      let readCount = 0;
+      const podOps: string[] = [];
 
-    await podManager.createUserPod("user123", "js");
+      fakeReadPod.callsFake(async () => {
+        readCount++;
+        if (readCount === 1) {
+          podOps.push("ReadPod");
+          return { body: podStatus };
+        } else if (readCount === 2) {
+          podOps.push("ReadPod (Not Ready)");
+          return {
+            body: {
+              ...podStatus,
+              status: { phase: "Pending", containerStatuses: [{ ready: false }] },
+            },
+          };
+        } else if (readCount === 3) {
+          podOps.push("ReadPod (404)");
+          throw { response: { statusCode: 404 } };
+        } else {
+          podOps.push("ReadPod (Ready)");
+          return { body: podStatus };
+        }
+      });
 
-    expect(fakeCreatePod.calledOnce).to.be.true;
-    expect(fakeReadPod.callCount).to.be.greaterThanOrEqual(3);
+      fakeDeletePod.callsFake(async () => {
+        podOps.push("DeletePod");
+        await clock.tickAsync(100);
+      });
+
+      fakeCreatePod.callsFake(async () => {
+        podOps.push("CreatePod");
+        await clock.tickAsync(100);
+      });
+
+      const podPromise = podManager.createUserPod("user123", "js", 100);
+
+      const flush = async () => {
+        await clock.tickAsync(100);
+        await new Promise((r) => setImmediate(r));
+      };
+
+      for (let i = 0; i < 100; i++) {
+        const done = await Promise.race([podPromise.then(() => true), flush().then(() => false)]);
+        if (done) break;
+      }
+
+      expect(podOps).to.deep.equal([
+        "ReadPod",
+        "ReadPod (Not Ready)",
+        "DeletePod",
+        "ReadPod (404)",
+        "CreatePod",
+        "ReadPod (Ready)",
+      ]);
+    });
+
+    it("handles readPod error during ready check", async function () {
+      this.timeout(5000);
+
+      // Restore default clock and create new one with specific settings
+      clock.restore();
+      clock = sinon.useFakeTimers({
+        now: new Date("2025-05-16T10:07:27.060Z"),
+        shouldAdvanceTime: true,
+        advanceTimeDelta: 20,
+      });
+
+      // Track operations
+      const podOps: string[] = [];
+
+      // First call for existence check
+      fakeReadPod
+        .onFirstCall()
+        .callsFake(async () => {
+          podOps.push("ReadPod (Exists)");
+          return { body: podStatus };
+        })
+        // Second call for ready check throws error
+        .onSecondCall()
+        .callsFake(async () => {
+          podOps.push("ReadPod (Error)");
+          throw new Error("Failed to check pod status");
+        });
+
+      fakeDeletePod.callsFake(async () => {
+        podOps.push("DeletePod");
+        await clock.tickAsync(50);
+      });
+
+      const podPromise = podManager.createUserPod("user123", "js", 100);
+
+      // Helper function to advance time
+      const advanceTimeAndFlush = async () => {
+        await clock.tickAsync(50);
+        await Promise.resolve();
+        await new Promise((resolve) => setImmediate(resolve));
+      };
+
+      // Wait for pod operations to complete
+      for (let i = 0; i < 20; i++) {
+        const done = await Promise.race([
+          podPromise.then(() => true),
+          advanceTimeAndFlush().then(() => false),
+        ]);
+        if (done) break;
+      }
+
+      // Verify operations
+      expect(fakeReadPod.callCount).to.equal(3);
+      expect(fakeCreatePod.called).to.be.false;
+      expect(fakeDeletePod.called).to.be.true;
+      expect(podOps).to.deep.equal(["ReadPod (Exists)", "ReadPod (Error)", "DeletePod"]);
+      expect(
+        consoleLogStub.calledWith("Pod sandbox-js-user123 exists but is not ready. Deleting...")
+      ).to.be.true;
+    });
+
+    it("throws error when pod deletion times out", async function () {
+      this.timeout(5000);
+
+      // Setup clock
+      clock.restore();
+      clock = sinon.useFakeTimers({
+        now: new Date("2025-05-16T10:07:27.060Z"),
+        shouldAdvanceTime: true,
+        advanceTimeDelta: 20,
+      });
+
+      // Track operations
+      const podOps: string[] = [];
+
+      // Pod exists check always returns true to simulate stuck pod
+      fakeReadPod
+        .onFirstCall()
+        .resolves({ body: podStatus }) // Initial exists check
+        .onSecondCall()
+        .resolves({
+          body: {
+            // Not ready check
+            ...podStatus,
+            status: { phase: "Pending", containerStatuses: [{ ready: false }] },
+          },
+        });
+
+      // Always return true for exists checks to simulate pod not being deleted
+      fakeReadPod.callsFake(async () => {
+        podOps.push("ReadPod");
+        return { body: podStatus };
+      });
+
+      fakeDeletePod.callsFake(async () => {
+        podOps.push("DeletePod");
+        await clock.tickAsync(50);
+      });
+
+      try {
+        // Set short timeout to trigger error faster
+        await podManager.createUserPod("user123", "js", 100, 100); // 100ms deletion timeout
+        expect.fail("Should throw timeout error");
+      } catch (err: any) {
+        expect(err.message).to.equal("Timeout waiting for pod sandbox-js-user123 to be deleted");
+        expect(podOps).to.include("DeletePod");
+        expect(fakeReadPod.callCount).to.be.greaterThan(1);
+      }
+    });
+
+    it("handles pod readiness status check errors", async function () {
+      this.timeout(10000);
+
+      // Setup clock
+      clock.restore();
+      clock = sinon.useFakeTimers({
+        now: new Date("2025-05-16T10:07:27.060Z"),
+        shouldAdvanceTime: true,
+        advanceTimeDelta: 20,
+      });
+
+      // Track operations
+      const podOps: string[] = [];
+
+      let readCount = 0;
+      fakeReadPod.callsFake(async () => {
+        readCount++;
+
+        switch (readCount) {
+          case 1:
+            podOps.push("ReadPod (Exists)");
+            return { body: podStatus };
+
+          case 2:
+            podOps.push("ReadPod (Missing Status)");
+            return {
+              body: {
+                metadata: { name: "sandbox-js-user123" },
+                // status field intentionally missing to test nullish coalescing
+              },
+            };
+
+          case 3:
+            podOps.push("ReadPod (404)");
+            throw { response: { statusCode: 404 } };
+
+          case 4:
+            // Pod is in Pending state
+            podOps.push("ReadPod (Pending)");
+            return {
+              body: {
+                ...podStatus,
+                status: { phase: "Pending", containerStatuses: [{ ready: false }] },
+              },
+            };
+
+          case 5:
+            // Error during ready check of new pod
+            podOps.push("ReadPod (Error)");
+            throw new Error("Network error during pod status check");
+
+          default:
+            podOps.push("ReadPod (Ready)");
+            return { body: podStatus };
+        }
+      });
+
+      fakeDeletePod.callsFake(async () => {
+        podOps.push("DeletePod");
+        await clock.tickAsync(50);
+      });
+
+      fakeCreatePod.callsFake(async () => {
+        podOps.push("CreatePod");
+        await clock.tickAsync(50);
+      });
+
+      const podPromise = podManager.createUserPod("user123", "js");
+
+      // Helper function to advance time
+      const advanceTimeAndFlush = async () => {
+        await clock.tickAsync(50);
+        await Promise.resolve();
+        await new Promise((resolve) => setImmediate(resolve));
+      };
+
+      // Wait for operations to complete
+      for (let i = 0; i < 10; i++) {
+        await advanceTimeAndFlush();
+      }
+
+      try {
+        await podPromise;
+        expect.fail("Should throw timeout error");
+      } catch (err: any) {
+        // Verify operation sequence
+        expect(podOps).to.deep.equal([
+          "ReadPod (Exists)",
+          "ReadPod (Missing Status)",
+          "DeletePod",
+          "ReadPod (404)",
+          "CreatePod",
+          "ReadPod (Pending)",
+          "ReadPod (Error)",
+          "ReadPod (Ready)",
+        ]);
+
+        // Verify error logging
+        expect(
+          consoleErrorStub.calledWith("Error reading pod status:", sinon.match.instanceOf(Error))
+        ).to.be.true;
+
+        // Verify status logging
+        expect(
+          consoleLogStub.calledWith("Pod sandbox-js-user123 exists but is not ready. Deleting...")
+        ).to.be.true;
+        expect(consoleLogStub.calledWith("Pod sandbox-js-user123 status: Pending. Waiting...")).to
+          .be.true;
+      }
+    });
+
+    it("handles pod readiness status check pending", async function () {
+      this.timeout(10000);
+
+      // Setup clock
+      clock.restore();
+      clock = sinon.useFakeTimers({
+        now: new Date("2025-05-16T10:07:27.060Z"),
+        shouldAdvanceTime: true,
+        advanceTimeDelta: 20,
+      });
+
+      // Track operations
+      const podOps: string[] = [];
+
+      // First call - pod exists check
+      fakeReadPod.onFirstCall().resolves({ body: podStatus });
+
+      // Second call - initial readiness check throws error
+      fakeReadPod.onSecondCall().resolves({
+        body: {
+          ...podStatus,
+          status: { phase: "Pending", containerStatuses: [{ ready: false }] },
+        },
+      });
+
+      // Third call - deletion verification
+      fakeReadPod.onThirdCall().rejects({ response: { statusCode: 404 } });
+
+      // Setup deletion
+      fakeDeletePod.callsFake(async () => {
+        podOps.push("DeletePod");
+        await clock.tickAsync(50);
+      });
+
+      // Setup creation
+      fakeCreatePod.callsFake(async () => {
+        podOps.push("CreatePod");
+        await clock.tickAsync(50);
+      });
+
+      // Subsequent ready checks for new pod
+      let checkCount = 3; // Start after first 3 calls
+      fakeReadPod.callsFake(async () => {
+        checkCount++;
+        if (checkCount === 4) {
+          podOps.push("ReadPod (Not Ready)");
+          return {
+            body: {
+              ...podStatus,
+              status: { phase: "Pending", containerStatuses: [{ ready: false }] },
+            },
+          };
+        }
+        podOps.push("ReadPod (Not Ready)");
+        return {
+          body: {
+            ...podStatus,
+            status: { phase: "Pending", containerStatuses: [{ ready: false }] },
+          },
+        };
+      });
+
+      const podPromise = podManager.createUserPod("user123", "js", 100);
+
+      // Helper function to advance time
+      const advanceTimeAndFlush = async () => {
+        await clock.tickAsync(50);
+        await Promise.resolve();
+        await new Promise((resolve) => setImmediate(resolve));
+      };
+
+      // Wait for operations to complete
+      for (let i = 0; i < 10; i++) {
+        await advanceTimeAndFlush();
+      }
+
+      try {
+        await podPromise;
+        expect.fail("Should throw timeout error");
+      } catch (err: any) {
+        // Verify logging from readNamespacedPod pending
+        expect(consoleLogStub.getCalls().map((call) => call.args[0])).to.include(
+          "Pod sandbox-js-user123 status: Pending. Waiting..."
+        );
+
+        // Verify operation sequence
+        expect(podOps).to.deep.equal(["DeletePod", "CreatePod", "ReadPod (Not Ready)"]);
+      }
+    });
   });
 });

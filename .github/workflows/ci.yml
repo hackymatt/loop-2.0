@@ -189,3 +189,19 @@ jobs:
           pip install -r requirements.txt
           coverage run -m pytest
           coverage report
+
+  test-broker:
+    name: Test Broker
+    runs-on: ubuntu-latest
+    needs: detect-changes
+    if: needs.detect-changes.outputs.broker == 'true'
+    defaults:
+      run:
+        shell: bash
+        working-directory: broker
+
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          npm install
+          npm run test:coverage
