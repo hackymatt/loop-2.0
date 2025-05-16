@@ -95,6 +95,10 @@ class ReadingLessonBaseSerializer(serializers.ModelSerializer):
     def get_name(self, obj):
         lang = self.context.get("request").LANGUAGE_CODE
         return obj.get_translation(lang).name
+    
+    def get_text(self, obj):
+        lang = self.context.get("request").LANGUAGE_CODE
+        return obj.get_translation(lang).text
 
     def get_duration(self, obj):
         content = self.get_text(obj)
@@ -118,8 +122,7 @@ class ReadingLessonSerializer(ReadingLessonBaseSerializer):
         fields = ReadingLessonBaseSerializer.Meta.fields + ["text"]
 
     def get_text(self, obj):
-        lang = self.context.get("request").LANGUAGE_CODE
-        return obj.get_translation(lang).text
+        return self.get_text(obj)
 
 
 class VideoLessonBaseSerializer(serializers.ModelSerializer):
