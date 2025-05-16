@@ -95,7 +95,7 @@ class ReadingLessonBaseSerializer(serializers.ModelSerializer):
     def get_name(self, obj):
         lang = self.context.get("request").LANGUAGE_CODE
         return obj.get_translation(lang).name
-    
+
     def get_text(self, obj):
         lang = self.context.get("request").LANGUAGE_CODE
         return obj.get_translation(lang).text
