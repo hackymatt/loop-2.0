@@ -62,6 +62,9 @@ services:
       - ./frontend:/usr/src/app/frontend
       - /usr/src/app/frontend/node_modules
       - /usr/src/app/frontend/.next
+    depends_on:
+      - backend
+      - broker
 
   nginx:
     container_name: nginx
@@ -76,6 +79,31 @@ services:
     depends_on:
       - backend
       - frontend
+
+  broker:
+    container_name: broker
+    build:
+      context: ./broker
+    environment:
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_PORT: 5672
+      RABBITMQ_USER: user
+      RABBITMQ_PASSWORD: password
+      API_PORT: 3000
+    depends_on:
+      - rabbitmq
+
+  rabbitmq:
+    container_name: rabbitmq
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: user
+      RABBITMQ_DEFAULT_PASS: password
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
 
   redis:
     container_name: redis
@@ -98,5 +126,6 @@ services:
 volumes:
   postgres_data:
   redis:
+  rabbitmq_data:
   staticfiles:
   mediafiles:
