@@ -54,7 +54,7 @@ def send_activation_email(request, user):
     )
 
     token = jwt.encode(
-        {"user_id": user.id, "exp": expiration_time},
+        {"user_id": str(user.id), "exp": expiration_time},
         CONFIG["secret"],
         algorithm="HS256",
     )
@@ -107,7 +107,7 @@ def send_reset_password_email(request, user):
     )
 
     token = jwt.encode(
-        {"user_id": user.id, "exp": expiration_time},
+        {"user_id": str(user.id), "exp": expiration_time},
         CONFIG["secret"],
         algorithm="HS256",
     )
