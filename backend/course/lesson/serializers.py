@@ -14,6 +14,7 @@ from .models import (
     QuizLessonTranslation,
     QuizQuestion,
     QuizQuestionOption,
+    File,
     CodingLesson,
     CodingLessonTranslation,
 )
@@ -210,18 +211,40 @@ class CodingLessonBaseSerializer(serializers.ModelSerializer):
         return obj.get_translation(lang).name
 
 
+class FileBaseSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = File
+        fields = ["name", "path"]
+
+
+class FileSerializer(FileBaseSerializer):
+    code = serializers.CharField(source="solution_code")
+
+    class Meta(FileBaseSerializer.Meta):
+        fields = FileBaseSerializer.Meta.fields + ["code"]
+
+
+class StarterFileSerializer(FileBaseSerializer):
+    code = serializers.CharField(source="starter_code")
+
+    class Meta(FileBaseSerializer.Meta):
+        fields = FileBaseSerializer.Meta.fields + ["code"]
+
+
 class CodingLessonSerializer(CodingLessonBaseSerializer):
     technology = serializers.CharField(source="technology.slug", read_only=True)
-    starter_code = serializers.CharField(read_only=True)
+    file = StarterFileSerializer(read_only=True)
+    files = FileSerializer(many=True, read_only=True)
     penalty_points = serializers.IntegerField(read_only=True)
     introduction = serializers.SerializerMethodField()
     instructions = serializers.SerializerMethodField()
 
     class Meta(CodingLessonBaseSerializer.Meta):
         fields = CodingLessonBaseSerializer.Meta.fields + [
-            "file_name",
+            "timeout",
             "technology",
-            "starter_code",
+            "file",
+            "files",
             "penalty_points",
             "introduction",
             "instructions",
@@ -286,9 +309,9 @@ class CodingLessonSubmitSerializer(serializers.Serializer):
         lesson = self.context.get("lesson")
         answer = attrs["answer"]
 
-        correct = lesson.solution_code
+        correct = lesson.file
 
-        if answer != correct:
+        if answer != correct.solution_code:
             raise serializers.ValidationError(
                 {
                     "answer": [

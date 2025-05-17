@@ -24,7 +24,7 @@ class Lesson(BaseModel):
 
 class ReadingLesson(BaseModel):
     lesson = models.OneToOneField(
-        Lesson, on_delete=models.CASCADE, related_name="reading"
+        "Lesson", on_delete=models.CASCADE, related_name="reading"
     )
 
     class Meta:
@@ -38,7 +38,6 @@ class ReadingLesson(BaseModel):
         return f"Reading: {self.lesson.slug}"  # pragma: no cover
 
     def clean(self):
-        """Ensure only lesson with type=READING can be assigned"""
         if self.lesson.type != LessonType.READING:
             raise ValidationError(
                 f"Reading can only be created for {LessonType.READING} lesson."
@@ -51,7 +50,7 @@ class ReadingLesson(BaseModel):
 
 class ReadingLessonTranslation(BaseModel):
     lesson = models.ForeignKey(
-        ReadingLesson, on_delete=models.CASCADE, related_name="translations"
+        "ReadingLesson", on_delete=models.CASCADE, related_name="translations"
     )
     language = models.CharField(
         max_length=max(len(choice[0]) for choice in Language.choices),
@@ -70,7 +69,7 @@ class ReadingLessonTranslation(BaseModel):
 
 class VideoLesson(BaseModel):
     lesson = models.OneToOneField(
-        Lesson, on_delete=models.CASCADE, related_name="video"
+        "Lesson", on_delete=models.CASCADE, related_name="video"
     )
     video_url = models.URLField()
 
@@ -85,7 +84,6 @@ class VideoLesson(BaseModel):
         return f"Video: {self.lesson.slug}"  # pragma: no cover
 
     def clean(self):
-        """Ensure only lesson with type=VIDEO can be assigned"""
         if self.lesson.type != LessonType.VIDEO:
             raise ValidationError(
                 f"Video can only be created for {LessonType.VIDEO} lesson."
@@ -98,7 +96,7 @@ class VideoLesson(BaseModel):
 
 class VideoLessonTranslation(BaseModel):
     lesson = models.ForeignKey(
-        VideoLesson, on_delete=models.CASCADE, related_name="translations"
+        "VideoLesson", on_delete=models.CASCADE, related_name="translations"
     )
     language = models.CharField(
         max_length=max(len(choice[0]) for choice in Language.choices),
@@ -115,7 +113,9 @@ class VideoLessonTranslation(BaseModel):
 
 
 class QuizLesson(BaseModel):
-    lesson = models.OneToOneField(Lesson, on_delete=models.CASCADE, related_name="quiz")
+    lesson = models.OneToOneField(
+        "Lesson", on_delete=models.CASCADE, related_name="quiz"
+    )
     quiz_type = models.CharField(
         max_length=max(len(choice[0]) for choice in QuizType.choices),
         choices=QuizType.choices,
@@ -132,7 +132,6 @@ class QuizLesson(BaseModel):
         return f"Quiz: {self.lesson.slug}"  # pragma: no cover
 
     def clean(self):
-        """Ensure only lesson with type=QUIZ can be assigned"""
         if self.lesson.type != LessonType.QUIZ:
             raise ValidationError(
                 f"Quiz can only be created for {LessonType.QUIZ} lesson."
@@ -145,7 +144,7 @@ class QuizLesson(BaseModel):
 
 class QuizLessonTranslation(BaseModel):
     lesson = models.ForeignKey(
-        QuizLesson, on_delete=models.CASCADE, related_name="translations"
+        "QuizLesson", on_delete=models.CASCADE, related_name="translations"
     )
     language = models.CharField(
         max_length=max(len(choice[0]) for choice in Language.choices),
@@ -163,7 +162,9 @@ class QuizLessonTranslation(BaseModel):
 
 class QuizQuestion(BaseModel):
     translation = models.OneToOneField(
-        QuizLessonTranslation, on_delete=models.CASCADE, related_name="question"
+        "QuizLessonTranslation",
+        on_delete=models.CASCADE,
+        related_name="question",
     )
     text = models.TextField()
 
@@ -177,7 +178,7 @@ class QuizQuestion(BaseModel):
 
 class QuizQuestionOption(BaseModel):
     question = models.ForeignKey(
-        QuizQuestion, on_delete=models.CASCADE, related_name="options"
+        "QuizQuestion", on_delete=models.CASCADE, related_name="options"
     )
     text = models.CharField(max_length=255)
     is_correct = models.BooleanField(default=False)
@@ -187,17 +188,41 @@ class QuizQuestionOption(BaseModel):
         verbose_name_plural = "Quiz question options"
 
     def __str__(self):
-        return f"Option: {self.text} ({self.question.text}) (Correct: {self.is_correct})"  # pragma: no cover
+        return f"Option: {self.text}"  # pragma: no cover
+
+
+class File(models.Model):
+    name = models.CharField(max_length=255)
+    path = models.CharField(max_length=500, null=True, blank=True)
+    starter_code = models.TextField()
+    solution_code = models.TextField()
+
+    class Meta:
+        db_table = "course_file"
+        verbose_name_plural = "Files"
+
+    def __str__(self):
+        return self.name  # pragma: no cover
 
 
 class CodingLesson(BaseModel):
     lesson = models.OneToOneField(
-        Lesson, on_delete=models.CASCADE, related_name="coding"
+        "Lesson", on_delete=models.CASCADE, related_name="coding"
     )
     technology = models.ForeignKey(Technology, on_delete=models.PROTECT)
-    file_name = models.CharField(null=True, blank=True)
-    starter_code = models.TextField()
-    solution_code = models.TextField()
+    files = models.ManyToManyField(
+        "File",
+        related_name="coding_lessons",
+        blank=True,
+    )
+    file = models.ForeignKey(
+        "File",
+        on_delete=models.PROTECT,
+        related_name="starter_lessons",
+        null=True,
+        blank=True,
+    )
+    timeout = models.PositiveIntegerField(default=10)
     penalty_points = models.PositiveIntegerField(default=0)
 
     class Meta:
@@ -211,7 +236,6 @@ class CodingLesson(BaseModel):
         return f"Coding: {self.lesson.slug}"  # pragma: no cover
 
     def clean(self):
-        """Ensure only lesson with type=CODING can be assigned"""
         if self.lesson.type != LessonType.CODING:
             raise ValidationError(
                 f"Coding can only be created for {LessonType.CODING} lesson."
@@ -224,7 +248,7 @@ class CodingLesson(BaseModel):
 
 class CodingLessonTranslation(BaseModel):
     lesson = models.ForeignKey(
-        CodingLesson, on_delete=models.CASCADE, related_name="translations"
+        "CodingLesson", on_delete=models.CASCADE, related_name="translations"
     )
     language = models.CharField(
         max_length=max(len(choice[0]) for choice in Language.choices),
@@ -233,7 +257,7 @@ class CodingLessonTranslation(BaseModel):
     name = models.CharField(max_length=255)
     introduction = models.TextField()
     instructions = models.TextField()
-    hint = models.TextField(blank=True, null=True)
+    hint = models.TextField()
 
     class Meta:
         db_table = "course_coding_lesson_translation"

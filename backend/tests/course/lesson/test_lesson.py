@@ -174,7 +174,9 @@ class LessonViewSetTestCase(TestCase):
         self.assertIn("introduction", response.data)
         self.assertIn("instructions", response.data)
         self.assertIn("technology", response.data)
-        self.assertIn("starter_code", response.data)
+        self.assertIn("file", response.data)
+        self.assertIn("files", response.data)
+        self.assertIn("timeout", response.data)
         self.assertIn("penalty_points", response.data)
 
         # Ensure progress and enrollment were created
@@ -207,7 +209,9 @@ class LessonViewSetTestCase(TestCase):
         self.assertIn("introduction", response.data)
         self.assertIn("instructions", response.data)
         self.assertIn("technology", response.data)
-        self.assertIn("starter_code", response.data)
+        self.assertIn("file", response.data)
+        self.assertIn("files", response.data)
+        self.assertIn("timeout", response.data)
         self.assertIn("penalty_points", response.data)
         self.assertIn("hint", response.data)
 
@@ -241,7 +245,9 @@ class LessonViewSetTestCase(TestCase):
         self.assertIn("introduction", response.data)
         self.assertIn("instructions", response.data)
         self.assertIn("technology", response.data)
-        self.assertIn("starter_code", response.data)
+        self.assertIn("file", response.data)
+        self.assertIn("files", response.data)
+        self.assertIn("timeout", response.data)
         self.assertIn("penalty_points", response.data)
         self.assertIn("answer", response.data)
 
@@ -397,7 +403,7 @@ class LessonSubmitAPIViewTestCase(TestCase):
 
     def test_successful_coding_submission(self):
         login(self, self.student.user.email, self.student_password)
-        answer = self.coding_specific_lesson.solution_code
+        answer = self.coding_specific_lesson.file.solution_code
         data = {"lesson": self.coding_lesson.slug, "answer": answer}
         response = self.client.post(self.url, data=data, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -478,7 +484,7 @@ class LessonAnswerAPIViewTestCase(TestCase):
 
     def test_coding_lesson_answer_retrieval(self):
         login(self, self.student.user.email, self.student_password)
-        answer = self.coding_specific_lesson.solution_code
+        answer = self.coding_specific_lesson.file.solution_code
         response = self.client.post(
             self.url, data={"lesson": self.coding_lesson.slug}, format="json"
         )

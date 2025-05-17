@@ -74,7 +74,7 @@ export function CodingLesson({
 
   const mobileTabs = [t("coding.context"), t("coding.exercise")];
 
-  const [code, setCode] = useState<string>(lesson.starterCode);
+  const [code, setCode] = useState<string>(lesson.file.code);
   const [mobileTab, setMobileTab] = useState(mobileTabs[0]);
 
   useEffect(() => {
