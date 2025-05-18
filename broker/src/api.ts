@@ -9,15 +9,15 @@ const router = express.Router();
 
 router.post("/test", async (req: Request, res: Response) => {
   try {
-    const { userId, technology, files, command } = req.body;
+    const { userId, technology, files, timeout, command } = req.body;
 
-    if (!userId || !technology || !files || !command) {
-      res.status(400).json({ error: "Missing required fields: userId, files, or command" });
+    if (!userId || !technology || !files || !timeout || !command) {
+      res.status(400).json({ error: "Missing required fields: userId, files, timeout or command" });
       return;
     }
 
     await createUserPod(userId, technology);
-    const jobResult = await publish(userId, technology, command, files, false, true);
+    const jobResult = await publish(userId, technology, timeout, command, files, false, true);
 
     const isError = "error" in jobResult;
 

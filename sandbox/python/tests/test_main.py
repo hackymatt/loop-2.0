@@ -14,7 +14,12 @@ def mock_env(monkeypatch):
 def test_callback_with_dict_result(mock_publish, mock_process_job):
     # Arrange
     body = json.dumps(
-        {"job_id": "123", "files": {"test.sh": "echo hello"}, "command": "bash test.sh"}
+        {
+            "job_id": "123",
+            "files": [{"name": "test.sh", "path": None, "code": "echo hello"}],
+            "command": "bash test.sh",
+            "timeout": 10,
+        }
     )
     mock_process_job.return_value = {"stdout": "hello", "exit_code": 0}
 
@@ -40,8 +45,9 @@ def test_callback_with_generator_result(mock_publish, mock_process_job):
     body = json.dumps(
         {
             "job_id": "456",
-            "files": {"test.sh": "echo part"},
+            "files": [{"name": "test.sh", "path": None, "code": "echo part"}],
             "command": "bash test.sh",
+            "timeout": 10,
             "stream": True,
         }
     )
@@ -70,7 +76,14 @@ def test_callback_with_generator_result(mock_publish, mock_process_job):
 
 
 def test_callback_handles_exception():
-    body = json.dumps({"job_id": "999", "files": {}, "command": "echo fail"})
+    body = json.dumps(
+        {
+            "job_id": "999",
+            "files": [],
+            "command": "echo fail",
+            "timeout": 10,
+        }
+    )
 
     channel = MagicMock()
     method = MagicMock()
@@ -88,7 +101,7 @@ def test_callback_handles_exception():
 @patch("builtins.print")
 def test_callback_exception_handling(mock_print, mock_publish, mock_process_job):
     # Arrange
-    body = '{"job_id": "999", "files": {}, "command": ""}'
+    body = '{"job_id": "999", "files": [], "command": "", "timeout": 10}'
     channel = MagicMock()
     method = MagicMock()
     method.delivery_tag = "zzz"
