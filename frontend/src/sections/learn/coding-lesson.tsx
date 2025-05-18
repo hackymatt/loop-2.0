@@ -1,10 +1,11 @@
 import "./style.css";
 
-import type { ICodingLessonProps } from "src/types/lesson";
+import type { ICodingFileProp, ICodingLessonProps } from "src/types/lesson";
 
 import Split from "react-split";
 import { useTranslation } from "react-i18next";
-import React, { useState, useEffect } from "react";
+import { varAlpha } from "minimal-shared/utils";
+import React, { useMemo, useState, useEffect } from "react";
 
 import Box from "@mui/material/Box";
 import { Button, Skeleton, Typography, ButtonGroup } from "@mui/material";
@@ -74,12 +75,21 @@ export function CodingLesson({
 
   const mobileTabs = [t("coding.context"), t("coding.exercise")];
 
-  const [code, setCode] = useState<string>(lesson.starterCode);
+  const [code, setCode] = useState<string>(lesson.file.code);
   const [mobileTab, setMobileTab] = useState(mobileTabs[0]);
+
+  const allFiles = useMemo(() => [lesson.file, ...lesson.files], [lesson.file, lesson.files]);
+  const [file, setFile] = useState<ICodingFileProp>(lesson.file);
 
   useEffect(() => {
     if (lesson.answer) setCode(lesson.answer);
   }, [lesson.answer]);
+
+  const handleChangeCode = (value: string) => {
+    if (file === lesson.file) {
+      setCode(value);
+    }
+  };
 
   const handleRunCode = () => {
     onSubmit(code);
@@ -251,7 +261,77 @@ export function CodingLesson({
         {isLocked ? (
           <Skeleton variant="rectangular" sx={{ width: 1, height: 1 }} />
         ) : (
-          <CodeEditor technology={lesson.technology} value={code} onChange={setCode} />
+          <Box
+            sx={{
+              flexGrow: 1,
+              position: "relative",
+              height: 0.9,
+            }}
+          >
+            <Box
+              sx={{
+                bgcolor: (theme) => theme.vars.palette.background.neutral,
+                overflowX: "auto",
+                "&::-webkit-scrollbar": { display: "none" },
+              }}
+            >
+              <ButtonGroup
+                disableElevation
+                sx={(theme) => ({
+                  display: "inline-flex",
+                  "& .MuiButton-root": {
+                    borderRadius: 0,
+                    boxShadow: "none",
+                    py: 0.5,
+                    px: 4,
+                    textTransform: "none",
+                    fontWeight: 500,
+                    flex: "0 0 auto",
+                  },
+                  "& .MuiButton-outlined": {
+                    bgcolor: varAlpha(theme.vars.palette.background.defaultChannel, 0.1),
+                    border: "none",
+                    color: theme.vars.palette.text.primary,
+                    transition: theme.transitions.create("opacity", {
+                      duration: theme.transitions.duration.shortest,
+                    }),
+                    "&:hover, &:focus": {
+                      opacity: 0.7,
+                      bgcolor: varAlpha(theme.vars.palette.background.defaultChannel, 0.1),
+                      border: "none",
+                      boxShadow: "none",
+                    },
+                  },
+                  "& .MuiButton-contained": {
+                    bgcolor: theme.vars.palette.background.paper,
+                    color: theme.vars.palette.text.primary,
+                    borderTop: `2px solid ${theme.vars.palette.primary.main}`,
+                  },
+                })}
+              >
+                {allFiles.map((f) => (
+                  <Button
+                    key={f.name}
+                    variant={f === file ? "contained" : "outlined"}
+                    onClick={() => setFile(f)}
+                    startIcon={
+                      f !== lesson.file && <Iconify icon="solar:lock-outline" width={16} />
+                    }
+                  >
+                    {f.name}
+                  </Button>
+                ))}
+              </ButtonGroup>
+            </Box>
+
+            <CodeEditor
+              key={file.name}
+              technology={lesson.technology}
+              value={file === lesson.file ? code : file.code}
+              onChange={handleChangeCode}
+              readOnly={file !== lesson.file}
+            />
+          </Box>
         )}
       </Box>
 

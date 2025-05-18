@@ -17,6 +17,7 @@ def user_directory_path(instance, filename):  # pragma: no cover
 
 
 class User(AbstractUser):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     email = models.EmailField(unique=True)  # Unique and required
     first_name = models.CharField(blank=True, null=True)  # Optional
     last_name = models.CharField(blank=True, null=True)  # Optional

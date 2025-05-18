@@ -27,6 +27,7 @@ from course.lesson.models import (
     ReadingLessonTranslation,
     VideoLesson,
     VideoLessonTranslation,
+    File,
     CodingLesson,
     CodingLessonTranslation,
 )
@@ -202,6 +203,17 @@ def create_technology():
     return technology
 
 
+def create_file():
+    name = _generate_random_string(5)
+    path = _generate_random_string(15)
+    starter_code = _generate_random_string(100)
+    solution_code = _generate_random_string(100)
+    file = File.objects.create(
+        name=name, path=path, starter_code=starter_code, solution_code=solution_code
+    )
+    return file
+
+
 def create_lesson(lesson_type=None):
     slug = _generate_random_slug()
     points = _generate_random_number(50, 100)
@@ -253,17 +265,19 @@ def create_lesson(lesson_type=None):
                 )
 
     elif lesson_type == LessonType.CODING:
-        starter_code = _generate_random_string(50)
-        solution_code = _generate_random_string(50)
+        file = create_file()
+        files = [create_file() for _ in range(_generate_random_number(1, 5))]
+        timeout = _generate_random_number()
         penalty_points = _generate_random_number(0, 50)
         technology = create_technology()
         specific_lesson = CodingLesson.objects.create(
             lesson=lesson,
             technology=technology,
-            starter_code=starter_code,
-            solution_code=solution_code,
+            file=file,
+            timeout=timeout,
             penalty_points=penalty_points,
         )
+        specific_lesson.files.add(*files)
         _create_translations(
             CodingLessonTranslation,
             specific_lesson,

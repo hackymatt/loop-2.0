@@ -23,13 +23,16 @@ export type IQuizLessonProps = ILessonBaseProps & {
   answer: boolean[] | null;
 };
 
+export type ICodingFileProp = { name: string; path: string; code: string };
+
 export type ICodingLessonProps = ILessonBaseProps & {
-  fileName: string | null;
   technology: string;
+  timeout: number;
   introduction: string;
   instructions: string;
   penaltyPoints: number;
-  starterCode: string;
+  file: ICodingFileProp;
+  files: ICodingFileProp[];
   hint: string | null;
   answer: string | null;
 };

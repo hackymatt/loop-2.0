@@ -8,6 +8,7 @@ from .models import (
     QuizLessonTranslation,
     QuizQuestion,
     QuizQuestionOption,
+    File,
     CodingLesson,
     CodingLessonTranslation,
 )
@@ -20,5 +21,6 @@ admin.site.register(QuizLesson)
 admin.site.register(QuizLessonTranslation)
 admin.site.register(QuizQuestion)
 admin.site.register(QuizQuestionOption)
+admin.site.register(File)
 admin.site.register(CodingLesson)
 admin.site.register(CodingLessonTranslation)

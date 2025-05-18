@@ -44,10 +44,17 @@ type IQuizLesson = {
   answer?: boolean[];
 };
 
+type ICodingLessonFile = {
+  name: string;
+  path: string;
+  code: string;
+};
+
 type ICodingLesson = {
-  file_name: string | null;
   technology: string;
-  starter_code: string;
+  timeout: number;
+  file: ICodingLessonFile;
+  files: ICodingLessonFile[];
   introduction: string;
   instructions: string;
   penalty_points: number;
@@ -87,9 +94,10 @@ const lessonMapper = {
 
   coding: (props: ILesson): ICodingLessonProps => {
     const {
-      file_name,
       technology,
-      starter_code,
+      timeout,
+      file,
+      files,
       introduction,
       instructions,
       penalty_points,
@@ -101,9 +109,10 @@ const lessonMapper = {
       type: "coding",
       name: props.name,
       totalPoints: props.points,
-      fileName: file_name,
       technology,
-      starterCode: starter_code,
+      timeout,
+      file,
+      files,
       introduction,
       instructions,
       penaltyPoints: penalty_points,

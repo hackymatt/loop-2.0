@@ -21,7 +21,7 @@ def generate_valid_token(user_id):
     expiration_time = datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(
         hours=24
     )
-    payload = {"user_id": user_id, "exp": expiration_time}
+    payload = {"user_id": str(user_id), "exp": expiration_time}
     return jwt.encode(payload, CONFIG["secret"], algorithm="HS256")
 
 
@@ -30,7 +30,7 @@ def generate_expired_token(user_id):
     Generate a token that is already expired.
     """
     expiration_time = datetime.datetime.now(datetime.timezone.utc)  # Expired token
-    payload = {"user_id": user_id, "exp": expiration_time}
+    payload = {"user_id": str(user_id), "exp": expiration_time}
     return jwt.encode(payload, CONFIG["secret"], algorithm="HS256")
 
 

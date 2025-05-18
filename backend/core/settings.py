@@ -171,6 +171,10 @@ if DEBUG:
     CORS_ALLOW_ALL_ORIGINS = True  # pragma: no cover
 
 SIMPLE_JWT = {
+    "SIGNING_KEY": os.getenv(
+        "JWT_SECRET",
+        "lmzpsXgy4NGIUuO9MbkM9lS0dJkSSMehjyKS529EACLg8AT6C5U42T9hl5s19ZLbUw7HZwSVVRPKWqbxvboTOQ==",
+    ),
     "ACCESS_TOKEN_LIFETIME": timedelta(days=1),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
     "ROTATE_REFRESH_TOKENS": True,
