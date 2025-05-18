@@ -24,11 +24,25 @@ def test_run_command_non_streaming():
     tmp_dir = Path(tempfile.mkdtemp())
     (tmp_dir / "test.sh").write_text("echo hello")
 
-    result = run_command("bash test.sh", cwd=tmp_dir, stream_output=False)
+    result = run_command("bash test.sh", 10, cwd=tmp_dir, stream_output=False)
 
     assert result["stdout"] == "hello"
     assert result["stderr"] == ""
     assert result["exit_code"] == 0
+
+    shutil.rmtree(tmp_dir)
+
+
+def test_run_command_non_streaming_timeout():
+    tmp_dir = Path(tempfile.mkdtemp())
+    # Create a script that sleeps for longer than timeout
+    (tmp_dir / "test.sh").write_text("sleep 2")
+
+    result = run_command("bash test.sh", timeout=1, cwd=tmp_dir, stream_output=False)
+
+    assert result["stdout"] == ""
+    assert result["stderr"].endswith("[ERROR] TimeoutExpired")
+    assert result["exit_code"] == -9
 
     shutil.rmtree(tmp_dir)
 
@@ -38,6 +52,7 @@ def test_process_job_non_streaming():
         "job_id": "test123",
         "files": [{"name": "script.sh", "path": None, "code": "echo hello"}],
         "command": "bash script.sh",
+        "timeout": 10,
         "stream": False,
     }
 
@@ -71,7 +86,7 @@ cd /nonexistent_directory
 """
     )
 
-    result_gen = run_command("bash test.sh", cwd=tmp_dir, stream_output=True)
+    result_gen = run_command("bash test.sh", 10, cwd=tmp_dir, stream_output=True)
 
     # Since the output is streamed, we collect all yielded lines
     result = list(result_gen)
@@ -93,6 +108,32 @@ cd /nonexistent_directory
     shutil.rmtree(tmp_dir)
 
 
+def test_run_command_streaming_timeout():
+    tmp_dir = Path(tempfile.mkdtemp())
+    # Create a script that outputs lines with delays
+    (tmp_dir / "test.sh").write_text(
+        """
+        echo "Starting..."
+        sleep 2
+        echo "This should not be seen"
+    """
+    )
+
+    result_gen = run_command("bash test.sh", timeout=1, cwd=tmp_dir, stream_output=True)
+    result = list(result_gen)
+
+    # Flatten stdout and stderr
+    stdout_lines = [line for r in result for line in r["stdout"]]
+    stderr_lines = [line for r in result for line in r["stderr"]]
+
+    # Should see first line but not second due to timeout
+    assert "Starting..." in stdout_lines
+    assert "This should not be seen" not in stdout_lines
+    assert "[ERROR] TimeoutExpired" in stderr_lines
+
+    shutil.rmtree(tmp_dir)
+
+
 def test_process_job_streaming():
     payload = {
         "job_id": "test123",
@@ -104,6 +145,7 @@ def test_process_job_streaming():
             }
         ],
         "command": "bash script.sh",
+        "timeout": 10,
         "stream": True,  # Set stream to True to test streaming case
     }
     body = json.dumps(payload)
@@ -120,6 +162,39 @@ def test_process_job_streaming():
     assert result[0]["stdout"] == ["line 1"]
 
 
+def test_process_job_timeout():
+    payload = {
+        "job_id": "test123",
+        "files": [
+            {
+                "name": "script.sh",
+                "path": None,
+                # Create a script that tries to output immediately and then sleeps
+                # This helps verify the process is actually killed
+                "code": """
+echo "First line"
+sleep 10
+echo "Should not see this"
+""",
+            }
+        ],
+        "command": "bash script.sh",
+        "timeout": 1,
+        "stream": False,
+    }
+
+    result = process_job(json.dumps(payload))
+
+    assert isinstance(result, dict)
+
+    assert result["stdout"] == "First line"
+    assert "[ERROR] TimeoutExpired" in result["stderr"]
+
+    assert result["exit_code"] in [-9, 137, 1]
+
+    shutil.rmtree("jobs/test123", ignore_errors=True)
+
+
 def test_process_job_streaming_no_output():
     payload = {
         "job_id": "test123",
@@ -131,6 +206,7 @@ def test_process_job_streaming_no_output():
             }
         ],
         "command": "bash script.sh",
+        "timeout": 10,
         "stream": True,  # Streaming enabled
     }
     body = json.dumps(payload)
@@ -152,6 +228,7 @@ def test_process_job_error():
                 "code": "for i in {1..3}; do sleep 1; done",
             }
         ],
+        "timeout": 10,
         "stream": True,  # Streaming enabled
     }
     body = json.dumps(payload)
