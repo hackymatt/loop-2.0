@@ -7,10 +7,10 @@ from utils import write_files, run_command, process_job
 
 def test_write_files():
     tmp_dir = Path(tempfile.mkdtemp())
-    files = {
-        "file1.txt": "hello",
-        "nested/dir/file2.txt": "world",
-    }
+    files = [
+        {"name": "file1.txt", "path": None, "code": "hello"},
+        {"name": "file2.txt", "path": "nested/dir", "code": "world"},
+    ]
 
     write_files(tmp_dir, files)
 
@@ -36,7 +36,7 @@ def test_run_command_non_streaming():
 def test_process_job_non_streaming():
     payload = {
         "job_id": "test123",
-        "files": {"script.sh": "echo hello"},
+        "files": [{"name": "script.sh", "path": None, "code": "echo hello"}],
         "command": "bash script.sh",
         "stream": False,
     }
@@ -52,7 +52,7 @@ def test_process_job_non_streaming():
 
 
 def test_process_job_missing_fields():
-    payload = {"job_id": "test123", "files": {}}
+    payload = {"job_id": "test123", "files": []}
 
     result = process_job(json.dumps(payload))
     assert "error" in result
@@ -96,7 +96,13 @@ cd /nonexistent_directory
 def test_process_job_streaming():
     payload = {
         "job_id": "test123",
-        "files": {"script.sh": "for i in {1..3}; do echo line $i; done"},
+        "files": [
+            {
+                "name": "script.sh",
+                "path": None,
+                "code": "for i in {1..3}; do echo line $i; done",
+            }
+        ],
         "command": "bash script.sh",
         "stream": True,  # Set stream to True to test streaming case
     }
@@ -117,7 +123,13 @@ def test_process_job_streaming():
 def test_process_job_streaming_no_output():
     payload = {
         "job_id": "test123",
-        "files": {"script.sh": "for i in {1..3}; do sleep 1; done"},
+        "files": [
+            {
+                "name": "script.sh",
+                "path": None,
+                "code": "for i in {1..3}; do sleep 1; done",
+            }
+        ],
         "command": "bash script.sh",
         "stream": True,  # Streaming enabled
     }
@@ -133,7 +145,13 @@ def test_process_job_streaming_no_output():
 def test_process_job_error():
     payload = {
         "job_id": "test123",
-        "files": {"script.sh": "for i in {1..3}; do sleep 1; done"},
+        "files": [
+            {
+                "name": "script.sh",
+                "path": None,
+                "code": "for i in {1..3}; do sleep 1; done",
+            }
+        ],
         "stream": True,  # Streaming enabled
     }
     body = json.dumps(payload)

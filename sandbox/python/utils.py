@@ -5,10 +5,14 @@ from types import GeneratorType
 
 
 def write_files(job_dir, files):
-    for rel_path, content in files.items():
+    for file in files:
+        name = file["name"]
+        path = file["path"]
+        code = file["code"]
+        rel_path = f"{path}/{name}" if path else name
         file_path = job_dir / rel_path
         file_path.parent.mkdir(parents=True, exist_ok=True)
-        file_path.write_text(content)
+        file_path.write_text(code)
 
 
 def _run_command_non_streaming(command, cwd):

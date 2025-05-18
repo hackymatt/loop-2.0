@@ -4,5 +4,6 @@ disable=
     C0115, # missing-class-docstring
     C0116, # missing-function-docstring
     R0903, # too-few-public-methods
+    R1732, # consider-using-with
     W0511, # fixme
     W0718, # broad-exception-caught
