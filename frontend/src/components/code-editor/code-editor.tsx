@@ -1,5 +1,6 @@
+import { debounce } from "es-toolkit";
 import { useMonaco } from "@monaco-editor/react";
-import React, { lazy, Suspense, useEffect } from "react";
+import React, { lazy, useRef, useMemo, Suspense, useEffect, useCallback } from "react";
 
 import { useTheme } from "@mui/material/styles";
 import { CircularProgress } from "@mui/material";
@@ -11,45 +12,82 @@ interface CodeEditorProps {
   value: string;
   technology: string;
   onChange: (value: string) => void;
+  readOnly?: boolean;
 }
 
-export function CodeEditor({ value, technology, onChange }: CodeEditorProps) {
+export function CodeEditor({ value, technology, readOnly = false, onChange }: CodeEditorProps) {
   const theme = useTheme();
   const monaco = useMonaco();
+  const editorRef = useRef<any>(null);
 
+  // Debounce the onChange handler
+  const debouncedOnChange = useMemo(
+    () =>
+      debounce((newValue: string) => {
+        onChange(newValue);
+      }, 150),
+    [onChange]
+  );
+
+  // Cleanup debounce on unmount
+  useEffect(
+    () => () => {
+      debouncedOnChange.cancel();
+    },
+    [debouncedOnChange]
+  );
+
+  const handleEditorChange = useCallback(
+    (newValue?: string) => {
+      if (typeof newValue === "string") {
+        debouncedOnChange(newValue);
+      }
+    },
+    [debouncedOnChange]
+  );
+
+  const handleEditorDidMount = useCallback((editor: any) => {
+    editorRef.current = editor;
+  }, []);
+
+  // Memoize theme effect
   useEffect(() => {
     if (monaco) {
-      const themeClass = `vs-${theme.palette.mode}`;
-
-      // Ensure Monaco editor is fully initialized before setting the theme
-      if (monaco.editor.getModels().length > 0) {
-        monaco.editor.setTheme(themeClass);
-      } else {
-        // Fallback in case Monaco is not initialized yet
-        setTimeout(() => {
-          monaco.editor.setTheme(themeClass);
-        }, 100); // Retry after a short delay
-      }
+      const currentTheme = theme.palette.mode === "dark" ? "vs-dark" : "vs";
+      monaco.editor.setTheme(currentTheme);
     }
-  }, [monaco, theme.palette.mode]); // Effect runs when Monaco or theme changes
+  }, [monaco, theme.palette.mode]);
 
-  const handleEditorChange = (newValue?: string) => {
-    if (typeof newValue === "string") {
-      onChange(newValue);
+  const editorOptions = useMemo(
+    () => ({
+      fontSize: 14,
+      minimap: { enabled: false },
+      automaticLayout: true,
+      suggestOnTriggerCharacters: true,
+      tabSize: 2,
+      scrollBeyondLastLine: false,
+      renderWhitespace: "none",
+      wordWrap: "on",
+      fixedOverflowWidgets: true,
+    }),
+    []
+  );
+
+  const technologyEditorMap = useMemo(
+    () => ({
+      python: PythonCodeEditor,
+      vba: VbaCodeEditor,
+    }),
+    []
+  );
+
+  const EditorComponent = useMemo(() => {
+    const component = technologyEditorMap[technology as "python" | "vba"];
+    if (!component) {
+      throw new Error(`No editor found for technology ${technology}`);
     }
-  };
-
-  // Map to get the correct editor component based on technology
-  const technologyEditorMap: Record<string, React.ComponentType<any>> = {
-    python: PythonCodeEditor,
-    vba: VbaCodeEditor,
-  };
-
-  const EditorComponent = technologyEditorMap[technology];
-
-  if (!EditorComponent) {
-    throw new Error(`No editor found for technology ${technology}`);
-  }
+    return component;
+  }, [technology, technologyEditorMap]);
 
   return (
     <Suspense fallback={<CircularProgress />}>
@@ -57,13 +95,8 @@ export function CodeEditor({ value, technology, onChange }: CodeEditorProps) {
         height="100%"
         value={value}
         onChange={handleEditorChange}
-        options={{
-          fontSize: 14,
-          minimap: { enabled: false },
-          automaticLayout: true,
-          suggestOnTriggerCharacters: true,
-          tabSize: 2,
-        }}
+        onMount={handleEditorDidMount}
+        options={{ ...editorOptions, readOnly }}
         loading={<CircularProgress />}
       />
     </Suspense>
