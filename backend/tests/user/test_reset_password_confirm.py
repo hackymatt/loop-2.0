@@ -1,3 +1,4 @@
+import uuid
 from rest_framework import status
 from django.test import TestCase
 from rest_framework.test import APIClient
@@ -23,7 +24,7 @@ class PasswordResetConfirmTests(TestCase):
         self.invalid_token = "invalid.token.string"
 
         # Nonexistent user token
-        self.nonexistent_user_token = generate_valid_token(9999)
+        self.nonexistent_user_token = generate_valid_token(uuid.uuid4())
 
     def test_successful_password_reset(self):
         """Ensure a valid token allows password reset."""

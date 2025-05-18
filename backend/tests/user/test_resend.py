@@ -1,3 +1,4 @@
+import uuid
 from django.test import TestCase
 from rest_framework import status
 from rest_framework.test import APIClient
@@ -47,7 +48,7 @@ class ResendActivationLinkViewTest(TestCase):
     def test_resend_activation_link_user_not_found(self, send_message_mock):
         mock_send_message(mock=send_message_mock)
         """Test when the user is not found (invalid token or email)."""
-        non_existing_token = generate_valid_token(999999)  # Non-existing user ID
+        non_existing_token = generate_valid_token(uuid.uuid4())  # Non-existing user ID
         data = {"token": non_existing_token}
         response = self.client.post(self.url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
