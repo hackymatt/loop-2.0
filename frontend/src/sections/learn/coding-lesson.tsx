@@ -273,7 +273,6 @@ export function CodingLesson({
                 bgcolor: (theme) => theme.vars.palette.background.neutral,
                 overflowX: "auto",
                 "&::-webkit-scrollbar": { display: "none" },
-                py: 1,
               }}
             >
               <ButtonGroup
