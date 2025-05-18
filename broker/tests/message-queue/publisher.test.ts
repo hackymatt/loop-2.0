@@ -57,6 +57,7 @@ describe("publisher.ts", () => {
     const publishPromise = publisher.publish(
       "user1",
       "python",
+      10,
       "run",
       { "main.py": "print(1)" },
       false,
@@ -101,6 +102,7 @@ describe("publisher.ts", () => {
     const result = await publisher.publish(
       "user2",
       "python",
+      10,
       "run",
       { "main.py": "print(2)" },
       false,
@@ -126,6 +128,7 @@ describe("publisher.ts", () => {
     const result = await publisher.publish(
       "user3",
       "python",
+      10,
       "run",
       { "main.py": "print(3)" },
       true, // explicitly testing stream=true
@@ -157,6 +160,7 @@ describe("publisher.ts", () => {
     const publishPromise = publisher.publish(
       "user4",
       "python",
+      10,
       "run",
       { "main.py": "print(4)" }
       // Let stream and useReply use their default values
@@ -204,6 +208,7 @@ describe("publisher.ts", () => {
     const publishPromise = publisher.publish(
       "user5",
       "python",
+      10,
       "run",
       { "main.py": "print(5)" },
       false,

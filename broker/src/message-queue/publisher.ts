@@ -10,6 +10,7 @@ import type { Technology } from "../sandbox";
 export async function publish(
   userId: string,
   technology: Technology,
+  timeout: number,
   command: string,
   files: Record<string, string>,
   stream: boolean = false,
@@ -21,6 +22,7 @@ export async function publish(
   const messagePayload: any = {
     job_id: jobId,
     command,
+    timeout,
     files,
     stream,
   };
