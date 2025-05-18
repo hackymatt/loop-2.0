@@ -3,7 +3,10 @@ disable=
     C0114, # missing-module-docstring
     C0115, # missing-class-docstring
     C0116, # missing-function-docstring
+    E1101, # no-member
     R0903, # too-few-public-methods
+    R0912, # too-many-branches
     R1732, # consider-using-with
     W0511, # fixme
     W0718, # broad-exception-caught
+    W1509, # subprocess-popen-preexec-fn

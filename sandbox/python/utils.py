@@ -1,8 +1,11 @@
 import json
 import subprocess
+import sys
+import os
+import signal
+import time
 from pathlib import Path
 from types import GeneratorType
-from threading import Timer
 
 
 def write_files(job_dir, files):
@@ -17,14 +20,26 @@ def write_files(job_dir, files):
 
 
 def _run_command_non_streaming(command, timeout, cwd):
-    proc = subprocess.Popen(
-        command,
-        shell=True,
-        cwd=cwd,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        text=True,
-    )
+    if sys.platform == "win32":
+        proc = subprocess.Popen(
+            command,
+            shell=True,
+            cwd=cwd,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            creationflags=subprocess.CREATE_NEW_PROCESS_GROUP,
+        )
+    else:
+        proc = subprocess.Popen(
+            command,
+            shell=True,
+            cwd=cwd,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            preexec_fn=os.setsid,
+        )
 
     try:
         stdout, stderr = proc.communicate(timeout=timeout)
@@ -34,7 +49,16 @@ def _run_command_non_streaming(command, timeout, cwd):
             "exit_code": proc.returncode,
         }
     except subprocess.TimeoutExpired:
-        proc.kill()
+        if sys.platform == "win32":
+            proc.send_signal(signal.CTRL_BREAK_EVENT)
+            try:
+                proc.wait(timeout=5)
+            except subprocess.TimeoutExpired:
+                proc.kill()
+        else:
+            # On POSIX, kill the process group
+            os.killpg(proc.pid, signal.SIGKILL)
+
         stdout, stderr = proc.communicate()
         return {
             "stdout": stdout.strip(),
@@ -44,18 +68,46 @@ def _run_command_non_streaming(command, timeout, cwd):
 
 
 def _run_command_streaming(command, timeout, cwd):
-    proc = subprocess.Popen(
-        command,
-        shell=True,
-        cwd=cwd,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        text=True,
-    )
-    timer = Timer(timeout, proc.kill)
+    if sys.platform == "win32":
+        proc = subprocess.Popen(
+            command,
+            shell=True,
+            cwd=cwd,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            creationflags=subprocess.CREATE_NEW_PROCESS_GROUP,
+        )
+    else:
+        proc = subprocess.Popen(
+            command,
+            shell=True,
+            cwd=cwd,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            preexec_fn=os.setsid,
+        )
+
+    start_time = time.time()
+    timed_out = False
 
     try:
         while True:
+            # Check for timeout
+            if time.time() - start_time > timeout:
+                timed_out = True
+                if sys.platform == "win32":
+                    proc.send_signal(signal.CTRL_BREAK_EVENT)
+                    # Optional: wait a bit and force kill if needed
+                    try:
+                        proc.wait(timeout=5)
+                    except subprocess.TimeoutExpired:
+                        proc.kill()
+                else:
+                    os.killpg(proc.pid, signal.SIGKILL)
+                break
+
             out_line = proc.stdout.readline()
             err_line = proc.stderr.readline()
 
@@ -64,13 +116,14 @@ def _run_command_streaming(command, timeout, cwd):
             if err_line:
                 yield {"stdout": [], "stderr": [err_line.strip()]}
 
-            # exit when no more data and process is done
+            # Exit when no more output and process has finished
             if not out_line and not err_line and proc.poll() is not None:
                 break
     finally:
-        timer.cancel()
+        proc.stdout.close()
+        proc.stderr.close()
 
-    if proc.returncode == -9:
+    if timed_out:
         yield {"stdout": [], "stderr": ["[ERROR] TimeoutExpired"]}
 
 
