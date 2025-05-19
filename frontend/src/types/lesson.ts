@@ -33,6 +33,7 @@ export type ICodingLessonProps = ILessonBaseProps & {
   penaltyPoints: number;
   file: ICodingFileProp;
   files: ICodingFileProp[];
+  command: string;
   hint: string | null;
   answer: string | null;
 };

@@ -267,6 +267,7 @@ def create_lesson(lesson_type=None):
     elif lesson_type == LessonType.CODING:
         file = create_file()
         files = [create_file() for _ in range(_generate_random_number(1, 5))]
+        command = _generate_random_string()
         timeout = _generate_random_number()
         penalty_points = _generate_random_number(0, 50)
         technology = create_technology()
@@ -274,6 +275,7 @@ def create_lesson(lesson_type=None):
             lesson=lesson,
             technology=technology,
             file=file,
+            command=command,
             timeout=timeout,
             penalty_points=penalty_points,
         )

@@ -242,6 +242,7 @@ class CodingLessonSerializer(CodingLessonBaseSerializer):
     class Meta(CodingLessonBaseSerializer.Meta):
         fields = CodingLessonBaseSerializer.Meta.fields + [
             "timeout",
+            "command",
             "technology",
             "file",
             "files",

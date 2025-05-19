@@ -53,6 +53,7 @@ type ICodingLessonFile = {
 type ICodingLesson = {
   technology: string;
   timeout: number;
+  command: string;
   file: ICodingLessonFile;
   files: ICodingLessonFile[];
   introduction: string;
@@ -96,6 +97,7 @@ const lessonMapper = {
     const {
       technology,
       timeout,
+      command,
       file,
       files,
       introduction,
@@ -110,6 +112,7 @@ const lessonMapper = {
       name: props.name,
       totalPoints: props.points,
       technology,
+      command,
       timeout,
       file,
       files,

@@ -26,6 +26,7 @@ class Migration(migrations.Migration):
                 ),
                 ("modified_at", models.DateTimeField(auto_now=True)),
                 ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("command", models.CharField(max_length=255)),
                 ("timeout", models.PositiveIntegerField(default=10)),
                 ("penalty_points", models.PositiveIntegerField(default=0)),
             ],

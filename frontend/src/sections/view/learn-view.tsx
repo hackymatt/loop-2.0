@@ -146,6 +146,12 @@ export function LearnView({ courseSlug, chapterSlug, lessonSlug }: LearnViewProp
     }
   };
 
+  const handleRunCode = async (config) => {
+    // get token
+    // open ws
+    // send data
+  };
+
   if (isError && !isLocked) {
     return <NotFoundView />;
   }
@@ -218,7 +224,7 @@ export function LearnView({ courseSlug, chapterSlug, lessonSlug }: LearnViewProp
           <ContentBox sx={{ borderRadius: 0, px: { xs: 0, md: 0 }, py: { xs: 0, md: 0 } }}>
             <CodingLesson
               lesson={lessonData as ICodingLessonProps}
-              onRunCode={(answer) => {}}
+              onRunCode={(config) => handleRunCode({ config })}
               onSubmit={(answer) => handleSubmit({ answer: answer as string })}
               onHint={handleShowHint}
               onShowAnswer={handleShowAnswer}

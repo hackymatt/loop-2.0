@@ -17,9 +17,11 @@ import { CodeEditor } from "src/components/code-editor";
 
 // ----------------------------------------------------------------------
 
+type IConfigProp = Pick<ICodingLessonProps, "technology" | "files" | "command" | "timeout">;
+
 type CodingLessonProps = {
   lesson: ICodingLessonProps;
-  onRunCode: (answer: string) => void;
+  onRunCode: (config: IConfigProp) => void;
   onSubmit: (answer: string) => void;
   onHint: () => void;
   onShowAnswer: () => void;
