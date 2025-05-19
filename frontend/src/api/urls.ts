@@ -11,7 +11,7 @@ export const URLS = {
   PASSWORD_RESET: "/auth/reset-password",
   PASSWORD_UPDATE: "/auth/reset-password-confirm",
   REFRESH_TOKEN: "/auth/refresh-token",
-  AUTH_CHECK: "/auth/check",
+  ACCESS_TOKEN: "/auth/access-token",
   // CONTACT
   CONTACT: "/contact",
   // COURSE
