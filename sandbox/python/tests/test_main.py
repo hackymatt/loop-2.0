@@ -1,7 +1,7 @@
 import json
 from unittest.mock import MagicMock, patch
 import pytest
-from main import callback
+from main import callback, FINISH_MSG
 
 
 @pytest.fixture(autouse=True)
@@ -65,13 +65,14 @@ def test_callback_with_generator_result(mock_publish, mock_process_job):
 
     callback(channel, method, properties, body)
 
-    assert mock_publish.call_count == 2
+    assert mock_publish.call_count == 3
     mock_publish.assert_any_call(
         channel, {"stdout": ["part1"], "stderr": []}, "456", properties
     )
     mock_publish.assert_any_call(
         channel, {"stdout": ["part1", "part2"], "stderr": []}, "456", properties
     )
+    mock_publish.assert_any_call(channel, FINISH_MSG, "456", properties)
     channel.basic_ack.assert_called_once_with(delivery_tag="def")
 
 
