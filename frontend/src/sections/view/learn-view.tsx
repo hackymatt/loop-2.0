@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import type { AxiosError } from "axios";
 import type { BoxProps } from "@mui/material";
 import type {
+  IConfigProp,
   IQuizLessonProps,
   IVideoLessonProps,
   ICodingLessonProps,
@@ -19,12 +20,15 @@ import { Box, Container } from "@mui/material";
 import { paths } from "src/routes/paths";
 import { useRouter } from "src/routes/hooks";
 
+import { useWebSocket } from "src/hooks/use-websocket";
 import { useLocalizedPath } from "src/hooks/use-localized-path";
 
+import { CONFIG } from "src/global-config";
 import { LESSON_TYPE } from "src/consts/lesson";
 import { useCourse } from "src/api/course/course";
 import { useLesson } from "src/api/course/lesson/lesson";
 import { useLessonHint } from "src/api/course/lesson/hint";
+import { useAccessToken } from "src/api/auth/access-token";
 import { useLessonSubmit } from "src/api/course/lesson/submit";
 import { useLessonAnswer } from "src/api/course/lesson/answer";
 
@@ -84,12 +88,24 @@ export function LearnView({ courseSlug, chapterSlug, lessonSlug }: LearnViewProp
     isError: isErrorLesson,
     error: lessonError,
   } = useLesson(courseSlug, chapterSlug, lessonSlug);
+  const { refetch: getToken } = useAccessToken(false);
+
+  const { connect, disconnect, isRunning } = useWebSocket({
+    wsBaseUrl: CONFIG.ws,
+    getToken,
+    onMessage: (data) => {
+      setLogs((prev) => [...prev, data]);
+    },
+    onOpen: () => setLogs(["Ustanowiono połączenie z serwerem."]),
+    onClose: () => setLogs((prev) => [...prev, "Zamknieto połączenie z serwerem."]),
+  });
 
   const { mutateAsync: submit } = useLessonSubmit();
   const { mutateAsync: showAnswer } = useLessonAnswer();
   const { mutateAsync: showHint } = useLessonHint();
 
   const [error, setError] = useState<string>();
+  const [logs, setLogs] = useState<any[]>([]);
 
   const isLoading = isLoadingCourse || isLoadingLesson;
   const isError = isErrorCourse || isErrorLesson;
@@ -144,6 +160,14 @@ export function LearnView({ courseSlug, chapterSlug, lessonSlug }: LearnViewProp
     } catch {
       enqueueSnackbar(t("errors.hint"), { variant: "error" });
     }
+  };
+
+  const handleRunCode = async (config: IConfigProp) => {
+    if (isRunning) {
+      disconnect();
+      return;
+    }
+    await connect(config);
   };
 
   if (isError && !isLocked) {
@@ -218,11 +242,13 @@ export function LearnView({ courseSlug, chapterSlug, lessonSlug }: LearnViewProp
           <ContentBox sx={{ borderRadius: 0, px: { xs: 0, md: 0 }, py: { xs: 0, md: 0 } }}>
             <CodingLesson
               lesson={lessonData as ICodingLessonProps}
-              onRunCode={(answer) => {}}
+              onRunCode={(config) => handleRunCode(config)}
               onSubmit={(answer) => handleSubmit({ answer: answer as string })}
               onHint={handleShowHint}
               onShowAnswer={handleShowAnswer}
+              logs={logs}
               error={error}
+              isRunning={isRunning}
               isLocked={isLocked}
             />
           </ContentBox>

@@ -10,6 +10,7 @@ from utils import process_job
 load_dotenv()
 
 USER_ID = os.getenv("USER_ID")
+FINISH_MSG = "finish"
 
 if not USER_ID:
     print(
@@ -27,10 +28,13 @@ def callback(channel, method, properties, body):
         result = process_job(body)
 
         if isinstance(result, dict):
+            print("Sending non-stream result")
             publish(channel, result, job_id, properties)
         else:
+            print("Sending steam result")
             for partial in result:
                 publish(channel, partial, job_id, properties)
+            publish(channel, FINISH_MSG, job_id, properties)
 
         channel.basic_ack(delivery_tag=method.delivery_tag)
     except Exception as error:

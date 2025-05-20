@@ -3,6 +3,7 @@ import bodyParser from "body-parser";
 
 import apiRouter from "./api";
 import { API_PORT } from "./const";
+import { startWebSocketServer } from "./ws";
 import { consumeResults } from "./message-queue/consumer";
 
 // Initialize the Express app
@@ -20,3 +21,4 @@ app.listen(API_PORT, () => {
 });
 
 consumeResults();
+startWebSocketServer();

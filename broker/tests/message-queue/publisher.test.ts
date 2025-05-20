@@ -54,9 +54,20 @@ describe("publisher.ts", () => {
       return Promise.resolve();
     });
 
+    // Track the correlationId that will be used in the publish call
+    let publishCorrelationId: string | undefined;
+    channelMock.publish.callsFake(
+      (_exchange: string, _routing: string, _buffer: Buffer, options: any) => {
+        publishCorrelationId = options.correlationId;
+        return true;
+      }
+    );
+
     const publishPromise = publisher.publish(
       "user1",
+      "job1",
       "python",
+      10,
       "run",
       { "main.py": "print(1)" },
       false,
@@ -66,22 +77,24 @@ describe("publisher.ts", () => {
     // Wait for the next tick to allow consume to be set up
     await new Promise((resolve) => setTimeout(resolve, 0));
 
-    // Now check if callback was set
+    // Verify consume was set up
     expect(consumeCallback).to.not.be.null;
+    expect(publishCorrelationId).to.not.be.undefined;
 
-    // Simulate receiving a message
+    // Simulate receiving a message with the actual correlationId
     (consumeCallback as unknown as Function)({
-      properties: { correlationId: "corr-uuid" },
+      properties: { correlationId: publishCorrelationId },
       content: Buffer.from(JSON.stringify({ result: "ok" })),
     });
 
     const result = await publishPromise;
     expect(result).to.deep.equal({ result: "ok" });
 
+    // Verify all the calls
     expect(getSandboxNameStub.calledWith("python")).to.be.true;
     expect(amqpMock.connect.calledWith("amqp://test")).to.be.true;
-    expect(channelMock.assertExchange.calledWith("test-exchange", "direct", { durable: true })).to
-      .be.true;
+    expect(channelMock.assertExchange.calledWith("test-exchange", "topic", { durable: true })).to.be
+      .true;
     expect(channelMock.assertQueue.calledWith("", { exclusive: true })).to.be.true;
     expect(
       channelMock.publish.calledWith(
@@ -90,7 +103,7 @@ describe("publisher.ts", () => {
         sinon.match.instanceOf(Buffer),
         sinon.match({
           persistent: true,
-          correlationId: "corr-uuid",
+          correlationId: publishCorrelationId,
           replyTo: "reply-queue",
         })
       )
@@ -100,18 +113,20 @@ describe("publisher.ts", () => {
   it("should publish without reply and return jobId", async () => {
     const result = await publisher.publish(
       "user2",
+      "job2",
       "python",
+      10,
       "run",
       { "main.py": "print(2)" },
       false,
       false
     );
 
-    expect(result).to.deep.equal({ jobId: "job-uuid" });
+    expect(result).to.deep.equal({ jobId: "job2" });
     expect(getSandboxNameStub.calledWith("python")).to.be.true;
     expect(amqpMock.connect.calledWith("amqp://test")).to.be.true;
-    expect(channelMock.assertExchange.calledWith("test-exchange", "direct", { durable: true })).to
-      .be.true;
+    expect(channelMock.assertExchange.calledWith("test-exchange", "topic", { durable: true })).to.be
+      .true;
     expect(
       channelMock.publish.calledWith(
         "test-exchange",
@@ -125,14 +140,16 @@ describe("publisher.ts", () => {
   it("should publish with stream=true", async () => {
     const result = await publisher.publish(
       "user3",
+      "job3",
       "python",
+      10,
       "run",
       { "main.py": "print(3)" },
       true, // explicitly testing stream=true
       false
     );
 
-    expect(result).to.deep.equal({ jobId: "job-uuid" });
+    expect(result).to.deep.equal({ jobId: "job3" });
     expect(
       channelMock.publish.calledWith(
         "test-exchange",
@@ -154,9 +171,20 @@ describe("publisher.ts", () => {
       return Promise.resolve();
     });
 
+    // Track the correlationId that will be used in the publish call
+    let publishCorrelationId: string | undefined;
+    channelMock.publish.callsFake(
+      (_exchange: string, _routing: string, _buffer: Buffer, options: any) => {
+        publishCorrelationId = options.correlationId;
+        return true;
+      }
+    );
+
     const publishPromise = publisher.publish(
       "user4",
+      "job4",
       "python",
+      10,
       "run",
       { "main.py": "print(4)" }
       // Let stream and useReply use their default values
@@ -165,12 +193,13 @@ describe("publisher.ts", () => {
     // Wait for the next tick to allow consume to be set up
     await new Promise((resolve) => setTimeout(resolve, 0));
 
-    // Now check if callback was set
+    // Verify consume was set up
     expect(consumeCallback).to.not.be.null;
+    expect(publishCorrelationId).to.not.be.undefined;
 
-    // Simulate receiving a message
+    // Simulate receiving a message with the actual correlationId
     (consumeCallback as unknown as Function)({
-      properties: { correlationId: "corr-uuid" },
+      properties: { correlationId: publishCorrelationId },
       content: Buffer.from(JSON.stringify({ result: "ok" })),
     });
 
@@ -187,7 +216,7 @@ describe("publisher.ts", () => {
         }),
         sinon.match({
           persistent: true,
-          correlationId: "corr-uuid",
+          correlationId: publishCorrelationId,
           replyTo: "reply-queue",
         })
       )
@@ -201,9 +230,20 @@ describe("publisher.ts", () => {
       return Promise.resolve();
     });
 
+    // Track the correlationId that will be used in the publish call
+    let publishCorrelationId: string | undefined;
+    channelMock.publish.callsFake(
+      (_exchange: string, _routing: string, _buffer: Buffer, options: any) => {
+        publishCorrelationId = options.correlationId;
+        return true;
+      }
+    );
+
     const publishPromise = publisher.publish(
       "user5",
+      "job5",
       "python",
+      10,
       "run",
       { "main.py": "print(5)" },
       false,
@@ -212,13 +252,26 @@ describe("publisher.ts", () => {
 
     await new Promise((resolve) => setTimeout(resolve, 0));
     expect(consumeCallback).to.not.be.null;
+    expect(publishCorrelationId).to.not.be.undefined;
 
     // Simulate receiving a message with undefined msg object
     (consumeCallback as unknown as Function)(undefined);
 
-    // Simulate receiving a valid message
+    // Simulate receiving a message without correlationId
     (consumeCallback as unknown as Function)({
-      properties: { correlationId: "corr-uuid" },
+      properties: {},
+      content: Buffer.from(JSON.stringify({ result: "wrong" })),
+    });
+
+    // Simulate receiving a message with wrong correlationId
+    (consumeCallback as unknown as Function)({
+      properties: { correlationId: "wrong-id" },
+      content: Buffer.from(JSON.stringify({ result: "wrong" })),
+    });
+
+    // Simulate receiving a valid message with correct correlationId
+    (consumeCallback as unknown as Function)({
+      properties: { correlationId: publishCorrelationId },
       content: Buffer.from(JSON.stringify({ result: "ok" })),
     });
 

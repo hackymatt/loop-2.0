@@ -33,6 +33,9 @@ export type ICodingLessonProps = ILessonBaseProps & {
   penaltyPoints: number;
   file: ICodingFileProp;
   files: ICodingFileProp[];
+  command: string;
   hint: string | null;
   answer: string | null;
 };
+
+export type IConfigProp = Pick<ICodingLessonProps, "technology" | "files" | "command" | "timeout">;

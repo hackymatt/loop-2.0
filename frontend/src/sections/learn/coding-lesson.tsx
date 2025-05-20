@@ -1,11 +1,11 @@
 import "./style.css";
 
-import type { ICodingFileProp, ICodingLessonProps } from "src/types/lesson";
+import type { IConfigProp, ICodingFileProp, ICodingLessonProps } from "src/types/lesson";
 
 import Split from "react-split";
 import { useTranslation } from "react-i18next";
 import { varAlpha } from "minimal-shared/utils";
-import React, { useMemo, useState, useEffect } from "react";
+import React, { useRef, useMemo, useState, useEffect } from "react";
 
 import Box from "@mui/material/Box";
 import { Button, Skeleton, Typography, ButtonGroup } from "@mui/material";
@@ -19,12 +19,14 @@ import { CodeEditor } from "src/components/code-editor";
 
 type CodingLessonProps = {
   lesson: ICodingLessonProps;
-  onRunCode: (answer: string) => void;
+  onRunCode: (config: IConfigProp) => void;
   onSubmit: (answer: string) => void;
   onHint: () => void;
   onShowAnswer: () => void;
   error?: string;
+  logs?: any[];
   isLocked?: boolean;
+  isRunning?: boolean;
 };
 
 type SectionProps = {
@@ -61,6 +63,63 @@ function SectionHeader({ title, icon, label }: SectionProps) {
 }
 
 // ----------------------------------------------------------------------
+type ConsoleEntry =
+  | string
+  | {
+      stdout?: string[];
+      stderr?: string[];
+    };
+
+function Console({ entries }: { entries: ConsoleEntry[] }) {
+  const containerRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const el = containerRef.current;
+    if (el) {
+      el.scrollTop = el.scrollHeight;
+    }
+  }, [entries]);
+
+  return (
+    <Box
+      ref={containerRef}
+      sx={{
+        fontFamily: "monospace",
+        height: 1,
+        p: 2,
+        overflowY: "auto",
+      }}
+    >
+      {entries.map((entry, index) => {
+        if (typeof entry === "string") {
+          return (
+            <Typography key={index} color="text.secondary">
+              {`> ${entry}`}
+            </Typography>
+          );
+        }
+
+        const stdoutLines = entry.stdout || [];
+        const stderrLines = entry.stderr || [];
+
+        return (
+          <Box key={index}>
+            {stdoutLines.map((line, i) => (
+              <Typography key={`stdout-${index}-${i}`}>{line}</Typography>
+            ))}
+            {stderrLines.map((line, i) => (
+              <Typography key={`stderr-${index}-${i}`} color="error">
+                {line}
+              </Typography>
+            ))}
+          </Box>
+        );
+      })}
+    </Box>
+  );
+}
+
+// ----------------------------------------------------------------------
 
 export function CodingLesson({
   lesson,
@@ -68,7 +127,9 @@ export function CodingLesson({
   onRunCode,
   onHint,
   onShowAnswer,
+  logs = [],
   error,
+  isRunning = false,
   isLocked = false,
 }: CodingLessonProps) {
   const { t } = useTranslation("learn");
@@ -92,7 +153,13 @@ export function CodingLesson({
   };
 
   const handleRunCode = () => {
-    onSubmit(code);
+    const { file: defaultFile, files, command, timeout, technology } = lesson;
+    onRunCode({
+      files: [...files, { ...defaultFile, code }],
+      command,
+      timeout,
+      technology,
+    });
   };
 
   const handleSubmit = () => {
@@ -103,13 +170,14 @@ export function CodingLesson({
     <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
       <Button
         variant="outlined"
-        color="secondary"
+        color={isRunning ? "error" : "secondary"}
         size="medium"
+        startIcon={<Iconify width={16} icon={`solar:${isRunning ? "stop" : "play"}-outline`} />}
         onClick={handleRunCode}
         disabled={isLocked}
         sx={{ px: 2, whiteSpace: "nowrap" }}
       >
-        {t("coding.editor.runCode")}
+        {isRunning ? t("coding.editor.runCode.stop") : t("coding.editor.runCode.start")}
       </Button>
     </Box>
   );
@@ -351,7 +419,11 @@ export function CodingLesson({
           height: { xs: 315, md: 250 },
         }}
       >
-        {isLocked ? <Skeleton variant="rectangular" sx={{ width: 1, height: 1 }} /> : `console`}
+        {isLocked ? (
+          <Skeleton variant="rectangular" sx={{ width: 1, height: 1 }} />
+        ) : (
+          <Console entries={logs} />
+        )}
       </Box>
     </Box>
   );

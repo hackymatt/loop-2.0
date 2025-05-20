@@ -29,7 +29,7 @@ def setup_channel():
 
     # Declare the exchange for job messages
     channel.exchange_declare(
-        exchange=EXCHANGE_NAME, exchange_type="direct", durable=True
+        exchange=EXCHANGE_NAME, exchange_type="topic", durable=True
     )
     print(f"Exchange {EXCHANGE_NAME} declared")
 

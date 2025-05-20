@@ -10,7 +10,7 @@ from .logout.views import LogoutView
 from .reset_password.views import PasswordResetView, PasswordResetConfirmView
 from .me.views import UpdateUserView, ChangePasswordView, DeleteAccountView
 from .refresh_token.views import RefreshTokenView
-from .login.auth_check.views import AuthCheckView
+from .access_token.views import AccessTokenView
 from .dashboard.views import DashboardView
 
 from const import Urls
@@ -37,7 +37,7 @@ urlpatterns = [
     ),
     # Auth helpers
     path(Urls.REFRESH_TOKEN, RefreshTokenView.as_view(), name="refresh-token"),
-    path(Urls.AUTH_CHECK, AuthCheckView.as_view(), name="auth-check"),
+    path(Urls.ACCESS_TOKEN, AccessTokenView.as_view(), name="access-token"),
     # User routes
     path(Urls.DATA, UpdateUserView.as_view(), name="data"),
     path(Urls.PASSWORD_CHANGE, ChangePasswordView.as_view(), name="password"),

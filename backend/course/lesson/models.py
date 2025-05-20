@@ -222,6 +222,7 @@ class CodingLesson(BaseModel):
         null=True,
         blank=True,
     )
+    command = models.CharField(max_length=255)
     timeout = models.PositiveIntegerField(default=10)
     penalty_points = models.PositiveIntegerField(default=0)
 

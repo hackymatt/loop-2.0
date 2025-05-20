@@ -1,6 +1,7 @@
 import type { Request, Response } from "express";
 
 import express from "express";
+import { v4 as uuid } from "uuid";
 
 import { createUserPod } from "./k8s";
 import { publish } from "./message-queue/publisher";
@@ -9,15 +10,25 @@ const router = express.Router();
 
 router.post("/test", async (req: Request, res: Response) => {
   try {
-    const { userId, technology, files, command } = req.body;
+    const { userId, technology, files, timeout, command } = req.body;
 
-    if (!userId || !technology || !files || !command) {
-      res.status(400).json({ error: "Missing required fields: userId, files, or command" });
+    if (!userId || !technology || !files || !timeout || !command) {
+      res.status(400).json({ error: "Missing required fields: userId, files, timeout or command" });
       return;
     }
 
     await createUserPod(userId, technology);
-    const jobResult = await publish(userId, technology, command, files, false, true);
+    const jobId = uuid();
+    const jobResult = await publish(
+      userId,
+      jobId,
+      technology,
+      timeout,
+      command,
+      files,
+      false,
+      true
+    );
 
     const isError = "error" in jobResult;
 

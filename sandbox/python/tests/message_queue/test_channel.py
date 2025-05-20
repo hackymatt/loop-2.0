@@ -32,7 +32,7 @@ def test_setup_channel(mock_blocking_connection):
     # Verify RabbitMQ setup calls
     mock_blocking_connection.assert_called_once()
     mock_channel.exchange_declare.assert_called_once_with(
-        exchange="sandboxExchange", exchange_type="direct", durable=True
+        exchange="sandboxExchange", exchange_type="topic", durable=True
     )
     mock_channel.queue_declare.assert_any_call(
         queue="jobs.python-sandbox.testuser", durable=True

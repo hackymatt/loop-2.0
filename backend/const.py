@@ -22,7 +22,7 @@ class Urls:
     PASSWORD_RESET = "auth/reset-password"
     PASSWORD_RESET_CONFIRM = "auth/reset-password-confirm"
     REFRESH_TOKEN = "auth/refresh-token"
-    AUTH_CHECK = "auth/check"
+    ACCESS_TOKEN = "auth/access-token"
     # COURSE
     COURSE_LEVEL = "course-levels"
     COURSE_TECHNOLOGY = "course-technologies"
