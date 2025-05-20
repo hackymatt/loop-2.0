@@ -6,12 +6,14 @@ describe("index.ts", () => {
   let listenStub: sinon.SinonStub;
   let useStub: sinon.SinonStub;
   let consumeResultsStub: sinon.SinonStub;
+  let startWebSocketServerStub: sinon.SinonStub;
   let consoleLogStub: sinon.SinonStub;
 
   beforeEach(() => {
     useStub = sinon.stub();
     listenStub = sinon.stub();
     consumeResultsStub = sinon.stub();
+    startWebSocketServerStub = sinon.stub();
     consoleLogStub = sinon.stub(console, "log");
   });
 
@@ -32,6 +34,9 @@ describe("index.ts", () => {
       express: expressStub,
       "./message-queue/consumer": {
         consumeResults: consumeResultsStub,
+      },
+      "./ws": {
+        startWebSocketServer: startWebSocketServerStub,
       },
       "./const": {
         API_PORT: 1234,
