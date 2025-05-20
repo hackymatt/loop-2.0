@@ -37,3 +37,5 @@ export type ICodingLessonProps = ILessonBaseProps & {
   hint: string | null;
   answer: string | null;
 };
+
+export type IConfigProp = Pick<ICodingLessonProps, "technology" | "files" | "command" | "timeout">;

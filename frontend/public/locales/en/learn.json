@@ -19,7 +19,7 @@
     "instructions": "Instructions",
     "editor": {
       "label": "Code editor",
-      "runCode": "Run code",
+      "runCode": { "start": "Run code", "stop": "Stop code" },
       "submit": "Check!"
     },
     "hint": { "button": "Take hint", "label": "Hint" },
