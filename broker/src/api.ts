@@ -1,6 +1,7 @@
 import type { Request, Response } from "express";
 
 import express from "express";
+import { v4 as uuid } from "uuid";
 
 import { createUserPod } from "./k8s";
 import { publish } from "./message-queue/publisher";
@@ -17,7 +18,17 @@ router.post("/test", async (req: Request, res: Response) => {
     }
 
     await createUserPod(userId, technology);
-    const jobResult = await publish(userId, technology, timeout, command, files, false, true);
+    const jobId = uuid();
+    const jobResult = await publish(
+      userId,
+      jobId,
+      technology,
+      timeout,
+      command,
+      files,
+      false,
+      true
+    );
 
     const isError = "error" in jobResult;
 

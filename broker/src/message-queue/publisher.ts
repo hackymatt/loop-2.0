@@ -9,6 +9,7 @@ import type { Technology } from "../sandbox";
 
 export async function publish(
   userId: string,
+  jobId: string,
   technology: Technology,
   timeout: number,
   command: string,
@@ -17,7 +18,6 @@ export async function publish(
   useReply: boolean = true
 ): Promise<any> {
   const sandboxName = getSandboxName(technology);
-  const jobId = uuid();
 
   const messagePayload: any = {
     job_id: jobId,
@@ -29,7 +29,7 @@ export async function publish(
 
   const connection = await amqp.connect(RABBITMQ_URL);
   const channel = await connection.createChannel();
-  await channel.assertExchange(EXCHANGE_NAME, "direct", { durable: true });
+  await channel.assertExchange(EXCHANGE_NAME, "topic", { durable: true });
 
   const routingKey = `jobs.${sandboxName}.${userId}`;
 

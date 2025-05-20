@@ -1,6 +1,7 @@
 import { expect } from "chai";
 import sinon from "sinon";
 import proxyquire from "proxyquire";
+import { QUEUE_NAME } from "../../src/message-queue/const";
 
 describe("consumer.ts", () => {
   let connectStub: sinon.SinonStub;
@@ -10,16 +11,22 @@ describe("consumer.ts", () => {
   let bindQueueStub: sinon.SinonStub;
   let consumeStub: sinon.SinonStub;
   let ackStub: sinon.SinonStub;
+  let sendDataToClientStub: sinon.SinonStub;
 
   const fakeChannel = {} as any;
   const fakeConnection = {} as any;
 
   beforeEach(() => {
     assertExchangeStub = sinon.stub().resolves();
-    assertQueueStub = sinon.stub().resolves();
+    assertQueueStub = sinon.stub().resolves({
+      queue: QUEUE_NAME,
+      messageCount: 0,
+      consumerCount: 0,
+    });
     bindQueueStub = sinon.stub().resolves();
     ackStub = sinon.stub();
     consumeStub = sinon.stub();
+    sendDataToClientStub = sinon.stub();
 
     fakeChannel.assertExchange = assertExchangeStub;
     fakeChannel.assertQueue = assertQueueStub;
@@ -37,7 +44,8 @@ describe("consumer.ts", () => {
   });
 
   it("should setup exchange, queue, bind and consume messages", async () => {
-    const RESULT_QUEUE = "results.*.*";
+    const ROUTING_KEY = "results.*.*";
+    const QUEUE_NAME = "results_queue";
     const EXCHANGE_NAME = "my.exchange";
     const RABBITMQ_URL = "amqp://localhost";
 
@@ -50,19 +58,26 @@ describe("consumer.ts", () => {
       amqplib: { connect: connectStub },
       "./const": { EXCHANGE_NAME },
       "../const": { RABBITMQ_URL },
+      "../ws": { sendDataToClient: sendDataToClientStub },
     });
 
     await consumeResults();
 
     expect(connectStub.calledWith(RABBITMQ_URL)).to.be.true;
-    expect(assertExchangeStub.calledWith(EXCHANGE_NAME, "direct")).to.be.true;
-    expect(assertQueueStub.calledWith(RESULT_QUEUE)).to.be.true;
-    expect(bindQueueStub.calledWith(RESULT_QUEUE, EXCHANGE_NAME, RESULT_QUEUE)).to.be.true;
-    expect(consumeStub.calledWith(RESULT_QUEUE)).to.be.true;
+    expect(assertExchangeStub.calledWith(EXCHANGE_NAME, "topic", { durable: true })).to.be.true;
+    expect(
+      assertQueueStub.calledWith(QUEUE_NAME, {
+        durable: true,
+        exclusive: false,
+      })
+    ).to.be.true;
+    expect(bindQueueStub.calledWith(QUEUE_NAME, EXCHANGE_NAME, ROUTING_KEY)).to.be.true;
+    expect(consumeStub.calledWith(QUEUE_NAME)).to.be.true;
 
     const fakeMsg = { content: Buffer.from("test"), fields: {}, properties: {} };
     consumeCallback?.(fakeMsg);
 
+    expect(sendDataToClientStub.calledWith(fakeMsg)).to.be.true;
     expect(ackStub.calledWith(fakeMsg)).to.be.true;
   });
 
@@ -107,15 +122,17 @@ describe("consumer.ts", () => {
       amqplib: { connect: connectStub },
       "./const": { EXCHANGE_NAME },
       "../const": { RABBITMQ_URL },
+      "../ws": { sendDataToClient: sendDataToClientStub },
     });
 
     await consumeResults();
 
     const fakeMsg = { content: Buffer.from("fail"), fields: {}, properties: {} };
+    sendDataToClientStub.throws(new Error("WebSocket error"));
     consumeCallback?.(fakeMsg);
 
-    expect(ackStub.calledWith(fakeMsg)).to.be.true;
-    expect(consoleErrorStub.calledWith("Error processing message:", fakeError)).to.be.true;
+    expect(consoleErrorStub.calledWith("Error processing message:", sinon.match.any)).to.be.true;
+    expect(ackStub.called).to.be.false;
 
     consoleErrorStub.restore();
   });
