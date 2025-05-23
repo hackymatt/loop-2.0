@@ -17,7 +17,7 @@ def test_publish_with_props():
     publish(mock_channel, result, job_id, props=mock_props)
 
     mock_channel.basic_publish.assert_called_once_with(
-        exchange=EXCHANGE_NAME,
+        exchange="",
         routing_key="custom.reply",
         properties=mock_channel.basic_publish.call_args[1]["properties"],
         body=json.dumps({"job_id": job_id, "result": result}),
