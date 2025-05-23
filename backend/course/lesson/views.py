@@ -28,6 +28,25 @@ from user.type.student_user.models import Student
 from const import LessonType
 
 
+def get_answer(lesson, language):
+    specific_model = {
+        LessonType.QUIZ: QuizLesson,
+        LessonType.CODING: CodingLesson,
+    }.get(lesson.type)
+
+    if lesson.type == LessonType.QUIZ:
+        question = (
+            specific_model.objects.get(lesson=lesson).get_translation(language).question
+        )
+        answer = [option.is_correct for option in question.options.all()]
+    elif lesson.type == LessonType.CODING:
+        answer = specific_model.objects.get(lesson=lesson).file.solution_code
+    else:
+        answer = None
+
+    return answer
+
+
 class LessonViewSet(RetrieveModelMixin, GenericViewSet):
     queryset = Lesson.objects.select_related("reading", "video", "quiz", "coding")
     permission_classes = [IsAuthenticated]
@@ -97,8 +116,11 @@ class LessonViewSet(RetrieveModelMixin, GenericViewSet):
         CourseChapterEnrollment.objects.get_or_create(
             student=student, course=course, chapter=chapter
         )
+        answer = get_answer(lesson, request.LANGUAGE_CODE)
         CourseProgress.objects.get_or_create(
-            student=student, lesson=lesson, defaults={"points": lesson.points}
+            student=student,
+            lesson=lesson,
+            defaults={"points": lesson.points, "answer": answer},
         )
 
         serializer_class = serializer_map.get(lesson.type)
@@ -173,22 +195,7 @@ class LessonAnswerAPIView(views.APIView):
         lesson_slug = request.data.pop("lesson")
         lesson = get_object_or_404(Lesson, slug=lesson_slug, active=True)
 
-        specific_model = {
-            LessonType.QUIZ: QuizLesson,
-            LessonType.CODING: CodingLesson,
-        }.get(lesson.type)
-
-        if lesson.type == LessonType.QUIZ:
-            question = (
-                specific_model.objects.get(lesson=lesson)
-                .get_translation(request.LANGUAGE_CODE)
-                .question
-            )
-            answer = [option.is_correct for option in question.options.all()]
-        elif lesson.type == LessonType.CODING:
-            answer = specific_model.objects.get(lesson=lesson).file.solution_code
-        else:
-            answer = None
+        answer = get_answer(lesson, request.LANGUAGE_CODE)
 
         student = Student.objects.get(user=request.user)
         CourseProgress.objects.update_or_create(

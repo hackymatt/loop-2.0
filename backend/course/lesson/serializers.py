@@ -190,8 +190,7 @@ class QuizLessonSerializer(QuizLessonBaseSerializer):
         progress = CourseProgress.objects.filter(
             student__user=user, lesson=instance.lesson
         )
-        if progress.exists():
-            data["answer"] = progress.first().answer
+        data["answer"] = progress.first().answer
 
         return data
 
@@ -284,8 +283,7 @@ class CodingLessonSerializer(CodingLessonBaseSerializer):
         if progress.hint_used:
             data["hint"] = instance.get_translation(lang).hint
 
-        if progress:
-            data["answer"] = progress.answer
+        data["answer"] = progress.answer
 
         return data
 
