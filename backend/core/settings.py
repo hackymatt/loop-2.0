@@ -447,6 +447,7 @@ NOREPLY_EMAIL = os.getenv("NOREPLY_EMAIL", "")
 GOOGLE_CREDENTIALS = json.loads(
     base64.urlsafe_b64decode(os.getenv("GOOGLE_CREDENTIALS", "e30=")).decode()
 )
+BROKER_URL = os.getenv("BROKER_URL", "http://broker:4000/api/test")
 
 ADMIN_EMAIL = os.getenv("ADMIN_EMAIL", "")
 ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "")

@@ -51,6 +51,7 @@ class Migration(migrations.Migration):
                 ("path", models.CharField(max_length=500, null=True, blank=True)),
                 ("starter_code", models.TextField()),
                 ("solution_code", models.TextField()),
+                ("test_code", models.TextField()),
             ],
             options={
                 "verbose_name_plural": "Files",

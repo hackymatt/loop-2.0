@@ -22,6 +22,7 @@ export const URLS = {
   SIMILAR_COURSES: "/similar-courses",
   // LESSON
   LESSON: "/lesson",
+  LESSON_PROGRESS: "/lesson/progress",
   LESSON_SUBMIT: "/lesson/submit",
   LESSON_ANSWER: "/lesson/answer",
   LESSON_HINT: "/lesson/hint",

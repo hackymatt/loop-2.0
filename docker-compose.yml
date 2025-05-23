@@ -30,7 +30,6 @@ services:
       - ADMIN_PASSWORD=${ADMIN_PASSWORD}
       - DUMMY_STUDENT_EMAIL=${DUMMY_STUDENT_EMAIL}
       - DUMMY_STUDENT_PASSWORD=${DUMMY_STUDENT_PASSWORD}
-      - BASE_FRONTEND_URL=${BASE_URL}
       - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
       - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
       - FACEBOOK_CLIENT_ID=${FACEBOOK_CLIENT_ID}
@@ -39,9 +38,13 @@ services:
       - GITHUB_CLIENT_SECRET=${GITHUB_CLIENT_SECRET}
       - S3_ACCESS_KEY=${S3_ACCESS_KEY}
       - S3_SECRET_KEY=${S3_SECRET_KEY}
+      - BROKER_URL=${BROKER_URL}
     depends_on:
       - db
       - redis
+      - broker
+    networks:
+      - app-network
 
   frontend:
     container_name: frontend
@@ -54,11 +57,14 @@ services:
     environment:
       - WATCHPACK_POLLING=true
       - NEXT_PUBLIC_ENV=LOCAL
-      - NEXT_PUBLIC_BASE_URL=${BASE_URL}
       - NEXT_PUBLIC_API_URL=${API_URL}
+      - NEXT_PUBLIC_WS_URL=${WS_URL}
       - NEXT_PUBLIC_GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
       - NEXT_PUBLIC_FACEBOOK_CLIENT_ID=${FACEBOOK_CLIENT_ID}
       - NEXT_PUBLIC_GITHUB_CLIENT_ID=${GITHUB_CLIENT_ID}
+      - NEXT_PUBLIC_MIN_PASSWORD_LENGTH=${MIN_PASSWORD_LENGTH}
+      - NEXT_PUBLIC_GOOGLE_ANALYTICS_ID=${GOOGLE_ANALYTICS_ID}
+      - NEXT_PUBLIC_FACEBOOK_PIXEL_ID=${FACEBOOK_PIXEL_ID}
     volumes:
       - ./frontend:/usr/src/app/frontend
       - /usr/src/app/frontend/node_modules
@@ -66,6 +72,8 @@ services:
     depends_on:
       - backend
       - broker
+    networks:
+      - app-network
 
   nginx:
     container_name: nginx
@@ -80,6 +88,8 @@ services:
     depends_on:
       - backend
       - frontend
+    networks:
+      - app-network
 
   broker:
     container_name: broker
@@ -91,9 +101,12 @@ services:
       - RABBITMQ_USER=${RABBITMQ_USER}
       - RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD}
       - API_PORT=${API_PORT}
+      - WS_PORT=${WS_PORT}
       - JWT_SECRET=${JWT_SECRET}
     depends_on:
       - rabbitmq
+    networks:
+      - app-network
 
   rabbitmq:
     container_name: rabbitmq
@@ -106,6 +119,8 @@ services:
       - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASSWORD}
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
+    networks:
+      - app-network
 
   redis:
     container_name: redis
@@ -113,6 +128,8 @@ services:
     restart: always
     volumes:
       - "redis:/data"
+    networks:
+      - app-network
 
   db:
     container_name: database
@@ -124,6 +141,8 @@ services:
       - POSTGRES_DB=${DB_NAME}
       - POSTGRES_USER=${DB_USER}
       - POSTGRES_PASSWORD=${DB_PASSWORD}
+    networks:
+      - app-network
 
 volumes:
   postgres_data:
@@ -131,3 +150,7 @@ volumes:
   rabbitmq_data:
   staticfiles:
   mediafiles:
+
+networks:
+  app-network:
+    driver: bridge

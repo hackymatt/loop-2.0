@@ -1,43 +1,37 @@
-import type { EditorProps } from "@monaco-editor/react";
+import type { OnMount, EditorProps } from "@monaco-editor/react";
 
+import Editor from "@monaco-editor/react";
 import React, { useRef, useEffect } from "react";
-import Editor, { useMonaco } from "@monaco-editor/react";
 
 import { useSuggestions } from "./suggestions";
 
 // ----------------------------------------------------------------------
 
 interface ILanguageExtensionPoint {
+  id: string;
   aliases?: string[];
   extensions?: string[];
-  filenamePatterns?: string[];
   filenames?: string[];
+  filenamePatterns?: string[];
   firstLine?: string;
-  id: string;
   mimetypes?: string[];
 }
 
 // ----------------------------------------------------------------------
 
 function VbaCodeEditor({ ...other }: EditorProps) {
-  const monaco = useMonaco();
   const suggestions = useSuggestions();
-  const suggestionsRef = useRef(suggestions);
+  const providerRef = useRef<any>(null);
 
-  // Keep ref up-to-date without retriggering provider
-  useEffect(() => {
-    suggestionsRef.current = suggestions;
-  }, [suggestions]);
-
-  useEffect(() => {
-    if (!monaco) return;
-
-    // Register VBA language only once
+  const handleEditorDidMount: OnMount = (_editor, monaco) => {
+    // Register VBA language only if it hasn't been registered
     const hasVba = monaco.languages
       .getLanguages()
       .some((lang: ILanguageExtensionPoint) => lang.id === "vba");
+
     if (!hasVba) {
       monaco.languages.register({ id: "vba" });
+
       monaco.languages.setMonarchTokensProvider("vba", {
         tokenizer: {
           root: [
@@ -57,6 +51,7 @@ function VbaCodeEditor({ ...other }: EditorProps) {
           ],
         },
       });
+
       monaco.languages.setLanguageConfiguration("vba", {
         brackets: [["(", ")"]],
         autoClosingPairs: [
@@ -70,17 +65,23 @@ function VbaCodeEditor({ ...other }: EditorProps) {
       });
     }
 
-    // Register completion provider once
-    const provider = monaco.languages.registerCompletionItemProvider("vba", {
-      provideCompletionItems: () => ({ suggestions: suggestionsRef.current }),
+    // Register completion provider
+    providerRef.current = monaco.languages.registerCompletionItemProvider("vba", {
       triggerCharacters: [" ", "."],
+      provideCompletionItems: () => ({
+        suggestions,
+      }),
     });
+  };
 
-    // eslint-disable-next-line consistent-return
-    return () => provider.dispose();
-  }, [monaco]);
+  useEffect(
+    () => () => {
+      providerRef.current?.dispose();
+    },
+    []
+  );
 
-  return <Editor defaultLanguage="vba" {...other} />;
+  return <Editor defaultLanguage="vba" defaultValue="" onMount={handleEditorDidMount} {...other} />;
 }
 
 export default React.memo(VbaCodeEditor);

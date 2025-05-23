@@ -1,5 +1,6 @@
 import type { IReadingLessonProps } from "src/types/lesson";
 
+import React from "react";
 import { m } from "framer-motion";
 import { useTranslation } from "react-i18next";
 
@@ -20,7 +21,11 @@ type ReadingLessonProps = {
 
 // ----------------------------------------------------------------------
 
-export function ReadingLesson({ lesson, onSubmit, isLocked = false }: ReadingLessonProps) {
+export const ReadingLesson = React.memo(function ReadingLesson({
+  lesson,
+  onSubmit,
+  isLocked = false,
+}: ReadingLessonProps) {
   const { t } = useTranslation("learn");
 
   const renderHeader = () => (
@@ -85,4 +90,4 @@ export function ReadingLesson({ lesson, onSubmit, isLocked = false }: ReadingLes
       {renderSubmitButton()}
     </>
   );
-}
+});

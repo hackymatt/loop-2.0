@@ -65,7 +65,8 @@ export function PaymentNewCardForm({
       <Field.Text
         label={t("card.number.label")}
         placeholder="xxxx xxxx xxxx xxxx"
-        mask="9999 9999 9999 9999"
+        mask={(value) => value.replace(/(\d{4})(?=\d)/g, "$1 ")}
+        unmask={(value) => value.replace(/\D/g, "")}
         slotProps={{
           inputLabel: { shrink: true },
           input: {
@@ -97,7 +98,11 @@ export function PaymentNewCardForm({
           fullWidth
           label={t("card.expiration.label")}
           placeholder="MM/YY"
-          mask="99/99"
+          mask={(value: string) => {
+            const digits = value.replace(/\D/g, "");
+            if (digits.length <= 2) return digits;
+            return digits.slice(0, 2) + "/" + digits.slice(2, 4);
+          }}
           slotProps={{ inputLabel: { shrink: true } }}
           {...dateField}
           name={dateField?.name ?? ""}
@@ -108,7 +113,8 @@ export function PaymentNewCardForm({
           fullWidth
           label={t("card.security.label")}
           placeholder="***"
-          mask="999"
+          mask={(value: string) => value.replace(/\D/g, "").slice(0, 3)}
+          unmask={(value: string) => value.replace(/\D/g, "")}
           slotProps={{
             inputLabel: { shrink: true },
             input: {

@@ -1,11 +1,11 @@
 import { debounce } from "es-toolkit";
 import { useMonaco } from "@monaco-editor/react";
-import React, { lazy, useRef, useMemo, Suspense, useEffect, useCallback } from "react";
+import React, { lazy, useMemo, Suspense, useEffect, useCallback } from "react";
 
 import { useTheme } from "@mui/material/styles";
 import { CircularProgress } from "@mui/material";
 // Dynamically import language-specific editors
-const VbaCodeEditor = lazy(() => import("./languages/vba/code-editor"));
+// const VbaCodeEditor = lazy(() => import("./languages/vba/code-editor"));
 const PythonCodeEditor = lazy(() => import("./languages/python/code-editor"));
 
 interface CodeEditorProps {
@@ -18,7 +18,6 @@ interface CodeEditorProps {
 export function CodeEditor({ value, technology, readOnly = false, onChange }: CodeEditorProps) {
   const theme = useTheme();
   const monaco = useMonaco();
-  const editorRef = useRef<any>(null);
 
   // Debounce the onChange handler
   const debouncedOnChange = useMemo(
@@ -46,10 +45,6 @@ export function CodeEditor({ value, technology, readOnly = false, onChange }: Co
     [debouncedOnChange]
   );
 
-  const handleEditorDidMount = useCallback((editor: any) => {
-    editorRef.current = editor;
-  }, []);
-
   // Memoize theme effect
   useEffect(() => {
     if (monaco) {
@@ -76,13 +71,13 @@ export function CodeEditor({ value, technology, readOnly = false, onChange }: Co
   const technologyEditorMap = useMemo(
     () => ({
       python: PythonCodeEditor,
-      vba: VbaCodeEditor,
+      // vba: VbaCodeEditor,
     }),
     []
   );
 
   const EditorComponent = useMemo(() => {
-    const component = technologyEditorMap[technology as "python" | "vba"];
+    const component = technologyEditorMap[technology as "python"];
     if (!component) {
       throw new Error(`No editor found for technology ${technology}`);
     }
@@ -93,9 +88,8 @@ export function CodeEditor({ value, technology, readOnly = false, onChange }: Co
     <Suspense fallback={<CircularProgress />}>
       <EditorComponent
         height="100%"
-        value={value}
+        defaultValue={value}
         onChange={handleEditorChange}
-        onMount={handleEditorDidMount}
         options={{ ...editorOptions, readOnly }}
         loading={<CircularProgress />}
       />

@@ -1,6 +1,8 @@
+import ast
 import math
 import re
 import markdown
+import requests
 from bs4 import BeautifulSoup
 from rest_framework import serializers
 from django.utils.translation import gettext as _
@@ -21,6 +23,7 @@ from .models import (
 from ..progress.models import CourseProgress
 from const import LessonType, UserType
 from global_config import CONFIG
+from utils.logger.logger import logger
 
 
 class LessonSerializer(serializers.ModelSerializer):
@@ -185,10 +188,9 @@ class QuizLessonSerializer(QuizLessonBaseSerializer):
 
         user = self.context["request"].user
         progress = CourseProgress.objects.filter(
-            student__user=user, lesson=instance.lesson, completed_at__isnull=False
+            student__user=user, lesson=instance.lesson
         )
-        if progress.exists():
-            data["answer"] = progress.first().answer
+        data["answer"] = progress.first().answer
 
         return data
 
@@ -226,6 +228,13 @@ class FileSerializer(FileBaseSerializer):
 
 class StarterFileSerializer(FileBaseSerializer):
     code = serializers.CharField(source="starter_code")
+
+    class Meta(FileBaseSerializer.Meta):
+        fields = FileBaseSerializer.Meta.fields + ["code"]
+
+
+class TestFileSerializer(FileBaseSerializer):
+    code = serializers.CharField(source="test_code")
 
     class Meta(FileBaseSerializer.Meta):
         fields = FileBaseSerializer.Meta.fields + ["code"]
@@ -274,8 +283,7 @@ class CodingLessonSerializer(CodingLessonBaseSerializer):
         if progress.hint_used:
             data["hint"] = instance.get_translation(lang).hint
 
-        if progress.completed_at:
-            data["answer"] = progress.answer
+        data["answer"] = progress.answer
 
         return data
 
@@ -306,19 +314,56 @@ class QuizLessonSubmitSerializer(serializers.Serializer):
 class CodingLessonSubmitSerializer(serializers.Serializer):
     answer = serializers.CharField()
 
+    def _codes_are_equivalent(self, code1: str, code2: str) -> bool:
+        try:
+            tree1 = ast.parse(code1.strip())
+            tree2 = ast.parse(code2.strip())
+            return ast.dump(tree1) == ast.dump(tree2)
+        except SyntaxError:
+            return False
+
+    def _run_tests(self, user_id: str, lesson: CodingLesson, answer: str):
+        file = {**FileSerializer(lesson.file).data, "code": answer}
+        test_file = {
+            **TestFileSerializer(lesson.file).data,
+            "name": "test.py",
+            "path": "test",
+        }
+        files = [
+            dict(item) for item in FileSerializer(lesson.files.all(), many=True).data
+        ]
+        payload = {
+            "user_id": str(user_id),
+            "technology": lesson.technology.slug,
+            "timeout": lesson.timeout,
+            "files": [file, test_file, *files],
+            "command": "pytest -v --tb=short --disable-warnings test/test.py",
+        }
+        try:
+            response = requests.post(url=CONFIG["broker_url"], json=payload)
+            response.raise_for_status()
+            data = response.json()
+            return data["result"]
+        except Exception as e:
+            logger.error(f"Could not get broker response: {e}")
+            return {
+                "stdout": "",
+                "stderr": _("Almost there! Check your code and give it another shot."),
+                "exit_code": 1,
+            }
+
     def validate(self, attrs):
         lesson = self.context.get("lesson")
         answer = attrs["answer"]
 
         correct = lesson.file
 
-        if answer != correct.solution_code:
-            raise serializers.ValidationError(
-                {
-                    "answer": [
-                        _("Almost there! Check your code and give it another shot.")
-                    ]
-                }
-            )
+        if not self._codes_are_equivalent(answer, correct.solution_code):
+            user_id = self.context.get("request").user.id
+            result = self._run_tests(user_id, lesson, answer)
+            if result["exit_code"] != 0:
+                raise serializers.ValidationError(
+                    {"answer": result["stdout"] + result["stderr"]}
+                )
 
         return attrs

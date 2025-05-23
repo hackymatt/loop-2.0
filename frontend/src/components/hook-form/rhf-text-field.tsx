@@ -1,6 +1,5 @@
 import type { TextFieldProps } from "@mui/material/TextField";
 
-import InputMask from "react-input-mask-next";
 import { Controller, useFormContext } from "react-hook-form";
 import { transformValue, transformValueOnBlur, transformValueOnChange } from "minimal-shared/utils";
 
@@ -8,9 +7,10 @@ import TextField from "@mui/material/TextField";
 
 // ----------------------------------------------------------------------
 
-type RHFTextFieldProps = TextFieldProps & {
+export type RHFTextFieldProps = TextFieldProps & {
   name: string;
-  mask?: string;
+  mask?: (value: string) => string;
+  unmask?: (value: string) => string;
 };
 
 export function RHFTextField({
@@ -19,7 +19,7 @@ export function RHFTextField({
   slotProps,
   type = "text",
   mask,
-  disabled,
+  unmask,
   ...other
 }: RHFTextFieldProps) {
   const { control } = useFormContext();
@@ -31,42 +31,52 @@ export function RHFTextField({
       name={name}
       control={control}
       render={({ field, fieldState: { error } }) => (
-        <InputMask
-          mask={mask || ""}
-          value={field.value}
+        <TextField
+          {...field}
+          fullWidth
+          value={
+            mask
+              ? mask(field.value ?? "")
+              : isNumberType
+                ? transformValue(field.value)
+                : (field.value ?? "")
+          }
           onChange={(event) => {
-            const transformedValue = isNumberType
-              ? transformValueOnChange(event.target.value)
-              : event.target.value;
+            const inputValue = event.target.value;
+            const cleanedValue = unmask
+              ? unmask(inputValue)
+              : isNumberType
+                ? transformValueOnChange(inputValue)
+                : inputValue;
 
-            field.onChange(transformedValue);
+            field.onChange(cleanedValue);
           }}
           onBlur={(event) => {
-            const transformedValue = isNumberType
-              ? transformValueOnBlur(event.target.value)
-              : event.target.value;
+            const inputValue = event.target.value;
+            const cleanedValue = unmask
+              ? unmask(inputValue)
+              : isNumberType
+                ? transformValueOnBlur(inputValue)
+                : inputValue;
 
-            field.onChange(transformedValue);
+            field.onChange(cleanedValue);
           }}
-          disabled={disabled}
-        >
-          <TextField
-            fullWidth
-            value={isNumberType ? transformValue(field.value) : field.value}
-            type={isNumberType ? "text" : type}
-            error={!!error}
-            helperText={error?.message ?? helperText}
-            slotProps={{
-              ...slotProps,
-              htmlInput: {
-                autoComplete: "off",
-                ...slotProps?.htmlInput,
-                ...(isNumberType && { inputMode: "decimal", pattern: "[0-9]*\\.?[0-9]*" }),
-              },
-            }}
-            {...other}
-          />
-        </InputMask>
+          type={isNumberType ? "text" : type}
+          error={!!error}
+          helperText={error?.message ?? helperText}
+          slotProps={{
+            ...slotProps,
+            htmlInput: {
+              autoComplete: "off",
+              ...slotProps?.htmlInput,
+              ...(isNumberType && {
+                inputMode: "decimal",
+                pattern: "[0-9]*\\.?[0-9]*",
+              }),
+            },
+          }}
+          {...other}
+        />
       )}
     />
   );

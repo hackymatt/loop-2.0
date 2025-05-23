@@ -1,5 +1,6 @@
 import type { IVideoLessonProps } from "src/types/lesson";
 
+import React from "react";
 import { useTranslation } from "react-i18next";
 
 import Box from "@mui/material/Box";
@@ -15,7 +16,11 @@ type VideoLessonProps = { lesson: IVideoLessonProps; onSubmit: () => void; isLoc
 
 // ----------------------------------------------------------------------
 
-export function VideoLesson({ lesson, onSubmit, isLocked = false }: VideoLessonProps) {
+export const VideoLesson = React.memo(function VideoLesson({
+  lesson,
+  onSubmit,
+  isLocked = false,
+}: VideoLessonProps) {
   const { t } = useTranslation("learn");
 
   const renderHeader = () => (
@@ -86,4 +91,4 @@ export function VideoLesson({ lesson, onSubmit, isLocked = false }: VideoLessonP
       {renderSubmitButton()}
     </>
   );
-}
+});

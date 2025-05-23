@@ -5,6 +5,8 @@ import { NextResponse } from "next/server";
 import { paths } from "./routes/paths";
 import { LANGUAGE } from "./consts/language";
 
+import type { Language } from "./locales/types";
+
 const locales = Object.values(LANGUAGE);
 const defaultLocale = LANGUAGE.PL;
 
@@ -30,10 +32,11 @@ const UNAUTHORIZED_PATHS = [
 
 const PUBLIC_FILE = /\.(.*)$/;
 
-export async function middleware(req: NextRequest) {
-  const { pathname } = req.nextUrl;
+export function middleware(req: NextRequest) {
+  const { pathname, origin } = req.nextUrl;
+  const accessToken = req.cookies.get("access_token");
 
-  // --- 1. Ignoruj pliki statyczne i API
+  // 1. Skip static and API
   if (
     pathname.startsWith("/api") ||
     pathname.startsWith("/_next") ||
@@ -43,36 +46,30 @@ export async function middleware(req: NextRequest) {
     return NextResponse.next();
   }
 
-  // --- 2. Obsłuż brak języka w URL
-  const hasLocale = locales.some((locale) => pathname.startsWith(`/${locale}`));
+  // 2. Locale detection
+  const segments = pathname.split("/").filter(Boolean);
+  const firstSegment = segments[0];
+  const hasLocale = locales.includes(firstSegment as Language);
 
-  if (!hasLocale) {
-    const newUrl = req.nextUrl.clone();
-    newUrl.pathname = `/${defaultLocale}${pathname}`;
-    return NextResponse.rewrite(newUrl);
+  const locale = hasLocale ? (firstSegment as Language) : defaultLocale;
+  const pathWithoutLocale = `/${segments.slice(hasLocale ? 1 : 0).join("/") || ""}`;
+
+  // 3. Auth logic
+  const redirectLocale = hasLocale ? `/${locale}` : "";
+
+  if (!accessToken && AUTHORIZED_PATHS.includes(pathWithoutLocale)) {
+    return NextResponse.redirect(new URL(`${redirectLocale}${paths.login}`, origin));
   }
 
-  // --- 3. Obsługa autoryzacji
-  const accessToken = req.cookies.get("access_token");
-
-  // Usuń język z pathname (np. "/pl/account/dashboard" → "/account/dashboard")
-  const localePath = `/${pathname.split("/")[1]}`;
-  const pathWithoutLocale = pathname.replace(localePath, "");
-
-  if (!accessToken) {
-    if (AUTHORIZED_PATHS.includes(pathWithoutLocale)) {
-      return NextResponse.redirect(
-        new URL(`/${req.nextUrl.locale || defaultLocale}${paths.login}`, req.url)
-      );
-    }
+  if (accessToken && UNAUTHORIZED_PATHS.includes(pathWithoutLocale)) {
+    return NextResponse.redirect(new URL(`${redirectLocale}${paths.account.dashboard}`, origin));
   }
 
-  if (accessToken) {
-    if (UNAUTHORIZED_PATHS.includes(pathWithoutLocale)) {
-      return NextResponse.redirect(
-        new URL(`/${req.nextUrl.locale || defaultLocale}${paths.account.dashboard}`, req.url)
-      );
-    }
+  // 4. Internally rewrite to defaultLocale path if not present in URL
+  if (!hasLocale && locale === defaultLocale) {
+    const url = req.nextUrl.clone();
+    url.pathname = `/${defaultLocale}${pathname}`;
+    return NextResponse.rewrite(url);
   }
 
   return NextResponse.next();
