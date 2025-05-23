@@ -6,10 +6,10 @@ import jwt from "jsonwebtoken";
 import { v4 as uuid } from "uuid";
 import WebSocket, { WebSocketServer } from "ws";
 
-import { createUserPod } from "./k8s";
 import { getSandboxName } from "./sandbox";
 import { WS_PORT, JWT_SECRET } from "./const";
 import { publish } from "./message-queue/publisher";
+import { createUserSandbox } from "./sandbox/utils";
 
 import type { SandboxName } from "./sandbox";
 
@@ -81,7 +81,7 @@ export function startWebSocketServer() {
 
           console.log(`Received message from user ${userId}:`, data);
 
-          await createUserPod(userId, technology);
+          await createUserSandbox(userId, technology);
           await publish(userId, jobId, technology, timeout, command, files, true, false);
         } catch (err) {
           console.error("Failed to parse message:", err);

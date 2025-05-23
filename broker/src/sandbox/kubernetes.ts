@@ -1,9 +1,9 @@
 import * as k8s from "@kubernetes/client-node";
 
-import { RABBITMQ_HOST, RABBITMQ_PORT } from "./const";
-import { getSandboxName, getSandboxImage } from "./sandbox";
+import { RABBITMQ_HOST, RABBITMQ_PORT } from "../const";
+import { getSandboxName, getSandboxImage } from "../sandbox";
 
-import type { Technology, SandboxName } from "./sandbox";
+import type { Technology, SandboxName } from "../sandbox";
 
 // Kubernetes client setup
 const kc = new k8s.KubeConfig();

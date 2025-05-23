@@ -3,8 +3,8 @@ import type { Request, Response } from "express";
 import express from "express";
 import { v4 as uuid } from "uuid";
 
-import { createUserPod } from "./k8s";
 import { publish } from "./message-queue/publisher";
+import { createUserSandbox } from "./sandbox/utils";
 
 const router = express.Router();
 
@@ -19,7 +19,7 @@ router.post("/test", async (req: Request, res: Response) => {
       return;
     }
 
-    await createUserPod(userId, technology);
+    await createUserSandbox(userId, technology);
     const jobId = uuid();
     const jobResult = await publish(
       userId,

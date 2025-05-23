@@ -2,7 +2,7 @@ import { expect } from "chai";
 import sinon from "sinon";
 import proxyquire from "proxyquire";
 
-describe("k8s.ts", () => {
+describe("kubernetes.ts", () => {
   let fakeReadPod: sinon.SinonStub;
   let fakeCreatePod: sinon.SinonStub;
   let fakeDeletePod: sinon.SinonStub;
@@ -30,7 +30,7 @@ describe("k8s.ts", () => {
 
     clock = sinon.useFakeTimers();
 
-    podManager = proxyquire("../src/k8s", {
+    podManager = proxyquire("../../src/sandbox/kubernetes", {
       "@kubernetes/client-node": {
         KubeConfig: class {
           loadFromDefault() {}
@@ -43,11 +43,11 @@ describe("k8s.ts", () => {
           }
         },
       },
-      "./sandbox": {
+      "../sandbox": {
         getSandboxName: (tech: string) => `sandbox-${tech}`,
         getSandboxImage: (tech: string) => `image-${tech}`,
       },
-      "./const": {
+      "../const": {
         RABBITMQ_HOST: "rabbitmq",
         RABBITMQ_PORT: "5672",
       },

@@ -9,11 +9,11 @@ app.use(express.json());
 app.use(router);
 
 describe("api.ts", () => {
-  let createUserPodStub: sinon.SinonStub;
+  let createUserSandboxStub: sinon.SinonStub;
   let publishStub: sinon.SinonStub;
 
   beforeEach(() => {
-    createUserPodStub = sinon.stub(require("../src/k8s"), "createUserPod");
+    createUserSandboxStub = sinon.stub(require("../src/sandbox/utils"), "createUserSandbox");
     publishStub = sinon.stub(require("../src/message-queue/publisher"), "publish");
   });
 
@@ -30,7 +30,7 @@ describe("api.ts", () => {
 
   it("should return 500 on internal server error", async () => {
     // Simulating an error in createUserPod
-    createUserPodStub.rejects(new Error("Internal error"));
+    createUserSandboxStub.rejects(new Error("Internal error"));
 
     const res = await request(app)
       .post("/test")
@@ -48,7 +48,7 @@ describe("api.ts", () => {
 
   it("should return 200 on successful job result", async () => {
     // Stubbing successful resolution for both functions
-    createUserPodStub.resolves();
+    createUserSandboxStub.resolves();
     publishStub.resolves({ success: true });
 
     const res = await request(app)
@@ -67,7 +67,7 @@ describe("api.ts", () => {
 
   it("should return 400 if job result contains error", async () => {
     // Stubbing an error response for publish
-    createUserPodStub.resolves();
+    createUserSandboxStub.resolves();
     publishStub.resolves({ error: "Something went wrong" });
 
     const res = await request(app)

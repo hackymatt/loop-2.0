@@ -1,6 +1,9 @@
 # Use Node.js base image
 FROM node:20-alpine
 
+# Install Docker CLI
+RUN apk add --no-cache docker-cli
+
 # Set working directory
 WORKDIR /app
 
@@ -14,7 +17,7 @@ RUN npm install
 COPY . .
 
 # Expose port for the broker service
-EXPOSE 3000
+EXPOSE 4000
 
 # Run the broker service
 CMD ["npm", "start"]
