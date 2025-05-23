@@ -10,10 +10,12 @@ const router = express.Router();
 
 router.post("/test", async (req: Request, res: Response) => {
   try {
-    const { userId, technology, files, timeout, command } = req.body;
+    const { user_id: userId, technology, files, timeout, command } = req.body;
 
     if (!userId || !technology || !files || !timeout || !command) {
-      res.status(400).json({ error: "Missing required fields: userId, files, timeout or command" });
+      res
+        .status(400)
+        .json({ error: "Missing required fields: user_id, files, timeout or command" });
       return;
     }
 

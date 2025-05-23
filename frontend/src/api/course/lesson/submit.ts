@@ -27,6 +27,7 @@ export const useLessonSubmit = () => {
     },
     {
       onSuccess: () => {
+        queryClient.invalidateQueries([URLS.LESSON]);
         queryClient.invalidateQueries([URLS.COURSES]);
         queryClient.invalidateQueries([URLS.DASHBOARD]);
       },

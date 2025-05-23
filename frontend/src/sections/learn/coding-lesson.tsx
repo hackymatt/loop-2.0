@@ -5,7 +5,7 @@ import type { IConfigProp, ICodingFileProp, ICodingLessonProps } from "src/types
 import Split from "react-split";
 import { useTranslation } from "react-i18next";
 import { varAlpha } from "minimal-shared/utils";
-import React, { useRef, useMemo, useState, useEffect } from "react";
+import React, { useRef, useMemo, useState, useEffect, useCallback } from "react";
 
 import Box from "@mui/material/Box";
 import { Button, Skeleton, Typography, ButtonGroup } from "@mui/material";
@@ -23,6 +23,7 @@ type CodingLessonProps = {
   onSubmit: (answer: string) => void;
   onHint: () => void;
   onShowAnswer: () => void;
+  onSaveProgress: (answer: string) => void;
   error?: string;
   logs?: any[];
   isLocked?: boolean;
@@ -121,12 +122,13 @@ function Console({ entries }: { entries: ConsoleEntry[] }) {
 
 // ----------------------------------------------------------------------
 
-export function CodingLesson({
+export const CodingLesson = React.memo(function CodingLesson({
   lesson,
   onSubmit,
   onRunCode,
   onHint,
   onShowAnswer,
+  onSaveProgress,
   logs = [],
   error,
   isRunning = false,
@@ -152,34 +154,44 @@ export function CodingLesson({
     }
   };
 
-  const handleRunCode = () => {
+  const handleRunCode = useCallback(() => {
     const { file: defaultFile, files, command, timeout, technology } = lesson;
+    onSaveProgress(code);
     onRunCode({
       files: [...files, { ...defaultFile, code }],
       command,
       timeout,
       technology,
     });
-  };
+  }, [code, lesson, onRunCode, onSaveProgress]);
 
-  const handleSubmit = () => {
+  const handleSubmit = useCallback(() => {
+    onSaveProgress(code);
     onSubmit(code);
-  };
+  }, [code, onSaveProgress, onSubmit]);
 
-  const renderRunCodeButton = () => (
-    <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-      <Button
-        variant="outlined"
-        color={isRunning ? "error" : "secondary"}
-        size="medium"
-        startIcon={<Iconify width={16} icon={`solar:${isRunning ? "stop" : "play"}-outline`} />}
-        onClick={handleRunCode}
-        disabled={isLocked}
-        sx={{ px: 2, whiteSpace: "nowrap" }}
-      >
-        {isRunning ? t("coding.editor.runCode.stop") : t("coding.editor.runCode.start")}
-      </Button>
-    </Box>
+  const handleHint = useCallback(() => {
+    onSaveProgress(code);
+    onHint();
+  }, [code, onHint, onSaveProgress]);
+
+  const renderRunCodeButton = useCallback(
+    () => (
+      <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+        <Button
+          variant="outlined"
+          color={isRunning ? "error" : "secondary"}
+          size="medium"
+          startIcon={<Iconify width={16} icon={`solar:${isRunning ? "stop" : "play"}-outline`} />}
+          onClick={handleRunCode}
+          disabled={isLocked}
+          sx={{ px: 2, whiteSpace: "nowrap" }}
+        >
+          {isRunning ? t("coding.editor.runCode.stop") : t("coding.editor.runCode.start")}
+        </Button>
+      </Box>
+    ),
+    [handleRunCode, isLocked, isRunning, t]
   );
 
   const renderSubmitButton = () => (
@@ -203,7 +215,7 @@ export function CodingLesson({
         variant="outlined"
         color="inherit"
         size="medium"
-        onClick={onHint}
+        onClick={handleHint}
         disabled={isLocked}
         startIcon={<Iconify icon="solar:lightbulb-linear" />}
         sx={{ px: 2, whiteSpace: "nowrap" }}
@@ -513,4 +525,4 @@ export function CodingLesson({
       </Box>
     </>
   );
-}
+});

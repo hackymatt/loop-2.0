@@ -5,18 +5,19 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { URLS } from "src/api/urls";
 import { Api } from "src/api/service";
 
-const endpoint = URLS.LESSON_HINT;
+const endpoint = URLS.LESSON_PROGRESS;
 
-type IHint = {
+type ISubmit = {
   lesson: string;
+  answer: string | boolean[];
 };
 
-type IHintReturn = { data: { hint: string }; status: number };
+type ISubmitReturn = { data: { answer: string }; status: number };
 
-export const useLessonHint = () => {
+export const useLessonProgress = () => {
   const queryClient = useQueryClient();
 
-  return useMutation<IHintReturn, AxiosError, IHint>(
+  return useMutation<ISubmitReturn, AxiosError, ISubmit>(
     async (variables) => {
       const result = await Api.post(endpoint, variables);
       return {

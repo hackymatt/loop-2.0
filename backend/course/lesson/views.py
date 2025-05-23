@@ -106,6 +106,26 @@ class LessonViewSet(RetrieveModelMixin, GenericViewSet):
         return Response(serializer.data)
 
 
+class LessonProgressAPIView(views.APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        lesson_slug = request.data.pop("lesson")
+        lesson = get_object_or_404(Lesson, slug=lesson_slug, active=True)
+
+        answer = request.data.get("answer")
+
+        # Save progress
+        student = Student.objects.get(user=request.user)
+        CourseProgress.objects.update_or_create(
+            student=student,
+            lesson=lesson,
+            defaults={"answer": answer},
+        )
+
+        return Response({}, status=status.HTTP_200_OK)
+
+
 class LessonSubmitAPIView(views.APIView):
     permission_classes = [IsAuthenticated]
 

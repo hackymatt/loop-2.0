@@ -1,5 +1,6 @@
 from .views import (
     LessonViewSet,
+    LessonProgressAPIView,
     LessonSubmitAPIView,
     LessonAnswerAPIView,
     LessonHintAPIView,
@@ -12,6 +13,11 @@ urlpatterns = [
         Urls.LESSON,
         LessonViewSet.as_view({"get": "retrieve"}),
         name="lesson",
+    ),
+    path(
+        Urls.LESSON_PROGRESS,
+        LessonProgressAPIView.as_view(),
+        name="lesson-progress",
     ),
     path(
         Urls.LESSON_SUBMIT,

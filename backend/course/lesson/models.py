@@ -196,6 +196,7 @@ class File(models.Model):
     path = models.CharField(max_length=500, null=True, blank=True)
     starter_code = models.TextField()
     solution_code = models.TextField()
+    test_code = models.TextField()
 
     class Meta:
         db_table = "course_file"

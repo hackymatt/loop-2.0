@@ -1,7 +1,7 @@
 import type { IQuizLessonProps } from "src/types/lesson";
 
-import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import React, { useState, useEffect } from "react";
 
 import {
   Box,
@@ -29,16 +29,18 @@ type QuizLessonProps = {
   lesson: IQuizLessonProps;
   onSubmit: (answer: boolean[]) => void;
   onShowAnswer: () => void;
+  onSaveProgress: (answer: boolean[]) => void;
   error?: string;
   isLocked?: boolean;
 };
 
 // ----------------------------------------------------------------------
 
-export function QuizLesson({
+export const QuizLesson = React.memo(function QuizLesson({
   lesson,
   onSubmit,
   onShowAnswer,
+  onSaveProgress,
   error,
   isLocked = false,
 }: QuizLessonProps) {
@@ -46,7 +48,6 @@ export function QuizLesson({
   const { trackEvent } = useAnalytics();
 
   const isMultiple = lesson.quizType === QUIZ_TYPE.MULTI;
-  const isCompleted = !!lesson.answer;
 
   // Form state
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
@@ -76,6 +77,7 @@ export function QuizLesson({
     const answer = lesson.question.options.map((_, index) =>
       isMultiple ? selectedOptions.includes(index) : selectedOption === index
     );
+    onSaveProgress(answer);
     onSubmit(answer);
   };
 
@@ -188,7 +190,7 @@ export function QuizLesson({
           onShowAnswer();
           trackEvent({ category: "learn", label: "quiz", action: "showAnswer" });
         }}
-        disabled={isLocked || isCompleted}
+        disabled={isLocked}
         sx={{ px: 2 }}
       >
         {t("quiz.answer")}
@@ -212,4 +214,4 @@ export function QuizLesson({
       {renderButtons()}
     </>
   );
-}
+});

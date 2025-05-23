@@ -12,8 +12,8 @@ import type {
 } from "src/types/lesson";
 
 import { useSnackbar } from "notistack";
-import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
+import React, { useMemo, useState, useCallback } from "react";
 
 import { Box, Container } from "@mui/material";
 
@@ -31,6 +31,7 @@ import { useLessonHint } from "src/api/course/lesson/hint";
 import { useAccessToken } from "src/api/auth/access-token";
 import { useLessonSubmit } from "src/api/course/lesson/submit";
 import { useLessonAnswer } from "src/api/course/lesson/answer";
+import { useLessonProgress } from "src/api/course/lesson/progress";
 
 import { SplashScreen } from "src/components/loading-screen";
 import { CustomBreadcrumbs } from "src/components/custom-breadcrumbs";
@@ -100,6 +101,7 @@ export function LearnView({ courseSlug, chapterSlug, lessonSlug }: LearnViewProp
     onClose: () => setLogs((prev) => [...prev, "Zamknieto połączenie z serwerem."]),
   });
 
+  const { mutateAsync: saveProgress } = useLessonProgress();
   const { mutateAsync: submit } = useLessonSubmit();
   const { mutateAsync: showAnswer } = useLessonAnswer();
   const { mutateAsync: showHint } = useLessonHint();
@@ -111,28 +113,28 @@ export function LearnView({ courseSlug, chapterSlug, lessonSlug }: LearnViewProp
   const isError = isErrorCourse || isErrorLesson;
   const isLocked = (lessonError as AxiosError)?.status === 403;
 
-  const allLessons = courseData?.chapters.flatMap((ch) => ch.lessons) ?? [];
-  const currentLessonIndex = allLessons.findIndex((l) => l.slug === lessonSlug);
-  const currentLessonInfo = allLessons[currentLessonIndex];
-  const currentChapter = courseData?.chapters.find((ch) => ch.slug === chapterSlug);
+  const allLessons = useMemo(
+    () => courseData?.chapters.flatMap((ch) => ch.lessons) ?? [],
+    [courseData?.chapters]
+  );
+  const currentLessonIndex = useMemo(
+    () => allLessons.findIndex((l) => l.slug === lessonSlug),
+    [allLessons, lessonSlug]
+  );
+  const currentLessonInfo = useMemo(
+    () => allLessons[currentLessonIndex],
+    [allLessons, currentLessonIndex]
+  );
+  const currentChapter = useMemo(
+    () => courseData?.chapters.find((ch) => ch.slug === chapterSlug),
+    [chapterSlug, courseData?.chapters]
+  );
 
-  const navigateTo = (index: number) => {
-    const lesson = allLessons[index];
-    const chapter = courseData?.chapters.find((ch) =>
-      ch.lessons.some((l) => l.slug === lesson.slug)
-    );
-    if (lesson && chapter) {
-      router.push(localize(`${paths.learn}/${courseSlug}/${chapter.slug}/${lesson.slug}`));
-    }
-  };
-
-  const handleSubmit = async (data: { answer: string | boolean[] }) => {
-    setError(undefined);
-    try {
-      await submit({ ...data, lesson: lessonSlug });
-      const lesson = allLessons[currentLessonIndex + 1];
+  const navigateTo = useCallback(
+    (index: number) => {
+      const lesson = allLessons[index];
       const chapter = courseData?.chapters.find((ch) =>
-        ch.lessons.some((l) => l.slug === lesson.slug)
+        ch.lessons.some((l) => l.slug === lesson?.slug)
       );
       router.push(
         localize(
@@ -141,34 +143,60 @@ export function LearnView({ courseSlug, chapterSlug, lessonSlug }: LearnViewProp
             : `${paths.course}/${courseSlug}`
         )
       );
-    } catch (err) {
-      setError(((err as AxiosError).response?.data as { answer: string })?.answer);
-    }
-  };
+    },
+    [allLessons, courseData?.chapters, courseSlug, localize, router]
+  );
 
-  const handleShowAnswer = async () => {
+  const handleSaveProgress = useCallback(
+    async (data: { answer: string | boolean[] }) => {
+      try {
+        await saveProgress({ ...data, lesson: lessonSlug });
+      } catch {
+        enqueueSnackbar(t("errors.answer"), { variant: "error" });
+      }
+    },
+    [enqueueSnackbar, lessonSlug, saveProgress, t]
+  );
+
+  const handleSubmit = useCallback(
+    async (data: { answer: string | boolean[] }) => {
+      try {
+        await submit({ ...data, lesson: lessonSlug });
+        navigateTo(currentLessonIndex + 1);
+      } catch (err) {
+        setError(((err as AxiosError).response?.data as { answer: string })?.answer);
+        setLogs(((err as AxiosError).response?.data as { answer: string })?.answer[0].split("\n"));
+      }
+    },
+    [currentLessonIndex, lessonSlug, navigateTo, submit]
+  );
+
+  const handleShowAnswer = useCallback(async () => {
     try {
       await showAnswer({ lesson: lessonSlug });
     } catch {
       enqueueSnackbar(t("errors.answer"), { variant: "error" });
     }
-  };
+  }, [enqueueSnackbar, lessonSlug, showAnswer, t]);
 
-  const handleShowHint = async () => {
+  const handleShowHint = useCallback(async () => {
     try {
       await showHint({ lesson: lessonSlug });
     } catch {
       enqueueSnackbar(t("errors.hint"), { variant: "error" });
     }
-  };
+  }, [enqueueSnackbar, lessonSlug, showHint, t]);
 
-  const handleRunCode = async (config: IConfigProp) => {
-    if (isRunning) {
-      disconnect();
-      return;
-    }
-    await connect(config);
-  };
+  const handleRunCode = useCallback(
+    async (config: IConfigProp) => {
+      if (isRunning) {
+        disconnect();
+        return;
+      }
+      await connect(config);
+    },
+    [connect, disconnect, isRunning]
+  );
 
   if (isError && !isLocked) {
     return <NotFoundView />;
@@ -230,8 +258,9 @@ export function LearnView({ courseSlug, chapterSlug, lessonSlug }: LearnViewProp
           <ContentBox>
             <QuizLesson
               lesson={lessonData as IQuizLessonProps}
-              onSubmit={(answer) => handleSubmit({ answer: answer as boolean[] })}
+              onSubmit={(answer: boolean[]) => handleSubmit({ answer })}
               onShowAnswer={handleShowAnswer}
+              onSaveProgress={(answer: boolean[]) => handleSaveProgress({ answer })}
               error={error}
               isLocked={isLocked}
             />
@@ -243,9 +272,10 @@ export function LearnView({ courseSlug, chapterSlug, lessonSlug }: LearnViewProp
             <CodingLesson
               lesson={lessonData as ICodingLessonProps}
               onRunCode={(config) => handleRunCode(config)}
-              onSubmit={(answer) => handleSubmit({ answer: answer as string })}
+              onSubmit={(answer: string) => handleSubmit({ answer })}
               onHint={handleShowHint}
               onShowAnswer={handleShowAnswer}
+              onSaveProgress={(answer: string) => handleSaveProgress({ answer })}
               logs={logs}
               error={error}
               isRunning={isRunning}
