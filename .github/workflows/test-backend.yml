@@ -9,10 +9,6 @@ on:
         required: true
       DB_HOST:
         required: true
-      DB_USER:
-        required: true
-      DB_PASSWORD:
-        required: true
       REDIS_URL:
         required: true
       CONTACT_EMAIL:
@@ -58,8 +54,8 @@ jobs:
           LOCAL: ${{ secrets.LOCAL }}
           DB_NAME: ${{ secrets.DB_NAME }}
           DB_HOST: ${{ secrets.DB_HOST }}
-          DB_USER: ${{ secrets.DB_USER }}
-          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          DB_USER: postgres
+          DB_PASSWORD: postgres
           REDIS_URL: ${{ secrets.REDIS_URL }}
           CONTACT_EMAIL: ${{ secrets.CONTACT_EMAIL }}
           NOREPLY_EMAIL: ${{ secrets.NOREPLY_EMAIL }}

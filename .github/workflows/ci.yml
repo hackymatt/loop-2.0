@@ -56,8 +56,6 @@ jobs:
       LOCAL: ${{ secrets.LOCAL }}
       DB_NAME: ${{ secrets.DB_NAME }}
       DB_HOST: ${{ secrets.DB_HOST }}
-      DB_USER: ${{ secrets.DB_USER }}
-      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
       REDIS_URL: ${{ secrets.REDIS_URL }}
       CONTACT_EMAIL: ${{ secrets.CONTACT_EMAIL }}
       NOREPLY_EMAIL: ${{ secrets.NOREPLY_EMAIL }}
