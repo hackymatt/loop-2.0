@@ -1,4 +1,4 @@
-name: Continuous Improvement
+name: Testing
 
 on:
   pull_request:
@@ -28,41 +28,180 @@ jobs:
               - 'sandbox/python/**'
 
   lint-backend:
-    uses: ./linting/backend.yml
+    name: Lint Backend
+    runs-on: ubuntu-latest
     needs: detect-changes
     if: needs.detect-changes.outputs.backend == 'true'
+    defaults:
+      run:
+        shell: bash
+        working-directory: backend
 
-  lint-broker:
-    uses: ./linting/broker.yml
-    needs: detect-changes
-    if: needs.detect-changes.outputs.broker == 'true'
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          sudo apt-get install -y libjpeg-dev
+          python -m pip install --upgrade pip
+          pip install -r requirements-lint.txt
+          pip install -r requirements.txt
+          pylint core --recursive=true --fail-under=10
+          black . --check
 
   lint-frontend:
-    uses: ./linting/frontend.yml
+    name: Lint Frontend
+    runs-on: ubuntu-latest
     needs: detect-changes
     if: needs.detect-changes.outputs.frontend == 'true'
+    defaults:
+      run:
+        shell: bash
+        working-directory: frontend
+
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          npm install --legacy-peer-deps
+          npm run fm:check
+          npm run lint:check
+
+  lint-broker:
+    name: Lint Broker
+    runs-on: ubuntu-latest
+    needs: detect-changes
+    if: needs.detect-changes.outputs.broker == 'true'
+    defaults:
+      run:
+        shell: bash
+        working-directory: broker
+
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          npm install
+          npm run fm:check
+          npm run lint:check
 
   lint-python-sandbox:
-    uses: ./linting/sandbox/python.yml
+    name: Lint Python sandbox
+    runs-on: ubuntu-latest
     needs: detect-changes
     if: needs.detect-changes.outputs.sandbox-python == 'true'
+    defaults:
+      run:
+        shell: bash
+        working-directory: sandbox/python
+
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          sudo apt-get install -y libjpeg-dev
+          python -m pip install --upgrade pip
+          pip install -r requirements-lint.txt
+          pip install -r requirements.txt
+          pylint . --recursive=true --fail-under=10
+          black . --check
 
   test-backend:
-    uses: ./testing/backend.yml
-    needs: lint-backend
+    name: Test Backend
+    runs-on: ubuntu-latest
+    needs: detect-changes
     if: needs.detect-changes.outputs.backend == 'true'
+    defaults:
+      run:
+        shell: bash
+        working-directory: backend
 
-  test-broker:
-    uses: ./testing/broker.yml
-    needs: lint-broker
-    if: needs.detect-changes.outputs.broker == 'true'
+    env:
+      LOCAL: ${{ secrets.LOCAL }}
+      DB_NAME: ${{ secrets.DB_NAME }}
+      DB_HOST: ${{ secrets.DB_HOST }}
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      REDIS_URL: ${{ secrets.REDIS_URL }}
+      CONTACT_EMAIL: ${{ secrets.CONTACT_EMAIL }}
+      NOREPLY_EMAIL: ${{ secrets.NOREPLY_EMAIL }}
+      GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
+      ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
+      ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
+      DUMMY_STUDENT_EMAIL: ${{ secrets.DUMMY_STUDENT_EMAIL }}
+      DUMMY_STUDENT_PASSWORD: ${{ secrets.DUMMY_STUDENT_PASSWORD }}
+
+    services:
+      redis:
+        image: redis:7.2.5-bookworm
+        ports: [6379:6379]
+        options: --health-cmd "redis-cli ping" --health-interval 10s --health-timeout 5s --health-retries 5
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_DB: postgres
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports: [5432:5432]
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          sudo apt-get install -y libjpeg-dev
+          python -m pip install --upgrade pip
+          pip install -r requirements-test.txt
+          pip install -r requirements.txt
+          pip install django-cors-headers
+          coverage run manage.py test
+          coverage report
 
   test-frontend:
-    uses: ./testing/frontend.yml
-    needs: lint-frontend
+    name: Test Frontend
+    runs-on: ubuntu-latest
+    needs: detect-changes
     if: needs.detect-changes.outputs.frontend == 'true'
+    defaults:
+      run:
+        shell: bash
+        working-directory: frontend
+
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          npm install --legacy-peer-deps
+          npm run test:coverage
 
   test-python-sandbox:
-    uses: ./testing/sandbox/python.yml
-    needs: lint-python-sandbox
+    name: Test Python sandbox
+    runs-on: ubuntu-latest
+    needs: detect-changes
     if: needs.detect-changes.outputs.sandbox-python == 'true'
+    defaults:
+      run:
+        shell: bash
+        working-directory: sandbox/python
+
+    env:
+      USER_ID: user-id
+
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          sudo apt-get install -y libjpeg-dev
+          python -m pip install --upgrade pip
+          pip install -r requirements-test.txt
+          pip install -r requirements.txt
+          coverage run -m pytest
+          coverage report
+
+  test-broker:
+    name: Test Broker
+    runs-on: ubuntu-latest
+    needs: detect-changes
+    if: needs.detect-changes.outputs.broker == 'true'
+    defaults:
+      run:
+        shell: bash
+        working-directory: broker
+
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          npm install
+          npm run test:coverage
