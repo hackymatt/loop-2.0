@@ -6,9 +6,27 @@ on:
 
 jobs:
   detect-changes:
-    uses: ./.github/workflows/detect.yml
-    secrets:
-      token: ${{ secrets.PAT_FOR_FILTER }}
+    runs-on: ubuntu-latest
+    outputs:
+      backend: ${{ steps.filter.outputs.backend }}
+      frontend: ${{ steps.filter.outputs.frontend }}
+      broker: ${{ steps.filter.outputs.broker }}
+      sandbox-python: ${{ steps.filter.outputs.sandbox-python }}
+    steps:
+      - name: Detect changes using paths-filter
+        uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          token: ${{ secrets.PAT_FOR_FILTER }}
+          filters: |
+            backend:
+              - 'backend/**'
+            frontend:
+              - 'frontend/**'
+            broker:
+              - 'broker/**'
+            sandbox-python:
+              - 'sandbox/python/**'
 
   lint-backend:
     uses: ./.github/workflows/lint-backend.yml
