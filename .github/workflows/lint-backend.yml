@@ -22,5 +22,6 @@ jobs:
 
       - name: Run linting
         run: |
+          cd backend
           pylint core --recursive=true --fail-under=10
           black . --check

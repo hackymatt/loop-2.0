@@ -19,5 +19,6 @@ jobs:
 
       - name: Run linting
         run: |
+          cd broker
           npm run fm:check
           npm run lint:check
