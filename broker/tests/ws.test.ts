@@ -8,14 +8,14 @@ import rewire from "rewire";
 describe("ws.ts", () => {
   describe("startWebSocketServer.ts", () => {
     let wsServer: WebSocket.Server;
-    let createUserPodStub: sinon.SinonStub;
+    let createUserSandboxStub: sinon.SinonStub;
     let publishStub: sinon.SinonStub;
     let getSandboxNameStub: sinon.SinonStub;
     let ws: WebSocket;
     let testPort: number;
 
     beforeEach(async () => {
-      createUserPodStub = sinon.stub().resolves();
+      createUserSandboxStub = sinon.stub().resolves();
       publishStub = sinon.stub().resolves();
       getSandboxNameStub = sinon.stub().returns("python");
 
@@ -33,7 +33,7 @@ describe("ws.ts", () => {
       });
 
       const { startWebSocketServer } = proxyquire("../src/ws", {
-        "./k8s": { createUserPod: createUserPodStub },
+        "./sandbox/utils": { createUserSandbox: createUserSandboxStub },
         "./message-queue/publisher": { publish: publishStub },
         "./sandbox": { getSandboxName: getSandboxNameStub },
         "./const": {
@@ -139,7 +139,7 @@ describe("ws.ts", () => {
       });
 
       setTimeout(() => {
-        expect(createUserPodStub.calledOnce).to.be.true;
+        expect(createUserSandboxStub.calledOnce).to.be.true;
         expect(publishStub.calledOnce).to.be.true;
         done();
       }, 200);
