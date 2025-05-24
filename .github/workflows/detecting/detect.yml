@@ -1,0 +1,31 @@
+name: Detect Changes Workflow
+
+on:
+  workflow_call:
+    secrets:
+      token:
+        required: true
+
+jobs:
+  detect-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      backend: ${{ steps.filter.outputs.backend }}
+      frontend: ${{ steps.filter.outputs.frontend }}
+      broker: ${{ steps.filter.outputs.broker }}
+      sandbox-python: ${{ steps.filter.outputs.sandbox-python }}
+    steps:
+      - name: Detect changes using paths-filter
+        uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          token: ${{ secrets.token }}
+          filters: |
+            backend:
+              - 'backend/**'
+            frontend:
+              - 'frontend/**'
+            broker:
+              - 'broker/**'
+            sandbox-python:
+              - 'sandbox/python/**'
