@@ -2,9 +2,10 @@ name: Detect Changes Workflow
 
 on:
   workflow_call:
-    secrets:
+    inputs:
       token:
         required: true
+        type: string
 
 jobs:
   detect-changes:
@@ -19,7 +20,7 @@ jobs:
         uses: dorny/paths-filter@v3
         id: filter
         with:
-          token: ${{ secrets.token }}
+          token: ${{ inputs.token }}
           filters: |
             backend:
               - 'backend/**'
