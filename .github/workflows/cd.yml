@@ -6,39 +6,39 @@ on:
 
 jobs:
   lint-backend:
-    uses: ./.github/workflows/linting/backend.yml
+    uses: ./linting/backend.yml
     needs: detect-changes
 
   lint-broker:
-    uses: ./.github/workflows/linting/broker.yml
+    uses: ./linting/broker.yml
     needs: detect-changes
 
   lint-frontend:
-    uses: ./.github/workflows/linting/frontend.yml
+    uses: ./linting/frontend.yml
     needs: detect-changes
 
   lint-python-sandbox:
-    uses: ./.github/workflows/linting/sandbox/python.yml
+    uses: ./linting/sandbox/python.yml
     needs: detect-changes
 
   test-backend:
-    uses: ./.github/workflows/testing/backend.yml
+    uses: ./testing/backend.yml
     needs: lint-backend
 
   test-broker:
-    uses: ./.github/workflows/testing/broker.yml
+    uses: ./testing/broker.yml
     needs: lint-broker
 
   test-frontend:
-    uses: ./.github/workflows/testing/frontend.yml
+    uses: ./testing/frontend.yml
     needs: lint-frontend
 
   test-python-sandbox:
-    uses: ./.github/workflows/testing/sandbox/python.yml
+    uses: ./testing/sandbox/python.yml
     needs: lint-python-sandbox
 
   build-and-push-backend:
-    uses: ./.github/workflows/building/build.yml
+    uses: ./building/build.yml
     needs: test-backend
     with:
       service: backend
@@ -47,7 +47,7 @@ jobs:
       tag: ${{ github.run_id }}.dev
 
   build-and-push-broker:
-    uses: ./.github/workflows/building/build.yml
+    uses: ./building/build.yml
     needs: test-broker
     with:
       service: broker
@@ -56,7 +56,7 @@ jobs:
       tag: ${{ github.run_id }}.dev
 
   build-and-push-frontend:
-    uses: ./.github/workflows/building/build.yml
+    uses: ./building/build.yml
     needs: test-frontend
     with:
       service: frontend
@@ -65,7 +65,7 @@ jobs:
       tag: ${{ github.run_id }}.dev
 
   build-and-push-python-sandbox:
-    uses: ./.github/workflows/building/build.yml
+    uses: ./building/build.yml
     needs: test-python-sandbox
     with:
       service: python sandbox
@@ -74,7 +74,7 @@ jobs:
       tag: ${{ github.run_id }}.dev
 
   build-and-push-nginx:
-    uses: ./.github/workflows/building/build.yml
+    uses: ./building/build.yml
     needs:
       [
         build-and-push-backend,
@@ -89,7 +89,7 @@ jobs:
       tag: ${{ github.run_id }}.dev
 
   deploy-to-dev:
-    uses: ./.github/workflows/deployment/deploy.yml
+    uses: ./deployment/deploy.yml
     needs: build-and-push-nginx
     with:
       environment: dev

@@ -6,44 +6,44 @@ on:
 
 jobs:
   detect-changes:
-    uses: ./.github/workflows/detecting/detect.yml
+    uses: ./detecting/detect.yml
 
   lint-backend:
-    uses: ./.github/workflows/linting/backend.yml
+    uses: ./linting/backend.yml
     needs: detect-changes
     if: needs.detect-changes.outputs.backend == 'true'
 
   lint-broker:
-    uses: ./.github/workflows/linting/broker.yml
+    uses: ./linting/broker.yml
     needs: detect-changes
     if: needs.detect-changes.outputs.broker == 'true'
 
   lint-frontend:
-    uses: ./.github/workflows/linting/frontend.yml
+    uses: ./linting/frontend.yml
     needs: detect-changes
     if: needs.detect-changes.outputs.frontend == 'true'
 
   lint-python-sandbox:
-    uses: ./.github/workflows/linting/sandbox/python.yml
+    uses: ./linting/sandbox/python.yml
     needs: detect-changes
     if: needs.detect-changes.outputs.sandbox-python == 'true'
 
   test-backend:
-    uses: ./.github/workflows/testing/backend.yml
+    uses: ./testing/backend.yml
     needs: lint-backend
     if: needs.detect-changes.outputs.backend == 'true'
 
   test-broker:
-    uses: ./.github/workflows/testing/broker.yml
+    uses: ./testing/broker.yml
     needs: lint-broker
     if: needs.detect-changes.outputs.broker == 'true'
 
   test-frontend:
-    uses: ./.github/workflows/testing/frontend.yml
+    uses: ./testing/frontend.yml
     needs: lint-frontend
     if: needs.detect-changes.outputs.frontend == 'true'
 
   test-python-sandbox:
-    uses: ./.github/workflows/testing/sandbox/python.yml
+    uses: ./testing/sandbox/python.yml
     needs: lint-python-sandbox
     if: needs.detect-changes.outputs.sandbox-python == 'true'
