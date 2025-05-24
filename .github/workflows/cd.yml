@@ -6,19 +6,19 @@ on:
 
 jobs:
   lint-backend:
-    uses: ./.github/workflows/linting/backend.yml
+    uses: ./.github/workflows/lint-backend.yml
 
   lint-broker:
-    uses: ./.github/workflows/linting/broker.yml
+    uses: ./.github/workflows/lint-broker.yml
 
   lint-frontend:
-    uses: ./.github/workflows/linting/frontend.yml
+    uses: ./.github/workflows/lint-frontend.yml
 
   lint-python-sandbox:
-    uses: ./.github/workflows/linting/sandbox/python.yml
+    uses: ./.github/workflows/lint-sandbox-python.yml
 
   test-backend:
-    uses: ./.github/workflows/testing/backend.yml
+    uses: ./.github/workflows/test-backend.yml
     needs: lint-backend
     if: needs.detect-changes.outputs.backend == 'true'
     secrets:
@@ -37,19 +37,19 @@ jobs:
       DUMMY_STUDENT_PASSWORD: ${{ secrets.DUMMY_STUDENT_PASSWORD }}
 
   test-broker:
-    uses: ./.github/workflows/testing/broker.yml
+    uses: ./.github/workflows/test-broker.yml
     needs: lint-broker
 
   test-frontend:
-    uses: ./.github/workflows/testing/frontend.yml
+    uses: ./.github/workflows/test-frontend.yml
     needs: lint-frontend
 
   test-python-sandbox:
-    uses: ./.github/workflows/testing/sandbox/python.yml
+    uses: ./.github/workflows/test-sandbox-python.yml
     needs: lint-python-sandbox
 
   build-and-push-backend:
-    uses: ./.github/workflows/building/build.yml
+    uses: ./.github/workflows/build.yml
     needs: test-backend
     with:
       service: backend
@@ -61,7 +61,7 @@ jobs:
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   build-and-push-broker:
-    uses: ./.github/workflows/building/build.yml
+    uses: ./.github/workflows/build.yml
     needs: test-broker
     with:
       service: broker
@@ -73,7 +73,7 @@ jobs:
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   build-and-push-frontend:
-    uses: ./.github/workflows/building/build.yml
+    uses: ./.github/workflows/build.yml
     needs: test-frontend
     with:
       service: frontend
@@ -85,7 +85,7 @@ jobs:
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   build-and-push-python-sandbox:
-    uses: ./.github/workflows/building/build.yml
+    uses: ./.github/workflows/build.yml
     needs: test-python-sandbox
     with:
       service: python sandbox
@@ -97,7 +97,7 @@ jobs:
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   build-and-push-nginx:
-    uses: ./.github/workflows/building/build.yml
+    uses: ./.github/workflows/build.yml
     needs:
       [
         build-and-push-backend,
@@ -115,7 +115,7 @@ jobs:
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   deploy-to-dev:
-    uses: ./.github/workflows/deployment/deploy.yml
+    uses: ./.github/workflows/deploy.yml
     needs: build-and-push-nginx
     with:
       environment: dev

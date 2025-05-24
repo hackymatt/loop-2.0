@@ -6,32 +6,32 @@ on:
 
 jobs:
   detect-changes:
-    uses: ./.github/workflows/detecting/detect.yml
+    uses: ./.github/workflows/detect.yml
     secrets:
       token: ${{ secrets.PAT_FOR_FILTER }}
 
   lint-backend:
-    uses: ./.github/workflows/linting/backend.yml
+    uses: ./.github/workflows/lint-backend.yml
     needs: detect-changes
     if: needs.detect-changes.outputs.backend == 'true'
 
   lint-broker:
-    uses: ./.github/workflows/linting/broker.yml
+    uses: ./.github/workflows/lint-broker.yml
     needs: detect-changes
     if: needs.detect-changes.outputs.broker == 'true'
 
   lint-frontend:
-    uses: ./.github/workflows/linting/frontend.yml
+    uses: ./.github/workflows/lint-frontend.yml
     needs: detect-changes
     if: needs.detect-changes.outputs.frontend == 'true'
 
   lint-python-sandbox:
-    uses: ./.github/workflows/linting/sandbox/python.yml
+    uses: ./.github/workflows/lint-sandbox-python.yml
     needs: detect-changes
     if: needs.detect-changes.outputs.sandbox-python == 'true'
 
   test-backend:
-    uses: ./.github/workflows/testing/backend.yml
+    uses: ./.github/workflows/test-backend.yml
     needs: lint-backend
     if: needs.detect-changes.outputs.backend == 'true'
     secrets:
@@ -50,16 +50,16 @@ jobs:
       DUMMY_STUDENT_PASSWORD: ${{ secrets.DUMMY_STUDENT_PASSWORD }}
 
   test-broker:
-    uses: ./.github/workflows/testing/broker.yml
+    uses: ./.github/workflows/test-broker.yml
     needs: lint-broker
     if: needs.detect-changes.outputs.broker == 'true'
 
   test-frontend:
-    uses: ./.github/workflows/testing/frontend.yml
+    uses: ./.github/workflows/test-frontend.yml
     needs: lint-frontend
     if: needs.detect-changes.outputs.frontend == 'true'
 
   test-python-sandbox:
-    uses: ./.github/workflows/testing/sandbox/python.yml
+    uses: ./.github/workflows/test-sandbox-python.yml
     needs: lint-python-sandbox
     if: needs.detect-changes.outputs.sandbox-python == 'true'
