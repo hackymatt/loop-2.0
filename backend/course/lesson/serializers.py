@@ -340,7 +340,7 @@ class CodingLessonSubmitSerializer(serializers.Serializer):
             "command": "pytest -v --tb=short --disable-warnings test/test.py",
         }
         try:
-            response = requests.post(url=CONFIG["broker_url"], json=payload)
+            response = requests.post(url=f"{CONFIG['broker_url']}/api/test", json=payload)
             response.raise_for_status()
             data = response.json()
             return data["result"]

@@ -22,7 +22,7 @@ describe("const.ts", () => {
       dotenv: { config: () => {} },
     });
 
-    expect(config.API_PORT).to.equal(3000);
+    expect(config.API_PORT).to.equal(4000);
     expect(config.WS_PORT).to.equal(8080);
     expect(config.RABBITMQ_HOST).to.equal("localhost");
     expect(config.RABBITMQ_PORT).to.equal("5672");

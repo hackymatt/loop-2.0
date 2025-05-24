@@ -1,0 +1,26 @@
+backend:
+  enabled: true
+  tag: latest.dev
+  replicas: 1
+  env:
+    ENV: "DEV"
+    CSRF_TRUSTED_ORIGINS: "https://dev.loop.edu.pl,https://www.dev.loop.edu.pl"
+    ALLOWED_HOST: "dev.loop.edu.pl,www.dev.loop.edu.pl"
+
+frontend:
+  enabled: true
+  tag: latest.dev
+  replicas: 1
+
+broker:
+  enabled: true
+  tag: latest.dev
+  replicas: 1
+  env:
+    TAG: "latest.dev"
+
+nginx:
+  enabled: true
+  tag: latest.dev
+  replicas: 1
+  host: dev.loop.edu.pl

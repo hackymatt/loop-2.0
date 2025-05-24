@@ -1,4 +1,4 @@
-name: Testing
+name: Continuous Improvement
 
 on:
   pull_request:
@@ -6,202 +6,44 @@ on:
 
 jobs:
   detect-changes:
-    runs-on: ubuntu-latest
-    outputs:
-      backend: ${{ steps.filter.outputs.backend }}
-      frontend: ${{ steps.filter.outputs.frontend }}
-      broker: ${{ steps.filter.outputs.broker }}
-      sandbox-python: ${{ steps.filter.outputs.sandbox-python }}
-    steps:
-      - uses: dorny/paths-filter@v3
-        id: filter
-        with:
-          token: ${{ secrets.PAT_FOR_FILTER }}
-          filters: |
-            backend:
-              - 'backend/**'
-            frontend:
-              - 'frontend/**'
-            broker:
-              - 'broker/**'
-            sandbox-python:
-              - 'sandbox/python/**'
+    uses: ./.github/workflows/detecting/detect.yml
 
   lint-backend:
-    name: Lint Backend
-    runs-on: ubuntu-latest
+    uses: ./.github/workflows/linting/backend.yml
     needs: detect-changes
     if: needs.detect-changes.outputs.backend == 'true'
-    defaults:
-      run:
-        shell: bash
-        working-directory: backend
-
-    steps:
-      - uses: actions/checkout@v4
-      - run: |
-          sudo apt-get install -y libjpeg-dev
-          python -m pip install --upgrade pip
-          pip install -r requirements-lint.txt
-          pip install -r requirements.txt
-          pylint core --recursive=true --fail-under=10
-          black . --check
-
-  lint-frontend:
-    name: Lint Frontend
-    runs-on: ubuntu-latest
-    needs: detect-changes
-    if: needs.detect-changes.outputs.frontend == 'true'
-    defaults:
-      run:
-        shell: bash
-        working-directory: frontend
-
-    steps:
-      - uses: actions/checkout@v4
-      - run: |
-          npm install --legacy-peer-deps
-          npm run fm:check
-          npm run lint:check
 
   lint-broker:
-    name: Lint Broker
-    runs-on: ubuntu-latest
+    uses: ./.github/workflows/linting/broker.yml
     needs: detect-changes
     if: needs.detect-changes.outputs.broker == 'true'
-    defaults:
-      run:
-        shell: bash
-        working-directory: broker
 
-    steps:
-      - uses: actions/checkout@v4
-      - run: |
-          npm install
-          npm run fm:check
-          npm run lint:check
-
-  lint-python-sandbox:
-    name: Lint Python sandbox
-    runs-on: ubuntu-latest
-    needs: detect-changes
-    if: needs.detect-changes.outputs.sandbox-python == 'true'
-    defaults:
-      run:
-        shell: bash
-        working-directory: sandbox/python
-
-    steps:
-      - uses: actions/checkout@v4
-      - run: |
-          sudo apt-get install -y libjpeg-dev
-          python -m pip install --upgrade pip
-          pip install -r requirements-lint.txt
-          pip install -r requirements.txt
-          pylint . --recursive=true --fail-under=10
-          black . --check
-
-  test-backend:
-    name: Test Backend
-    runs-on: ubuntu-latest
-    needs: detect-changes
-    if: needs.detect-changes.outputs.backend == 'true'
-    defaults:
-      run:
-        shell: bash
-        working-directory: backend
-
-    env:
-      LOCAL: ${{ secrets.LOCAL }}
-      DB_NAME: ${{ secrets.DB_NAME }}
-      DB_HOST: ${{ secrets.DB_HOST }}
-      DB_USER: postgres
-      DB_PASSWORD: postgres
-      REDIS_URL: ${{ secrets.REDIS_URL }}
-      CONTACT_EMAIL: ${{ secrets.CONTACT_EMAIL }}
-      NOREPLY_EMAIL: ${{ secrets.NOREPLY_EMAIL }}
-      GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
-      ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
-      ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
-      DUMMY_STUDENT_EMAIL: ${{ secrets.DUMMY_STUDENT_EMAIL }}
-      DUMMY_STUDENT_PASSWORD: ${{ secrets.DUMMY_STUDENT_PASSWORD }}
-
-    services:
-      redis:
-        image: redis:7.2.5-bookworm
-        ports: [6379:6379]
-        options: --health-cmd "redis-cli ping" --health-interval 10s --health-timeout 5s --health-retries 5
-      postgres:
-        image: postgres:15
-        env:
-          POSTGRES_DB: postgres
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-        ports: [5432:5432]
-        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
-
-    steps:
-      - uses: actions/checkout@v4
-      - run: |
-          sudo apt-get install -y libjpeg-dev
-          python -m pip install --upgrade pip
-          pip install -r requirements-test.txt
-          pip install -r requirements.txt
-          pip install django-cors-headers
-          coverage run manage.py test
-          coverage report
-
-  test-frontend:
-    name: Test Frontend
-    runs-on: ubuntu-latest
+  lint-frontend:
+    uses: ./.github/workflows/linting/frontend.yml
     needs: detect-changes
     if: needs.detect-changes.outputs.frontend == 'true'
-    defaults:
-      run:
-        shell: bash
-        working-directory: frontend
 
-    steps:
-      - uses: actions/checkout@v4
-      - run: |
-          npm install --legacy-peer-deps
-          npm run test:coverage
-
-  test-python-sandbox:
-    name: Test Python sandbox
-    runs-on: ubuntu-latest
+  lint-python-sandbox:
+    uses: ./.github/workflows/linting/sandbox/python.yml
     needs: detect-changes
     if: needs.detect-changes.outputs.sandbox-python == 'true'
-    defaults:
-      run:
-        shell: bash
-        working-directory: sandbox/python
 
-    env:
-      USER_ID: user-id
-
-    steps:
-      - uses: actions/checkout@v4
-      - run: |
-          sudo apt-get install -y libjpeg-dev
-          python -m pip install --upgrade pip
-          pip install -r requirements-test.txt
-          pip install -r requirements.txt
-          coverage run -m pytest
-          coverage report
+  test-backend:
+    uses: ./.github/workflows/testing/backend.yml
+    needs: lint-backend
+    if: needs.detect-changes.outputs.backend == 'true'
 
   test-broker:
-    name: Test Broker
-    runs-on: ubuntu-latest
-    needs: detect-changes
+    uses: ./.github/workflows/testing/broker.yml
+    needs: lint-broker
     if: needs.detect-changes.outputs.broker == 'true'
-    defaults:
-      run:
-        shell: bash
-        working-directory: broker
 
-    steps:
-      - uses: actions/checkout@v4
-      - run: |
-          npm install
-          npm run test:coverage
+  test-frontend:
+    uses: ./.github/workflows/testing/frontend.yml
+    needs: lint-frontend
+    if: needs.detect-changes.outputs.frontend == 'true'
+
+  test-python-sandbox:
+    uses: ./.github/workflows/testing/sandbox/python.yml
+    needs: lint-python-sandbox
+    if: needs.detect-changes.outputs.sandbox-python == 'true'
