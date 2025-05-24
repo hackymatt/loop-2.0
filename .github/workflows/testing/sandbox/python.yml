@@ -2,8 +2,6 @@ name: Sandbox-Python Testing Workflow
 
 on:
   workflow_call:
-    env:
-      USER_ID: user-id
 
 jobs:
   test-sandbox-python:
@@ -15,6 +13,8 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install dependencies
+        env:
+          USER_ID: user-id
         run: |
           cd sandbox/python
           sudo apt-get install -y libjpeg-dev

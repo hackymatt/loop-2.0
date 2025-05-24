@@ -6,12 +6,11 @@ on:
       environment:
         required: true
         type: string
-      kube_config_secret:
-        required: true
-        type: string
       tag_value:
         required: true
         type: string
+    secrets:
+      KUBE_CONFIG_DEV: ${{ secrets.KUBE_CONFIG_DEV }}
 
 jobs:
   deploy:
@@ -32,7 +31,7 @@ jobs:
       - name: Deploy to Kubernetes
         uses: wahyd4/kubectl-helm-action@master
         env:
-          KUBE_CONFIG_DATA: ${{ inputs.kube_config_secret }}
+          KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DEV }}
         with:
           args: |
             helm repo add bitnami https://charts.bitnami.com/bitnami

@@ -9,3 +9,57 @@ jobs:
     uses: ./.github/workflows/detecting/detect.yml
     secrets:
       token: ${{ secrets.PAT_FOR_FILTER }}
+
+  lint-backend:
+    uses: ./.github/workflows/linting/backend.yml
+    needs: detect-changes
+    if: needs.detect-changes.outputs.backend == 'true'
+
+  lint-broker:
+    uses: ./.github/workflows/linting/broker.yml
+    needs: detect-changes
+    if: needs.detect-changes.outputs.broker == 'true'
+
+  lint-frontend:
+    uses: ./.github/workflows/linting/frontend.yml
+    needs: detect-changes
+    if: needs.detect-changes.outputs.frontend == 'true'
+
+  lint-python-sandbox:
+    uses: ./.github/workflows/linting/sandbox/python.yml
+    needs: detect-changes
+    if: needs.detect-changes.outputs.sandbox-python == 'true'
+
+  test-backend:
+    uses: ./.github/workflows/testing/backend.yml
+    needs: lint-backend
+    if: needs.detect-changes.outputs.backend == 'true'
+    secrets:
+      LOCAL: ${{ secrets.LOCAL }}
+      DB_NAME: ${{ secrets.DB_NAME }}
+      DB_HOST: ${{ secrets.DB_HOST }}
+      DB_USER: ${{ secrets.DB_USER }}
+      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+      REDIS_URL: ${{ secrets.REDIS_URL }}
+      CONTACT_EMAIL: ${{ secrets.CONTACT_EMAIL }}
+      NOREPLY_EMAIL: ${{ secrets.NOREPLY_EMAIL }}
+      GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
+      ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
+      ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
+      DUMMY_STUDENT_EMAIL: ${{ secrets.DUMMY_STUDENT_EMAIL }}
+      DUMMY_STUDENT_PASSWORD: ${{ secrets.DUMMY_STUDENT_PASSWORD }}
+
+  test-broker:
+    uses: ./.github/workflows/testing/broker.yml
+    needs: lint-broker
+    if: needs.detect-changes.outputs.broker == 'true'
+
+  test-frontend:
+    uses: ./.github/workflows/testing/frontend.yml
+    needs: lint-frontend
+    if: needs.detect-changes.outputs.frontend == 'true'
+
+  test-python-sandbox:
+    uses: ./.github/workflows/testing/sandbox/python.yml
+    needs: lint-python-sandbox
+    if: needs.detect-changes.outputs.sandbox-python == 'true'
