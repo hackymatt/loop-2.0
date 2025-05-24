@@ -6,44 +6,6 @@ on:
 
 jobs:
   detect-changes:
-    uses: ./detecting/detect.yml
-
-  lint-backend:
-    uses: ./linting/backend.yml
-    needs: detect-changes
-    if: needs.detect-changes.outputs.backend == 'true'
-
-  lint-broker:
-    uses: ./linting/broker.yml
-    needs: detect-changes
-    if: needs.detect-changes.outputs.broker == 'true'
-
-  lint-frontend:
-    uses: ./linting/frontend.yml
-    needs: detect-changes
-    if: needs.detect-changes.outputs.frontend == 'true'
-
-  lint-python-sandbox:
-    uses: ./linting/sandbox/python.yml
-    needs: detect-changes
-    if: needs.detect-changes.outputs.sandbox-python == 'true'
-
-  test-backend:
-    uses: ./testing/backend.yml
-    needs: lint-backend
-    if: needs.detect-changes.outputs.backend == 'true'
-
-  test-broker:
-    uses: ./testing/broker.yml
-    needs: lint-broker
-    if: needs.detect-changes.outputs.broker == 'true'
-
-  test-frontend:
-    uses: ./testing/frontend.yml
-    needs: lint-frontend
-    if: needs.detect-changes.outputs.frontend == 'true'
-
-  test-python-sandbox:
-    uses: ./testing/sandbox/python.yml
-    needs: lint-python-sandbox
-    if: needs.detect-changes.outputs.sandbox-python == 'true'
+    uses: ./.github/workflows/detecting/detect.yml
+    secrets:
+      token: ${{ secrets.PAT_FOR_FILTER }}

@@ -5,23 +5,9 @@ on:
     secrets:
       token:
         required: true
-    outputs:
-      backend:
-        description: "Changes in backend"
-        value: ${{ jobs.detect-changes.outputs.backend }}
-      frontend:
-        description: "Changes in frontend"
-        value: ${{ jobs.detect-changes.outputs.frontend }}
-      broker:
-        description: "Changes in broker"
-        value: ${{ jobs.detect-changes.outputs.broker }}
-      sandbox-python:
-        description: "Changes in sandbox-python"
-        value: ${{ jobs.detect-changes.outputs.sandbox-python }}
 
 jobs:
   detect-changes:
-    name: Detect Changes
     runs-on: ubuntu-latest
     outputs:
       backend: ${{ steps.filter.outputs.backend }}
