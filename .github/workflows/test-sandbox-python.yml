@@ -8,13 +8,14 @@ jobs:
     name: Test Sandbox-Python
     runs-on: ubuntu-latest
 
+    env:
+      USER_ID: user-id
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Install dependencies
-        env:
-          USER_ID: user-id
         run: |
           cd sandbox/python
           sudo apt-get install -y libjpeg-dev

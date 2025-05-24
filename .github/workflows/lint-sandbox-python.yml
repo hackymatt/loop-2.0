@@ -8,6 +8,9 @@ jobs:
     name: Lint Sandbox-Python
     runs-on: ubuntu-latest
 
+    env:
+      USER_ID: user-id
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
