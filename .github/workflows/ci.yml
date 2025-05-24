@@ -6,7 +6,26 @@ on:
 
 jobs:
   detect-changes:
-    uses: ./detecting/detect.yml
+    runs-on: ubuntu-latest
+    outputs:
+      backend: ${{ steps.filter.outputs.backend }}
+      frontend: ${{ steps.filter.outputs.frontend }}
+      broker: ${{ steps.filter.outputs.broker }}
+      sandbox-python: ${{ steps.filter.outputs.sandbox-python }}
+    steps:
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          token: ${{ secrets.PAT_FOR_FILTER }}
+          filters: |
+            backend:
+              - 'backend/**'
+            frontend:
+              - 'frontend/**'
+            broker:
+              - 'broker/**'
+            sandbox-python:
+              - 'sandbox/python/**'
 
   lint-backend:
     uses: ./linting/backend.yml
