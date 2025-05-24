@@ -2,7 +2,7 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-export const IS_LOCAL = (process.env.LOCAL || "True") !== "True";
+export const IS_LOCAL = (process.env.LOCAL || "True") === "True";
 export const NETWORK = process.env.NETWORK || "default";
 
 export const API_PORT = Number(process.env.API_PORT || "3000");
