@@ -173,7 +173,7 @@ export function MainLayout({
           {CONFIG.isLocal && <Searchbar />}
 
           {/** @slot Language popover */}
-          {CONFIG.isLocal && <LanguagePopover data={langs} />}
+          <LanguagePopover data={langs} />
 
           {/** @slot Settings button */}
           {CONFIG.isLocal && <SettingsButton />}

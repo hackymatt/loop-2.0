@@ -24,7 +24,6 @@ type CodingLessonProps = {
   onHint: () => void;
   onShowAnswer: () => void;
   onSaveProgress: (answer: string) => void;
-  error?: string;
   logs?: any[];
   isLocked?: boolean;
   isRunning?: boolean;
@@ -44,6 +43,7 @@ function SectionHeader({ title, icon, label }: SectionProps) {
       sx={(theme) => ({
         display: "flex",
         alignItems: "center",
+        justifyContent: "space-between",
         gap: 1,
         px: 2,
         py: 1,
@@ -54,16 +54,19 @@ function SectionHeader({ title, icon, label }: SectionProps) {
         zIndex: 1,
       })}
     >
-      <Iconify icon={icon} width={18} height={18} />
-      <Typography variant="subtitle2" color="text.secondary" flexGrow={1}>
-        {title}
-      </Typography>
+      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+        <Iconify icon={icon} width={18} height={18} />
+        <Typography variant="subtitle2" color="text.secondary">
+          {title}
+        </Typography>
+      </Box>
       {label}
     </Box>
   );
 }
 
 // ----------------------------------------------------------------------
+
 type ConsoleEntry =
   | string
   | {
@@ -130,7 +133,6 @@ export const CodingLesson = React.memo(function CodingLesson({
   onShowAnswer,
   onSaveProgress,
   logs = [],
-  error,
   isRunning = false,
   isLocked = false,
 }: CodingLessonProps) {
@@ -174,6 +176,21 @@ export const CodingLesson = React.memo(function CodingLesson({
     onSaveProgress(code);
     onHint();
   }, [code, onHint, onSaveProgress]);
+
+  const handleRestore = useCallback(() => {
+    onSaveProgress(file.code);
+  }, [file.code, onSaveProgress]);
+
+  const renderRestoreButton = useCallback(
+    () => (
+      <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+        <Button variant="outlined" size="medium" onClick={handleRestore} disabled={isLocked}>
+          <Iconify width={16} icon="solar:undo-left-bold" />
+        </Button>
+      </Box>
+    ),
+    [handleRestore, isLocked]
+  );
 
   const renderRunCodeButton = useCallback(
     () => (
@@ -251,6 +268,7 @@ export const CodingLesson = React.memo(function CodingLesson({
         zIndex: 2,
       }}
     >
+      {renderRestoreButton()}
       {renderRunCodeButton()}
       {renderSubmitButton()}
     </Box>
@@ -353,12 +371,15 @@ export const CodingLesson = React.memo(function CodingLesson({
                 bgcolor: (theme) => theme.vars.palette.background.neutral,
                 overflowX: "auto",
                 "&::-webkit-scrollbar": { display: "none" },
+                display: "flex",
+                justifyContent: "flex-start",
               }}
             >
               <ButtonGroup
                 disableElevation
                 sx={(theme) => ({
                   display: "inline-flex",
+                  justifyContent: "flex-start",
                   "& .MuiButton-root": {
                     borderRadius: 0,
                     boxShadow: "none",
