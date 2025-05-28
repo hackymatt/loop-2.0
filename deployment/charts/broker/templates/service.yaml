@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: broker
+  namespace: default
+  annotations:
+    app.kubernetes.io/managed-by: "Helm"
+spec:
+  selector:
+    app: broker
+  ports:
+    - protocol: TCP
+      port: 4000
+      targetPort: 4000
+      name: api
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+      name: ws

@@ -1,0 +1,23 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: delete-sandbox-pods
+  namespace: default
+  annotations:
+    app.kubernetes.io/managed-by: "Helm"
+spec:
+  template:
+    metadata:
+      name: delete-sandbox-pods
+    spec:
+      ttlSecondsAfterFinished: 60
+      restartPolicy: Never
+      containers:
+        - name: delete-sandbox-pods
+          image: bitnami/kubectl:latest
+          command:
+            - /bin/sh
+            - -c
+            - |
+              echo "Deleting all pods in the sandbox namespace..."
+              kubectl delete pods --all --namespace=sandbox

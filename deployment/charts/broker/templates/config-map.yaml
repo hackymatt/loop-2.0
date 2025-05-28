@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: backend-config
+  namespace: default
+  annotations:
+    app.kubernetes.io/managed-by: "Helm"
+data:
+  LOCAL: "False"
+  RABBITMQ_HOST: "rabbitmq"
+  RABBITMQ_PORT: "5672"
+  TAG: {{ .Values.env.TAG }}

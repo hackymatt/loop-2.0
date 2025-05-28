@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: broker
+  namespace: default
+  annotations:
+    app.kubernetes.io/managed-by: "Helm"
+  labels:
+    app: broker
+spec:
+  replicas: {{ .Values.replicas }}
+  selector:
+    matchLabels:
+      app: broker
+  template:
+    metadata:
+      labels:
+        app: broker
+    spec:
+      containers:
+        - name: broker
+          image: loopedupl/broker:{{ .Values.tag }}
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 4000
+              name: api
+            - containerPort: 8080
+              name: ws
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "250m"
+            limits:
+              memory: "1Gi"
+              cpu: "1"
+          envFrom:
+            - secretRef:
+                name: jwt-secrets
+            - secretRef:
+                name: rabbitmq-secrets
+            - configMapRef:
+                name: broker-config

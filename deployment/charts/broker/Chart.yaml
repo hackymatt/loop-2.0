@@ -1,0 +1,7 @@
+apiVersion: v2
+appVersion: latest
+
+name: broker
+type: application
+description: A Helm chart for broker
+version: 1.0.0

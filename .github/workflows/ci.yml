@@ -6,40 +6,56 @@ on:
 
 jobs:
   detect-changes:
-    uses: ./.github/workflows/detecting/detect.yml
-    secrets:
-      token: ${{ secrets.PAT_FOR_FILTER }}
+    runs-on: ubuntu-latest
+    outputs:
+      backend: ${{ steps.filter.outputs.backend }}
+      frontend: ${{ steps.filter.outputs.frontend }}
+      broker: ${{ steps.filter.outputs.broker }}
+      sandbox-python: ${{ steps.filter.outputs.sandbox-python }}
+    steps:
+      - name: Detect changes using paths-filter
+        uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          token: ${{ secrets.PAT_FOR_FILTER }}
+          filters: |
+            backend:
+              - 'backend/**'
+            frontend:
+              - 'frontend/**'
+            broker:
+              - 'broker/**'
+            sandbox-python:
+              - 'sandbox/python/**'
 
   lint-backend:
-    uses: ./.github/workflows/linting/backend.yml
+    uses: ./.github/workflows/lint-backend.yml
     needs: detect-changes
     if: needs.detect-changes.outputs.backend == 'true'
 
   lint-broker:
-    uses: ./.github/workflows/linting/broker.yml
+    uses: ./.github/workflows/lint-broker.yml
     needs: detect-changes
     if: needs.detect-changes.outputs.broker == 'true'
 
   lint-frontend:
-    uses: ./.github/workflows/linting/frontend.yml
+    uses: ./.github/workflows/lint-frontend.yml
     needs: detect-changes
     if: needs.detect-changes.outputs.frontend == 'true'
 
   lint-python-sandbox:
-    uses: ./.github/workflows/linting/sandbox/python.yml
+    uses: ./.github/workflows/lint-sandbox-python.yml
     needs: detect-changes
     if: needs.detect-changes.outputs.sandbox-python == 'true'
 
   test-backend:
-    uses: ./.github/workflows/testing/backend.yml
+    uses: ./.github/workflows/test-backend.yml
     needs: lint-backend
     if: needs.detect-changes.outputs.backend == 'true'
     secrets:
       LOCAL: ${{ secrets.LOCAL }}
       DB_NAME: ${{ secrets.DB_NAME }}
       DB_HOST: ${{ secrets.DB_HOST }}
-      DB_USER: ${{ secrets.DB_USER }}
-      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
       REDIS_URL: ${{ secrets.REDIS_URL }}
       CONTACT_EMAIL: ${{ secrets.CONTACT_EMAIL }}
       NOREPLY_EMAIL: ${{ secrets.NOREPLY_EMAIL }}
@@ -50,16 +66,16 @@ jobs:
       DUMMY_STUDENT_PASSWORD: ${{ secrets.DUMMY_STUDENT_PASSWORD }}
 
   test-broker:
-    uses: ./.github/workflows/testing/broker.yml
+    uses: ./.github/workflows/test-broker.yml
     needs: lint-broker
     if: needs.detect-changes.outputs.broker == 'true'
 
   test-frontend:
-    uses: ./.github/workflows/testing/frontend.yml
+    uses: ./.github/workflows/test-frontend.yml
     needs: lint-frontend
     if: needs.detect-changes.outputs.frontend == 'true'
 
   test-python-sandbox:
-    uses: ./.github/workflows/testing/sandbox/python.yml
+    uses: ./.github/workflows/test-sandbox-python.yml
     needs: lint-python-sandbox
     if: needs.detect-changes.outputs.sandbox-python == 'true'

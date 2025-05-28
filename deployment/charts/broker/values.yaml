@@ -1,0 +1,4 @@
+tag: latest
+replicas: 1
+env:
+  TAG: "latest"

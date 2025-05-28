@@ -277,7 +277,6 @@ export function LearnView({ courseSlug, chapterSlug, lessonSlug }: LearnViewProp
               onShowAnswer={handleShowAnswer}
               onSaveProgress={(answer: string) => handleSaveProgress({ answer })}
               logs={logs}
-              error={error}
               isRunning={isRunning}
               isLocked={isLocked}
             />
