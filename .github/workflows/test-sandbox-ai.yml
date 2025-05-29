@@ -1,0 +1,30 @@
+name: Sandbox-AI Testing Workflow
+
+on:
+  workflow_call:
+
+jobs:
+  test-sandbox-ai:
+    name: Test Sandbox-AI
+    runs-on: ubuntu-latest
+
+    env:
+      USER_ID: user-id
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          cd sandbox/ai
+          sudo apt-get install -y libjpeg-dev
+          python -m pip install --upgrade pip
+          pip install -r requirements-test.txt
+          pip install -r requirements.txt
+
+      - name: Run tests
+        run: |
+          cd sandbox/ai
+          coverage run -m pytest
+          coverage report
