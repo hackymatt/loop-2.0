@@ -338,7 +338,7 @@ class CodingLessonSubmitSerializer(serializers.Serializer):
             "timeout": lesson.timeout,
             "files": [file, test_file, *files],
             "command": "pytest -v --tb=short --disable-warnings test/test.py",
-            "language": lang
+            "language": lang,
         }
         try:
             response = requests.post(
