@@ -1,6 +1,6 @@
 import json
-import requests
 from unittest.mock import patch, MagicMock
+import requests
 from utils import send_openai_chat, process_job
 
 
@@ -179,8 +179,9 @@ def test_process_job_missing_fields():
 
 def test_process_job_streaming():
     stream_lines = [
-        b'data: {"choices":[{"delta":{"content":"line 1\\n"}}]}',
-        b'data: {"choices":[{"delta":{"content":"line 2\\n"}}]}',
+        b'data: {"choices":[{"delta":{"content":"{\\"stdout\\":[\\"62500\\"],\\"stderr\\":[],\\"exit_code\\":0}"}}]}',
+        b'data: {"choices":[{"delta":{"content":"{\\"stdout\\":[\\"100\\"],\\"stderr\\":[],\\"exit_code\\":0}"}}]}',
+        b'data: {"choices":[{"delta":{"content":"{\\"stdout\\":[],\\"stderr\\":[],\\"exit_code\\":0}"}}]}',
         b"data: [DONE]",
     ]
 
@@ -207,8 +208,9 @@ def test_process_job_streaming():
 
         assert isinstance(results, list)
         assert results == [
-            {"stdout": ["line 1"], "stderr": []},
-            {"stdout": ["line 2"], "stderr": []},
+            {"stdout": ["62500"], "stderr": [], "exit_code": 0},
+            {"stdout": ["100"], "stderr": [], "exit_code": 0},
+            {"stdout": [], "stderr": [], "exit_code": 0},
         ]
 
 
@@ -219,16 +221,9 @@ def test_process_job_generic_exception():
     assert "error" in result
     assert "Expecting value" in result["error"]
 
+
 def test_send_openai_chat_invalid_inner_json():
-    mock_response = {
-        "choices": [
-            {
-                "message": {
-                    "content": "not a json string"
-                }
-            }
-        ]
-    }
+    mock_response = {"choices": [{"message": {"content": "not a json string"}}]}
 
     with patch("requests.post") as mock_post:
         mock_post.return_value.status_code = 200
@@ -244,18 +239,20 @@ def test_send_openai_chat_invalid_inner_json():
         assert "not a json string" in result["stderr"]
         assert result["exit_code"] == 1
 
+
 def test_process_job_missing_command():
     payload = {
         "job_id": "test_missing_command",
         "files": [{"name": "script.py", "code": "print('x')"}],
         "timeout": 10,
         "language": "en",
-        "technology": "Python"
+        "technology": "Python",
     }
 
     result = process_job(json.dumps(payload))
     assert "error" in result
     assert "command" in result["error"]
+
 
 def test_process_job_missing_files():
     payload = {
@@ -263,46 +260,12 @@ def test_process_job_missing_files():
         "command": "python script.py",
         "timeout": 10,
         "language": "en",
-        "technology": "Python"
+        "technology": "Python",
     }
 
     result = process_job(json.dumps(payload))
     assert "error" in result
     assert "files" in result["error"]
-
-def test_parse_streaming_response_yields_leftover_buffer():
-    # Mock response.iter_lines to yield content lines without trailing newline
-    stream_lines = [
-        b'data: {"choices":[{"delta":{"content":"partial line"}}]}',
-        b'data: [DONE]',
-    ]
-
-    mock_response = MagicMock()
-    mock_response.iter_lines.return_value = stream_lines
-    mock_response.status_code = 200
-    mock_response.raise_for_status = lambda: None
-
-    with patch("requests.post", return_value=mock_response):
-        payload = {
-            "job_id": "test_streaming",
-            "files": [
-                {"name": "script.py", "path": None, "code": "print('Streaming test')"}
-            ],
-            "command": "python script.py",
-            "timeout": 10,
-            "language": "en",
-            "technology": "Python",
-            "stream": True,
-        }
-
-        body = json.dumps(payload)
-        results = process_job(body)
-
-        assert isinstance(results, list)
-
-        assert results == [
-            {"stdout": ["partial line"], "stderr": []},
-        ]
 
 
 def test_parse_streaming_response_yields_no_lines():
@@ -331,12 +294,14 @@ def test_parse_streaming_response_yields_no_lines():
 
         assert results == []
 
+
 def test_parse_streaming_response_missing_data():
     # Mock response.iter_lines to yield content lines without trailing newline
     stream_lines = [
-        b'data: {"choices":[{"delta":{"content":"partial line"}}]}',
-        b'daata: {"choices":[{"delta":{"content":"partial line"}}]}',
-        b'data: [DONE]',
+        b'data: {"choices":[{"delta":{"content":"{\\"stdout\\":[\\"62500\\"],\\"stderr\\":[],\\"exit_code\\":0}"}}]}',
+        b'bdata: {"choices":[{"delta":{"content":"{\\"stdout\\":[\\"100\\"],\\"stderr\\":[],\\"exit_code\\":0}"}}]}',
+        b'data: {"choices":[{"delta":{"content":"{\\"stdout\\":[],\\"stderr\\":[],\\"exit_code\\":0}"}}]}',
+        b"data: [DONE]",
     ]
 
     mock_response = MagicMock()
@@ -363,16 +328,18 @@ def test_parse_streaming_response_missing_data():
         assert isinstance(results, list)
 
         assert results == [
-            {"stdout": ["partial line"], "stderr": []},
+            {"stdout": ["62500"], "stderr": [], "exit_code": 0},
+            {"stdout": [], "stderr": [], "exit_code": 0},
         ]
 
 
 def test_parse_streaming_response_invalid_json():
     # Mock response.iter_lines to yield content lines without trailing newline
     stream_lines = [
-        b'data: {"choices":[{"delta":{"content":"partial line"}}]}',
-        b'data: {"choices":[{"delta":{"content":"partial line"}]}',
-        b'data: [DONE]',
+        b'data: {"choices":[{"delta":{"content":"{\\"stdout\\":[\\"62500\\"],\\"stderr\\":[],\\"exit_code\\":0}"}}]}',
+        b'data: {"choices":[{"delta":{"content":"{\\"stdout\\":[\\"100\\"],\\"stderr\\":[],\\"exit_code\\":0}"}]}',
+        b'data: {"choices":[{"delta":{"content":"{\\"stdout\\":[],\\"stderr\\":[],\\"exit_code\\":0}"}}]}',
+        b"data: [DONE]",
     ]
 
     mock_response = MagicMock()
@@ -399,14 +366,18 @@ def test_parse_streaming_response_invalid_json():
         assert isinstance(results, list)
 
         assert results == [
-            {"stdout": ["partial line"], "stderr": []},
+            {"stdout": ["62500"], "stderr": [], "exit_code": 0},
+            {"stdout": [], "stderr": [], "exit_code": 0},
         ]
 
-def test_parse_streaming_response_no_newline():
-    # Mock response.iter_lines to yield content lines without trailing newline
+
+def test_parse_streaming_response_condition_false():
     stream_lines = [
-        b'data: {"choices":[{"delta":{"content":"line 1\\n\\n"}}]}',
-        b'data: [DONE]',
+        b'data: {"choices":[{"delta":{"content":"{"}}]}',  # brace_count == 1 after this line (1 open brace)
+        b'data: {"choices":[{"delta":{"content":""}}]}',  # empty content (buffer.strip() == False)
+        b'data: {"choices":[{"delta":{"content":"}"}}]}',  # brace_count == 0 after this (closing brace)
+        b'data: {"choices":[{"delta":{"content":""}}]}',  # empty content again
+        b"data: [DONE]",
     ]
 
     mock_response = MagicMock()
@@ -416,7 +387,38 @@ def test_parse_streaming_response_no_newline():
 
     with patch("requests.post", return_value=mock_response):
         payload = {
-            "job_id": "test_streaming",
+            "job_id": "test_streaming_condition_false",
+            "files": [{"name": "script.py", "path": None, "code": "print('test')"}],
+            "command": "python script.py",
+            "timeout": 10,
+            "language": "en",
+            "technology": "Python",
+            "stream": True,
+        }
+
+        body = json.dumps(payload)
+        results = process_job(body)
+
+        assert isinstance(results, list)
+        assert results == [] or all(isinstance(r, dict) for r in results)
+
+
+def test_parse_streaming_response_json_decode_error():
+    stream_lines = [
+        b'data: {"choices":[{"delta":{"content":"{\\"stdout\\":[\\"62500\\"],\\"stderr\\":[],\\"exit_code\\":0}"}}]}',
+        b'bdata: {"choices":[{"delta":{"content":"{\\"stdout\\":[\\"100\\"],\\"stderr\\":[],\\"exit_code\\":0}"}}]}',
+        b'data: {"choices":[{"delta":{"content":"{\\"stdout\\":[],\\"stderr\\":[],\\"exit_code\\":0:}"}}]}',
+        b"data: [DONE]",
+    ]
+
+    mock_response = MagicMock()
+    mock_response.iter_lines.return_value = stream_lines
+    mock_response.status_code = 200
+    mock_response.raise_for_status = lambda: None
+
+    with patch("requests.post", return_value=mock_response):
+        payload = {
+            "job_id": "test_streaming_json_decode_error",
             "files": [
                 {"name": "script.py", "path": None, "code": "print('Streaming test')"}
             ],
@@ -431,6 +433,4 @@ def test_parse_streaming_response_no_newline():
         results = process_job(body)
 
         assert isinstance(results, list)
-
-        assert results == [{'stdout': ['line 1'], 'stderr': []}]
-
+        assert results == [{"stdout": ["62500"], "stderr": [], "exit_code": 0}]

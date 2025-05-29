@@ -11,3 +11,4 @@ Create secrets:
 kubectl delete secret secrets --namespace=sandbox
 
 kubectl create secret generic rabbitmq-secrets --from-env-file=./rabbitmq-secrets.sh --namespace=sandbox
+kubectl create secret generic openai-secrets --from-env-file=./openai-secrets.sh --namespace=sandbox
