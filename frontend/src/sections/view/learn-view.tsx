@@ -97,8 +97,8 @@ export function LearnView({ courseSlug, chapterSlug, lessonSlug }: LearnViewProp
     onMessage: (data) => {
       setLogs((prev) => [...prev, data]);
     },
-    onOpen: () => setLogs(["Ustanowiono połączenie z serwerem."]),
-    onClose: () => setLogs((prev) => [...prev, "Zamknieto połączenie z serwerem."]),
+    onOpen: () => setLogs([t("coding.logs.open")]),
+    onClose: () => setLogs((prev) => [...prev, t("coding.logs.close")]),
   });
 
   const { mutateAsync: saveProgress } = useLessonProgress();

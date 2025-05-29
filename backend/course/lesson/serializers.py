@@ -322,7 +322,7 @@ class CodingLessonSubmitSerializer(serializers.Serializer):
         except SyntaxError:
             return False
 
-    def _run_tests(self, user_id: str, lesson: CodingLesson, answer: str):
+    def _run_tests(self, user_id: str, lesson: CodingLesson, answer: str, lang: str):
         file = {**FileSerializer(lesson.file).data, "code": answer}
         test_file = {
             **TestFileSerializer(lesson.file).data,
@@ -338,6 +338,7 @@ class CodingLessonSubmitSerializer(serializers.Serializer):
             "timeout": lesson.timeout,
             "files": [file, test_file, *files],
             "command": "pytest -v --tb=short --disable-warnings test/test.py",
+            "language": lang
         }
         try:
             response = requests.post(
@@ -362,7 +363,8 @@ class CodingLessonSubmitSerializer(serializers.Serializer):
 
         if not self._codes_are_equivalent(answer, correct.solution_code):
             user_id = self.context.get("request").user.id
-            result = self._run_tests(user_id, lesson, answer)
+            lang = self.context.get("request").LANGUAGE_CODE
+            result = self._run_tests(user_id, lesson, answer, lang)
             if result["exit_code"] != 0:
                 raise serializers.ValidationError(
                     {"answer": result["stdout"] + result["stderr"]}

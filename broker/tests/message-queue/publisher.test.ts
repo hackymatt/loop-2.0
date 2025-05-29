@@ -70,6 +70,7 @@ describe("publisher.ts", () => {
       10,
       "run",
       { "main.py": "print(1)" },
+      "pl",
       false,
       true
     );
@@ -118,6 +119,7 @@ describe("publisher.ts", () => {
       10,
       "run",
       { "main.py": "print(2)" },
+      "pl",
       false,
       false
     );
@@ -144,6 +146,7 @@ describe("publisher.ts", () => {
       "python",
       10,
       "run",
+      "pl",
       { "main.py": "print(3)" },
       true, // explicitly testing stream=true
       false
@@ -186,7 +189,8 @@ describe("publisher.ts", () => {
       "python",
       10,
       "run",
-      { "main.py": "print(4)" }
+      { "main.py": "print(4)" },
+      "pl"
       // Let stream and useReply use their default values
     );
 
@@ -246,6 +250,7 @@ describe("publisher.ts", () => {
       10,
       "run",
       { "main.py": "print(5)" },
+      "pl",
       false,
       true
     );

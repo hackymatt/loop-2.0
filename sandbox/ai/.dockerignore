@@ -1,0 +1,23 @@
+# Ignore the virtual environment directory
+venv/
+
+# Ignore Python bytecode files
+*.pyc
+*.pyo
+__pycache__/
+
+# Ignore the Dockerfile itself if it’s in the root (it will already be copied in)
+Dockerfile
+
+# Ignore log files
+*.log
+
+# Ignore .git files
+.git/
+
+# Ignore configuration files
+*.env
+
+# Ignore directories used by editors
+.idea/
+.vscode/

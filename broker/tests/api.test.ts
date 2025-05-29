@@ -25,7 +25,9 @@ describe("api.ts", () => {
     const res = await request(app).post("/test").send({ user_id: "123", technology: "nodejs" }); // Missing files and command
 
     expect(res.status).to.equal(400);
-    expect(res.body.error).to.equal("Missing required fields: user_id, files, timeout or command");
+    expect(res.body.error).to.equal(
+      "Missing required fields: user_id, files, timeout, command or language"
+    );
   });
 
   it("should return 500 on internal server error", async () => {
@@ -40,6 +42,7 @@ describe("api.ts", () => {
         files: ["file1", "file2"],
         timeout: 10,
         command: "deploy",
+        language: "pl",
       });
 
     expect(res.status).to.equal(500);
@@ -59,6 +62,7 @@ describe("api.ts", () => {
         files: ["file1", "file2"],
         timeout: 10,
         command: "deploy",
+        language: "pl",
       });
 
     expect(res.status).to.equal(200);
@@ -78,6 +82,7 @@ describe("api.ts", () => {
         files: ["file1", "file2"],
         timeout: 10,
         command: "deploy",
+        language: "pl",
       });
 
     expect(res.status).to.equal(400);

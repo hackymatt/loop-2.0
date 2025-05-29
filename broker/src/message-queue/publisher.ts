@@ -14,6 +14,7 @@ export async function publish(
   timeout: number,
   command: string,
   files: Record<string, string>,
+  language: string,
   stream: boolean = false,
   useReply: boolean = true
 ): Promise<any> {
@@ -24,6 +25,8 @@ export async function publish(
     command,
     timeout,
     files,
+    technology,
+    language,
     stream,
   };
 

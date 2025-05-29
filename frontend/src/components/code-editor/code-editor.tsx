@@ -5,7 +5,7 @@ import React, { lazy, useMemo, Suspense, useEffect, useCallback } from "react";
 import { useTheme } from "@mui/material/styles";
 import { CircularProgress } from "@mui/material";
 // Dynamically import language-specific editors
-// const VbaCodeEditor = lazy(() => import("./languages/vba/code-editor"));
+const VbaCodeEditor = lazy(() => import("./languages/vba/code-editor"));
 const PythonCodeEditor = lazy(() => import("./languages/python/code-editor"));
 
 interface CodeEditorProps {
@@ -71,7 +71,7 @@ export function CodeEditor({ value, technology, readOnly = false, onChange }: Co
   const technologyEditorMap = useMemo(
     () => ({
       python: PythonCodeEditor,
-      // vba: VbaCodeEditor,
+      vba: VbaCodeEditor,
     }),
     []
   );

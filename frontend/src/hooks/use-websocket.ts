@@ -1,4 +1,8 @@
+import type { IConfigProp } from "src/types/lesson";
+
 import { useRef, useState } from "react";
+
+import { useSettingsContext } from "src/components/settings";
 
 type UseWebSocketConfig = {
   wsBaseUrl: string;
@@ -15,11 +19,12 @@ export function useWebSocket({
   onOpen,
   onClose,
 }: UseWebSocketConfig) {
+  const settings = useSettingsContext();
   const wsRef = useRef<WebSocket | null>(null);
   const [isRunning, setIsRunning] = useState(false);
 
   // Connect function to manually start WS connection and send config
-  async function connect(config: any) {
+  async function connect(config: IConfigProp) {
     if (
       wsRef.current &&
       (wsRef.current.readyState === WebSocket.OPEN ||
@@ -39,7 +44,7 @@ export function useWebSocket({
 
       ws.onopen = () => {
         setIsRunning(true);
-        ws.send(JSON.stringify(config));
+        ws.send(JSON.stringify({ ...config, language: settings.state.language }));
         if (onOpen) onOpen();
       };
 

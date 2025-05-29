@@ -1,5 +1,5 @@
 Build docker:
-docker build -t loopedupl/<technology>-sandbox:latest sandbox/python
+docker build -t loopedupl/<technology>-sandbox:latest sandbox/<technology>
 
 Push docker:
 docker push loopedupl/<technology>-sandbox:latest
