@@ -82,7 +82,12 @@ export function startWebSocketServer() {
           console.log(`Received message from user ${userId}:`, data);
 
           await createUserSandbox(userId, technology);
-          await publish(userId, jobId, technology, timeout, command, files, language, true, false);
+          await publish(
+            userId,
+            { jobId, technology, timeout, command, files, language },
+            true,
+            false
+          );
         } catch (err) {
           console.error("Failed to parse message:", err);
           ws.close(1003, "Invalid message format");

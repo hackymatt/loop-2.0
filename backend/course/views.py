@@ -21,7 +21,10 @@ class CourseViewSet(viewsets.ModelViewSet):
                 "instructors",
                 "translations",
                 Prefetch(
-                    "chapters", queryset=Chapter.objects.prefetch_related("lessons")
+                    "chapters",
+                    queryset=Chapter.objects.prefetch_related("lessons").order_by(
+                        "coursechapter__order"
+                    ),
                 ),
                 Prefetch(
                     "prerequisites",

@@ -23,12 +23,7 @@ router.post("/test", async (req: Request, res: Response) => {
     const jobId = uuid();
     const jobResult = await publish(
       userId,
-      jobId,
-      technology,
-      timeout,
-      command,
-      files,
-      language,
+      { jobId, technology, timeout, command, files, language },
       false,
       true
     );

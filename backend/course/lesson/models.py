@@ -194,16 +194,15 @@ class QuizQuestionOption(BaseModel):
 class File(models.Model):
     name = models.CharField(max_length=255)
     path = models.CharField(max_length=500, null=True, blank=True)
-    starter_code = models.TextField()
-    solution_code = models.TextField()
-    test_code = models.TextField()
+    code = models.TextField()
+    solution = models.TextField(null=True, blank=True)
 
     class Meta:
         db_table = "course_file"
         verbose_name_plural = "Files"
 
     def __str__(self):
-        return self.name  # pragma: no cover
+        return f"{f'{self.path}/{self.name}' if self.path else self.name} | Code: {(self.code[:100] + '...')}"  # pragma: no cover
 
 
 class CodingLesson(BaseModel):
@@ -223,7 +222,15 @@ class CodingLesson(BaseModel):
         null=True,
         blank=True,
     )
+    test_file = models.ForeignKey(
+        "File",
+        on_delete=models.PROTECT,
+        related_name="tester_lessons",
+        null=True,
+        blank=True,
+    )
     command = models.CharField(max_length=255)
+    test_command = models.CharField(max_length=255, blank=True, null=True)
     timeout = models.PositiveIntegerField(default=10)
     penalty_points = models.PositiveIntegerField(default=0)
 

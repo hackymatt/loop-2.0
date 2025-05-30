@@ -13,7 +13,9 @@ class Course(BaseModel):
     level = models.ForeignKey(Level, on_delete=models.PROTECT)
     category = models.ForeignKey(Category, on_delete=models.PROTECT)
     technology = models.ForeignKey(Technology, on_delete=models.PROTECT)
-    chapters = models.ManyToManyField(Chapter, related_name="courses")
+    chapters = models.ManyToManyField(
+        Chapter, through="CourseChapter", related_name="courses"
+    )
     instructors = models.ManyToManyField(Instructor, related_name="courses")
     duration = models.PositiveIntegerField()
     chat_url = models.URLField()
@@ -51,3 +53,17 @@ class CourseTranslation(BaseModel):
 
     def __str__(self):
         return f"{self.name} ({self.language})"  # pragma: no cover
+
+
+class CourseChapter(models.Model):
+    course = models.ForeignKey("course.Course", on_delete=models.CASCADE)
+    chapter = models.ForeignKey(Chapter, on_delete=models.CASCADE)
+    order = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        db_table = "course_chapter_mapping"
+        unique_together = ("course", "chapter")
+        ordering = ["order"]
+
+    def __str__(self):
+        return f"Course: {self.course.slug} | Chapter: {self.chapter.slug} | Order: {self.order}"  # pragma: no cover

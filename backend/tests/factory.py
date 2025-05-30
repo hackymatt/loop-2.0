@@ -206,11 +206,9 @@ def create_technology():
 def create_file():
     name = _generate_random_string(5)
     path = _generate_random_string(15)
-    starter_code = _generate_random_string(100)
-    solution_code = _generate_random_string(100)
-    file = File.objects.create(
-        name=name, path=path, starter_code=starter_code, solution_code=solution_code
-    )
+    code = _generate_random_string(100)
+    solution = _generate_random_string(100)
+    file = File.objects.create(name=name, path=path, code=code, solution=solution)
     return file
 
 
@@ -266,8 +264,10 @@ def create_lesson(lesson_type=None):
 
     elif lesson_type == LessonType.CODING:
         file = create_file()
+        test_file = create_file()
         files = [create_file() for _ in range(_generate_random_number(1, 5))]
         command = _generate_random_string()
+        test_command = _generate_random_string()
         timeout = _generate_random_number()
         penalty_points = _generate_random_number(0, 50)
         technology = create_technology()
@@ -276,6 +276,8 @@ def create_lesson(lesson_type=None):
             technology=technology,
             file=file,
             command=command,
+            test_file=test_file,
+            test_command=test_command,
             timeout=timeout,
             penalty_points=penalty_points,
         )

@@ -40,7 +40,7 @@ def get_answer(lesson, language):
         )
         answer = [option.is_correct for option in question.options.all()]
     elif lesson.type == LessonType.CODING:
-        answer = specific_model.objects.get(lesson=lesson).file.solution_code
+        answer = specific_model.objects.get(lesson=lesson).file.solution
     else:
         answer = None
 
