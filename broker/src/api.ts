@@ -10,12 +10,12 @@ const router = express.Router();
 
 router.post("/test", async (req: Request, res: Response) => {
   try {
-    const { user_id: userId, technology, files, timeout, command } = req.body;
+    const { user_id: userId, technology, files, timeout, command, language } = req.body;
 
-    if (!userId || !technology || !files || !timeout || !command) {
+    if (!userId || !technology || !files || !timeout || !command || !language) {
       res
         .status(400)
-        .json({ error: "Missing required fields: user_id, files, timeout or command" });
+        .json({ error: "Missing required fields: user_id, files, timeout, command or language" });
       return;
     }
 
@@ -23,11 +23,7 @@ router.post("/test", async (req: Request, res: Response) => {
     const jobId = uuid();
     const jobResult = await publish(
       userId,
-      jobId,
-      technology,
-      timeout,
-      command,
-      files,
+      { jobId, technology, timeout, command, files, language },
       false,
       true
     );

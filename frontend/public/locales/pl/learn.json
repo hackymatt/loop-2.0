@@ -27,7 +27,11 @@
     "answer": "Pokaż odpowiedź",
     "console": "Konsola",
     "context": "Kontekst",
-    "exercise": "Ćwiczenie"
+    "exercise": "Ćwiczenie",
+    "logs": {
+      "open": "Ustanowiono połączenie z serwerem.",
+      "close": "Zamknieto połączenie z serwerem."
+    }
   },
   "upgrade": {
     "title": "Odblokuj pełny dostęp!",

@@ -26,12 +26,13 @@ def create_certificate_on_course_completion(sender, instance, **kwargs):
 
         # All lessons in the course (via chapters)
         course_lessons = Lesson.objects.filter(
-            chapters__in=course.chapters.all(), active=True
+            chapterlesson__chapter__in=course.chapters.all(), active=True
         ).count()
 
         # Lessons completed by the student for this course
         completed_lessons = Lesson.objects.filter(
-            chapters__in=course.chapters.all(), courseprogress__student=student
+            chapterlesson__chapter__in=course.chapters.all(),
+            courseprogress__student=student,
         ).count()
 
         if course_lessons != completed_lessons:

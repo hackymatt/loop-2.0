@@ -1,0 +1,30 @@
+name: Sandbox-AI Linting Workflow
+
+on:
+  workflow_call:
+
+jobs:
+  lint-sandbox-ai:
+    name: Lint Sandbox-AI
+    runs-on: ubuntu-latest
+
+    env:
+      USER_ID: user-id
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          cd sandbox/ai
+          sudo apt-get install -y libjpeg-dev
+          python -m pip install --upgrade pip
+          pip install -r requirements-lint.txt
+          pip install -r requirements.txt
+
+      - name: Run linting
+        run: |
+          cd sandbox/ai
+          pylint . --recursive=true --fail-under=10
+          black . --check

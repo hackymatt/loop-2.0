@@ -220,22 +220,18 @@ class FileBaseSerializer(serializers.ModelSerializer):
 
 
 class FileSerializer(FileBaseSerializer):
-    code = serializers.CharField(source="solution_code")
+    code = serializers.CharField(source="solution")
 
     class Meta(FileBaseSerializer.Meta):
         fields = FileBaseSerializer.Meta.fields + ["code"]
 
 
 class StarterFileSerializer(FileBaseSerializer):
-    code = serializers.CharField(source="starter_code")
-
     class Meta(FileBaseSerializer.Meta):
         fields = FileBaseSerializer.Meta.fields + ["code"]
 
 
 class TestFileSerializer(FileBaseSerializer):
-    code = serializers.CharField(source="test_code")
-
     class Meta(FileBaseSerializer.Meta):
         fields = FileBaseSerializer.Meta.fields + ["code"]
 
@@ -314,6 +310,9 @@ class QuizLessonSubmitSerializer(serializers.Serializer):
 class CodingLessonSubmitSerializer(serializers.Serializer):
     answer = serializers.CharField()
 
+    def _strings_are_equivalent(self, code1: str, code2: str) -> bool:
+        return code1.strip() == code2.strip()
+
     def _codes_are_equivalent(self, code1: str, code2: str) -> bool:
         try:
             tree1 = ast.parse(code1.strip())
@@ -322,13 +321,9 @@ class CodingLessonSubmitSerializer(serializers.Serializer):
         except SyntaxError:
             return False
 
-    def _run_tests(self, user_id: str, lesson: CodingLesson, answer: str):
+    def _run_tests(self, user_id: str, lesson: CodingLesson, answer: str, lang: str):
         file = {**FileSerializer(lesson.file).data, "code": answer}
-        test_file = {
-            **TestFileSerializer(lesson.file).data,
-            "name": "test.py",
-            "path": "test",
-        }
+        test_file = TestFileSerializer(lesson.test_file).data
         files = [
             dict(item) for item in FileSerializer(lesson.files.all(), many=True).data
         ]
@@ -337,7 +332,8 @@ class CodingLessonSubmitSerializer(serializers.Serializer):
             "technology": lesson.technology.slug,
             "timeout": lesson.timeout,
             "files": [file, test_file, *files],
-            "command": "pytest -v --tb=short --disable-warnings test/test.py",
+            "command": lesson.test_command,
+            "language": lang,
         }
         try:
             response = requests.post(
@@ -359,13 +355,27 @@ class CodingLessonSubmitSerializer(serializers.Serializer):
         answer = attrs["answer"]
 
         correct = lesson.file
+        run_test = lesson.test_command is not None and lesson.test_file is not None
 
-        if not self._codes_are_equivalent(answer, correct.solution_code):
-            user_id = self.context.get("request").user.id
-            result = self._run_tests(user_id, lesson, answer)
-            if result["exit_code"] != 0:
+        if not (
+            self._strings_are_equivalent(answer, correct.solution)
+            or self._codes_are_equivalent(answer, correct.solution)
+        ):
+            if run_test:
+                user_id = self.context.get("request").user.id
+                lang = self.context.get("request").LANGUAGE_CODE
+                result = self._run_tests(user_id, lesson, answer, lang)
+                if result["exit_code"] != 0:
+                    raise serializers.ValidationError(
+                        {"answer": result["stdout"] + result["stderr"]}
+                    )
+            else:
                 raise serializers.ValidationError(
-                    {"answer": result["stdout"] + result["stderr"]}
+                    {
+                        "answer": _(
+                            "Almost there! Check your code and give it another shot."
+                        )
+                    }
                 )
 
         return attrs

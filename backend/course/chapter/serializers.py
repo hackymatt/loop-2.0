@@ -23,7 +23,11 @@ class ChapterSerializer(serializers.ModelSerializer):
         return obj.get_translation(lang).description
 
     def get_lessons(self, obj):
-        return LessonSerializer(obj.lessons.all(), many=True, context=self.context).data
+        return LessonSerializer(
+            obj.lessons.all().order_by("chapterlesson__order"),
+            many=True,
+            context=self.context,
+        ).data
 
     def to_representation(self, instance):
         data = super().to_representation(instance)

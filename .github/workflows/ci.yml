@@ -12,6 +12,7 @@ jobs:
       frontend: ${{ steps.filter.outputs.frontend }}
       broker: ${{ steps.filter.outputs.broker }}
       sandbox-python: ${{ steps.filter.outputs.sandbox-python }}
+      sandbox-ai: ${{ steps.filter.outputs.sandbox-ai }}
     steps:
       - name: Detect changes using paths-filter
         uses: dorny/paths-filter@v3
@@ -27,6 +28,8 @@ jobs:
               - 'broker/**'
             sandbox-python:
               - 'sandbox/python/**'
+            sandbox-ai:
+              - 'sandbox/ai/**'
 
   lint-backend:
     uses: ./.github/workflows/lint-backend.yml
@@ -47,6 +50,11 @@ jobs:
     uses: ./.github/workflows/lint-sandbox-python.yml
     needs: detect-changes
     if: needs.detect-changes.outputs.sandbox-python == 'true'
+
+  lint-ai-sandbox:
+    uses: ./.github/workflows/lint-sandbox-ai.yml
+    needs: detect-changes
+    if: needs.detect-changes.outputs.sandbox-ai == 'true'
 
   test-backend:
     uses: ./.github/workflows/test-backend.yml
@@ -79,3 +87,8 @@ jobs:
     uses: ./.github/workflows/test-sandbox-python.yml
     needs: lint-python-sandbox
     if: needs.detect-changes.outputs.sandbox-python == 'true'
+
+  test-ai-sandbox:
+    uses: ./.github/workflows/test-sandbox-ai.yml
+    needs: lint-ai-sandbox
+    if: needs.detect-changes.outputs.sandbox-ai == 'true'

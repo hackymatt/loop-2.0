@@ -57,10 +57,10 @@ class CourseFilter(django_filters.FilterSet):
         completed_lessons_subquery = (
             CourseProgress.objects.filter(
                 student__user=user,
-                lesson__chapters__courses__id=OuterRef("pk"),
+                lesson__chapterlesson__chapter__coursechapter__course=OuterRef("pk"),
                 completed_at__isnull=False,
             )
-            .values("lesson__chapters__courses__id")
+            .values("lesson__chapterlesson__chapter__coursechapter__course")
             .annotate(count=Count("lesson", distinct=True))
             .values("count")[:1]
         )

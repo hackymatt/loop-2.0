@@ -458,7 +458,7 @@ class LessonSubmitAPIViewTestCase(TestCase):
 
     def test_successful_coding_submission(self):
         login(self, self.student.user.email, self.student_password)
-        answer = self.coding_specific_lesson.file.solution_code
+        answer = self.coding_specific_lesson.file.solution
         data = {"lesson": self.coding_lesson.slug, "answer": answer}
         response = self.client.post(self.url, data=data, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -480,7 +480,7 @@ class LessonSubmitAPIViewTestCase(TestCase):
         mock_post.return_value = mock_response
 
         login(self, self.student.user.email, self.student_password)
-        self.coding_specific_lesson.file.solution_code = "a = 10 + 10\nprint(a)"
+        self.coding_specific_lesson.file.solution = "a = 10 + 10\nprint(a)"
         self.coding_specific_lesson.file.save()
         answer = "a = 5 * 4\nprint(a)"
         data = {"lesson": self.coding_lesson.slug, "answer": answer}
@@ -499,6 +499,15 @@ class LessonSubmitAPIViewTestCase(TestCase):
     def test_invalid_coding_submission(self):
         login(self, self.student.user.email, self.student_password)
         answer = "incorrect"
+        data = {"lesson": self.coding_lesson.slug, "answer": answer}
+        response = self.client.post(self.url, data=data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_invalid_coding_submission_no_tests(self):
+        login(self, self.student.user.email, self.student_password)
+        answer = "incorrect"
+        self.coding_specific_lesson.test_command = None
+        self.coding_specific_lesson.save()
         data = {"lesson": self.coding_lesson.slug, "answer": answer}
         response = self.client.post(self.url, data=data, format="json")
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
@@ -573,7 +582,7 @@ class LessonAnswerAPIViewTestCase(TestCase):
 
     def test_coding_lesson_answer_retrieval(self):
         login(self, self.student.user.email, self.student_password)
-        answer = self.coding_specific_lesson.file.solution_code
+        answer = self.coding_specific_lesson.file.solution
         response = self.client.post(
             self.url, data={"lesson": self.coding_lesson.slug}, format="json"
         )

@@ -65,11 +65,14 @@ describe("publisher.ts", () => {
 
     const publishPromise = publisher.publish(
       "user1",
-      "job1",
-      "python",
-      10,
-      "run",
-      { "main.py": "print(1)" },
+      {
+        jobId: "job1",
+        technology: "python",
+        timeout: 10,
+        command: "run",
+        files: [{ name: "main.py", path: null, code: "print(1)" }],
+        language: "pl",
+      },
       false,
       true
     );
@@ -113,11 +116,14 @@ describe("publisher.ts", () => {
   it("should publish without reply and return jobId", async () => {
     const result = await publisher.publish(
       "user2",
-      "job2",
-      "python",
-      10,
-      "run",
-      { "main.py": "print(2)" },
+      {
+        jobId: "job2",
+        technology: "python",
+        timeout: 10,
+        command: "run",
+        files: [{ name: "main.py", path: null, code: "print(2)" }],
+        language: "pl",
+      },
       false,
       false
     );
@@ -140,11 +146,14 @@ describe("publisher.ts", () => {
   it("should publish with stream=true", async () => {
     const result = await publisher.publish(
       "user3",
-      "job3",
-      "python",
-      10,
-      "run",
-      { "main.py": "print(3)" },
+      {
+        jobId: "job3",
+        technology: "python",
+        timeout: 10,
+        command: "run",
+        files: [{ name: "main.py", path: null, code: "print(3)" }],
+        language: "pl",
+      },
       true, // explicitly testing stream=true
       false
     );
@@ -182,11 +191,14 @@ describe("publisher.ts", () => {
 
     const publishPromise = publisher.publish(
       "user4",
-      "job4",
-      "python",
-      10,
-      "run",
-      { "main.py": "print(4)" }
+      {
+        jobId: "job4",
+        technology: "python",
+        timeout: 10,
+        command: "run",
+        files: [{ name: "main.py", path: null, code: "print(4)" }],
+        language: "pl",
+      }
       // Let stream and useReply use their default values
     );
 
@@ -241,11 +253,14 @@ describe("publisher.ts", () => {
 
     const publishPromise = publisher.publish(
       "user5",
-      "job5",
-      "python",
-      10,
-      "run",
-      { "main.py": "print(5)" },
+      {
+        jobId: "job5",
+        technology: "python",
+        timeout: 10,
+        command: "run",
+        files: [{ name: "main.py", path: null, code: "print(5)" }],
+        language: "pl",
+      },
       false,
       true
     );

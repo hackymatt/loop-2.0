@@ -17,6 +17,7 @@ describe("const.ts", () => {
     delete process.env.RABBITMQ_PASSWORD;
     delete process.env.TAG;
     delete process.env.JWT_SECRET;
+    delete process.env.OPENAI_API_KEY;
 
     const config = proxyquire("../src/const", {
       dotenv: { config: () => {} },
@@ -33,6 +34,7 @@ describe("const.ts", () => {
     expect(config.JWT_SECRET).to.equal(
       "lmzpsXgy4NGIUuO9MbkM9lS0dJkSSMehjyKS529EACLg8AT6C5U42T9hl5s19ZLbUw7HZwSVVRPKWqbxvboTOQ=="
     );
+    expect(config.OPENAI_API_KEY).to.equal("placeholder");
   });
 
   it("should use values from environment variables", () => {
@@ -44,6 +46,7 @@ describe("const.ts", () => {
     process.env.RABBITMQ_PASSWORD = "secret";
     process.env.TAG = "dev";
     process.env.JWT_SECRET = "secret";
+    process.env.OPENAI_API_KEY = "secret";
 
     const config = proxyquire("../src/const", {
       dotenv: { config: () => {} },
@@ -58,5 +61,6 @@ describe("const.ts", () => {
     expect(config.RABBITMQ_URL).to.equal("amqp://admin:secret@rabbitmq:1234");
     expect(config.TAG).to.equal("dev");
     expect(config.JWT_SECRET).to.equal("secret");
+    expect(config.OPENAI_API_KEY).to.equal("secret");
   });
 });

@@ -6,7 +6,9 @@ from ..lesson.models import Lesson
 
 class Chapter(BaseModel):
     slug = models.SlugField(unique=True)
-    lessons = models.ManyToManyField(Lesson, related_name="chapters", blank=True)
+    lessons = models.ManyToManyField(
+        Lesson, through="ChapterLesson", related_name="lessons"
+    )
     active = models.BooleanField(default=False)
 
     class Meta:
@@ -37,3 +39,17 @@ class ChapterTranslation(BaseModel):
 
     def __str__(self):
         return f"{self.name} ({self.language})"  # pragma: no cover
+
+
+class ChapterLesson(models.Model):
+    chapter = models.ForeignKey("chapter.Chapter", on_delete=models.CASCADE)
+    lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE)
+    order = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        db_table = "chapter_lesson_mapping"
+        unique_together = ("chapter", "lesson")
+        ordering = ["order"]
+
+    def __str__(self):
+        return f"Chapter: {self.chapter.slug} | Lesson: {self.lesson.slug} | Order: {self.order}"  # pragma: no cover

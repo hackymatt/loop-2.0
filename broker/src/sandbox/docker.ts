@@ -2,7 +2,14 @@ import { promisify } from "util";
 import { exec } from "child_process";
 
 import { getSandboxImage } from "../sandbox";
-import { NETWORK, RABBITMQ_HOST, RABBITMQ_PORT, RABBITMQ_USER, RABBITMQ_PASSWORD } from "../const";
+import {
+  NETWORK,
+  RABBITMQ_HOST,
+  RABBITMQ_PORT,
+  RABBITMQ_USER,
+  OPENAI_API_KEY,
+  RABBITMQ_PASSWORD,
+} from "../const";
 
 import type { Technology } from "../sandbox";
 
@@ -49,6 +56,7 @@ export async function createLocalContainer(userId: string, technology: Technolog
     `-e RABBITMQ_PORT=${RABBITMQ_PORT}`,
     `-e RABBITMQ_USER=${RABBITMQ_USER}`,
     `-e RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD}`,
+    `-e OPENAI_API_KEY=${OPENAI_API_KEY}`,
     `${image}`,
   ].join(" ");
 

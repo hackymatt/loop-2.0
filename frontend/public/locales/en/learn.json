@@ -27,7 +27,11 @@
     "answer": "Show answer",
     "console": "Console",
     "context": "Context",
-    "exercise": "Exercise"
+    "exercise": "Exercise",
+    "logs": {
+      "open": "Connection to the server has been established.",
+      "close": "Connection to the server has been closed."
+    }
   },
   "upgrade": {
     "title": "Unlock full access!",

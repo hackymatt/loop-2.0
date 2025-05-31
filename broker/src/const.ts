@@ -18,3 +18,6 @@ export const WS_PORT = Number(process.env.WS_PORT || "8080");
 export const JWT_SECRET =
   process.env.JWT_SECRET?.replace(/^"(.*)"$/, "$1") ||
   "lmzpsXgy4NGIUuO9MbkM9lS0dJkSSMehjyKS529EACLg8AT6C5U42T9hl5s19ZLbUw7HZwSVVRPKWqbxvboTOQ==";
+
+export const OPENAI_API_KEY =
+  process.env.OPENAI_API_KEY?.replace(/^"(.*)"$/, "$1") || "placeholder";

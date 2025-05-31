@@ -7,23 +7,32 @@ import { getSandboxName } from "../sandbox";
 
 import type { Technology } from "../sandbox";
 
+type File = { name: string; path: string | null; code: string };
+
+type Payload = {
+  jobId: string;
+  command: string;
+  timeout: number;
+  files: File[];
+  technology: Technology;
+  language: string;
+};
+
+type MessagePayload = Omit<Payload, "jobId"> & { job_id: string; stream: boolean };
 export async function publish(
   userId: string,
-  jobId: string,
-  technology: Technology,
-  timeout: number,
-  command: string,
-  files: Record<string, string>,
+  payload: Payload,
   stream: boolean = false,
   useReply: boolean = true
-): Promise<any> {
+): Promise<Pick<Payload, "jobId">> {
+  const { jobId, technology, ...rest } = payload;
+
   const sandboxName = getSandboxName(technology);
 
-  const messagePayload: any = {
+  const messagePayload: MessagePayload = {
+    ...rest,
+    technology,
     job_id: jobId,
-    command,
-    timeout,
-    files,
     stream,
   };
 
