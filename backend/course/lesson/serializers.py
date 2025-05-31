@@ -310,6 +310,9 @@ class QuizLessonSubmitSerializer(serializers.Serializer):
 class CodingLessonSubmitSerializer(serializers.Serializer):
     answer = serializers.CharField()
 
+    def _strings_are_equivalent(self, code1: str, code2: str) -> bool:
+        return code1.strip() == code2.strip()
+
     def _codes_are_equivalent(self, code1: str, code2: str) -> bool:
         try:
             tree1 = ast.parse(code1.strip())
@@ -354,7 +357,10 @@ class CodingLessonSubmitSerializer(serializers.Serializer):
         correct = lesson.file
         run_test = lesson.test_command is not None and lesson.test_file is not None
 
-        if not self._codes_are_equivalent(answer, correct.solution):
+        if not (
+            self._strings_are_equivalent(answer, correct.solution)
+            or self._codes_are_equivalent(answer, correct.solution)
+        ):
             if run_test:
                 user_id = self.context.get("request").user.id
                 lang = self.context.get("request").LANGUAGE_CODE
