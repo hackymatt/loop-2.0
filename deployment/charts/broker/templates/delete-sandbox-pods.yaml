@@ -6,11 +6,11 @@ metadata:
   annotations:
     app.kubernetes.io/managed-by: "Helm"
 spec:
+  ttlSecondsAfterFinished: 60
   template:
     metadata:
       name: delete-sandbox-pods
     spec:
-      ttlSecondsAfterFinished: 60
       restartPolicy: Never
       containers:
         - name: delete-sandbox-pods
