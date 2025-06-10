@@ -20,6 +20,7 @@ import { MenuButton } from "../components/menu-button";
 import { LayoutSection } from "../core/layout-section";
 import { HeaderSection } from "../core/header-section";
 import { LoginButton } from "../components/login-button";
+import { ThemeButton } from "../components/theme-button";
 import { UpgradeButton } from "../components/upgrade-button";
 import { RegisterButton } from "../components/register-button";
 import { SettingsButton } from "../components/settings-button";
@@ -174,6 +175,9 @@ export function MainLayout({
 
           {/** @slot Language popover */}
           <LanguagePopover data={langs} />
+
+          {/** @slot Theme button */}
+          <ThemeButton />
 
           {/** @slot Settings button */}
           {CONFIG.isLocal && <SettingsButton />}

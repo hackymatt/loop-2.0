@@ -50,6 +50,7 @@ const FlagRoot = styled("span")(({ theme }) => ({
   display: "inline-flex",
   justifyContent: "center",
   backgroundColor: theme.vars.palette.background.neutral,
+  outline: `1px solid ${theme.vars.palette.background.neutral}`,
 }));
 
 const FlagImg = styled("img")(() => ({
