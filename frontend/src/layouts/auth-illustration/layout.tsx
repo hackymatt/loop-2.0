@@ -22,6 +22,7 @@ import { AuthIllustrationContent } from "./content";
 import { AuthIllustrationSection } from "./section";
 import { LayoutSection } from "../core/layout-section";
 import { HeaderSection } from "../core/header-section";
+import { ThemeButton } from "../components/theme-button";
 import { SettingsButton } from "../components/settings-button";
 import { LanguagePopover } from "../components/language-popover";
 
@@ -81,6 +82,9 @@ export function AuthIllustrationLayout({
 
           {/** @slot Language popover */}
           {CONFIG.isLocal && <LanguagePopover data={langs} />}
+
+          {/** @slot Theme button */}
+          <ThemeButton />
 
           {/** @slot Settings button */}
           {CONFIG.isLocal && <SettingsButton />}

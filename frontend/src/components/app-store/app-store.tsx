@@ -42,7 +42,7 @@ export function AppStoreButton({ ...other }: StackProps) {
 
   return (
     <>
-      <Stack direction="row" flexWrap="wrap" spacing={2} {...other}>
+      <Stack direction={{ xs: "column", md: "row" }} flexWrap="wrap" spacing={2} {...other}>
         <StyledAppStoreButton
           startIcon={<Iconify icon="bxl:apple" width={28} color="white" />}
           onClick={() => {

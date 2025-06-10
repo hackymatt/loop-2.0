@@ -45,7 +45,7 @@ export function HomeDownloadApp({ sx, ...other }: BoxProps) {
       sx={[
         (theme) => ({
           position: "relative",
-          pt: { xs: 0, md: 10 },
+          pt: { xs: 5, md: 10 },
           pb: { xs: 10, md: 15 },
           "&::before": {
             ...theme.mixins.bgGradient({
