@@ -5,6 +5,8 @@ import type { UseFormReturn } from "react-hook-form";
 import type { TokenResponse } from "@react-oauth/google";
 import type { ReactFacebookLoginInfo } from "react-facebook-login";
 
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-expect-error
 import GitHubLogin from "react-github-login";
 import { useGoogleLogin } from "@react-oauth/google";
 import FacebookLogin from "react-facebook-login/dist/facebook-login-render-props";

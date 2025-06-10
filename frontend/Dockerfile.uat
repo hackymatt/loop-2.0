@@ -34,7 +34,7 @@ ENV NEXT_PUBLIC_MIN_PASSWORD_LENGTH=$MIN_PASSWORD_LENGTH
 RUN npm run build
 
 # remove dev dependencies
-RUN npm prune --omit=dev
+RUN npm prune --omit=dev --legacy-peer-deps
 
 FROM node:18-alpine
 
@@ -43,7 +43,7 @@ WORKDIR /usr/src/app/frontend
 # copy from build image
 COPY --from=BUILD_IMAGE /usr/src/app/frontend/package.json ./package.json
 COPY --from=BUILD_IMAGE /usr/src/app/frontend/node_modules ./node_modules
-COPY --from=BUILD_IMAGE /usr/src/app/frontend/next.config.js next.config.js
+COPY --from=BUILD_IMAGE /usr/src/app/frontend/next.config.mjs next.config.mjs
 COPY --from=BUILD_IMAGE /usr/src/app/frontend/.next ./.next
 COPY --from=BUILD_IMAGE /usr/src/app/frontend/public ./public
 
