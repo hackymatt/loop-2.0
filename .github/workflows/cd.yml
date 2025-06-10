@@ -1,0 +1,104 @@
+name: Continuous Deployment
+
+on:
+  push:
+    branches: [develop]
+
+jobs:
+  lint-backend:
+    uses: ./.github/workflows/lint-backend.yml
+
+  lint-broker:
+    uses: ./.github/workflows/lint-broker.yml
+
+  lint-frontend:
+    uses: ./.github/workflows/lint-frontend.yml
+
+  lint-python-sandbox:
+    uses: ./.github/workflows/lint-sandbox-python.yml
+
+  test-backend:
+    uses: ./.github/workflows/test-backend.yml
+    needs: lint-backend
+    if: needs.detect-changes.outputs.backend == 'true'
+    secrets:
+      LOCAL: ${{ secrets.LOCAL }}
+      DB_NAME: ${{ secrets.DB_NAME }}
+      DB_HOST: ${{ secrets.DB_HOST }}
+      REDIS_URL: ${{ secrets.REDIS_URL }}
+      CONTACT_EMAIL: ${{ secrets.CONTACT_EMAIL }}
+      NOREPLY_EMAIL: ${{ secrets.NOREPLY_EMAIL }}
+      GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
+      ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
+      ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
+      DUMMY_STUDENT_EMAIL: ${{ secrets.DUMMY_STUDENT_EMAIL }}
+      DUMMY_STUDENT_PASSWORD: ${{ secrets.DUMMY_STUDENT_PASSWORD }}
+
+  test-broker:
+    uses: ./.github/workflows/test-broker.yml
+    needs: lint-broker
+
+  test-frontend:
+    uses: ./.github/workflows/test-frontend.yml
+    needs: lint-frontend
+
+  test-python-sandbox:
+    uses: ./.github/workflows/test-sandbox-python.yml
+    needs: lint-python-sandbox
+
+  build-and-push-backend:
+    uses: ./.github/workflows/build.yml
+    needs: test-backend
+    with:
+      service: backend
+      context: ./backend
+      image_name: loopedupl/backend
+      tag: ${{ github.run_id }}.dev
+    secrets:
+      dockerhub_username: ${{ secrets.DOCKERHUB_USERNAME }}
+      dockerhub_token: ${{ secrets.DOCKERHUB_TOKEN }}
+
+  build-and-push-broker:
+    uses: ./.github/workflows/build.yml
+    needs: test-broker
+    with:
+      service: broker
+      context: ./broker
+      image_name: loopedupl/broker
+      tag: ${{ github.run_id }}.dev
+    secrets:
+      dockerhub_username: ${{ secrets.DOCKERHUB_USERNAME }}
+      dockerhub_token: ${{ secrets.DOCKERHUB_TOKEN }}
+
+  build-and-push-frontend:
+    uses: ./.github/workflows/build.yml
+    needs: test-frontend
+    with:
+      service: frontend
+      context: ./frontend
+      image_name: loopedupl/frontend
+      tag: ${{ github.run_id }}.dev
+    secrets:
+      dockerhub_username: ${{ secrets.DOCKERHUB_USERNAME }}
+      dockerhub_token: ${{ secrets.DOCKERHUB_TOKEN }}
+
+  build-and-push-python-sandbox:
+    uses: ./.github/workflows/build.yml
+    needs: test-python-sandbox
+    with:
+      service: python sandbox
+      context: ./sandbox/python
+      image_name: loopedupl/python-sandbox
+      tag: ${{ github.run_id }}.dev
+    secrets:
+      dockerhub_username: ${{ secrets.DOCKERHUB_USERNAME }}
+      dockerhub_token: ${{ secrets.DOCKERHUB_TOKEN }}
+
+  deploy-to-dev:
+    uses: ./.github/workflows/deploy.yml
+    needs: build-and-push-nginx
+    with:
+      environment: dev
+      tag_value: ${{ github.run_id }}.dev
+    secrets:
+      kube_config_data: ${{ secrets.KUBE_CONFIG_DEV }}
