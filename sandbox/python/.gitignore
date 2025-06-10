@@ -21,9 +21,6 @@ build/
 .idea/
 .vscode/
 
-# Ignore any Docker-related files
-Dockerfile
-
 jobs/
 
 .coverage

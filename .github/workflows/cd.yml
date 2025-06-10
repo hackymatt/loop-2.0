@@ -23,7 +23,6 @@ jobs:
   test-backend:
     uses: ./.github/workflows/test-backend.yml
     needs: lint-backend
-    if: needs.detect-changes.outputs.backend == 'true'
     secrets:
       LOCAL: ${{ secrets.LOCAL }}
       DB_NAME: ${{ secrets.DB_NAME }}
