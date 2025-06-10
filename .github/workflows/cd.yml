@@ -17,6 +17,9 @@ jobs:
   lint-python-sandbox:
     uses: ./.github/workflows/lint-sandbox-python.yml
 
+  lint-ai-sandbox:
+    uses: ./.github/workflows/lint-sandbox-ai.yml
+
   test-backend:
     uses: ./.github/workflows/test-backend.yml
     needs: lint-backend
@@ -45,6 +48,9 @@ jobs:
   test-python-sandbox:
     uses: ./.github/workflows/test-sandbox-python.yml
     needs: lint-python-sandbox
+
+  test-ai-sandbox:
+    uses: ./.github/workflows/test-sandbox-ai.yml
 
   build-and-push-backend:
     uses: ./.github/workflows/build.yml
@@ -86,9 +92,40 @@ jobs:
     uses: ./.github/workflows/build.yml
     needs: test-python-sandbox
     with:
-      service: python sandbox
+      service: python-sandbox
       context: ./sandbox/python
       image_name: loopedupl/python-sandbox
+      tag: ${{ github.run_id }}.dev
+    secrets:
+      dockerhub_username: ${{ secrets.DOCKERHUB_USERNAME }}
+      dockerhub_token: ${{ secrets.DOCKERHUB_TOKEN }}
+
+  build-and-push-ai-sandbox:
+    uses: ./.github/workflows/build.yml
+    needs: test-ai-sandbox
+    with:
+      service: ai-sandbox
+      context: ./sandbox/ai
+      image_name: loopedupl/ai-sandbox
+      tag: ${{ github.run_id }}.dev
+    secrets:
+      dockerhub_username: ${{ secrets.DOCKERHUB_USERNAME }}
+      dockerhub_token: ${{ secrets.DOCKERHUB_TOKEN }}
+
+  build-and-push-nginx:
+    uses: ./.github/workflows/build.yml
+    needs:
+      [
+        build-and-push-backend,
+        build-and-push-broker,
+        build-and-push-frontend,
+        build-and-push-python-sandbox,
+        build-and-push-ai-sandbox,
+      ]
+    with:
+      service: frontend
+      context: ./frontend
+      image_name: loopedupl/frontend
       tag: ${{ github.run_id }}.dev
     secrets:
       dockerhub_username: ${{ secrets.DOCKERHUB_USERNAME }}
