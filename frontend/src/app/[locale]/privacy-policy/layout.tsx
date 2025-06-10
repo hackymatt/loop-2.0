@@ -1,5 +1,3 @@
-"use client";
-
 import { MainLayout } from "src/layouts/main";
 
 // ----------------------------------------------------------------------

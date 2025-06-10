@@ -1,6 +1,6 @@
 import type { AxiosError } from "axios";
 
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 
 import { URLS } from "../urls";
 import { Api } from "../service";
@@ -14,21 +14,11 @@ type ILogoutReturn = {
   status: number;
 };
 
-export const useLogout = () => {
-  const queryClient = useQueryClient();
-
-  return useMutation<ILogoutReturn, AxiosError, ILogout>(
-    async (variables) => {
-      const result = await Api.post(endpoint, variables);
-      return {
-        status: result.status,
-        data: result.data,
-      };
-    },
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries([URLS.AUTH_CHECK]);
-      },
-    }
-  );
-};
+export const useLogout = () =>
+  useMutation<ILogoutReturn, AxiosError, ILogout>(async (variables) => {
+    const result = await Api.post(endpoint, variables);
+    return {
+      status: result.status,
+      data: result.data,
+    };
+  });
