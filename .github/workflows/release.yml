@@ -142,6 +142,18 @@ jobs:
     secrets:
       kube_config_data: ${{ secrets.KUBE_CONFIG_DEV }}
 
+  build-and-push-backend-prod:
+    uses: ./.github/workflows/build.yml
+    needs: deploy-to-dev
+    with:
+      service: backend
+      context: ./backend
+      image_name: loopedupl/backend
+      tag: ${{ github.run_id }}.prod
+    secrets:
+      dockerhub_username: ${{ secrets.DOCKERHUB_USERNAME }}
+      dockerhub_token: ${{ secrets.DOCKERHUB_TOKEN }}
+
   build-and-push-broker-prod:
     uses: ./.github/workflows/build.yml
     needs: deploy-to-dev
