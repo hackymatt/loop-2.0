@@ -123,9 +123,9 @@ jobs:
         build-and-push-ai-sandbox,
       ]
     with:
-      service: frontend
-      context: ./frontend
-      image_name: loopedupl/frontend
+      service: nginx
+      context: ./nginx
+      image_name: loopedupl/nginx
       tag: ${{ github.run_id }}.dev
     secrets:
       dockerhub_username: ${{ secrets.DOCKERHUB_USERNAME }}
