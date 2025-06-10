@@ -51,6 +51,7 @@ jobs:
 
   test-ai-sandbox:
     uses: ./.github/workflows/test-sandbox-ai.yml
+    needs: lint-ai-sandbox
 
   build-and-push-backend:
     uses: ./.github/workflows/build.yml
