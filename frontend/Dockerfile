@@ -50,6 +50,7 @@ WORKDIR /usr/src/app/frontend
 COPY --from=BUILD_IMAGE /usr/src/app/frontend/package.json ./package.json
 COPY --from=BUILD_IMAGE /usr/src/app/frontend/node_modules ./node_modules
 COPY --from=BUILD_IMAGE /usr/src/app/frontend/next.config.mjs next.config.mjs
+COPY --from=BUILD_IMAGE /usr/src/app/frontend/next-i18next.config.mjs next-i18next.config.mjs
 COPY --from=BUILD_IMAGE /usr/src/app/frontend/.next ./.next
 COPY --from=BUILD_IMAGE /usr/src/app/frontend/public ./public
 
