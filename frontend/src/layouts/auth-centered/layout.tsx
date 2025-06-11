@@ -80,7 +80,7 @@ export function AuthCenteredLayout({
           <LanguagePopover data={langs} />
 
           {/** @slot Theme button */}
-          <ThemeButton />
+          {CONFIG.isLocal && <ThemeButton />}
 
           {/** @slot Settings button */}
           {CONFIG.isLocal && <SettingsButton />}
