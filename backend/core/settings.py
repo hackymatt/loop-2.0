@@ -381,10 +381,12 @@ if LOCAL:
     MEDIA_ROOT = os.path.join(BASE_DIR, "media")
     MEDIA_URL = "/media/"
 else:
-    media_location = f"{ENV}/media" if ENV != "PROD" else "media"
-    static_location = f"{ENV}/static" if ENV != "PROD" else "static"
-    STATIC_URL = f"https://objectstore.fra1.civo.com/files/{static_location}/"
-    MEDIA_URL = f"https://objectstore.fra1.civo.com/files/{media_location}/"
+    media_location = f"{ENV}/media" if ENV != "PROD" else "media"  # pragma: no cover
+    static_location = f"{ENV}/static" if ENV != "PROD" else "static"  # pragma: no cover
+    STATIC_URL = f"https://objectstore.fra1.civo.com/files/{static_location}/"  # pragma: no cover
+    MEDIA_URL = (
+        f"https://objectstore.fra1.civo.com/files/{media_location}/"  # pragma: no cover
+    )
     STORAGES = {
         "default": {
             "BACKEND": "storages.backends.s3.S3Storage",
