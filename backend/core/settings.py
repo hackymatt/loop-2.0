@@ -381,6 +381,10 @@ if LOCAL:
     MEDIA_ROOT = os.path.join(BASE_DIR, "media")
     MEDIA_URL = "/media/"
 else:
+    media_location = f"{ENV}/media" if ENV != "PROD" else "media"
+    static_location = f"{ENV}/static" if ENV != "PROD" else "static"
+    STATIC_URL = f"https://objectstore.fra1.civo.com/files/{static_location}/"
+    MEDIA_URL = f"https://objectstore.fra1.civo.com/files/{media_location}/"
     STORAGES = {
         "default": {
             "BACKEND": "storages.backends.s3.S3Storage",
@@ -391,7 +395,7 @@ else:
                 "region_name": "FRA1",
                 "default_acl": "public-read",
                 "endpoint_url": "https://objectstore.fra1.civo.com",
-                "location": f"{ENV}/media" if ENV != "PROD" else "media",
+                "location": media_location,
             },
         },
         "staticfiles": {
@@ -403,7 +407,7 @@ else:
                 "region_name": "FRA1",
                 "default_acl": "public-read",
                 "endpoint_url": "https://objectstore.fra1.civo.com",
-                "location": f"{ENV}/static" if ENV != "PROD" else "static",
+                "location": static_location,
             },
         },
     }  # pragma: no cover
