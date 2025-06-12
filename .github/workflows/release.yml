@@ -60,6 +60,7 @@ jobs:
     with:
       service: backend
       context: ./backend
+      file: ./backend/Dockerfile
       image_name: loopedupl/backend
       tag: ${{ github.run_id }}.dev
     secrets:
@@ -72,6 +73,7 @@ jobs:
     with:
       service: broker
       context: ./broker
+      file: ./broker/Dockerfile
       image_name: loopedupl/broker
       tag: ${{ github.run_id }}.dev
     secrets:
@@ -97,6 +99,7 @@ jobs:
     with:
       service: python-sandbox
       context: ./sandbox/python
+      file: ./sandbox/python/Dockerfile
       image_name: loopedupl/python-sandbox
       tag: ${{ github.run_id }}.dev
     secrets:
@@ -109,6 +112,7 @@ jobs:
     with:
       service: ai-sandbox
       context: ./sandbox/ai
+      file: ./sandbox/ai/Dockerfile
       image_name: loopedupl/ai-sandbox
       tag: ${{ github.run_id }}.dev
     secrets:
@@ -150,6 +154,7 @@ jobs:
     with:
       service: backend
       context: ./backend
+      file: ./backend/Dockerfile
       image_name: loopedupl/backend
       tag: ${{ github.run_id }}.prod
     secrets:
@@ -162,6 +167,7 @@ jobs:
     with:
       service: broker
       context: ./broker
+      file: ./broker/Dockerfile
       image_name: loopedupl/broker
       tag: ${{ github.run_id }}.prod
     secrets:
@@ -174,6 +180,7 @@ jobs:
     with:
       service: frontend
       context: ./frontend
+      file: ./frontend/Dockerfile
       image_name: loopedupl/frontend
       tag: ${{ github.run_id }}.prod
     secrets:
@@ -186,6 +193,7 @@ jobs:
     with:
       service: python-sandbox
       context: ./sandbox/python
+      file: ./sandbox/python/Dockerfile
       image_name: loopedupl/python-sandbox
       tag: ${{ github.run_id }}.prod
     secrets:
@@ -198,6 +206,7 @@ jobs:
     with:
       service: ai-sandbox
       context: ./sandbox/ai
+      file: ./sandbox/ai/Dockerfile
       image_name: loopedupl/ai-sandbox
       tag: ${{ github.run_id }}.prod
     secrets:
@@ -217,6 +226,7 @@ jobs:
     with:
       service: nginx
       context: ./nginx
+      file: ./nginx/Dockerfile
       image_name: loopedupl/nginx
       tag: ${{ github.run_id }}.prod
     secrets:
