@@ -22,9 +22,6 @@ env/
 # Database files
 *.sqlite3
 
-# Django migrations
-*/migrations/
-
 # Test and coverage files
 coverage/
 *.tox/
