@@ -44,6 +44,6 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: ${{ inputs.context }}
-          file: ${{ inputs.context }}/${{ inputs.file }}
+          file: ${{ inputs.file }}
           push: true
           tags: ${{ inputs.image_name }}:${{ inputs.tag }}
