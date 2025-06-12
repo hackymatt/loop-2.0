@@ -84,6 +84,7 @@ jobs:
     with:
       service: frontend
       context: ./frontend
+      file: ./frontend/Dockerfile.dev
       image_name: loopedupl/frontend
       tag: ${{ github.run_id }}.dev
     secrets:
@@ -127,6 +128,7 @@ jobs:
     with:
       service: nginx
       context: ./nginx
+      file: ./nginx/Dockerfile.dev
       image_name: loopedupl/nginx
       tag: ${{ github.run_id }}.dev
     secrets:
