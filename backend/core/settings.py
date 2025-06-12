@@ -334,17 +334,17 @@ LOGGING = {
     "loggers": {
         "django": {
             "handlers": ["console", "file"],
-            "level": "WARNING",  # Log only WARNING and ERROR
+            "level": "DEBUG",  # <-- zmienione
             "propagate": True,
         },
         "core": {
             "handlers": ["console", "file"],
-            "level": "WARNING",  # Log only WARNING and ERROR
+            "level": "DEBUG",  # <-- zmienione
             "propagate": False,
         },
         "django.request": {
-            "handlers": ["error_file"],
-            "level": "ERROR",  # Only capture ERROR logs for requests
+            "handlers": ["error_file", "console"],  # <-- dodaj console
+            "level": "ERROR",
             "propagate": False,
         },
     },
