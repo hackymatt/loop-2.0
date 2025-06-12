@@ -12,7 +12,6 @@ on:
       file:
         required: false
         type: string
-        default: Dockerfile
       image_name:
         required: true
         type: string
