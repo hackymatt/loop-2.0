@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 from pathlib import Path
 import os
+import re
 import base64
 import json
 from socket import gethostname, gethostbyname_ex
@@ -171,9 +172,13 @@ if DEBUG:
     CORS_ALLOW_ALL_ORIGINS = True  # pragma: no cover
 
 SIMPLE_JWT = {
-    "SIGNING_KEY": os.getenv(
-        "JWT_SECRET",
-        "lmzpsXgy4NGIUuO9MbkM9lS0dJkSSMehjyKS529EACLg8AT6C5U42T9hl5s19ZLbUw7HZwSVVRPKWqbxvboTOQ==",
+    "SIGNING_KEY": re.sub(
+        r'^"(.*)"$',
+        r"\1",
+        os.getenv(
+            "JWT_SECRET",
+            "lmzpsXgy4NGIUuO9MbkM9lS0dJkSSMehjyKS529EACLg8AT6C5U42T9hl5s19ZLbUw7HZwSVVRPKWqbxvboTOQ==",
+        ),
     ),
     "ACCESS_TOKEN_LIFETIME": timedelta(days=1),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
